@@ -1,0 +1,672 @@
+\chapter{The First Protocol - Computing HD Homomorphically}
+
+% **************************** Define Graphics Path **************************
+\ifpdf
+    \graphicspath{{Chapter3/Figs/Raster/}{Chapter3/Figs/PDF/}{Chapter3/Figs/}}
+\else
+    \graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
+\fi
+
+\section{Introduction}
+\label{sec:firstProcIntro}
+Many biometrics privacy preserving authentication protocols rely on a trusted
+third party to keep the client's secret key to decrypt the authentication result
+\missref{}. Our first attempt to improve the security of such schemes is to
+remove the role of such party. We cannot let the server keeping the key due to
+privacy requirement, in order to rely on the client only to decrypt the distance
+plaintext, we would need to solve the following challenges:
+\begin{description}
+\item[Multifactor secure] A malicious client with a compromised secret key
+  should not learn any information about the templates distance (and the
+  registered template) when he decrypts the homomorphic ciphertext result sent
+  by the server.
+\item[Malicious Client Model] It is important for the protocol to be secure
+  against the \textit{active client }model, where an adversary does not simply follow the
+  protocol transcript and tries to learn information (this model is also known
+  as \textit{Semi Honest}, \textit{Honest-But-Curious}, or \textit{Passive} Client Model). In the 
+\end{description}
+
+The first issue was resolved by having the server masking the distance with some
+random value before sending it to the client
+(\cite{mandal2015comprehensive}). In this chapter, we discuss the solution to
+the second issue, where a new Zero-Knowledge-Proof (ZKP) technique for
+lattice-based cryptosystem is introduced to enforce the client to prove that he
+is actually following the protocol honestly. The technique not only provides a
+proof of plaintext knowledge, it has another important aspect to prove the
+binary format of the query template as well. Therefore, we can use the ZKP at
+two stages: When the client first sends the query when he start authenticating,
+and at the final step where he proves that he decrypts the Hamming Distance (HD)
+correctly.
+
+
+\section{Related Work}
+\label{sec:iscRelatedWor}
+In a biometric authentication system, a user $\mathcal{U}$ first enrols his fingerprint template $X$ with the server
+$\mathcal{S}$. $\mathcal{U}$ later authenticates with $\mathcal{S}$ using the same finger with a template $Y$, $\server$
+uses an algorithm $Verify(X,Y)$ to obtain the result of the authentication: \textbf{Accept} or
+\textbf{Reject}. Different biometric system might use different methods to compute the distance $\Delta$ between $X$ and
+$Y$ in the algorithm $verify$. The distance $\Delta$ is compared to some predifined threshold value $\tau$ to determine
+the result of the authentication. We refer the reader to \cite{jain2007handbook} for biometric feature extraction and
+comparison techniques. Unlike password based system where $\user$ always uses one same query for many authentications,
+all biometric systems have the concept of False Acceptance Rate (FAR), where the systems \textbf{Accept} an incorrect
+template; and False Rejection Rate (FRR), where the systems \textbf{Reject} a genuine one.  Balancing these 2 rates
+while keeping good performances is one of the main challenges that fingerprint verification algorithms
+\cite{FVConGoi2:online} are trying to solve. In this work, we consider the biometric data are represented as binary
+codes and HD is used to measure the similarity between two of them. We refer the readers to \cite{daugman2003importance}
+or \cite{FujitsuD7:online} for examples of 2048-bit iris codes generation and HD comparison.
+
+There are three main approaches for privacy-preserving biometric authentication (\cite{jain201650},
+\cite{belguechi2011overview}, \cite{jain2008biometric}). In the \emph{Feature transformation approach} (cancelable
+biometrics or biohashing, such as \cite{teoh2008cancellable}, \cite{cappelli2010minutia}), the template data are
+encrypted using a client's key, it is single factor and not secure if the key is leaked. The \emph{Biometric
+  cryptosystem approach} (fuzzy vault and fuzzy commitment, \cite{uludag2004biometric}, \cite{nagar2010hybrid}) is based
+on error correcting codes and it is not well understood the tradeoff between biometric accuracy and security. We focus
+our work on the last approach, \emph{Homomorphic Encryption}, which seems to be the best candidate to provide all of the
+system design requirements mentioned.
+
+The idea was first proposed in 2006 (\cite{schoenmakers2006efficient}) using addictive homomorphic system Paillier
+(\cite{paillier1999public}). In 2010, Osadchy et al. (\cite{osadchy2010scifi}) providing privacy-preserving feature by
+combining Paillier system with oblivious transfer protocol. SCiFI uses 900-bit vector to represent face image data and
+Hamming Distance (HD) to compare two vectors. \cite{blanton2011secure} developed a similar system for iris and
+fingerprints but using DGK cryptosystem \cite{damgard2008homomorphic} and garble circuit technique instead, they
+represented biometric data as 2048-bit vectors and also used HD for threshold comparison. \cite{yasuda2014practical}
+proposed an approach based on Somewhat Homomorphic Encryption (SHE) \cite{brakerski2011fully}, they introduced a
+ciphertext packing technique to speed up the HD computation operation. There have been variations and improvements over
+time (\cite{shahandashti2012private}, \cite{mandal2015comprehensive}, etc). However, most of the protocols are only
+secure against a semi-honest client, many relied on one or more trusted third parties with the client's secret key to
+decrypt the HD.
+
+
+
+\section{The BGV Cryptosystem and Yasuda Packing Method}
+\label{sec:firstProcBGV}
+
+\subsection{Feature codes and HD Computation homomorphically}
+\label{sec:HDComp}
+Biometrics are used in authentication as they are unique for each person. There are
+many algorithms that extract the data used in the process (\cite{FVConGoi2:online})
+(we refer to this data as biometric templates). Many works (such as
+\cite{daugman2003importance} and \cite{FujitsuD7:online}) use Hamming Distance (HD)
+as the metric to measure the similarity of the stored and query templates, we also
+use HD to evaluate our idea (\ref{protocol:step3}). In the work of
+\cite{yasuda2014practical}, the authors proposed a clever approach that can compute
+HD of two n-bits templates $X$ and $Y$ in ciphertext domain. Specifically, the
+method pack all the bits of a template into a single ciphertext, and a linear
+combination of homomorphic operations would give the result of HD. We quickly
+present their method below.
+\begin{definition}
+For $\mathbf{T} = (t_0, \dots,
+t_{n-1}$ and $\mathbf{Q} = (q_0, \dots, q_{n-1})$, we define two types of polynomials in the ring $R_q$ of the SHE schme:
+\[
+pm_1(\mathbf{T}) = \sum_{i=0}^{n-1}t_ix^i
+\ \textnormal{and} \ pm_2(\mathbf{Q}) =
+- \sum_{j=0}^{n-1}q_jx^{n-j}
+\]
+The two types of packed ciphertexts are defined as
+\[
+ct_{1}(\mathbf{T}) = Enc(pm_1(\mathbf{T}))
+\ \textnormal{and} \
+ct_{2}(\mathbf{Q}) = Enc(pm_2(\mathbf{Q}))
+\]
+\end{definition}
+The main idea of \cite{yasuda2014practical} is that, in the ring $R_q$ we have $x^n = -1$, then when we do multiplication between $pm_1(\mathbf{T})$ and $pm_2(\mathbf{Q})$, the constant term of the result would be the inner product $\langle \mathbf{T}, \mathbf{Q}\rangle$. We can also do homomorphic multiplication on the ciphertexts and get the ciphertext of the inner product similarly. Furthermore, we can use this result to compute HD as follows, this operation costs one level of multiplication with 3 additions and 3 multiplications on ciphertexts.
+
+\begin{theorem}
+Let $C_1 = - \sum_{i=0}^{n-1}x^{n-i}$ and
+$C_2 = 2 - C_1 = \sum_{i=0}^{n-1}x^i$. Let $Enc(HD)$ be a ciphertext given by
+\[
+ct_1(\mathbf{T})*Enc(C_1) + ct_2(\mathbf{Q})*
+Enc(C_2) - 2*ct_1(\mathbf{T})*ct_2(\mathbf{Q})
+\]
+Then, the constant term of $Dec(Enc(HD))$ gives the Hamming Distance of $\mathbf{T}$ and $\mathbf{Q}$.
+\end{theorem}
+
+\begin{algorithm}
+\caption{HD Computation Homomorphically}\label{alg:EvalDistance}
+\begin{algorithmic}[1]
+\Procedure{EvalDistance}{$\mathbf{T,Q}$}
+\State $C_1 \gets - \sum_{i=0}^{n-1}x^{n-i}$
+\State $C_2 \gets 2 - C_1$
+\State $C_{HD} \gets ct_1(\mathbf{T})*Enc(C_1) + ct_2(\mathbf{Q})*
+Enc(C_2) - 2*ct_1(\mathbf{T})*ct_2(\mathbf{Q})$
+\State \textbf{return} $C_{HD}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\section{Zero-knowledge proof system}
+\label{sec:introzkp}
+Suppose that \emph{Paul} has found a solution
+to a hard problem and he wants to convince \emph{Vicky} that it has
+been solved. \emph{Paul} can simply write out the solution and gives
+to \emph{Vicky}. However it would not be nice if \emph{Vicky} is a
+dishonest person that brings the solution to show others and claims that
+it was her who solved the problem. Zero Knowledge Proof (ZKP) is a
+beautiful cryptographic concept that allows \emph{Paul} to do the proof
+in such a way that \emph{Vicky} does not learn any information more
+than the fact that the problem has been solved. Since introduced
+in the 80s \cite{goldwasser1989knowledge}, ZKP has been extensively
+studied and currently being the important building blocks in many cryptographic
+protocols: identification schemes ( \cite{fiat1986prove}, \cite{feige1988zero},
+\cite{guillou1990paradoxical}, \cite{schnorr1991efficient},
+\cite{stern1993new}, \cite{kawachi2008concurrently},\dots), group signatures(
+\cite{camenisch1997efficient}, \cite{ateniese2000practical},
+\cite{boneh2004short}, \cite{boneh2004group}, \cite{groth2007fully}\dots),
+anonymous credential systems ( \cite{camenisch2008efficient},
+\cite{camenisch2001efficient}, \cite{belenkiy2009randomizable},
+\cite{chase2013malleable},\dots), interactive encryption protocol(
+\cite{galil1985symmetric}, \cite{goldreich2009foundations},
+\cite{goldwasser2005proof}, \cite{katz2003efficient},\dots), and much more.
+
+
+
+% At a simplified high level, the system works by evaluating the Hamming Distance (HD) between the encrypted biometric
+% query and encrypted registered biometric homomorphically on the server using the SWHE, sending the encrypted HD back to
+% the client for decryption and letting the client send back the decrypted HD to the server for comparing with a threshold
+% . To secure the protocol against a malicious client, we add appropriate
+% Zero-Knowledge (ZK) Proofs of Knowledge by the client to convince the server that the client has done the correct
+% computations. However, achieving this goal efficiently is not trivial for the following reasons.
+
+% First, for efficiency, the Yasuda protocol needs to use plaintext packing techniques (\cite{yasuda2014practical}), and we need to design new ZK
+% proofs for the approporiate relations to support this packing. As our first technical contribution, we show how to adapt
+% the Stern ZK proofs to obtain suitable ZK proofs for our protocol. (add more info?)
+
+% Second, due to the noise inherent inside lattice-based homomorphic encryption and its correlation with the
+% homomorphicaly evaluated plaintexts (the registered template) it turns out the above simplified version of our protocol
+% may leak information on the registered template to a two-factor malicious impersonating client that has access to the
+% victim client's secret key, i.e. we observe that is not enough for the server to mask the HD plaintext with a random
+% one-time-pad mask before sending the ciphertext to the client (as done also in [Yasuda]; the noise in the ciphertext
+% must also be masked. Unfortunately, a perfect one-time-pad mask cannot be used for the noise as it must be `small' for
+% decryption. A similar problem has been observed in theoretical studies of circuit privacy of lattice-based secure
+% computation protocols~\cite{circuit privacy}, but those solutions yield inefficient protocols. As our second technical
+% contribution, we show a new application of Renyi divergence based analysis~cite{RD} to show the malicious security of
+% our protocol with a small `imperfect' one-time pad. To do so efficiently, we show how to extend previous technical
+% bounds on Renyi divergence between a discrete Gaussian and its offset in for Renyi divergence of order 2 to the case of
+% Renyi divergene of order infinity.
+
+\section{Stern-based variant ZKP}
+\label{sec:firstProcZKP}
+\subsection{Stern-based ZKP}
+\label{sec:Stern-basedZKP}
+Recall that we need to construct a proof for the ISIS relation:
+\[
+  R_{ISIS_{n,mq,\beta}} = \{ ((\mathbf{A},\vec{y}),\vec{x})
+  \in \mathbb{Z}_q^{n\times m} \times \mathbb{Z}_q^n
+  \times \mathbb{Z}^m: (\|\vec{x}\|_\infty \leq \beta) \land
+  (\mathbf{A}\vec{x} = \vec{y} \mod q) \}
+\]
+There are several approaches to construct such proof (e.g. \cite{lyubashevsky2008lattice},
+\cite{micciancio2003statistical}, \cite{stern1993new}). We discuss an approach based on \cite{stern1993new} in this
+work. We refer our readers to the original paper for the detailed steps of the protocol and we denote
+\(\mathbf{Stern}_{A,x,y}\) for the whole proof. Provided such a proof, it can be applied to do a Zero Knowledge Proof of
+Plaintext Knowledge (ZKPoPK) for latticed-based cryptosystems. For example, in the work of \cite{ling2013improved} with
+an extenstion (denoted by \(\mathbf{SternExt}\)), plaintext knowledge proof was done by proving the encryption relation
+of Regev's cryptosystem \cite{regev2009lattices}:
+
+\begin{equation*}
+  \label{eq:regev_zkp}
+  \begin{multlined}[][\LTcapwidth]
+    R_{Regev}^{q,m,n,t,\chi} = \{ ((p_0,p_1),(c_0,c_1),\vec{r}||M) \in (\mathbb{Z}_q^{m \times n} \times
+    \mathbb{Z}_q^{m})
+    \times (\mathbb{Z}_q^n \times \mathbb{Z}_q) \times \mathbb{Z}_q^{n+1} : \\
+    (c_0 = p_0\vec{r}) \land (c_1 = p_1\vec{r} + M) \}
+  \end{multlined}
+\end{equation*}
+
+The proof worked by letting $\mathbf{A'} = \begin{bmatrix} p_1, 1\\p0, 0
+\end{bmatrix} $ and $\mathbf{y} = \begin{bmatrix} c_1\\c_0
+\end{bmatrix}$ being the public parameters and let $\mathbf{x} =
+\begin{bmatrix}
+  \vec{r}\\M
+\end{bmatrix}$ be the \emph{Prover}'s witness. We observe that $\mathbf{A'} \mathbf{x} = \mathbf{y} \mod q$, that is,
+$\mathbf{x}$ is a solution to the ISIS problem, provided that $\norminf{\vec{r}} \approx |M|$ AND the \emph{Prover} must
+know $\vec{r}$. This solution only works in the symmetric key setting, in many other contexts, the client does not know
+$\vec{r}$ as encryption is done by other parties using public key. For such situation, we can look at the decryption
+equation:
+\begin{align*}
+  c_1 - c_0\vec{s} &= p_1\vec{r} + M - p_0\vec{r}\vec{s} \\
+                   &= \mathbf{A}\vec{s}\vec{r} + t\vec{e}\vec{r} + M - \mathbf{A}\vec{r}\vec{s}\\
+                   &= t\tilde{e} + M
+\end{align*}
+Therefore, we can write the decryption relation as:
+\begin{equation*}
+  \begin{multlined}[][\LTcapwidth]
+    R_{Regev,dec}^{q,m,n,t\chi} = \{((p_0,p_1),(c_0,c_1),\vec{s},\vec{e},\tilde{e}, M) \in (\mathbb{Z}_q^{m \times n}
+    \times \mathbb{Z}_q^{m})\times (\mathbb{Z}_q^n \times \mathbb{Z}_q)\times \chi^n \times \chi^n \times \chi \times
+    \zzq:\\ (p_1 = p_0\vec{s} + t\vec{e}) \land (c_{1} = c_{0}\vec{s} + t\tilde{e} + M) \}
+  \end{multlined}
+\end{equation*}
+Similarly, we can let $\mathbf{A}_{Stern} = \begin{bmatrix} c_0, t, 0, 1\\p_0, 0, t, 0
+\end{bmatrix}$ to be the public parameters and \(\mathbf{X}_{Stern} = [\vec{s},\tilde{e},\vec{e},M]^T\) and try applying \textbf{SternExt} to obtain the ZKPoPK. However, it will not work because the original
+solution proves that $\norminf{\mathbf{X}_{Stern}} <
+\beta$. In this situation, we want to prove the bound of separate components differently: in our above example,
+$\norminf{\tilde{e}} >
+\norminf{\vec{e}}$. In Regev cryptosystem, the problem might not be clear enough as the norm of each vector in
+$\mathbf{X}_{Stern}$ is quite close to each other, for other latticed-based system, we can see a big difference. For
+example, if we look at the BV system's decryption relation:
+\begin{equation*}
+  \begin{multlined}[][\LTcapwidth]
+  R_{BV}^{q,n,t,\chi} = \{((\mathbf{c_0}, \mathbf{c_1}),(\mathbf{p_0}, \mathbf{p_1}), \mathbf{s},\mathbf{e'}, \mathbf{e}, \mathbf{m} \in
+  (\rrq \times \rrq) \times (\rrq \times \rrq)  \times \chi^n \times \chi^n \times \chi^n \times R_t:\\
+  (\mathbf{p_1}\mathbf{s} + t\mathbf{e} = -\mathbf{p_0} ) \land (\mathbf{c_1}\mathbf{s} - t\mathbf{e'} -\mathbf{m} = -\mathbf{c_0})
+  \}
+  \end{multlined}
+\end{equation*}
+
+Our \emph{Prover}'s witness in this situation is
+\(\mathbf{X}_{Stern} = [\mathbf{s, e', e, m}]^{T}\) with $\norminf{s} \approx \norminf{e} < \norminf{e'} << \norminf{m}$.  Therefore, instead of proving
+$\norminf{\mathbf{X}_{Stern}} < \beta$, we need a proof with different constraints on the witness's components. We
+present a solution for this problem.
+\subsubsection*{Our construction}
+% There are several requirements need to be
+% satisfied:
+\begin{description}
+% \item The Stern protocol leaks the Hamming Weight of the witness, we can cover this
+%   leakage by using some kind of padding technique: to make sure that the number of 0s and
+%   1s in the message must be equal to each other
+% \item we can also apply the decompose technique of \cite{ling2013improved} in
+%   each of the elements of the prover witness.
+\item [The idea.] Our first observation is, in stead of
+  proving $\norminf{x_i} < \beta_i$, or all the coefficients of $x_i$ is in the range $\{-\beta_i, \dots, \beta_i\}$, we
+  can also prove $x_i + \beta_i.f(x)$ is in the range $\{0, \dots, 2\beta_i\}$, where
+  $f(x) = 1 + x + x^2 + \dots + x^{n-1}$. Secondly, if we decompose \(x_{i} + \beta_{i}.f(x)\) to their binary
+  representation and applying the Stern's variant of \cite{kawachi2008concurrently} to prove the relation
+
+  \begin{equation*}
+    \begin{multlined}[][\LTcapwidth]
+      R_{KTX} = \{\mathbf{((A,y),x)} \in \mathcal{Z}_{q}^{n \times m} \times \mathcal{Z}_{q}^{n}\times \{0,1\}^{m}:
+      wt(\mathbf{x}) \wedge \mathbf{A . x = y} \mod q\}
+    \end{multlined}
+  \end{equation*}
+  Then we can obtain the prove for the original relation \(R_{BV}^{q,n,t,\chi}\). Note that at this point
+  the $Prover$'s witness is a binary vector, that is, if we need to prove some part of the message is binary, we obtain
+  that goal at this point as well. It is important if we use such proof for latticed-based cryptosystem where the
+  message space is $\mathbf{R}_2$: a proof for ISIS relation is not useful in this situation because it only
+  proves that the infinity norm of the whole witness is less than some $\beta$.
+
+\item [Protocol description.]
+  The protocol \textbf{SternBV(A,y,x)} works as follows. Let $A$ be a matrix of $m \times l$ ring element ($A \in R_{q}^{m \times l}$),
+  $\mathbf{x}$ be a vector of $l$ ring elements $\mathbf{x} = \left\{ \mathbf{x_1, x_2, \dots, x_l} \right\}$ and
+  similarly $\mathbf{y} = \left\{ \mathbf{y_1,\dots,y_m} \right\}$. The protocol includes the following steps.
+
+\item [Step 1.] Normalizing the bound of each component $x_i$ of \textbf{x} from $\{-\beta_i,\dots,\beta_i\}$ to
+  $\{0,\dots,2^{l_i}\}$, where $l_i$ is the smallest integer satisfying $2^{l_i} > (2\beta_i -1)$. This step is done by
+  one ring multiplication for each $\mathbf{x_i}$, let $x_i' = x_i + \beta_i.\mathbf{f}(x)$, where
+  $f(x) = 1 + x + x^2 + \dots + x^{n-1}$. After this normalization step, instead of proving the relation
+  $\mathbf{a_i x_i = y_i}$ with $\norminf{x_i} \in \left\{ -\beta_i, \dots, \beta_i \right\}$, we prove
+  $\mathbf{a_i x'_i = y'_i}$ with $\norminf{ x'_i } \in \left\{ 0,\dots,2^{l_i} \right\}$, where
+  $\mathbf{y'_i = y_i + a_i\beta_i f(x)}$.
+
+\item [Step 2.] Decompose $x'_i = x_i + \beta_i$ into their binary representation
+  \[
+    \mathbf{x''_i} = \sum_{j = 0}^{l_i -1}{2_j b_j}
+  \]
+  Let $\mathbf{x''}$ be the result ring element that concatenates all $\mathbf{x''_i}$ and has $L = \sum{l_i}$
+  coefficients. In this step we need to hide the Hamming Weight of the secret vector $\mathbf{x'_i}$. This hiding task
+  is done by padding:
+  \begin{enumerate}
+  \item Let $\zeta_0$ and $\zeta_1$ be the number of coefficients of $\mathbf{x''}$ that equal to 0 or 1, respectively.
+  \item Sample a random vector $\mathbf{\zeta} \in \left\{ 0,1 \right\}^{L}$ that has $(L - \zeta_0)$ coefficients 0 and
+    $(L - \zeta_1)$ coefficients 1.
+  \item Output $\mathbf{x_{Stern}} = \mathbf{x''} || \mathbf{\zeta}$.
+  \end{enumerate}
+  the result binary vector $\mathbf{x_{Stern}}$ has length $2L$ and the total number of 0s and 1s in the
+  $\mathbf{x_{Stern}}$ are the same.
+
+\item [Step 3.] We denote $ rot({\textbf{c}}) \in \mathbb{Z}_Q^{n\times n}$ to be an anti-circulant square matrix, whose
+  first column is $\mathbf{c}$ and the other columns are the cyclic rotations of $\mathbf{c}$ with the cycled entries
+  negated
+  \[
+    rot({\mathbf{c}})=
+    \begin{bmatrix}
+      c_0 & -c_{n-1} & -c_{n-2} & \dots\\
+      c_1 & c_0 & -c_{n-1} & \dots\\
+      \dots & \dots & \dots & \dots\\
+      c_{n-1} & c_{n-2} & c_{n-3} & \dots
+    \end{bmatrix}
+  \]
+  and reconstruct the matrix $A$ with the $rot$ matrices:
+  \[
+    \forall \mathbf{a_{i,j}} \in \mathbf{A}: \mathbf{a'_{i,j}} =
+    rot(\mathbf{a_{i,j}})
+  \]
+  The result expanded matrix is denoted $\mathbf{A'}$. We also need to pad the resulting matrix with corresponding
+  number of 0s to make sure $\mathbf{A'}$ complying with all $x'_i$. Let $\mathbf{A_{Stern}}$ be the padded result
+
+\item [Step 4.] Modify $\mathbf{y_i}$: Let $\mathbf{y'_i} = \mathbf{y_i + a_i\beta_if(x)}$ and let $\mathbf{y_{Stern}}$ be
+  the concatenation of all $\mathbf{y'_i}$.
+
+
+\item [Step 5.] Run the Stern protocol (Section \ref{append:Stern}) for the proof of $\mathbf{A_{Stern}x_{Stern} = y_{Stern}}$.
+
+\item [Result.] Our protocol has the following properties:
+  \begin{itemize}
+  \item The knowledge extractor produces different $x_i$ with $\norminf{x_i} \leq \beta_i$. Inheriting from the original
+    Stern protocol, the extraction gap is $\gamma = 1$.
+  \item The communication cost is $2(n\log q){\sum{l_i}} + commitmentSize$ for each round.
+  \end{itemize}
+
+\end{description}
+
+  \begin{algorithm}
+    \caption{ZKPoPK Improved for BV}\label{alg:ZKPBVImproved}
+    \begin{algorithmic}[1]
+      \Procedure{ZKPBV}{$(\mathbf{c}, pk),(\mathbf{m, s, e, e'}))$}
+      \State $rot_{c_1} \gets rot(\mathbf{c_1})$
+      \State $rot_{p_1} \gets rot(\mathbf{pk_1})$
+      \State let I be the $n \times n$ identity matrix
+      \State let Z be the $n \times n $ zero matrix
+      \State $\mathbf{A} \gets ((rot_{c_1},-tI, Z, -I),(rot_{p_1}, Z, tI,Z)) $
+      \State $\mathbf{x} \gets (\mathbf{s, e', e, m})$
+      \State $\mathbf{y} \gets (\mathbf{-c_0, -pk_0})$
+      \State \textbf{Return} $\mathbf{SternExt(A,x,y)}$
+      \EndProcedure
+    \end{algorithmic}
+  \end{algorithm}
+
+
+\section{Our Protocol}
+\label{sec:our_protocol}
+We denote $\user$ to be the client and $\server$ to be the server. There are 3 main submodules in the protocol: Setup,
+Enrol, and Authenticate
+\begin{description}
+\item[Setup.] $\user$ and $\server$ initialize the parameters, there are several categories:
+  \begin{description}
+  \item[Biometric Authentication System Parameters.] These parameters are standard ones used by non privacy preserving
+    biometric authentication systems:
+    \begin{itemize}
+    \item False Acceptance Rate (FAR) and False Rejection Rate (FRR)
+    \item $a$: The maximum number of incorrect authentication attempts allowed by $\server$.
+    \item $\tau$: Threshold to compare the Hamming Distance to decide the authentication result.
+      % \item $B$: An integer defines the base of the HD in a
+      %   decomposition operation.
+    \item \(n'\): The bit-length of the encoded
+      biometric data.
+    \end{itemize}
+  \item[Ring-LWE based techniques parameters.] These parameters are used in the lattice-based cryptosystem which provide
+    client privacy against long term quantum attacks.
+    \begin{itemize}
+    \item $\lambda$: General security parameter of the cryptosystem (the adversary's winning chance in the CPA security game is \(1/2^{\lambda}\))
+    \item $n$: Integer $n$ defining the plaintext and ciphertext spaces rings. This will be refered to as the degree of
+      the polynomial objects or dimension of the underlying lattice during correctness and security proofs.
+    \item $t$: Integer $t$ defining the plaintext space ring $R_t = \mathbb{Z}_t[x]/x^n+1$.
+    \item $q$: Integer $q$ defining the ciphertext space ring $R_q = \mathbb{Z}_q[x]/x^n+1$
+    \item $\chi_{\alpha q}$: A distribution which is used to sample noises for LWE-based techniques.  Typically, $\chi$
+      is a Gaussian distribution with standard deviation $\alpha q$.
+    \item \(\delta\): Renyi Divergence parameter for the security of noise masking.
+    \end{itemize}
+  \item[Keygen.] Keys are generated for $\user$:
+    \begin{itemize}
+    \item Secret key: $\mathbf{s} \randomsample \chi_{\alpha q}^n$, \(sk = (1, \mathbf{s, s^{2}, ...})\)
+    \item Public key: $pk = \mathbf{(p_0,p_1)}$, with $\mathbf{p_1} \randomsample R_q$ and
+      $\mathbf{p_0} = -\mathbf{p_1s} - t\mathbf{e}$, with $\mathbf{e} \randomsample \chi_{\alpha q}^n$.
+    \end{itemize}
+  \end{description}
+\item [Enrolment.] $\user$ extracts the biometric template $\mathbf{x}$, note that the bit string $\mathbf{x}$ can be
+  represented as a ring element of ${R}_t$.  The encryption is done by $\enc{\mathbf{x}} = (\mathbf{c_0},\mathbf{c_1})$
+  and sends to $\server$.
+\item [Authentication.] This is done in following steps:
+  \begin{enumerate}
+  \item $\user$ extracts his biometric again $\mathbf{y}$ to use as the query. $\user$ sends
+    $\enc{\mathbf{y}} = (\mathbf{c_0', c_1'})$ to $\server$.
+  \item ZKP for the first relation: $\user$ has to prove that $\enc{\mathbf{y}}$ is a valid encryption, that is, it
+    encrypts a bit string under the BV cryptosystem using the corresponding secret key. This is done by module
+    \textbf{SternBV(A, y, x)} described in Sect. \ref{sec:Stern-basedZKP}, where
+    $\mathbf{A} = \begin{bmatrix} c_{y0}, t, 0, 1\\p_{y0}, 0, t, 0
+    \end{bmatrix}$, \(\mathbf{X} = [\vec{s},\tilde{e_{y}},\vec{e_{0}},y]^T\) and \(\mathbf{Y
+    = [c_{y1},p_{y1}]}^{T}\).
+
+  \item HD Computation: $\server$ computes $\enc{HD_{\mathbf{x,y}}}$
+    using procedure \ref{sub:ciphertext_packing}. We note that this noise term $\mathbf{e_{HD}}$ of
+    $\enc{\mathbf{HD,e_{HD}}}$ can leak information
+    about $\mathbf{x}$ when $\mathbf{HD}$ is decrypted. Therefore,
+    we need to do
+    an extra step to secure this operation.
+    \begin{itemize}
+    \item Sample $\mathbf{e_{r}} \randomsample \chi_{r}^n$ such that $\norminf{\mathbf{e_r}}$ is big enough compared to
+      $\norminf{\mathbf{e_{HD}}}$.(Section \ref{sec:Renyi})
+    \item Compute $\enc{\mathbf{r,e_r}}$ and do one homomorphic addition operation to mask both the values of
+      $\mathbf{HD}$ and the noise $\mathbf{e_{HD}}$:
+      $\enc{\mathbf{HD', e'_{HD}}} = \enc{\mathbf{HD, e_{HD}}} + \enc{\mathbf{r,e_r}}$
+    \end{itemize}
+    The result $\enc{\mathbf{HD'}}$ is then sent to $\user$.
+  \item \(\user\) decrypts $\enc{\mathbf{HD'}}$ and derive the actual value ${HD'}$ from the first coefficient of the
+    plaintext:\( dec\enc{\mathbf{HD'}} = HD' + r_1 + r_2 + \dots + r_{n-1} \). \(\user\) sends \(HD'\) to \(\server\).
+  \item \(\user\) proves that it does the decryption honestly, this is done similarly to step 2.
+  \item \(\server\) unmasks \(HD'\) and output the authentication result \(HD \stackrel{?}{<} \tau\)
+  \end{enumerate}
+
+\end{description}
+
+\subsubsection{Correctness}
+\label{sec:correctness}
+In the enrolment step, recall that in order to encrypt $\mathbf{x}$, $\user$ samples
+$\mathbf{u,f,g} \randomsample \chi_{\alpha q}^n$ and does $\mathbf{c_0} = \mathbf{p_0u} + t\mathbf{f} + \mathbf{x}$ and
+$\mathbf{c_1} = \mathbf{p_1u} + t\mathbf{g}$. The correctness condition for decryption correctness is
+$[\langle \mathbf{c_0 + c_1s} \rangle]_q < q/2$, or, $-t\mathbf{eu} + t\mathbf{f} + t\mathbf{gs} < q/2$.
+
+In the authentication step, \(\enc{HD}\) is decryptable if \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle} < q/2\), if
+we let \(U\) to be the upper bound of \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle}\), and using the fact that
+\(\norminf{a + b} \leq \norminf{a} + \norminf{b}\) and \(\norminf{a.b} \leq n.\norminf{a}.\norminf{b}\). From theorem
+~\ref{theo:HDComputation} we can derive \(\norminf{\langle \enc{HD},\mathbf{s} \rangle} \leq 2nU + 2nU^{2}\). As in the
+work of \cite{EPRINT:LauNaeVai11}, we can take \(U\) to be \(2t \sigma^{2} \sqrt{n}\), which is an experimental
+estimation. Therefore, the final correctness condition for authentication is \( 16n^{2}t^{2}\sigma^{4} < q\)
+\begin{lemma}[Condition for Correct Decryption of HD]
+  \label{le:hdcorrectness}
+ For the BV encrypted Hamming Distance \(\enc{HD}\), the decryption recovers the correct result if \(\langle \enc{HD},
+ \mathbf{s} \rangle\) does not wrap around mod q, namely, if \(16n^{2}t^{2}\sigma^{4} < q\)
+\end{lemma}
+
+\subsubsection{Security}
+\label{sec:security}
+The proposed scheme satisfies the security notions defined in Section \ref{sec:syntaxModel}, proofs are
+provided in Appendix \ref{append:Proofs}
+\begin{theorem}[Server side security]
+  \label{theo:server}
+  Under the IND-CPA security of BV cryptosystem, and the zero-knowledge property of the Stern protocol, the proposed
+  scheme satisfies (Honest But Curious) Server Privacy Security.
+\end{theorem}
+\begin{theorem}[Client side security]
+  \label{theo:client}
+  Under the IND-CPA security of BV cryptosystem and the soundness property of the underlying Stern protocol, the
+  proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against
+  impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has
+  imperonsation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge error
+  $\eps_{ZK1},\eps_{ZK2}$ such that
+  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2}) + \delta \leq c_1 \cdot
+  \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition $\sigma/r_0 \geq 4 \pi k n q$ holds, with
+  $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ an upper bound on the size of the noise in $C_{HD}$.
+\end{theorem}
+
+\section{Security Proofs}
+\label{append:Proofs}
+\subsection{Security Proof for Theorem~\ref{theo:server}: Privacy against Server}
+\label{append:ProofsPrivacy }
+
+The proof of Theorem \ref{theo:client} can be done using a sequence of games between the challenger $\challenger$ and
+the adversary $\attacker$. We present a sequence of games. The idea is to proceed to remove $sk_k$ and $X_k$ from being
+used to compute the view of $\attacker$, except for $Verify(X_k,Y_k^{j})$ queries, as in the ideal game, relying on the
+correctness of the protocol and the IND-CPA security of the BV encryption scheme.
+
+\textit{Game 0}. Game 0 is the original real privacy game, in which $(T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$ is
+given by $\challenger$ to $\attacker$ at the beginning of the game. Then, for $j=1\ldots,q$, the attacker sends
+$Y_k^{(j)} \in \{0,1\}^n$ to $\challenger$, and the latter simulates a run of the authentication protocol between an
+honest client with input $(k,Y_k^{(j)}, sk_k)$ and an honest server with input $(k,T_k)$, returning to $\attacker$ the
+protocol view $V^{(j)}_S$ of the server. Finally, $\attacker$ outputs a bit $\beta$. In the following Game $i$, we let
+$S_i$ denote the event that $\beta=1$.
+
+\textit{Game 1}. We change the computation of the authentication result bit $res^{(j)}$ sent by the server to the client
+from the decryption of the ciphertext \(\enc{HD'}\)(its value in Game 0) to the result returned by $Verify(X_k,
+Y^{(j)})$. By correctness of the protocol, this does not change the value of $res^{(j)}$, so $\Pr[S_1] = \Pr[S_0]$.
+
+\textit{Game 2}. We change the computation of the zero-knowledge protocol transcripts. Instead of computing those
+transcripts using the secret witnesses, we simulate them using the statistical zero-knowledge simulator algorithms for
+the zero-knowledge proofs. By the zero-knowledge property, this is a perfect simulation, and we have $\Pr[S_2]=
+\Pr[S_1]$.
+
+\textit{Game 3}. We change the computation of the ciphertexts $C^{(j)}_i$ for $i=0,\ldots,l-1$ and $Q^{(j)}_k$ for
+$j=1,\ldots,q$ and $C_k$ to encrypt zero messages, instead of encrypting the secret-related messages in the previous
+game. Since now $sk_k$ is not used anywhere in generating the view of $\attacker$, it follows by a hybrid argument that
+$|\Pr[S_3]-\Pr[S_2]| ((l+1) \cdot q + 1) \cdot \varepsilon_{BV}$, where $\varepsilon_{BV}$ denotes the maximal advantage
+of an attacker against IND-CPA of BV scheme against attacks with run-time $T + \mathrm{poly}(n, \log Q)$ where $T$ is
+the run-time of $\attacker$.  In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^{j})$
+queries, the challenger together with $\attacker$ constitute an efficient attacker against the ideal privacy game, which
+outputs 1 with probability different by at most $(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ than the probability of
+outputting 1 in the real privacy game, as required.
+
+\subsection{Security Proof for Theorem~\ref{theo:client}: Type I Impersionation attack}
+The proof of theorem \ref{theo:server} and \ref{theo:client} can be done using a sequence of games between the
+challenger $\challenger$ and the adversary $\attacker$. We present a sequence of games as well as the relations among
+them to demonstrate type I security model proof.
+
+\textit{Game 0}. Game 0 is the original impersonation game for type I attack.
+\begin{description}
+\item [Setup.] $\challenger$ intiates $D_k \randomsample D_{bio}$ and $X_k \randomsample D_k$. $\challenger$ sets up
+  $(sk_k, pk_k)$ and does $Enrol(k, X_k)$ to get $(sk_k, T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$.  $\attacker$
+  submits the attack query type I and receives $sk_k$ from $\challenger$.
+\item [Query.] $\attacker$ runs $q$ authentication sessions. In each session $j = 1, \dots, q$, $\attacker$ sends
+  $(Q_k^{(j)} = Enc^{(1)}(Y^{(j)}))$. $\attacker$ and $\challenger$ runs
+  $\mathbf{ZKPValidEnc}(Q_k^{(j)},Y^{(j)})$. $\challenger$ evaluates
+  $C_{HD} = \mathbf{EvalDistance}_{pk_k}(C_k, Q_k^{(j)})$ then computes
+  $C_{HD'} = (-1)C_{HD} + Enc_{pk_k}^{(1)}(r_{HD'},e_{HD'})$ for $r_{HD'} \randomsample \mathcal{P}$ and
+  $e_{HD'} \randomsample \chi_{HD}$. The result ciphertext is sent to $\attacker$, $\attacker$ decrypts $C_{HD'}$ and
+  decomposes it to bits and sends back the ciphertexts
+  $C_0^{(j)}, \dots, C_{l-1}^{(j)} (= Enc^{(1)}(b_i), i = 0,\dots, l-1)$ as well as the re-encryption
+  $C_{HD_0'}$. $\attacker$ and $\challenger$ does $\mathbf{ZKPUnpack}(C_{HD},C_{HD_0'})$ and
+  $\mathbf{ZKPBinDecomp}(C_{HD_0'}, C_i^{(j)})$.  $\challenger$ evaluates
+  $C_{HD}'' = Enc^{(2)}(2^l + t) + \mathbf{ToUnary}(C_i^{(j)}) + Enc^{(2)}(-r) $ to get $Enc^{(2)}(2^l + t -
+  HD)$. $\challenger$ does $Enc^{(3)}(res) \gets \mathbf{MSBExtract}(C_{HD}'')$ and sends to $\attacker$. $\attacker$
+  decrypts and sends the authentication result bit back. $\challenger$ and $\attacker$ does
+  $\mathbf{ZKPCorrectDec}(res)$ to convince the authentication result. At the end, the server outputs \textbf{Accept} if
+  all the proofs pass and $res = \mathbf{Accept}$.
+\end{description}
+Next, we discuss following games, the plan is to proceed towards the final game where we can simulate everything that
+$\attacker$ receives that related to $X_k$ (without any knowledge about $X_k$, the only thing that known about $X_k$ is
+the function $Verify(X_k, Y)$). Let $res_s = Verify(X_k, Y^{(j)})$ and $S_i$ be
+the event in the game $i$ such that $res_s = Accept$.\\
+\textit{Game 1}. In this game, we abort $\mathbf{ZKPValidEnc}$ if $Q_k^{(j)}$ is not a valid encryption of the query,
+but the $Prover$ manages to pass the proof. Let $(*)_1$ be this event.
+\[
+  (*_1)res_s = \begin{cases}
+    \text{Reject if } \mathbf{ZKPValidEnc} \text{ fails}\\
+    \text{res else}
+  \end{cases}
+\]
+Let $bad_0$ be the event in game 0 : $\exists j \leq q\ s.t\ (*_1)\ \textnormal{happens}$. We want to show that when we
+modify \textit{game 0}, the probability of a successful forgery $S_1$ in this \textit{game 1} is not much lower than
+what it was. Due to the modification, we observe that $ Pr[S_1] \geq Pr[S_0] - Pr[bad_0] $ .For any $j$ in the $q$
+authentication attemps, by the $\varepsilon-soundness$ property of $\mathbf{ZKPValidEnc}$ as a proof of membership in
+(*), we have $Pr[(*_1)\ occurs\ for\ some \ j] \leq \varepsilon_{ZK1}$. So the probability of $bad_0$ would be the union
+of these events which is bounded by $Pr[bad_0] \leq q\varepsilon_{ZK1}$. In other words, the advantage of $\attacker$ in
+\textit{game 1} is
+\[
+  Pr[S_1] \geq Pr[S_0] - Pr[bad_0] \geq \varepsilon_{imp} - q\varepsilon_{ZK1}
+\]
+\\
+\textit{Game 2}. In this game, we abort $\mathbf{ZKPUnpack}$ if in one of the $j^{th}$ runs, the $Verifier$ accepts but
+the ciphertext did not satisfy the relation. Let $bad_1$ be this event, by the same type of argument, we can derive
+$Pr[bad_1] \leq q\varepsilon_{ZK2}$ and therefore
+$$Pr[S_2] \geq Pr[S_1]
+- Pr[bad_1] \geq \varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2})
+$$
+\textit{Game 3 and Game 4}. Similarly, we abort $\mathbf{ZKPBinDecomp}$ and $\mathbf{ZKPCorrectDec}$ if in any $j^{th}$
+runs, the $Verifier$ accepts even when the correctness of the ZKP is broken. We have
+$$Pr[S_3] \geq  \varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2}
++\varepsilon_{ZK3})
+$$ and
+$$Pr[S_4] \geq  \varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
+\varepsilon_{ZK3} + \varepsilon_{ZK4})
+$$
+By the end of \textit{Game 4}, if in any authentication attempt $j$, there is no abort in any of the 4 games, then by
+the correctness property of ZKP, the server output is equal to the output of $Verify(X_k, Y^{(j)})$. In other words, we
+have shown what we could get by just querying the oracle $Verify()$. Next, we want to simulate everything related to
+$X_k$ that the attacker can see using
+just that oracle.\\
+\textit{Game 5.} At the end of \textit{Game 4}, $\challenger$ has the bit $b = Verify(Y^{(i)},X_k)$. In this game, we
+can change $C_{res}^{(j)}$ from $\mathbf{MSBExtract}(C_{HD}'') = Enc(b;e_{res})$ to $Enc(verify(Y^{(i)},X_k);e_{res})$,
+given that the challenger can use the secret key to extract $e_{res}$. By doing this change, $\attacker$ still sees the
+same ciphertext, so the probability of winning of $\attacker$ in this game
+is the same as in \textit{Game 4}.\\
+\textit{Game 6.} In this game, we change the way $\challenger$ computes $C_{HD}''$: In the orignal game 0, $Enc(-r)$ was
+added to remove the mask, we want to remove this $r$ from being used anywhere in the game, so we replace this with
+$Enc(0)$. This change does not affect $\attacker$'s success probability: $r$ only affects the plaintext inside
+$C_{HD}''$, since we do not use this plaintext anymore (it was replaced in \textit{Game 5}), so this change
+does not affect what the attacker sees. Again, $Pr[S_6] = Pr[S_5] = Pr[S_4]$.\\
+\textit{Game 7.} We modify the way $C_{HD}'$ is computed in this game. Instead of doing
+$C_{HD}' \gets (-1)C_{HD} + Enc(r;e_{HD'})$, the challenger chooses a random $HD' \randomsample \mathbb{Z}_p$ and
+encrypt it with the noise was used before: $C_{HD}' \gets Enc(HD'; -e_{HD} + e_{HD'})$. In this game, the plaintext has
+changed from being $r + HD$ to a uniform $HD' \in \mathbb{Z}_p$.  Since $r$ is also uniform in $\mathbb{Z}_p$, the
+attacker sees a uniform
+plaintext in both cases. Therefore, $Pr[S_7] = Pr[S_6]$.\\
+\textit{Game 8.} Finally, we set $C_{HD'} = Enc(HD', e_{HD'})$ for $e_{HD'} \randomsample \chi_{mask}$ instead of
+$-e_{HD} + e_{HD'}$. We replace the sum of the Gaussian noise with the random noise. In Section \ref{sec:Renyi}, we
+showed that $Pr[S_8] \geq \frac{1}{c(\delta)}(Pr[S_7]-q \cdot \delta)$, where
+$c(\delta) = RD(-e_{HD} + e_{HD'}, e_{HD}) \leq 2 \cdot e^{1+2\delta}$ by Lemma~\ref{le:Renyi} and the assumption on the
+parameters. After we finish \textit{Game 8}, we can see that all the messages that the attacker sees, can be simulated
+with only the verified bit $b = Verify(Y^{(i)}, X_k)$. We now have an attacker $A'$ against the biometric impersonation
+with advantage:
+\[
+\varepsilon_{bio} = Adv(A') = Pr[S_8] \geq \frac{1}{c(\delta)}(\varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
+\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta),
+\]
+which gives the claimed bound $\varepsilon_{imp} \leq c(\delta) \cdot \varepsilon_{bio} + q \cdot (\varepsilon_{ZK1}+\varepsilon_{ZK2} +
+\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq (c(\delta)+c_1) \cdot \varepsilon_{bio}$ if $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
+\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq c_1 \cdot \varepsilon_{bio}$.
+
+
+\subsection{Security Proof for Theorem~\ref{theo:client}: Type II Impersionation attack}
+\label{append:ProofsTypeII}
+The proof of Theorem \ref{theo:client} can be done using a sequence of games between the challenger $\challenger$ and the adversary $\attacker$. We present
+a sequence of games as well as the relations among them to demonstrate type II security model proof. The idea is that in this type of attack, $sk_k$ is not used to compute the view of $\attacker$. On the other hand, the soundess of the zero-knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ implies the existence of an efficient witness extractor algorithm, that can be used to extract the witness (i.e. the secret key $sk_k$) from a cheating prover that succeeds with probability non-negligibly higher than the knowledge error of the zero-knowledge proof, thus contradicting the IND-CPA security of the BV encryption scheme. \\\\
+\textit{Game 0}. Game 0 is the original impersonation game for type II attack, i.e. the same as Game 0 in the proof of security against Type I attacks, except that $(T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$ is given by $\challenger$ to $\attacker$ at the beginning of the game, rather than $sk_k$.
+For $j \in \{1,\ldots,q\}$, let $res^{j}$ denote the result of the $j$th authentication protocol run between $\attacker$ and $\challenger$, and $S_0$ be
+the event in the game $0$ such that $res^{j} = Accept$ for some $j=1,\ldots,q$. We have $\Pr[S_0] = \varepsilon_{imp,II}$, the type II success probability of $\attacker$. \\\\
+\textit{Game 1}. From the definition of event $S_0$ in Game 0, it follows that there exists some $j^* \in \{1,\ldots,q\}$ such that $\Pr[res^{j^*} = Accept] \geq \varepsilon_{imp,II}/q$. Furthermore, by an averaging argument, there must exist a set $G$ of $(D_k,X_k,pk_k)$ such that $\Pr[(D_k,X_k,pk_k) \in G] \geq \varepsilon_{imp,II}/(2 \cdot q)$, and for each $(D'_k,X'_k,pk'_k) \in G$, we have $\Pr[res^{j^*} = Accept |(D_k,X_k,pk_k)=(D'_k,X'_k,pk'_k)] \geq  \varepsilon_{imp,II}/(2 \cdot q)$. By $\varepsilon_{ZK1}$-soundness of the zero knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ (cite Golderich's `Foundations of Cryptography' book, volume 1, Prop. 4.7.5), there exists an witness extractor algorithm that runs in expected time $T'=O(\mathrm{poly}(n \log Q) \cdot T / (\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1}))$, where $T$ denotes the run-time of $\attacker$ and outputs a witness containing $sk_k$ for ${ZKPValidEnc}$. Therefore, we obtain a (secret key recovery) attack algorithm against the IND-CPA security of the BV encryption scheme with expected run-time $T'$ and advantage $\varepsilon' \geq \varepsilon_{imp,II}/(2 \cdot q)$. Hence,  if $\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1} > \varepsilon_{imp,II}/(4*q)$, or equivalently, if $\varepsilon_{imp,II} > 2 \cdot q \varepsilon_{ZK1}$, then we obtain a contradiction with the assumption the BV encryption scheme with parameters $Q,n,\sigma$ is IND-CPA against attacks with expected time $O(\mathrm{poly}(n \log Q) \cdot T / \varepsilon_{ZK1})$ and advantage $\geq \varepsilon_{ZK1}$. It follows under the latter assumption that $\varepsilon_{imp,II} \leq 2q \varepsilon_{ZK1} \leq 2 c_1  \cdot \varepsilon_{bio}$, under the assumption that  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
+\varepsilon_{ZK3} + \varepsilon_{ZK4} + \delta) \leq c_1 \cdot \varepsilon_{bio}$.
+
+
+\section{Result Evaluation}
+
+\subsection{Parameters}
+\label{sec:parameters}
+We consider how to set concrete parameters. From Lemma \ref{le:hdcorrectness} and \ref{le:Renyi} and
+\cite{EPRINT:LauNaeVai11}, we can take \(\sigma = 50\) to make the protocol secure against the lattice attacks
+(\cite{micciancio2008lattice}) and
+also satisfy the circuit privacy requirement. We can take \(t = 2048\) to define the plaintext space ring \(R_{t}\),
+this is enough to cover Hamming Distance of bit string up to 2048 bits. We need \(n \geq 2048\) for the packing
+ciphertext. With these parameter, we need \(q\) to be approximately 70 bits to satisfy \(16n^{2}t^{2}\sigma^{4} < q\).
+The proposed scheme works with only 1 level of homomorphic multiplication for the proposed set of parameters
+$(n = 2048, q \approx 2^{70}, t = 2048, \sigma = 50)$, proof of concept implementation can be found in github
+\cite{rimrimrq38:online}, communication size for ZKP is approximately 8MB to provide security against malicious client
+model.
+
+\subsection{Limitations and open problems}
+\label{sec:limitations}
+We expose the HD to the server in the last step of the protocol and let the server do the threshold comparison
+operation in the plaintext domain. We believe that given such value, the server should not be able to learn any
+information about the original bit strings template (assuming the provable CPA-secure ciphertexts of the undernearth
+cryptosystem, and the HD noise is likely independent of templates). Doing the comparision of HD with threshold
+homomorphhically is much less efficient and removing this assumption is left as an open problem.
+
+Also, we assume honest but curious server, that is reasonable against passive exposure attacks. Active attacks are
+harder to do undetected and slower provided that the server can be audited regularly. We emphasize that previous quantum
+resistant protocols also made this assumption, and did not even defend against passive honest but curious trusted
+party. Defending against malicoius server privacy is left as an open problem.
+
+Finally, the communication size of Stern-based ZKP protocol is large due to the round soundness error \(2/3\) (many
+communication rounds will be needed for security). We leave the problem of how to reduce such overhead for future works.
+
+
+
+\section{Conclusion}
+\label{sec:firstProcResults}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

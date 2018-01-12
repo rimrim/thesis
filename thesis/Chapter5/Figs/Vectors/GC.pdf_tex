@@ -1,0 +1,63 @@
+%% Creator: Inkscape inkscape 0.92.2, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'GC.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{595.27559055bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,1.41428571)%
+    \put(-0.92874153,1.1699263){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.33117914\unitlength}\raggedright \end{minipage}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{GC.pdf}}%
+    \put(0.33288896,1.12867092){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.34667727\unitlength}\raggedright \end{minipage}}}%
+    \put(0.45713525,0.93314243){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.19562104\unitlength}\raggedright HD = HD' -r\end{minipage}}}%
+    \put(0.4834177,0.77413321){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{HD < t}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{GC.pdf}}%
+    \put(0.18614206,0.90313376){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{K_r}}}%
+    \put(0.13492837,0.75934143){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{K_HD'}}}%
+    \put(0.81055516,0.8371468){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Yes/No}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{GC.pdf}}%
+  \end{picture}%
+\endgroup%
