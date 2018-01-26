@@ -3,6 +3,7 @@
 %*******************************************************************************
 
 \chapter{Definitions and Preliminaries}
+\label{chap:definitions}
 
 \ifpdf
     \graphicspath{{Chapter2/Figs/Raster/}{Chapter2/Figs/PDF/}{Chapter2/Figs/}}
@@ -10,845 +11,714 @@
     \graphicspath{{Chapter2/Figs/Vector/}{Chapter2/Figs/}}
 \fi
 
+% \begin{landscape}
 
-\section[Short title]{Reasonably long section title}
-
-% Uncomment this line, when you have siunitx package loaded.
-%The SI Units for dynamic viscosity is \si{\newton\second\per\metre\squared}.
-I'm going to randomly include a picture Figure~\ref{fig:minion}.
+% \section*{Subplots}
+% I can cite Wall-E (see Fig.~\ref{fig:WallE}) and Minions in despicable me (Fig.~\ref{fig:Minnion}) or I can cite the whole figure as Fig.~\ref{fig:animations}
 
 
-If you have trouble viewing this document contact Krishna at: \href{mailto:kks32@cam.ac.uk}{kks32@cam.ac.uk} or raise an issue at \url{https://github.com/kks32/phd-thesis-template/}
+% \begin{figure}
+%   \centering
+%   \begin{subfigure}[b]{0.3\textwidth}
+%     \includegraphics[width=\textwidth]{TomandJerry}
+%     \caption{Tom and Jerry}
+%     \label{fig:TomJerry}   
+%   \end{subfigure}             
+%   \begin{subfigure}[b]{0.3\textwidth}
+%     \includegraphics[width=\textwidth]{WallE}
+%     \caption{Wall-E}
+%     \label{fig:WallE}
+%   \end{subfigure}             
+%   \begin{subfigure}[b]{0.3\textwidth}
+%     \includegraphics[width=\textwidth]{minion}
+%     \caption{Minions}
+%     \label{fig:Minnion}
+%   \end{subfigure}
+%   \caption{Best Animations}
+%   \label{fig:animations}
+% \end{figure}
 
 
-\begin{figure}[htbp!] 
-\centering    
-\includegraphics[width=1.0\textwidth]{minion}
-\caption[Minion]{This is just a long figure caption for the minion in Despicable Me from Pixar}
-\label{fig:minion}
-\end{figure}
-
-\tochide\section{Hidden section}
-\textbf{Lorem ipsum dolor sit amet}, \textit{consectetur adipiscing elit}. In magna nisi, aliquam id blandit id, congue ac est. Fusce porta consequat leo. Proin feugiat at felis vel consectetur. Ut tempus ipsum sit amet congue posuere. Nulla varius rutrum quam. Donec sed purus luctus, faucibus velit id, ultrices sapien. Cras diam purus, tincidunt eget tristique ut, egestas quis nulla. Curabitur vel iaculis lectus. Nunc nulla urna, ultrices et eleifend in, accumsan ut erat. In ut ante leo. Aenean a lacinia nisl, sit amet ullamcorper dolor. Maecenas blandit, tortor ut scelerisque congue, velit diam volutpat metus, sed vestibulum eros justo ut nulla. Etiam nec ipsum non enim luctus porta in in massa. Cras arcu urna, malesuada ut tellus ut, pellentesque mollis risus.Morbi vel tortor imperdiet arcu auctor mattis sit amet eu nisi. Nulla gravida urna vel nisl egestas varius. Aliquam posuere ante quis malesuada dignissim. Mauris ultrices tristique eros, a dignissim nisl iaculis nec. Praesent dapibus tincidunt mauris nec tempor. Curabitur et consequat nisi. Quisque viverra egestas risus, ut sodales enim blandit at. Mauris quis odio nulla. Cras euismod turpis magna, in facilisis diam congue non. Mauris faucibus nisl a orci dictum, et tempus mi cursus.
-
-Etiam elementum tristique lacus, sit amet eleifend nibh eleifend sed \footnote{My footnote goes blah blah blah! \dots}. Maecenas dapibu augue ut urna malesuada, non tempor nibh mollis. Donec sed sem sollicitudin, convallis velit aliquam, tincidunt diam. In eu venenatis lorem. Aliquam non augue porttitor tellus faucibus porta et nec ante. Proin sodales, libero vitae commodo sodales, dolor nisi cursus magna, non tincidunt ipsum nibh eget purus. Nam rutrum tincidunt arcu, tincidunt vulputate mi sagittis id. Proin et nisi nec orci tincidunt auctor et porta elit. Praesent eu dolor ac magna cursus euismod. Integer non dictum nunc.
-
-
-\begin{landscape}
-
-\section*{Subplots}
-I can cite Wall-E (see Fig.~\ref{fig:WallE}) and Minions in despicable me (Fig.~\ref{fig:Minnion}) or I can cite the whole figure as Fig.~\ref{fig:animations}
-
-
-\begin{figure}
-  \centering
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{TomandJerry}
-    \caption{Tom and Jerry}
-    \label{fig:TomJerry}   
-  \end{subfigure}             
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{WallE}
-    \caption{Wall-E}
-    \label{fig:WallE}
-  \end{subfigure}             
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{minion}
-    \caption{Minions}
-    \label{fig:Minnion}
-  \end{subfigure}
-  \caption{Best Animations}
-  \label{fig:animations}
-\end{figure}
-
-
-\end{landscape}
+% \end{landscape}
 
 \section{General Notations}
 \label{sec:defGeneral}
+We use the following notations throughout the thesis:
+\begin{description}
+\item[Vectors, Matrices] We denote column vectors by standard vector notation
+  (e.g., \(\vec{x}, \vec{y}\)) and matrices by bold upper-case letters (e.g.,
+  \(\mathbf{A}, \mathbf{B}\)). We write \(\vec{b}^{T}\) to convert a vector
+  \(\vec{b}\) to a row vector. The length of a vector
+  \(\vec{b} = [b_{0}, b_{1}, \dots, b_{n-1}]\) (\textit{norms}) is denoted by
+  \(\norm{\vec{b}} = \sqrt{b_{0}^{2} + b_{1}^{2} + \dots + b_{n-1}^{2}}\) for
+  Euclidean norm and \(\norminf{\vec{b}} = max(|b_{i}|)\) for infinity norm. The
+  \(i\) component of a vector is denoted interchangebly as \(b_{i}\) or
+  \(b[i]\).
+\item[Groups and Rings] Sets of numbers are denoted as standard (e.g.,
+  \(\mathbb{R}\) for set of rational numbers, \(\mathbb{Z}\) for integers), we
+  denote \(\mathbb{Z}_{q}\) to be the set of integers modulo \(q\) (in the range
+  \((-q/2,q/2]\)).\(\mathbb{Z}[n]\) denotes polynomials of order \(n\) with
+  elements in \(\mathbb{Z}\), \(R_{q}\) denotes the ring of polynomial modulo
+  \(x^{n} + 1\): \(R_{q} = \frac{\mathbb{Z}_{q}[x]}{x^{n} + 1}\). We use bold
+  lower-case to denote an element of the ring \(R_{q}\) (e.g.,
+  \(\mathbf{a} \in R_q\)).
+\item[Others] We use notation \(x \randomsample D\) when \(x\) is sampled
+  uniformly random from the distribution \(D\). If \(x\) is the output of an
+  algorithm \(D\), we write \(x \gets D\). Algorithms are \(efficient\) if they
+  run in probabilistic polynomial time (PPT). A function is said \(negligible\)
+  in \(n\) if it vanishes faster than the inverse of any polynomial.
+\end{description}
 
 \section{Lattices}
 \label{sec:defLattices}
-\section{Lattice Preliminaries}
-\label{sec:latice-pre}
 
 \subsection{The motivations}
 \label{ssub:The motivations}
-
-Lattice based cryptography is one of the topics that are very actively been
-researched at the moment. Lattice has not yet been implemented widely in
-practice, it starts to develop to the stage that it can be implemented. It’s
-likely that it will be used in the foreseeable future. It has quite a few
-attractive properties compared to with earlier cryptography techniques. Firstly
-is the efficiency, in many cases, when we use cryptography, we want to run it on
-devices that are constrained in some ways, for example, a credit card or
-internet-of-things devices \dots, these devices need some security mechanisms in
-place to allow security features such as authentication or access control. The
-devices need to be small and inexpensive, they are not likely to have powerful
-microprocessors, and they may have to use low power processors. Such
-requirements mean that the processing capacity of such devices is limited. They
-still need to do cryptography, and they need to do it in reasonable time, that
-motivates us to look at faster cryptographic methods than what we may have in
-classical techniques. Lattice based cryptography has the potential to give us
-very fast operations. Not only small devices, but large servers also need fast
-crypto as well. For example, the ones that are running SSL protocol are
-processing a lot of encrypted transactions every second. Think about amazon with
-million of customers per second, in such scenarios, the more expensive in terms
-of computation the cryptography is, the more servers they need and the more
-expensive the operations are. Moving to more efficient cryptography will reduce
-such cost for the server. In summary, lattice crypto is a good option for high
-performance required cryptographic application.
-
-There are other interesting advantages, one of them is provable security, in
-this area, we can relate the security to some known computationally hard problem
-from the theory of computational complexity. We can demonstrate the security of
-such system in a mathematical proof, this is something that we cannot even do
-with classical system like RSA. For RSA, there is no proof showing that breaking
-RSA is as hard as factoring an integer even though in many cases the best attack
-we know is to do such operation. We will discuss this idea later on why it is so
-important.
-
-Thirdly, there is this concept about quantum computation, this technology is
-also developing fast.  In stead of using basic operations in classical computers
-such as XOR, NAND gates, etc, they use operations on what they call quantum bit,
-these are physics bit that specify the state of the system in a more complicated
-way. Shor showed that (1994), if we have a quantum computer then we can write a
-program with an algorithm that can can factor large integer into prime factors.
-The latest D-Wave systems initial deployments show that the idea is feasible in
-near future. It may become practical within the next 10-20 years. If this
-happens, it has significant implications to the currently used public key
-cryptosystems such as RSA, they will be broken. So there are discussions about
-post-quantum cryptography, what we will use when quantum computers become
-practical?  Can we have systems that still be secure even against quantum
-computers. Lattice based cryptography is currently one of the best candidates
-that we know, it seems to resist even quantum attack.  Finally, lattice based
-cryptography even allows us to do something that we could not do before:
-homomorphic encryption, which is operations on encrypted data. This special type
-of cryptography can provide privacy features in online computation.
-
-All such reasons are motivation for studying lattice based cryptography. We’ll
-look at some of the mathematics behind lattices. Lattices are actually
-mathematical objects. We’ll look at the definitions and some of the hard
-problems that we will base the security on. How to use lattice to build
-encryption schemes.
-
-In terms of efficiency, a brief summary is as follows
-\begin{itemize}
-    \item RSA - key length $\tilde{O}(n^3)$, computation $\tilde{O}(n^6)$.
-    \item ECC - key length $\tilde{O}(n)$, computation $\tilde{O}(n^2)$.
-
-\end{itemize} The comparison was done on some public key cryptosystems, for RSA,
-for example if we want security level of $2^n$.That means any attack on the
-system will need to run in the order of $2^n$ steps.  Then we can try to measure
-what size of key do we need, and how much computation we need to encrypt. For
-RSA, it’s 6th degree polynomial for computation, that increases quickly with n.
-Even for ECC, the key length is the best we can hope for O(n), the computation
-is still quadratic.  The good thing about lattice based cryptography is we can
-reduce both of the key length and the computation at least in the theoritical
-sense, in the asymptotic sense, when n grows to large values, both key length
-and computation grow linear with $O(n)$. In practice, it’s not as good as
-expected.  But it still quite good, for example if we need n ~ 100 bits of
-security, then in terms of computation, we can have cryptosystem that are 100
-times faster than RSA, and  the key length is a bit bigger than RSA. In
-practice, the advantage of lattice based cryptography is the speed of the
-computation rather than the length of the key.
-
-Regarding provable security, we can say lattice based cryptography starts from
-1978 when all of the public key started. The Knapsack cryptosystem is worth
-mentioned here as researchers did spend a lot of effort on improving and
-breaking it, however whenever there was an improvement, then came another attack
-and the cryptosystem was never adopted. It’s not until 1996 when Ajai introduced
-the SIS problem, it’s kind of a variant of knapsack, but it came with
-mathematical proof saying that if there is any algorithm that can solve SIS,
-then we can use it to solve hard lattice problems, even worst-case instances!
-This proof make sure there is no easy way to break the cryptographic tools based
-on SIS, specifically Ajtai introduced the hash function based on SIS. It took
-another 10 years until Regev introduced the LWE problem and a cryptosystem based
-on it. And in the last 10 years, we can see that this area has been actively
-researched both in the analysis and the design of different schemes.
-
-\subsection{The mathematics}
-\label{ssub:The mathematics}
+We choose lattice-based cryptography as the main techniques used in the
+thesis for several reasons:
 \begin{description}
-    \item[Notations]
-        This is an area of mathematics that combines both the matrices, vector algebra
-        and integer variables. The notations include:
-        \begin{itemize}
-            \item $\mathbb{Z}$: Set of integers. $\mathbb{R}$: Set of real numbers.
-            \item $\zzq{}$: Rings of integers modulus Q.
-            \item We use $\vec{b}$ to denote column vectors $\vec{b} = \begin{bmatrix}
-                    b_1\\b_2\\\dots\\b_n
-                \end{bmatrix}$ and we write $\vec{b}^T$ to convert the vector to a row
-                vector $\vec{b}^T = [b_1, b_2, \dots, b_n]$.
-            \item The lengths of the vectors (a.k.a norms) are denoted as
-                $\norm{\vec{b}} = \sqrt{\sum{b_i^2}}$ for
-                Euclidean norm and $\norminf{\vec{b}} = max(|b_i|)$ for infinity norm.
-        \end{itemize}
-    \item[Lattices]
-        \begin{description}
-            \item[Definition] An n-dimensional (full-rank) \emph{lattice} $L(B)$ is the
-                set of all integer linear combinations of some \emph{basis} set
-                of linearly independent vectors $\vec{b_1},\dots,\vec{b_n} \in
-                \mR^n$:
-                \[
-                    L(B) = \left\{ c_1 \vec{b_1} + c_2 \vec{b_2} + \dots + c_n
-                    \vec{b_n} : c_i \in \mZ, i = 1, \dots, n \right\}
-                \]
-                The $ n \times n$ matrix $B = (\vec{b_1},\dots, \vec{b_n})$ is
-                called a basis for $L(B)$. There are infinitely many different
-                bases for a lattice.
-            \item[Example] Consider a 2-dimensional lattice generated by the basis
-                $(\vec{b1}, \vec{b2}) = \left( \begin{bmatrix}
-                        1 \\ 2
-                    \end{bmatrix} \begin{bmatrix}
-                    0 \\ 3
-            \end{bmatrix}\right)$
-            \begin{figure}[h]
-                \centering
-                \includegraphics{lattices}
-                \caption{Example of a 2-dim lattice}
-                \label{fig:2dimLattice}
-            \end{figure}
-            , to generate a lattice from a basis, we compute all the
-            integer multiples of each vector of the basis. Then we add them
-            together to generate new vectors. The result is an infinite grid of
-            vectors, this grid is a lattice. We can illustrate two or
-            three dimensional lattice easily, for higher dimensions, it is not
-            possible to draw the lattice, but the intuition stays the same and
-            all the algebraic operations can be done easily on the coordinates
-            of the vectors. In lattice-based crypto, we work with high dimension
-            lattices ($n > 100$) for security properties. In fact, we can also
-            say that a lattice is an infinite group
-            (a group is a mathematical structure,
-            a set with one operation on it.) with the main operation is
-            addition.
-        \item [Fundamental paralellepiped] For an n-dimensional lattice basis
-            $B = \left( \vec{b_1}, \dots, \vec{b_n} \right) \in \mR^{n \times
-            n}$, the \emph{fundamental paralellepiped} (FP), denoted $P(B)$, is the
-            set of all real valued $[0,1)$-linear combinations of some basis set
-            of linearly independent vectors $\vec{b_1}, \dots ,\vec{b_n} \in
-            \mR^n$.
-            \begin{figure}[h]
-                \centering
-                \includegraphics[scale=0.7]{parallelopiped}
-                \caption{A paralellogram of 2-dim lattice}
-                \label{fig:paralellopiped}
-            \end{figure}
-            In order to determine if a set of vectors is a basis of a lattice,
-            there are geometric and algebraic approaches.
-            \begin{lemma}
-                There is exactly one \emph{L} point contained in P(B') (the
-                $\vec{0}$ vector) if and only if B' is a basis of L.
-                \label{lem:parallelopiped}
-            \end{lemma}
-            \begin{lemma}
-                B' is a basis of L(B) if and only if B'=B.U, for some $n \times
-                n$ integer matrix U with $det(U) = \pm 1$, such U is called
-                unimodular matrix.
-                \label{lem:detBasis}
-            \end{lemma}
-            Where $det(U)$ denotes the determinant of the matrix $U$.
-            Geometrically, the determinant computes the area (or volume) of the
-            paralellogram of a lattice. We can associate each point of a lattice
-            with a paralellogram, consequently, for a large n-dimensional ball
-            $S$, the number of lattice points in $S$ is $\approx vol(S) /
-            det(L)$.
-            \begin{definition}
-                For an n-dimensional latice $L(B)$, the determinant of
-                $L(B)$, denoted $det(L(B))$ is the n-dimensional volume of the
-                FP P(B).
-                \label{def:determinant}
-            \end{definition}
-            \begin{lemma}
-                For an n-dimensional lattice $L(B)$, we have $det(L(B)) =
-                    |det(B)|$.
-                \label{lem:determinant2}
-            \end{lemma}
-            In cryptography, we are interested in computationally hard problems,
-            there are some problems related to geometry of lattices that are
-            hard, including Shortest Vector Problem (SVP) and Closest Vector
-            Problem (CVP).
-            \begin{definition}
-                For an n-dimensional lattice $L$, its \emph{minimum}
-                $\lambda(L)$ is the length of the shortest non-zero vector of
-                $L$:
-                \[
-                    \lambda(L) = min(\norm{\vec{b}}: \vec{b} \in L \ 0
-                \]
-                \label{def:minLattice}
-            \end{definition}
-            \begin{theorem}
-                [Minkowski's First Theorem]
-                For any n-dimensional lattice $L$, we have $\lambda(L) \leq
-                \sqrt(n).det(L)^{1/n}$.
-                \label{the:minkowski1}
-            \end{theorem}
-            As mentioned, the problem of finding SVP of a lattice is hard as the
-            dimension grows, in theoretical computer science, this problem is
-            categorized as NP-hard. In cryptography, we do not use SVP as it is,
-            we use a variant of the problem, the definition of approximate SVP
-            problem $\gamma-SVP$
-            follows.
-            \begin{definition}
-                [$\gamma$-SVP problem]
-                Given a basis $B$ for an n-dimensional lattice $L$, find
-                $\vec{b} \in L$ with $0 \leq \norm{\vec{b}} \leq \lambda(L)$.
-                \label{def:gammaSVP}
-            \end{definition}
-            As $\gamma$ increases, the problem becomes easier. We have good
-            algorithms to find $\gamma$-SVP as follows
-            \begin{itemize}
-                \item For $\gamma \geq 2^{O(n)}$: LLL algorithm solves in Poly(n)
-                    time.
-                \item For $\gamma \leq O(1)$: NP-hard, it is not likely that
-                    there exists Poly(n) algorithm to solve the problem.
-            \end{itemize}
-            In cryptography, many systems depend on this $\gamma$-SVP problem,
-            where $\gamma$ is in between the two extremes $\gamma \approx
-            O(n^c)$. Even with this factor, the best algorithm (including
-            quantum ones) still take
-            $2^{O(n)}$ time to solve $\gamma$-SVP. ( In classical cryptosystems
-                for example RSA, the best algorithm to solve the integer
-                factorization problem take $\approx O(2^{n^{1/2}})$ in time,
-                this is why we
-                need 4096 bits key to obtain about 64 bits of security. For
-                lattices).
-        \end{description}
+\item[Provable Security.] Lattice-based cryptosystems' security can be related
+  to known computationally hard problems such as Shortest Vector Problem (SVP)
+  or Closest Vector Problem (CVP) and therefore we can demonstrate the security
+  property in terms of mathematical proofs. For classical system such as RSA,
+  there is no proof showing that breaking RSA is as hard as factoring an integer
+  even though in many cases the best attack we know is to do such operation.
+\item[Quantum Resistance.] In 1994, Shor \cite{shor1994algorithms} showed that
+  we can write a program with quantum computers to factor a large integer
+  into prime factors.The latest D-Wave systems initial deployments show that the
+  idea is feasible in near future. If this happens, it has significant
+  implications to the currently used public key cryptosystems such as RSA: they
+  will be broken. Lattice based cryptography is currently one of the best
+  candidates that resists even quantum attacks.
+\item[Homomorphic Operations.] Finally, lattice-based cryptography allows us to
+  do operations that we could not do before: computing on encrypted data. This
+  special type of operatation can provide privacy features in online
+  communications.
+\item[Research Activities.] Lattice-based systems have been researched actively
+  in the last decade and the development has come to the stage that it can be
+  implemented and can be used in the foreseable future.
+\item[Performance.] Lattice-based cryptography has the potential to give us very
+  fast operations and it is a good option for high performance required
+  cryptographic application
 \end{description}
+We will recall some of the mathematics behind lattices (they are actually
+mathematical objects). We will look at the definitions and some of the hard
+problems that we will base the security on and how to use lattice to build
+cryptographic schemes.
+
+
+% In terms of efficiency, a brief summary is as follows
+% \begin{itemize}
+%     \item RSA - key length $\tilde{O}(n^3)$, computation $\tilde{O}(n^6)$.
+%     \item ECC - key length $\tilde{O}(n)$, computation $\tilde{O}(n^2)$.
+
+% \end{itemize} The comparison was done on some public key cryptosystems, for RSA,
+% for example if we want security level of $2^n$.That means any attack on the
+% system will need to run in the order of $2^n$ steps.  Then we can try to measure
+% what size of key do we need, and how much computation we need to encrypt. For
+% RSA, it’s 6th degree polynomial for computation, that increases quickly with n.
+% Even for ECC, the key length is the best we can hope for O(n), the computation
+% is still quadratic.  The good thing about lattice based cryptography is we can
+% reduce both of the key length and the computation at least in the theoritical
+% sense, in the asymptotic sense, when n grows to large values, both key length
+% and computation grow linear with $O(n)$. In practice, it’s not as good as
+% expected.  But it still quite good, for example if we need n ~ 100 bits of
+% security, then in terms of computation, we can have cryptosystem that are 100
+% times faster than RSA, and  the key length is a bit bigger than RSA. In
+% practice, the advantage of lattice based cryptography is the speed of the
+% computation rather than the length of the key.
+
+% Regarding provable security, we can say lattice based cryptography starts from
+% 1978 when all of the public key started. The Knapsack cryptosystem is worth
+% mentioned here as researchers did spend a lot of effort on improving and
+% breaking it, however whenever there was an improvement, then came another attack
+% and the cryptosystem was never adopted. It’s not until 1996 when Ajai introduced
+% the SIS problem, it’s kind of a variant of knapsack, but it came with
+% mathematical proof saying that if there is any algorithm that can solve SIS,
+% then we can use it to solve hard lattice problems, even worst-case instances!
+% This proof make sure there is no easy way to break the cryptographic tools based
+% on SIS, specifically Ajtai introduced the hash function based on SIS. It took
+% another 10 years until Regev introduced the LWE problem and a cryptosystem based
+% on it. And in the last 10 years, we can see that this area has been actively
+% researched both in the analysis and the design of different schemes.
+
+\subsection{Lattice Preliminaries}
+\label{ssub:The mathematics}
+This is an area of mathematics that combines both matrices, vector algebra
+and integer variables. The definitions include:
+
+\begin{definition}[Lattice]
+  An n-dimensional (full-rank) \emph{lattice} $L(B)$ is the set of all integer
+  linear combinations of some \emph{basis} set of linearly independent vectors
+  $\vec{b_1},\dots,\vec{b_n} \in \mR^n$:
+  \[
+    L(B) = \left\{ c_1 \vec{b_1} + c_2 \vec{b_2} + \dots + c_n \vec{b_n} : c_i
+      \in \mZ, i = 1, \dots, n \right\}
+  \]
+  The $ n \times n$ matrix $B = (\vec{b_1},\dots, \vec{b_n})$ is called a basis
+  for $L(B)$. There are infinitely many different bases for a lattice.
+\end{definition}
+
+\textbf{Example.} Consider a 2-dimensional lattice generated by the basis
+$(\vec{b1}, \vec{b2}) = \left( \begin{bmatrix} 1 \\ 2
+  \end{bmatrix} \begin{bmatrix} 0 \\ 3
+  \end{bmatrix}\right)$
+\begin{figure}[h]
+  \centering \includegraphics{lattices}
+  \caption{Example of a 2-dimensional lattice}
+  \label{fig:2dimLattice}
+\end{figure}
+To generate a lattice from a basis, we compute all the integer multiples of
+each vector of the basis, then we add them together to generate new vectors. The
+result is an infinite grid of vectors, this grid is a lattice. We can illustrate
+two or three dimensional lattice easily, for higher dimensions, it is not
+possible to draw the lattice, but the intuition stays the same and all the
+algebraic operations can be done easily on the coordinates of the vectors. In
+lattice-based cryptography, we work with high dimension lattices ($n > 100$) for
+security properties. In fact, we can also say that a lattice is an infinite
+group (a group is a mathematical structure, a set with one operation on it.)
+with the main operation is addition.
+
+\begin{definition}[Fundamental Paralellepiped]
+  For an n-dimensional lattice basis
+  $B = \left( \vec{b_1}, \dots, \vec{b_n} \right) \in \mR^{n \times n}$, the
+  \emph{fundamental paralellepiped} (FP), denoted $P(B)$, is the set of all real
+  valued $[0,1)$-linear combinations of some basis set of linearly independent
+  vectors $\vec{b_1}, \dots ,\vec{b_n} \in \mR^n$.
+  \begin{figure}[h]
+    \centering \includegraphics[scale=0.7]{parallelopiped}
+    \caption{A paralellogram of 2-dimentional lattice}
+    \label{fig:paralellopiped}
+  \end{figure}
+\end{definition}
+In order to determine if a set of vectors is a basis of a lattice, there are
+geometric and algebraic approaches.
+\begin{lemma}
+  There is exactly one \emph{L} point contained in P(B') (the $\vec{0}$ vector)
+  if and only if B' is a basis of L.
+  \label{lem:parallelopiped}
+\end{lemma}
+\begin{lemma}
+  B' is a basis of L(B) if and only if B'=B.U, for some $n \times n$ integer
+  matrix U with $det(U) = \pm 1$, such U is called unimodular matrix.
+  \label{lem:detBasis}
+\end{lemma}
+Where $det(U)$ denotes the determinant of the matrix $U$.  Geometrically, the
+determinant computes the area (or volume) of the paralellogram of a lattice. We
+can associate each point of a lattice with a paralellogram, consequently, for a
+large n-dimensional ball $S$, the number of lattice points in $S$ is
+$\approx vol(S) / det(L)$.
+\begin{definition}[Determinant]
+  \label{def:determinant}
+  For an n-dimensional latice $L(B)$, the determinant of $L(B)$, denoted
+  $det(L(B))$ is the n-dimensional volume of the FP P(B).
+\end{definition}
+\begin{lemma}
+  For an n-dimensional lattice $L(B)$, we have $det(L(B)) = |det(B)|$.
+  \label{lem:determinant2}
+\end{lemma}
+In cryptography, we are interested in computationally hard problems, there are
+some problems related to geometry of lattices that are hard, including Shortest
+Vector Problem (SVP) and Closest Vector Problem (CVP).
+\begin{definition}
+  For an n-dimensional lattice $L$, its \emph{minimum} $\lambda(L)$ is the
+  length of the shortest non-zero vector of $L$:
+  \[
+    \lambda(L) = min(\norm{\vec{b}}: \vec{b} \in L \ 0
+  \]
+  \label{def:minLattice}
+\end{definition}
+\begin{theorem}
+  [Minkowski's First Theorem] For any n-dimensional lattice $L$, we have
+  $\lambda(L) \leq \sqrt(n).det(L)^{1/n}$.
+  \label{the:minkowski1}
+\end{theorem}
+As mentioned, the problem of finding SVP of a lattice is hard as the dimension
+grows, in theoretical computer science, this problem is categorized as
+NP-hard. In cryptography, we do not use SVP as it is, we use a variant of the
+problem, the definition of approximate SVP problem $\gamma-SVP$ follows.
+\begin{definition}
+  [$\gamma$-SVP problem] Given a basis $B$ for an n-dimensional lattice $L$,
+  find $\vec{b} \in L$ with $0 \leq \norm{\vec{b}} \leq \lambda(L)$.
+  \label{def:gammaSVP}
+\end{definition}
+As $\gamma$ increases, the problem becomes easier. We have good algorithms to
+find $\gamma$-SVP as follows
+\begin{itemize}
+\item For $\gamma \geq 2^{O(n)}$: LLL algorithm solves in Poly(n) time.
+\item For $\gamma \leq O(1)$: NP-hard, it is not likely that there exists
+  Poly(n) algorithm to solve the problem.
+\end{itemize}
+In cryptography, many systems depend on this $\gamma$-SVP problem, where
+$\gamma$ is in between the two extremes $\gamma \approx O(n^c)$. Even with this
+factor, the best algorithm (including quantum ones) still take $2^{O(n)}$ time
+to solve $\gamma$-SVP. ( In classical cryptosystems for example RSA, the best
+algorithm to solve the integer factorization problem take
+$\approx O(2^{n^{1/2}})$ in time, this is why we need 4096 bits key to obtain
+about 64 bits of security for lattices).
+
 \subsection{q-ary lattices and SIS problem}
 \label{sub:q-ary lattices and SIS problem}
-A first application of lattices in cryptography. We introduce a particular class
-of lattices, (so far we discussed in general how they are defined). There are
-many useful subclasses of special lattices, in cryptography, we often use one of
-them called \emph{q-ary} lattices, which relate to a problem called SIS (This is
-    .a hard problem used in many cryptographic design, our ZKP technique is also
-based on a variant of this problem). Recall that our motivation for
-lattice-based cryptosystem is the hardness of $\gamma-SVP$ problem given a
-basis $B$. It is critical to initially chose the basis $B$ to make sure that
-solutions to such hard problem is hard to find. (As there are easy instances of
-    $\gamma-SVP$, even for $\gamma=1$. We need a way to generate \emph{random}
-    lattices' bases for which $\gamma-SVP$ is hard to solve 'on-average'. One
-    possible answer is from \cite{ajtai1996generating}: a random \emph{q-ary} lattice, based
-    on this, we can prove how hard it is to find short vectors in it.
+There are many useful subclasses of special lattices, in cryptography, we often
+use one of them called \emph{q-ary} lattices, which relate to a problem called
+Short Integer Solution - SIS (This is a hard problem used in many cryptographic
+design, our ZKP technique is also based on a variant of this problem). Recall
+that our motivation for lattice-based cryptosystem is the hardness of
+$\gamma-SVP$ problem given a basis $B$. It is critical to initially chose the
+basis $B$ to make sure that solutions to such hard problem is hard to find. (As
+there are easy instances of $\gamma-SVP$, even for $\gamma=1$. We need a way to
+generate \emph{random} lattices' bases for which $\gamma-SVP$ is hard to solve
+'on-average'. One possible answer is from \cite{ajtai1996generating}: a random
+\emph{q-ary} lattice, based on this, we can prove how hard it is to find short
+vectors in it.
+
+\begin{definition}[Ajtai's perp lattices]
+  Given an integer \emph{q} and a uniformly random matrix
+  $A \in \mathbb{Z}_{q}^{n \times m}$, the \emph{q-ary} perp lattice
+  $L_q^\bot(A)$ is defined by:
+  \[
+    L_q^\bot(A) = \left\{ \vec{v} \in \mathbb{Z}^m : A.\vec{v} = \vec{0} \mod \
+      q \right\}
+  \]
+\end{definition}
+It might not be clear from the definition of lattices, but the set of all vector
+$\vec{v}$ actually forms a lattice. They can be generated by some basis, and
+there is a fast algorithm to compute such basis. The parameters for these
+lattices are $A$ and $q$, we can choose a lattice to work on by selecting random
+values for the parameters. This particular set of \emph{q-ary} lattices is nice
+because Ajtai mathematically proved that: If there is an algorithm to break the
+$\gamma-SVP$ problem for these lattice, then we could use the algorithm to break
+$\gamma-SVP$ for any lattices. This is the \emph{worst-case to average-case}
+security reduction and gives us confidence that the problem is hard on average.
+\begin{definition}[Small Integer Solution (SIS) problem]
+  $SIS_{q,m,n,\gamma}$ Given n and matrix $A$ sampled uniformly in
+  $\mathbb{Z_q^{n \times m}}$, find $\vec{z} \in \mathbb{Z}^{m \times n}$ such
+  that $A\vec{v} = \vec{0}$ and $\norminf{v} \leq \beta$.
+  \label{def:SISProblem}
+\end{definition}
+Informally, SIS is just the name given to the $\gamma-SVP$ problem for the
+particular \emph{q-ary} lattices. $\beta$ is the approximation parameter, it
+tells us how short the lattice vector should be. Some relations between SIS and
+$\gamma-SVP$
+\begin{itemize}
+\item $det(L_q^\bot(A)) = q^n$
+\item By Minkowski's Theorem, $\lambda(L_q^\bot(A)) \leq \sqrt{m}$, for
+  $m \geq n \log q$. So to solve SIS, we need to find vectors not much longer
+  than $\sqrt{m}$.
+\item We can relate $\gamma$ of SVP to $\beta$ of SIS:
+  $\gamma \approx \beta/\sqrt{m}q^{n/m}$.
+\end{itemize}
+
+\subsection{A cryptographic example}
+\label{sec:ajtaiHash}
+Cryptographic hash functions have many applications in many security contexts to
+provide authenticity and integrity. One of the main properties of cryptographic
+hash functions is collision resistant: it is hard to find 2 message inputs that
+produce same hash value output. The current constructions being used in practice
+are not lattice-based but base on non-linear boolean functions. We discuss how
+to construct one variant from lattice and demonstrate the relevant techniques
+that will be used during in the security proofs and parameter choices of the
+thesis. The security of this function is directly related to the hardness of
+the SIS problem that we saw before
+\begin{definition}[Ajtai's Hash Function.]
+  Pick $A=(\mathbf{a_{i,j}}) \randomsample \mathbb{Z}_q$ ($A$ is the function
+  'public key'). Given $\vec{x} \in \mathbb{Z}^{mn}$ having 'small' coordinates
+  ($\norminf{\vec{x}} \leq d$), the hash function out put is defined as
+  \[
+    g_{q,m,n,d,A}(\vec{x}) = A . \vec{x} \mod \ q
+  \]
+  \label{def:Ajtai's Hash Function}
+\end{definition}
+We see that from a long input vector, we obtain a short output vector, that is
+our hash value. We can choose the parameters to make sure that constraint is
+satisfied. The important question is how do we determine the security of this
+function, or how can we know that this function is collision resistant. We
+introduce this concept of security reduction, which is used frequently in
+lattice-based cryptography's security proofs. We show that if there
+was an algorithm to find a collision in this hash function, then we could use
+such an algorithm to solve a hard lattice problem. In our case, we know that SIS
+was analyzed by Ajtai and shown to be hard based on good foundations. What we
+are going to show here is, if we can find a collision efficiently in this hash
+function, we could also efficiently find a way to break the SIS problem, that
+would contradict the hardness of SIS. Based on this contradiction we can
+conclude that there must not exist any efficient algorithm to find collision for
+the hash function.
+\begin{theorem}
+  Collision-Resistance of $g$ is at least as hard as $SIS_{q,m,n,\beta}$ with
+  $\beta = 2d$.
+  \label{the:ajtai hash}
+\end{theorem}
+\begin{proof}
+  Suppose there was an efficient collision-finder attack algorithm $CF$ for
+  function $g$: Given a random instance $(A,q)$, $CF$ outputs
+  $\vec{x_1} \neq \vec{x_2}$ such that $A\vec{x_1} = A\vec{x_2}$.
+
+  We then can use $CF$ to build another algorithm $S$ that solves SIS problem
+  for any instance $(A,q)$:
+  \begin{itemize}
+  \item Runs $CF$ on $(A,q)$ to get $\vec{x_1},\vec{x_2}$.
+  \item $S$ outputs solution for SIS problem: $\vec{v} = \vec{x_1} - \vec{x_2}$.
+  \end{itemize}
+
+  The algorithm works because $A\vec{v} = A\vec{x_1} - A\vec{x_2} = \vec{0}$,
+  i.e., $\vec{v}$ is in the lattice $L_q^\bot(A)$ and
+  $\norminf{\vec{v}} \leq \beta$, where $\beta = 2d$ (When we add/substract
+  vectors ,the result vector's length is upper bounded by the sum of the lengths
+  of the vectors). Moreover, $S$ is efficient as $CF$ is efficient (run-time
+  $T_S \approx T_{CF})$.
+\end{proof}
+This is the first application of lattices in cryptography and it actually
+started the other modern techniques. The next important questions are
+\begin{itemize}
+\item How should we choose the parameters to get a given security level.
+\item How secure is SIS problem related to $\gamma-SVP$ problem.
+\end{itemize}
+
+\subsection{Security of lattice-based cryptography}
+\label{sec:latticeSecurity}
+Lenstra–Lenstra–Lovász (LLL) and various improvements are the main ways to
+access the security of lattice-based systems (by access the security of
+underlying problems such as SVP .or $\gamma-SVP$). From there, it allows us to
+choose the size of the parameters for the problem (such as dimensions) in order
+to give guarantee of security against the best known attack.
+
+We first recall this important concept related to lattices that is used in LLL:
+Gram-Schmidt Orthogonization (GSO)
+\begin{definition}
+  [GSO] For a lattice basis
+  $B = \left( \vec{b_1}, \vec{b_2}, \dots, \vec{b_n} \right)$, its GSO is the
+  matrix of vectors
+  $B^* = \left( \vec{b}_1^*, \vec{b}_2^*, \dots, \vec{b_n^*} \right)$ defined by
+  $\vec{b_1^*} = \vec{b_1}$ and for $i \geq 2$,
+  $\vec{b_i^*} = \vec{b_i} - \sum_{j=1}^{i-1}{\mu_{i,j}.\vec{b_j^*}}$, where
+  $\mu_{i,j} = \frac{\langle \vec{b_i}, \vec{b_j^*} \rangle}{\langle
+    \vec{b_j^*},\vec{b_j^*} \rangle}$.
+  \label{def:GSO}
+\end{definition}
+GSO is basically a way to convert a basis that we have (that are not orthogonal)
+into another set of vectors are orthogonal. Figure \ref{fig:gso} shows an
+example of GSO in 2-dimension
+\begin{figure}[h]
+  \centering \includegraphics[scale=0.3]{gso}
+  \caption{Example of GSO in 2-dimensions}
+  \label{fig:gso}
+\end{figure}
+GSO is used as part of the LLL algorithm to find short vector of a lattice.
+Note that the $GSO(B)$ is not another basis for the original lattice, it is just
+a related matrix, it has the same determinant as the original one.
+
+% Once we have done the transformation from $B$ to $B^* = GSO(B)$, we can also
+% write the relation between the two of them algebraically as in Figure \ref{}
+% \begin{figure}[h]
+%   \centering \includegraphics[scale=0.3]{gsoMatrix}
+%   \caption{GSO algebraic relation}
+%   \label{fig:GSOAlgebra}
+% \end{figure}
+% We can intepret the second relation as a rotated coordinates system. Another
+% nice observation we can have from this matrix representation is the 0s in the
+% matrix implies the determinant of the lattice:
+% \[
+%   det \ L(B) = |det(B)| = |det(B^*)| = \prod_{i=1}^{n}\norm{\vec{b_i^*}}
+% \]
+
+% Back to our LLL discussion, this is the main algorithm to find short vectors in
+% lattices, and therefore the main type of attack against lattice-based
+% cryptosystems in practice, the other approach is exhaustive search. The best
+% algorithm is the combination of the 2 approaches to trade off the runtime verse
+% the approximation factor. We will discuss this algorithm (BKZ) in a later
+% section.
+
+\subsubsection{LLL algorithm}
+\label{sec:LLLalgorithm}
+Lenstra–Lenstra–Lovász (LLL) algorithmnot only finds short vectors but also
+manipulate the basis of the lattice into another basis of the lattice. Given
+some basis as a input to LLL (whose vectors are long), LLL makes sequential
+modifications to the basis, every modification keeps it still a basis of the
+lattice and improve it a little bit. When the improvement is repeated, the sizes
+of the vectors of the basis are also reduced until it ends with a matrix that
+cannot be improved anymore. That is the output of LLL: a basis of the lattice
+that is much better than the original input, in the sense that it has much
+shorter vectors.
+
+In more details, LLL looks at the property of the GSO of the basis to make the
+basis vectors 'approximately' orthogonal. The size of the GSO basis tells us the
+length of the projections of one vector along the earlier vectors. The larger
+these are, the less orthogonal the basis vectors are because they have bigger
+components along the earlier vectors. LLL tries to reduce those coefficient
+(projection coefficients), to make them more orthogonal, that will also make
+them shorter. There are 2 tests that LLL does to see how orthogonal the basis
+vectors are
+
 \begin{description}
-    \item[Ajtai's Random q-ary 'perp' lattices] Given an integer \emph{q} and a
-        uniformly random matrix $A \in \mathbb{Z}_{q}^{n \times m}$, the
-        \emph{q-ary} perp lattice $L_q^\bot(A)$ is defined by:
-        \[
-            L_q^\bot(A) = \left\{ \vec{v} \in \mathbb{Z}^m : A.\vec{v} =
-            \vec{0} \mod \ q \right\}
-        \]
-        It might not be clear from the definition of lattices, but the set of
-        all vector $\vec{v}$ actually forms a lattice. They can be generated by
-        some basis, and there is a fast algorithm to compute such basis. The
-        parameters for these lattices are $A$ and $q$, we can choose a lattice
-        to work on by selecting random values for the parameters. This
-        particular set of \emph{q-ary} lattices is nice because Ajtai
-        mathematically proved that: If there is an algorithm to break the
-        $\gamma-SVP$ problem for these lattice, then we could use the algorithm
-        to break $\gamma-SVP$ for any lattices. This is the \emph{worst-case to
-        average-case} security reduction of Ajtai: \todo{rephrase this},
-        basically this gives us confidence that the problem is hard on average.
-    \item [SIS problem (Small Integer Problem)] Informally, SIS is just the name given to
-        the $\gamma-SVP$ problem for the particular \emph{q-ary} lattices
-        \begin{definition}
-            [Small Integer Solution (SIS) problem]
-            $SIS_{q,m,n,\gamma}$ Given n and matrix $A$ sampled uniformly in
-            $\mathbb{Z_q^{n \times m}}$, find $\vec{z} \in \mathbb{Z}^{m \times
-            n}$ such that $A\vec{v} = \vec{0}$ and $\norminf{v} \leq \beta$.
-            \label{}
-        \end{definition}
-        \todo[inline]{Notation for random sampling $A \randomsample \mathbb{Z}$}
-        $\beta$ is the approximation parameter, it tells us how short the
-        lattice vector should be. Some relations between SIS and $\gamma-SVP$.
-        \begin{itemize}
-            \item $det(L_q^\bot(A)) = q^n$
-            \item By Minkowski's Theorem, $\lambda(L_q^\bot(A)) \leq \sqrt{m}$,
-                for $m \geq n \log q$. So to solve SIS, we need to find vectors
-                not much longer than $\sqrt{m}$.
-            \item We can relate $\gamma$ of SVP to $\beta$ of SIS: $\gamma
-                \approx \beta/\sqrt{m}q^{n/m}$.
-        \end{itemize}30.58
+\item [LLL property 1.] Take the current basis of the lattice and computes the
+  GS coefficients $\mu_{i,j}$. It checks $|\mu_{i,j}| \leq 1/2$, that means the
+  length of the projections on the previous vectors are at most half of the
+  actual full vector. If this condition is not satisfied, LLL modifies the basis
+  until the condition passes.
+\item [LLL property 2.] The algorithm looks at the large remaining component
+  $\norm{\vec{b_{i+1}^*}}$ of $\vec{b_{i+1}}$ after removing components along
+  $\vec{b_j^*}$'s ($j < i + 1$) and check
+  \[
+    \norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2 \geq \delta
+    . \norm{\vec{b_i^*}}^2
+  \]
+  for all $i=1,\dots,n-1$ and for some constant
+  $\delta$($1/4 \leq \delta \leq 1$).
 
-    \item [A cryptographic application from SIS problem.] We discuss first a
-        hash fucntion. Recall that a cryptographic hash function has many
-        applications in many security contexts to provide authenticity and
-        integrity. One of the main properties of cryptographic hash function is
-        collision resistant: it is hard to find 2 messages with the same hash
-        value (although there are many of them, due to the output space is much
-        smaller than the input space). The current constructions being used in
-        practice are not lattice-based but base on non-linear boolean functions.
-        Here we discuss a way to construct such hash function from lattices
-        , the security of this function is directly related to the hardness of
-        the SIS problem that we saw before
-        \begin{definition}
-            [Ajtai's Hash Function.] Pick $A=(\mathbf{a_{i,j}}) \randomsample
-            \mathbb{Z}_q$ ($A$ is the function 'public key'). Given
-            $\vec{x} \in \mathbb{Z}^{mn}$ having 'small' coordinates
-            ($\norminf{\vec{x}} \leq d$), the hash function out put is defined
-            as
-            \[
-                g_{q,m,n,d,A}(\vec{x}) = A . \vec{x} \mod \ q
-            \]
-            \label{def:Ajtai's Hash Function}
-        \end{definition}
-        From a long input vector, we obtain a short output vector, that is our
-        hash value. We can choose the parameters to make sure that constraint is
-        satisfied. The important question is how do we determine the security of
-        this function, or how can we know that this function is collision
-        resistant. We introduce this concept of security reduction, which is
-        used a lot in lattice-based cryptography's security proofs. This means,
-        we show that if there was an algorithm to find a collision in this hash
-        function, then we could use such an algorithm to solve a hard lattice
-        problem. In our case, we know that SIS was analyzed by Ajtai and shown
-        to be hard based on good foundations. What we are going to show here is,
-        if we can find a collision efficiently in this hash function, we could
-        also efficiently find a way to break the SIS problem, that would
-        contradict the hardness of SIS. Based on this contradiction we can
-        conclude that there must not exist any efficient algorithm to find
-        collision for the hash function.
-        \begin{theorem}
-            Collision-Resistance of $g$ is at least as hard as
-            $SIS_{q,m,n,\beta}$ with $\beta = 2d$.
-            \label{the:ajtai hash}
-        \end{theorem}
-        \begin{proof}
-            Suppose there was an efficient
-            collision-finder attack algorithm $CF$ for function $g$: Given a random
-            instance $(A,q)$, $CF$ outputs $\vec{x_1} \neq \vec{x_2}$ such that
-            $A\vec{x_1} = A\vec{x_2}$.
+  Informally, the second check is a bit more complex: LLL looks at the last 2
+  components of each vector. If we take a vector $\vec{b_i}$ and decompose it
+  into all the projections along the previous $\vec{b_j^*}$ and check the the
+  sum of the orthogonal component and the one previous to that: For example, if
+  we look at $\vec{b_{i+1}}$, then we check
+  $\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2$. If this quantity is big
+  enough, it is an indication that we have a lot left over after we remove the
+  components along the previous one. The bigger this length is, the more
+  orthogonal the basis becomes. The algorithm tries to make it big enough.  The
+  parameter $\delta$ of the algorithm decides this magnitude (the larger
+  $\delta$ is, the better result returned from the algorithm).
 
-            We then can use $CF$ to build another algorithm $S$ that solves SIS
-            problem for any instance $(A,q)$:
-            \begin{itemize}
-                \item Runs $CF$ on $(A,q)$ to get $\vec{x_1},\vec{x_2}$.
-                \item $S$ outputs solution for SIS problem: $\vec{v} =
-                    \vec{x_1} - \vec{x_2}$.
-            \end{itemize}
-
-            The algorithm works because $A\vec{v} = A\vec{x_1} - A\vec{x_2} =
-            \vec{0}$, i.e., $\vec{v}$ is in the lattice $L_q^\bot(A)$ and
-            $\norminf{\vec{v}} \leq \beta$, where $\beta =
-            2d$ (When we add/substract vectors
-                ,the result vector's length is upper bounded by the sum of
-            the lengths of the vectors). Moreover, $S$ is efficient as $CF$ is
-            efficient
-            (run-time $T_S \approx T_{CF})$.
-        \end{proof}
-        This is the first application of lattices in cryptography and it
-        actually started the other modern techniques. The next important
-        questions are
-        \begin{itemize}
-            \item How should we choose the parameters to get a given security
-                level.
-            \item How secure is SIS problem related to $\gamma-SVP$ problem.
-        \end{itemize}
-
+  This check is also done for all the vectors of the basis. If it is not
+  satisfied, then again LLL does some changes to make sure the test passes.
 \end{description}
 
-LLL and various improvements are the main ways to access the security of
-lattice-based systems (by access the security of underlying problems such as SVP
-    .or $\gamma-SVP$. From there, it allows us to choose the size of the
-    parameters for the problem (such as dimensions) in order to give guarantee
-    of security against the best known attack. We discuss these in this
-    section.
+When the algorithm runs, the 2 checks keep fighting between each
+other. Eventually, it hopes to get to a stage where both of the checks satisfy
+simultaneously and the algorithm stops and outputs the basis. (Algorithm
+\ref{alg:LLL})
+\begin{definition}
+  A basis $B$ for lattice $L$ is $\delta-LLL$ reduced if both LLL properties 1
+  and 2 are satisfied.
+  \label{def:LLL}
+\end{definition}
 
-    We first recall this important concept related to lattices:
-    Gram-Schmidt Orthogonization (GSO)
-    \begin{definition}
-        [GSO] For a lattice basis $B = \left( \vec{b_1}, \vec{b_2}, \dots,
-        \vec{b_n} \right)$, its GSO is the matrix of vectors $B^* = \left(
-            \vec{b}_1^*, \vec{b}_2^*, \dots, \vec{b_n^*}
-        \right)$ defined by $\vec{b_1^*} = \vec{b_1}$ and for $i \geq 2$,
-        $\vec{b_i^*} = \vec{b_i} - \sum_{j=1}^{i-1}{\mu_{i,j}.\vec{b_j^*}}$,
-        where $\mu_{i,j} = \frac{\langle \vec{b_i}, \vec{b_j^*}
-        \rangle}{\langle \vec{b_j^*},\vec{b_j^*} \rangle}$.
-        \label{def:GSO}
-    \end{definition}
-    GSO is basically a way to convert a basis that we have (that are not
-    orthogonal) into another set of vectors are orthogonal. Figure
-    \ref{fig:gso} shows an example of GSO in
-    2-dimension \todo[inline]{redo figure in sage}
-    \begin{figure}[h]
-        \centering
-        \includegraphics[scale=0.3]{gso}
-        \caption{Example of GSO in 2-dimensions}
-        \label{fig:gso}
-    \end{figure}
-    GSO is used as part of the LLL algorithm to find short vector of a lattice.
-    Note that the $GSO(B)$ is not another basis for the original lattice, it is
-    just a related matrix, it has the same determinant as the original one.
-    Once we have done the transformation from $B$ to
-    $B^* = GSO(B)$, we can also write the relation between the two of them
-    algebraically as in Figure \ref{}
-    \begin{figure}[h]
-        \centering
-        \includegraphics[scale=0.3]{gsoMatrix}
-        \caption{GSO algebraic relation}
-        \label{fig:GSOAlgebra}
-    \end{figure}
-    We can intepret the second relation as a rotated coordinates system. Another nice
-    observation we can have from this matrix representation is the 0s in the matrix
-    implies the determinant of the lattice:
-    \[
-        det \ L(B) = |det(B)| = |det(B^*)| = \prod_{i=1}^{n}\norm{\vec{b_i^*}}
-    \]
-    Back to our LLL discussion, this is the main algorithm to find short vectors
-    in lattices, and therefore the main type of attack against lattice-based
-    cryptosystems in practice, the other approach is exhaustive search. The best
-    algorithm is the combination of the 2 approaches to trade off the runtime
-    verse the approximation factor. We will discuss this algorithm (BKZ) in a
-    later section.
+\begin{algorithm}
+  \caption{LLL algorithm}
+  \label{alg:LLL}
+  \begin{algorithmic}[1]
+    \Procedure{LLL}{$B$} \State Compute GSO $B*$ for B.  \For {$(i=2,\dots,n)$}
+    \For {j = i - 1 to 1} \State
+    $c_{i,j} \gets \lceil{\frac{\langle \vec{b_i}, \vec{b_j^*} \rangle}{\langle
+        \vec{b_j^*},\vec{b_j^*}\rangle}}\rfloor$ \State
+    $\vec{b_i} \gets \vec{b_i} - c_{i,j}\vec{b_j}$ \EndFor \EndFor \If
+    {$\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2 \geq \delta
+      . \norm{\vec{b_i^*}}^2$} \State Swap $\vec{b_i}$ and $\vec{b_{i+1}}$.
+    \State Go back to step 2.  \Else \State Return B \EndIf \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+Note that in the algorithm we take the rounded multiple of $\vec{b_j}$, this
+important operation helps the algorithm maintaining the vectors to be basis of
+the lattice. As the lattice consists of only integer multiples of all the basis
+vectors: if we add an integer multiple of $\vec{b_j}$ to $\vec{b_i}$, we still
+end up with another lattice vector, we can also show that the new matrix is also
+a basis of the lattice. In other words, if we add fraction of $\vec{b_j}$, it is
+not lattice point anymore. Also, due to this rounding error, instead of having a
+precisely orthogonal vectors in the result matrix, we only obtain an approximate
+orthogonal matrix.  For more intuition of the algorithm, we refer reader to
+\cite{lenstra1982factoring}. Last but not least, the loop of the algorithm was
+shown to always terminate in polynomial time!
+\begin{theorem}
+  [LLL run time] The number of iterations of LLL on an input basis B before
+  termination is at most
+  \[
+    n^2.\log{(\max{\norm{\vec{b_i}}})} / \log{(1/\sqrt{\delta})}.
+  \]
+  For any constant $1/4 < \delta < 1$, this is polynomial in bit length of the
+  algorithm input. Moreover, the run-time for each iteration is also polynomial
+  in the input bit length. Overall, run-time is polynomial in input length, or
+  LLL is efficient!
+  \label{theo:LLLRunTime}
+\end{theorem}
 
-    \begin{description}
-        \item[LLL algorithm] LLL not only finds short vectors but also
-            manipulate the basis of the lattice into another basis of the
-            lattice. Given some basis as a input to LLL (whose vectors are
-            long), LLL makes sequential modifications to the basis, every
-            modification keeps it still a basis of the lattice and improve it a
-            little bit. When the improvement is repeated, the sizes of the
-            vectors of the basis are also reduced until it ends with a matrix that
-            cannot be improved anymore. That is the output of LLL: a basis of
-            the lattice that is much better than the original input, in the
-            sense that it has much shorter vectors.
+\subsubsection{LLL solution to $\gamma-SVP$}
+\label{sec:LLLsolution}
+The question is how short are the vectors of LLL's output, or what kind of
+approximate SVP can LLL solve: If we run LLL on some basis, we get back a
+reduced basis, and we take the shortest vector in that result basis. How long is
+that vector compare to the shortest vector in the lattice.
+\begin{theorem}
+  [Short vector from LLL]. The LLL algorithm solves in polynomial time
+  $\gamma-SVP$ for $n-dim$ lattices, with $\gamma < 2^{(n-1)/2}$.
+  \label{theo:LLLShortVector}
+\end{theorem}
 
-            In more details, LLL looks at the property of the GSO of the basis
-            to make the basis vectors 'approximately' orthogonal. The size of
-            the GSO basis tells us the length of the projections of one vector
-            along the earlier vectors. The larger these are, the less orthogonal
-            the basis vectors are because they have bigger components along the
-            earlier vectors. LLL tries to reduce those coefficient (projection
-            coefficients), to make them more orthogonal, that will also make
-            them shorter. There are 2 tests that LLL does to see how orthogonal
-            the basis vectors are
-            \begin{description}
-                \item [LLL property 1.] Take the current basis of the lattice
-                    and computes the GS coefficients $\mu_{i,j}$. It checks
-                    $|\mu_{i,j}| \leq 1/2$, that means the length of the
-                    projections on the previous vectors are at most half of the
-                    actual full vector. If this condition is not satisfied, LLL modifies
-                    the basis until the condition passes.
-                \item [LLL property 2.] The algorithm looks at the large
-                    remaining component $\norm{\vec{b_{i+1}^*}}$ of
-                    $\vec{b_{i+1}}$ after removing components along
-                    $\vec{b_j^*}$'s ($j < i + 1$) and check
-                    \[
-                        \norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2 \geq
-                        \delta . \norm{\vec{b_i^*}}^2
-                    \]
-                    for all $i=1,\dots,n-1$ and for some constant
-                    $\delta$($1/4 \leq \delta \leq 1$).
+% \begin{proof}
+%   The idea is to combine both of the relations in LLL to show that if we take
+%   the ratio of the length between to successive Gram-Schmidt vectors of the
+%   lattice: $\frac{\norm{\vec{b_{i+1}^*}^2}}{\norm{\vec{b_i^*}^2}}$, it is always
+%   going to be at least $(\delta - 1/4)$. It means that when we go from $i$ to
+%   $i+1$, the length of $\vec{b_i^*}$ cannot decrease by more than a factor of
+%   2. After $n$ steps, the length drops $2^n$ times. One of the property of the
+%   Gram-Schmidt basis mentioned was: the last Gram-Schmidt's vector length is a
+%   lower bound of the length of the shortest vector in the lattice: $\vec{b_1^*}$
+%   is always less than the length of the shortest vector of the lattice. Since
+%   $\norm{\vec{b_1^*}}$ can only be at most \todo[inline]{finish proof}
+% \end{proof}
 
-                    Informally, the second check is a bit more complex:
-                    LLL looks at the last 2 components of each vector. If we
-                    take a vector $\vec{b_i}$ and decompose it into all the
-                    projections along the previous $\vec{b_j^*}$ and check the
-                    the sum of the orthogonal component and the one previous to
-                    that: For example, if we look at $\vec{b_{i+1}}$, then we
-                    check $\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2$. If
-                    this quantity is big enough, it is an indication that we
-                    have a lot left over after we remove the components along
-                    the previous one. The bigger this length is, the more orthogonal the
-                    basis becomes. The algorithm tries to make it big enough.
-                    The parameter $\delta$ of the algorithm decides this
-                    magnitude (the larger $\delta$ is, the better result
-                    returned from the algorithm).
+In summary, the first vector of LLL output is bounded by
+\[
+  \norm{\vec{b_1^*}} \leq (1/(\delta-1/4))^{(n-1)/2}.\lambda(L)
+\]
+% The $\delta$ parameter of the algorithm therefore also contribute to
+% the output.
+We can see that the approximation factor is exponential in the dimention $n$ of
+the lattice. Another way to measure how short of output vector of LLL is Hermite
+Factor (HF), which is the ratio of the algorithm's output with the $n^{th}$ root
+of the determinant of the lattice. Sometimes it is more convinient to use this
+measure because the determinant of the lattice sometimes is easy to compute,
+whereas the length of the shortest vector of the lattice is not, in general. In
+practice we usually use this as a main measure. Again, LLL gives HF that is
+exponential in the dimension $n$. The conclusion is, although LLL runs in
+polynomial time, but the approximation factor increases exponentially fast with
+the dimension. When the dimension is large, the approximation factor will grow
+so fast that LLL is not useful to break the security of underlying
+cryptosystems.
+\begin{theorem}
+  The LLL algorithm solves in polynomial time $\gamma-SVP$ for $n-dim$ lattices,
+  with $\gamma \leq 2^{(n-1)/2}$. Can also be shown that Hermite Factor
+  $\gamma_{HF} = \frac{\norm{\vec{b_1}}}{det(L)^{1/n}} \leq 2^{(n-1)/4}$
+  \label{theo:LLLHF}
+\end{theorem}
 
-                    This check is also done for all the vectors of the basis. If
-                    it is not satisfied, then again LLL does some changes to
-                    make sure the test passes.
-            \end{description}
+\subsubsection{LLL in practice}
+\label{sec:LLLinPractice}
+This section discuss the trade-off between the running time and the length of
+the output of the attack. This helps us in selecting parameters for
+state-of-the-art lattice attack
 
-            When the algorithm runs, the 2 checks keep fighting between each
-            other. Eventually, it hopes to get to a stage where both of the
-            checks satisfy simultaneously and the algorithm stops and outputs
-            the basis. (Algorithm \ref{alg:LLL})
+In practice we try to improve this bound so LLL can get shorter vector. One way
+to do that is to use the fact that, in our analysis, we do worst-case analysis
+on the output that LLL can give. In practice, they tend to be shorter than
+that. When we run it experimentally (\cite{nguyen2006lll}) on random lattice we
+will find that it perform much better than the bound proved. Specifically, $HF$
+is close to $1.02^{n-1}$. Although this factor is still exponential in dimension
+$n$, this slowth growth allows LLL to be used with large dimension lattices.  In
+order to reduce this $HF$ further, we can further modify LLL.  There are several
+ways to do that. The basic idea is to combine LLL with exhaustive search
+(enumeration algorithm). The best lattice exhaustive search algorithm
+(Fincke-Phost/Kannan) does it in time $2^{O(n\log(n)}$, it is even worst than
+exponential. There are variants of such method but they all take time at least
+exponential with the dimension $n$ (with the expense of using $2^{O(n)}$
+memory). In general, all enumeration algorithms are very inefficient. Therefore,
+combining LLL with bruteforcing is a more practical approach: BKZ is the typical
+algorithm in this category.  BKZ allows trades off between run-time and
+approximation factor $\gamma$, LLL is modified by changing the blocksize $k$ of
+vectors in the swapping step. As we increase $k$: We search in the lattice of
+dimension $k$ using brute force search and then run LLL with smaller dimension
+k. We get the 'interpolation' between the two extremes of LLL (corresponding to
+$k = 2, \gamma = 2^{O(n)}, T = n^c$) and the enumeration (corresponding to
+$k = n, \gamma=1, T = 2^{O(n\log(n)}$)). In between, BKZ can achieve
+$\gamma(k) \leq k^{(n-1)/(k-1)}$ with running time
+$n^c.k^{O(k)}$. \cite{hanrot2011terminating}. From this trade-off setting, an
+attacker then can choose the optimal value of $k$ for particular context: A
+lattice-based cryptographic scheme can only be broken if the adversary can find
+short enought vectors. This also tells how small $\gamma$ needs to be in order
+to defend against such attack:
 
-            \begin{definition}
-                A basis $B$ for lattice $L$ is $\delta-LLL$ reduced if both LLL
-                properties 1 and 2 are satisfied.
-                \label{def:LLL}
-            \end{definition}
+In summary, given a security level $\lambda$ for a system (i.e., it would take
+time $2^\lambda$ for the best attack to work even with the best choice of the
+parameter $k$ for BKZ) .  The best approximation factor $\gamma$ that the
+algorithm can achieve is related to $\lambda$ as:
+\[
+  \log(\gamma_{HF}) = \Omega(\frac{n\log^2\lambda}{\lambda})
+\]
+where $\Omega$ represent asymptotic ``lower than'' condition when the parameters
+are large. Overall, we can conclude the \emph{lattice 'rule of thumb'} for
+$\gamma-SVP$ using BKZ:
+\[
+  n = \Omega(\frac{\lambda}{\log^2\lambda}.\log\gamma_{HF}) \approx \lambda
+  . \log\gamma_{HF}
+\]
 
-            \begin{algorithm}
-            \caption{LLL algorithm}
-                \label{alg:LLL}
-                \begin{algorithmic}[1]
-                    \Procedure{LLL}{$B$}
-                    \State Compute GSO $B*$ for B.
-                    \For {$(i=2,\dots,n)$}
-                        \For {j = i - 1 to 1}
-                        \State $c_{i,j} \gets \lceil{\frac{\langle \vec{b_i},
-                        \vec{b_j^*} \rangle}{\langle \vec{b_j^*},\vec{b_j^*}\rangle}}\rfloor$
-                        \State $\vec{b_i} \gets \vec{b_i} - c_{i,j}\vec{b_j}$
-                        \EndFor
-                    \EndFor
+\begin{remark}
+  The dimension $n$ of a lattice-based cryptosystem needs to be proportional to
+  the product of bit-security level $\lambda$ and the $\log$ (base 2) of the
+  approximation factor $\gamma_{HF}$.  This factor is a reason behind the long
+  keys of such cryptosystems.
+  \label{rem:dimension}
+\end{remark}
 
-                    \If {$\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2 \geq \delta . \norm{\vec{b_i^*}}^2$}
-                        \State Swap $\vec{b_i}$ and $\vec{b_{i+1}}$.
-                        \State Go back to step 2.
-                    \Else
-                        \State Return B
-                    \EndIf
-                    \EndProcedure
-                \end{algorithmic}
-            \end{algorithm}
+For concrete values of parameters, Chen and Nguyen \cite{chen2011bkz} gave
+numerial estimates for Hermite Factor and time for random lattices versus block
+size for optimized BKZ variant:
 
+\begin{figure}[h]
+  \centering \includegraphics[scale=0.3]{bkzparams}
+  \caption{BKZ parameters}
+  \label{fig:BKZParams}
+\end{figure}
 
-            Note that in the algorithm we take the rounded multiple of
-            $\vec{b_j}$, this important operation helps the algorithm
-            maintaining the vectors to be basis of the lattice. As the lattice
-            consists of only integer multiples of all the basis vectors: if we
-            add an integer multiple of $\vec{b_j}$ to $\vec{b_i}$, we still end
-            up with another lattice vector, we can also show that the new matrix
-            is also a basis of the lattice. In other words, if we add fraction of
-            $\vec{b_j}$, it is not lattice point anymore. Also, due to this
-            rounding error, instead of having a precisely orthogonal vectors in
-            the result matrix, we only obtain an approximate orthogonal matrix.
-            For more intuition of the algorithm, we refer reader to
-            \cite{lenstra1982factoring}. Last but not least, the loop of the algorithm was shown
-            to always terminate in polynomial time!
+From table 2, for a given $HF$ that we want BKZ to achieve, it gives us the
+block size parameter $k$ that need to be used. Note that the $HF$ is much
+smaller than what we had for LLL (whose $HF \approx 1.02^{n-1}$ in
+practice). Once we have the blocksize, we can look up in table 3 to know the
+running time of the algorithm.
 
-            \begin{theorem}
-                [LLL run time] The number of iterations of LLL on an input basis
-                B before termination is at most
-                \[
-                    n^2.\log{(\max{\norm{\vec{b_i}}})} / \log{(1/\sqrt{\delta})}.
-                \]
-                For any constant $1/4 < \delta < 1$, this is polynomial in bit
-                length of the algorithm input. Moreover, the run-time for each
-                iteration is also polynomial in the input bit length. Overall,
-                run-time is polynomial in input length, or LLL is efficient!
-                \label{theo:LLLRunTime}
-            \end{theorem}
+\subsection{An example of parameters choice}
+\label{sec:parameterChoice}
+We discuss Ajtai's hash function as an example of how to choose parameters for
+some security level. We showed that if there is an algorithm that can break the
+collision-resistance property of the hash function, we can use it to find a
+short vector of the SIS problem with length $\beta = 2d\sqrt{m}$. The question
+is how do we choose the parameters $q,n,m,d$ for the hash function to get a
+given security level $\lambda$ based on the hardness of SIS? According to the
+BKZ state-of-the-art attack, to get running time of $2^\lambda$, we can use the
+table 3 to derive the blocksize and corresponding Hermite Factor $\gamma_{HF}$.
+Then we know the best attacker can compute a non-zero vector $\vec{v}$ in SIS
+lattice $L_q(A)$ of norm $\leq l = min(q, \gamma_{HF}.det(L_q(A))^{1/m})$. Then
+we can compare $l$ with $\beta$ (or $2d\sqrt{m}$), if $l < \beta$, the attack
+will work and otherwise.
 
-        \item [How can LLL is used to solve $\gamma-SVP$]. The question is how
-            short are the vectors of LLL's output, or what kind of approximate
-            SVP can LLL solve: If we run LLL on some basis, we get back a
-            reduced basis, and we take the shortest vector in that result
-            basis. How long is that vector compare to the shortest vector in the
-            lattice.
-            \begin{theorem}
-                [Short vector from LLL]. The LLL algorithm solves in polynomial
-                time $\gamma-SVP$ for $n-dim$ lattices, with $\gamma <
-                2^{(n-1)/2}$.
-                \label{theo:LLLShortVector}
-            \end{theorem}
+There are often ways to optimize such attacks where attacker choose parameters
+to minimize the his effort. For example in the attack of SIS problem of
+\cite{micciancio2008lattice}, the attacker can look at a subset $m' \leq m$ of
+columns of $A$, suppose that he can find a short vector $\vec{v'}$ such that
+$A'\vec{v'} = \vec{0} \mod \ q$. He can choose $\vec{v''} = \vec{0}$ and set
+$\vec{v} = \vec{v'} + \vec{v''}$. It turns out that there are optimal values
+that an attacker can choose for $m'$ that minimize the length $l(m')$ for
+$\vec{v'}$.  Specifically, $l(m') = min(q,\gamma'_{HF}.det(L_q(A))^{1/m'})$ is a
+function of $m'$, when we graph this function, it is as illustrated in Figure
+\ref{fig:bestAttack}.
+\begin{figure}[h]
+  \centering \includegraphics[scale=0.3]{bestattack}
+  \caption{Choosing best m' for SIS attack for parameters
+    $\delta = 1.01, q=4416857, n=100$}
+  \label{fig:bestAttack}
+\end{figure}
+We can see that at some point $m'$ there is some minimum value for the length of
+the vector we can get with BKZ, this is the value that an attacker want to
+choose. Denote $m^*$ to be this optimal selection, we have
+$l(m^*) = min(q, 2^{2.sqrt{n\log q\log \delta}})$. The condition that the attack
+fails is $l(m^*) > \beta$, so
+\[
+  q \geq \beta = 2d\sqrt{m} \ \text{and}\ n \geq \frac{\log^2(\beta)}{\log q
+    \log(\delta)}
+\]
+We have looked at the best practical algorithms to attack lattice problems (LLL
+and its variants). In theory, there is also Ajtai's proof where it said there is
+a relationship between how hard it is to solve the SIS problem for random
+matrices. The connection between this kind of average case and the worst-case
+complexity of lattice problem in general (lattices that are completely unrelated
+to the \emph{q-ary} ones) is the theoretical base behind lattice-based
+cryptography. We present Ajtai's average-case to worst-case connection Theorem
+(1996, improved by \cite{gentry2008trapdoors}).
 
-            \begin{proof}
-                The idea is to combine both of the relations in LLL to show that
-                if we take the ratio of the length between to successive
-                Gram-Schmidt vectors of the lattice:
-                $\frac{\norm{\vec{b_{i+1}^*}^2}}{\norm{\vec{b_i^*}^2}}$, it is
-                always going to be at least $(\delta - 1/4)$. It means that when
-                we go from $i$ to $i+1$, the length of $\vec{b_i^*}$ cannot
-                decrease by more than a factor of 2. After $n$ steps, the length
-                drops $2^n$ times. One of the property of the Gram-Schmidt basis
-                mentioned was: the last Gram-Schmidt's vector length is a lower bound of
-                the length of the shortest vector in the lattice:
-                $\vec{b_1^*}$ is always less than the length of the shortest
-                vector of the lattice. Since $\norm{\vec{b_1^*}}$ can only be at
-                most
-                \todo[inline]{finish proof}
-            \end{proof}
+\begin{theorem}
+  [Ajtai's hardness proof for SIS.] If there is an algorithm $A$ that solves
+  $SIS_{m,n,q,\beta}$ in poly-time, for some non-negligible fraction of input
+  matrices $G \in \mathbb{Z_q^{m \times n}}$, then there is an algorithm $B$
+  that solves $\gamma-SVP$ in polynomial time for all input lattices $L$ of
+  dimension $n$ with:
+  \[
+    \gamma = O(\beta\sqrt{n}), q = \omega(\gamma\sqrt{\log n})
+  \]
+  \label{theo:AjtaiHardness}
+\end{theorem}
 
-            In summary, the first vector of LLL output is bounded by
-            \[
-                \norm{\vec{b_1^*}} \leq
-                (1/(\delta-1/4))^{(n-1)/2}.\lambda(L)
-            \]
-            %The $\delta$ parameter of the algorithm therefore also contribute to
-            %the output.
-            We can see that the approximation factor is exponential in the
-            dimention $n$ of the lattice. Another way to measure how short of
-            output vector of LLL is Hermite Factor (HF),
-            which is  the ratio of the algorithm's output with the
-            $n^{th}$ root of the determinant of the lattice. Sometimes it is
-            more convinient to use this measure because the determinant of the
-            lattice sometimes is easy to compute, whereas the length of the
-            shortest vector of the lattice is not, in general. In practice we
-            usually use this as a main measure. Again, LLL gives HF that is
-            exponential in the dimension $n$. The conclusion is, although LLL
-            runs in polynomial time, but the approximation factor increases
-            exponentially fast with the dimension. When the dimension is large,
-            the approximation factor will grow so fast that LLL
-            is not useful to break the security of underlying cryptosystems.
-            \begin{theorem}
-                The LLL algorithm solves in polynomial time $\gamma-SVP$ for
-                $n-dim$ lattices, with $\gamma \leq 2^{(n-1)/2}$. Can also be
-                shown that Hermite Factor $\gamma_{HF} =
-                \frac{\norm{\vec{b_1}}}{det(L)^{1/n}} \leq 2^{(n-1)/4}$
-                \label{theo:LLLHF}
-            \end{theorem}
+Although the theorem does not directly gives us concrete information to choose
+parameters to secure a cryptosystem like we discussed previously, it does give
+us the qualitative confidence in the security of the problem.
 
-
-        \item [LLL in practice.] This paragraph discuss the trade-off between
-            the running time and the length of the output of the attack. This
-            helps us in selecting parameters for state-of-the-art lattice
-            attack
-
-            In practice we try to improve this bound so LLL can get shorter
-            vector. One way to do that is to use the fact that, in our analysis,
-            we do worst-case analysis on the output that LLL can give. In
-            practice, they tend to be shorter than that. When we run it
-            experimentally (\cite{nguyen2006lll}) on random lattice we will find that it perform much
-            better than the bound proved. Specifically, $HF$ is close to
-            $1.02^{n-1}$. Although this factor is still exponential in dimension
-            $n$, this slowth growth allows LLL to be used with large dimension
-            lattices.
-            In order to reduce this $HF$ further, we can further modify LLL.
-            There are several ways to do that. The basic idea is to combine LLL
-            with exhaustive search (enumeration algorithm). The best lattice
-            exhaustive search algorithm (Fincke-Phost/Kannan) does it in time
-            $2^{O(n\log(n)}$, it is even worst than exponential. There are
-            variants of such method but they all take time at least
-            exponential with the dimension $n$ (with the expense of using
-            $2^{O(n)}$ memory). In general, all enumeration algorithms are very
-            inefficient. Therefore, combining LLL with bruteforcing is a more
-            practical approach: BKZ is the typical algorithm in this category.
-            BKZ allows trades off between
-            run-time and approximation factor $\gamma$, LLL is modified by
-            changing the blocksize $k$ of vectors in the swapping step. As we
-            increase $k$: We search in the lattice of dimension $k$ using brute
-            force search and then run LLL with smaller dimension k. We get the
-            'interpolation' between the two extremes of LLL (corresponding to
-            $k = 2, \gamma = 2^{O(n)}, T = n^c$) and the enumeration (corresponding
-            to $k = n, \gamma=1, T = 2^{O(n\log(n)}$)). In between, BKZ can
-            achieve $\gamma(k) \leq k^{(n-1)/(k-1)}$ with running time
-            $n^c.k^{O(k)}$. \cite{hanrot2011terminating}. From this trade-off setting, an
-            attacker then
-            can choose the optimal value of $k$ for particular context: A
-            lattice-based
-            cryptographic scheme can only be broken if the adversary can find
-            short enought vectors. This also tells how small $\gamma$ needs to
-            be in order to defend against such attack:
-
-            In summary, given a security level $\lambda$ for a system (i.e., it would
-            take time $2^\lambda$ for the best attack to work
-            even with the best choice of the parameter $k$ for BKZ) .
-            The best approximation factor $\gamma$ that the algorithm can
-            achieve is related to $\lambda$ as:
-            \[
-                \log(\gamma_{HF}) = \Omega(\frac{n\log^2\lambda}{\lambda})
-            \]
-            where $\Omega$ represent asymptotic ``lower than'' condition when
-            the parameters are large. Overall, we can conclude the
-            \emph{lattice 'rule of thumb'} for $\gamma-SVP$ using BKZ:
-            \[
-                n = \Omega(\frac{\lambda}{\log^2\lambda}.\log\gamma_{HF})
-                \approx \lambda . \log\gamma_{HF}
-            \]
-
-            \begin{remark}
-                The dimension $n$ of a lattice-based cryptosystem needs to be
-                proportional to the product of bit-security level $\lambda$ and
-                the $\log$ (base 2) of the approximation factor $\gamma_{HF}$.
-                This factor is a reason behind the long keys of such
-                cryptosystems.
-                \label{rem:dimension}
-            \end{remark}
-
-            For concrete values of parameters, Chen and Nguyen \cite{chen2011bkz} gave
-            numerial estimates for Hermite Factor and time for random lattices
-            versus block size for optimized BKZ variant:
-
-            \begin{figure}[h]
-                \centering
-                \includegraphics[scale=0.3]{bkzparams}
-                \caption{BKZ parameters}
-                \label{fig:BKZParams}
-            \end{figure}
-
-            \todo[inline]{redo table}
-
-            From table 2, for a given $HF$ that we want BKZ to achieve, it gives
-            us the block size parameter $k$ that need to be used. Note that the
-            $HF$ is much smaller than what we had for LLL (whose $HF \approx
-            1.02^{n-1}$ in practice). Once we have the blocksize, we can look up in
-            table 3 to know the running time of the algorithm.
-
-        \item [An example of security and parameter choice.] We discuss Ajtai's
-            hash function as an example of how to choose parameters for some
-            security level. We showed that if there is an algorithm that can
-            break the collision-resistance property of the hash function, we
-            can use it to find a short vector of the SIS problem with length
-            $\beta = 2d\sqrt{m}$. The question is how do we choose the
-            parameters $q,n,m,d$ for the hash function to get a given security
-            level $\lambda$ based on the hardness of SIS? According to the BKZ
-            state-of-the-art attack, to get running time of $2^\lambda$, we can
-            use the table 3 to derive the blocksize and corresponding Hermite
-            Factor $\gamma_{HF}$.
-            Then we know the best attacker can compute a non-zero vector
-            $\vec{v}$ in SIS lattice $L_q(A)$ of norm $\leq l = min(q,
-            \gamma_{HF}.det(L_q(A))^{1/m})$. Then we can compare $l$ with
-            $\beta$ (or $2d\sqrt{m}$), if $l < \beta$, the attack will work and
-            otherwise.
-
-            There are often ways to optimize such attacks where attacker choose
-            parameters to minimize the his effort. For example in the attack of
-            SIS problem of \cite{micciancio2008lattice}, the attacker can look at a subset
-            $m' \leq m$ of columns of $A$, suppose that he can find a short
-            vector $\vec{v'}$ such that $A'\vec{v'} = \vec{0} \mod \ q$. He can
-            choose $\vec{v''} = \vec{0}$ and set $\vec{v} = \vec{v'} +
-            \vec{v''}$.
-            \todo[inline]{illustration here}
-            It turns out that there are optimal values that an attacker can
-            choose for $m'$ that minimize the length $l(m')$ for $\vec{v'}$.
-            Specifically, $l(m') = min(q,\gamma'_{HF}.det(L_q(A))^{1/m'})$ is a
-            function of $m'$, when
-            we graph this function, it is as illustrated in Figure
-            \ref{fig:bestAttack}.
-            \begin{figure}[h]
-                \centering
-                \includegraphics[scale=0.3]{bestattack}
-                \caption{Choosing best m' for SIS attack for parameters
-                $\delta = 1.01, q=4416857, n=100$}
-                \label{fig:bestAttack}
-            \end{figure}
-            We can see that at some point $m'$ there is some minimum value for the
-            length of the vector we can get with BKZ, this is the value that an
-            attacker want to choose. Denote $m^*$ to be this optimal selection, we
-            have $l(m^*) = min(q, 2^{2.sqrt{n\log q\log \delta}})$. The
-            condition that the attack fails is $l(m^*) > \beta$, so
-            \[
-                q \geq \beta = 2d\sqrt{m} \  \text{and}\ n \geq
-                \frac{\log^2(\beta)}{\log q \log(\delta)}
-            \]
-
-        \item [Ajtai's hardness proof for SIS] We have looked at the best
-            practical
-            algorithms to attack lattice problems (LLL and its variants). In
-            theory, there is also Ajtai's proof where it said there is a
-            relationship between how hard it is to solve the SIS
-            problem for random matrices. The connection between this kind of
-            average case and the worst-case complexity of lattice problem in
-            general (lattices that are completely unrelated to the
-            \emph{q-ary} ones) is the theoretical base behind lattice-based
-            cryptography. We present Ajtai's average-case to worst-case
-            connection Theorem (1996, improved by \cite{gentry2008trapdoors}).
-
-            \begin{theorem}
-                [Ajtai's hardness proof for SIS.] If there is an algorithm
-                $A$ that solves $SIS_{m,n,q,\beta}$ in poly-time, for some
-                non-negligible fraction of input matrices $G \in \mathbb{Z_q^{m
-                \times n}}$, then there is an algorithm $B$ that solves
-                $\gamma-SVP$ in polynomial time for all input lattices
-                $L$ of dimension $n$ with:
-                \[
-                    \gamma = O(\beta\sqrt{n}), q = \omega(\gamma\sqrt{\log n})
-                \]
-                \label{theo:AjtaiHardness}
-            \end{theorem}
-
-            Although the theorem does not directly gives us concrete
-            information to choose parameters to secure a cryptosystem like we
-            discussed previously, it does give us the qualitative confidence in
-            the security of the problem.
-
-
-    \end{description}
-
-\section{LWE}
+\section{Learning With Error}
 \label{sub:LWE}
     \begin{description}
         \item[intro.] Last chapter we discuss the complexity of the hard
@@ -2163,6 +2033,105 @@ The protocol includes 2 phases
 
 \section{Garbled Circuit and Oblivious Transfer}
 \label{sec:defMPP}
+
+\subsection{Garbled Circuit}
+\label{sec:garbledCircuitPre}
+
+The garbled circuit concept was originally proposed in \cite{yao1986generate} to
+allow two parties to evaluate securely any functions (represented by logic
+circuit). It is secure in the sense that the communicating parties do not learn
+any information about the others' inputs but only the output of the
+function. The idea is that given a circuit (composed of gates connected by
+wires), the server ``garbles'' the circuit by randomly assigning two encryption
+keys \(\omega_{j,0}\) and \(\omega_{j,1}\) to each wire \(\omega_{j}\). The pair
+of keys represent respectively values 0 and 1, which are possible values of the
+logic gates' wires. The server then encrypts a truth table corresponding to each
+gate using nested encryption. Figure \ref{fig:garbledCircuit} illustrates how
+this can be done: Computing the output key of a gate requires knowning two of
+its input's keys.
+
+After garbling the gates, the server sends the ciphertext tables to the client
+and also its' keys corresponding to the server's input values. The client uses
+\textit{Oblivious Transfer } technique (discussed below) to obtain the keys
+corresponding to the client's input values. After having the keys for each wire,
+the client can in turn decrypt the gates until it learn the final output keys
+(which can be encoded initially in a special way to represent value 0 or 1). The
+wires' keys are also referred to as \textit{label} in literature.
+
+\begin{figure}[htbp!] 
+  \centering    
+  \includegraphics[width=1.0\textwidth]{Chapter2/Figs/Raster/garbledCircuit}
+  \caption{Garbled Circuit example}
+  \label{fig:garbledCircuit}
+\end{figure}
+
+Recent works provides optimizations to improve computation and communication
+overhead associated with encrypt/decrypt operations and ciphertext tables'
+sizes. In \cite{kolesnikov2008improved30}, the authors proposed a modification to
+allow XOR gates to be evaluated \textit{for free}: the labels of XOR gates are
+not chosen independently but by \(\omega_{i,0} = \omega_{i,1} \xor r\), for some
+random value of \(r\). Pinkas et al. \cite{pinkas2009secure38} introduced a way to reduce communication size of binary gates by 25\%: each gate can be specified by three ciphertexts instead of all four. Finally, \cite{kolesnikov2009improved29} improve some commonly used circuits such as addition, comparision, etc. by reducing the number of non-XOR gates.
+
+\subsection{Oblivious Transfer}
+\label{sec:obliviousTransferPre}
+
+\textit{"You take the blue pill, the story ends. You wake up in your bed and
+  believe whatever you want to believe. You take the red pill, you stay in
+  wonderland, and I show you how deep the rabbit hole goes."} - Morpheus to Neo,
+the Matrix.
+
+
+\begin{figure}[htbp!] 
+\centering    
+\includegraphics[width=1.0\textwidth]{Chapter2/Figs/Raster/RedPillBluePill}
+\caption[Minion]{Red Pill - Blue Pill}
+\label{fig:RedPillBluePill}
+\end{figure}
+
+What if, in such situation, there is a protocol to give privacy to
+\(Neo\): \(Morpheus\) should not learn about \(Neo\)'s selection. Moreover, the
+protocol can also provide privacy to \(Morpheus\): \(Neo\) should not learn
+anything about the unchosen pill. In cryptography, Oblivious Transfer (OT) is a
+protocol that can support such scenario. 
+In the most basic form, it is a
+two-parties protocol between a \textit{Sender} and a \textit{Receiver}, denoted
+by \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT. The \(Sender\) uses
+two private inputs \(x_{0}, x_{1}\) and the \(Receiver\) uses one input bit
+\(s\). At the completion of the protocol, the \(Receiver\) gets the bit
+\(x_{s}\) without letting the \(Sender\) know any information about the value of
+\(s\): \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix}
+\)-OT\((x_{0},x_{1};s) = x_{s}\).
+
+The general idea is, when the receiver requests an item, the sender sends all the
+items to the receiver and therefore it does not know which item is the one
+requested. However, the response is encrypted in such a way that the receiver
+can only decrypt the one he requested. A concrete implementation example of
+\(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT protocol based on
+discrete log DH is illustrated in figure \ref{fig:DH21OT}. The receiver picks \(h_{0},h_{1}\) such that \(h_{0}h_{1} = h\), he cannot know both \(\log_{g}h_{0}\) and \(\log_{g}h_{1}\). Given \(h_{0}, h_{1}\), the sender returns ElGamal encryptions of bits \(x_{0}, x_{1}\) using \(h_{0},h_{1}\) as public keys. The receiver then decrypts one of the encryption to recover either \(x_{0} or x_{1}\)
+
+\begin{figure}[h!]
+  \centering
+  \begin{equation*}
+    \begin{array}{c c c}
+      \text{\textbf{Sender}} & & \text{\textbf{Receiver}} \\
+      \\
+      (x_{0}, x_{1} \in \{0,1\}) & & (s \in \{0,1\}) \\
+                             & & u \randomsample \mathbb{Z}_{n}\\
+                             & & h_{s} \gets g^{u}\\
+                             & & h_{1-s} \gets h/g^{u}\\
+                             & \xleftarrow{h_{0}, h_{1}} & \\
+      u_{0}, u_{1} \randomsample \mathbb{Z}_{n} & & \\
+      (A_{0}, B_{0}) \gets (g^{u_{0}}, h_{0}^{u_{0}}g^{x_{0}}) & & \\
+      (A_{1}, B_{1}) \gets (g^{u_{1}}, h_{1}^{u_{1}}g^{x_{1}}) & & \\
+                             & \xrightarrow{(A_{0}, B_{0}),(A_{1}, B_{1})} & \\
+      & & x_{s} \gets \log_{g}(B_{s}/A_{s}^{u})
+    \end{array}
+  \end{equation*}
+  \caption{OT protocol based on DH}
+  \label{fig:DH21OT}
+\end{figure}
+
+Efficient implementations of Oblivious Transfer can be found from \cite{naor2001efficient35}. The techniques from \cite{ishai2003extending24} can reduce a large number of OT protocol executions to \(\lambda\), where \(\lambda\) is the security parameter. In this thesis, we propose a new OT technique to be used with lattice-based cryptosystem.
 
 \section{The Syntax and Security model}
 \label{sec:syntaxModel}

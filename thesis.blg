@@ -34,45 +34,45 @@ Warning--empty year in FujitsuD7:online
 Warning--empty year in FVConGoi2:online
 Warning--empty year in rimrimrq38:online
 Warning--empty year in OPMsays563:online
-You've used 81 entries,
+You've used 88 entries,
             1935 wiz_defined-function locations,
-            927 strings with 17827 characters,
-and the built_in function-call counts, 37596 in all, are:
-= -- 3947
-> -- 1227
-< -- 87
-+ -- 424
-- -- 404
-* -- 2833
-:= -- 5955
-add.period$ -- 290
-call.type$ -- 81
-change.case$ -- 605
-chr.to.int$ -- 81
-cite$ -- 87
-duplicate$ -- 1693
-empty$ -- 2808
-format.name$ -- 522
-if$ -- 7953
+            966 strings with 19053 characters,
+and the built_in function-call counts, 41256 in all, are:
+= -- 4342
+> -- 1331
+< -- 100
++ -- 458
+- -- 438
+* -- 3092
+:= -- 6503
+add.period$ -- 316
+call.type$ -- 88
+change.case$ -- 657
+chr.to.int$ -- 88
+cite$ -- 94
+duplicate$ -- 1870
+empty$ -- 3083
+format.name$ -- 567
+if$ -- 8758
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 77
-newline$ -- 411
-num.names$ -- 234
-pop$ -- 663
+missing$ -- 84
+newline$ -- 446
+num.names$ -- 255
+pop$ -- 724
 preamble$ -- 1
-purify$ -- 608
+purify$ -- 660
 quote$ -- 0
-skip$ -- 1308
+skip$ -- 1457
 stack$ -- 0
-substring$ -- 2850
-swap$ -- 476
-text.length$ -- 50
+substring$ -- 3145
+swap$ -- 544
+text.length$ -- 59
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 482
+type$ -- 524
 warning$ -- 5
-while$ -- 340
+while$ -- 375
 width$ -- 0
-write$ -- 1093
+write$ -- 1191
 (There were 18 warnings)

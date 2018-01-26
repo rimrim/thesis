@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.9.24)  12 JAN 2018 14:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.9.24)  26 JAN 2018 17:56
 entering extended mode
  restricted \write18 enabled.
  Source specials enabled.
@@ -2006,31 +2006,31 @@ LaTeX Warning: Label `alg:ZKPUnpack' multiply defined.
 (./Appendix1/appendix1.aux) (./Appendix2/appendix2.aux))
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 376.
-LaTeX Font Info:    ... okay on input line 376.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 376.
-LaTeX Font Info:    ... okay on input line 376.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 376.
-LaTeX Font Info:    ... okay on input line 376.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 376.
-LaTeX Font Info:    ... okay on input line 376.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 376.
-LaTeX Font Info:    ... okay on input line 376.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 376.
-LaTeX Font Info:    ... okay on input line 376.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 376.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 376.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 373.
+LaTeX Font Info:    ... okay on input line 373.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 373.
+LaTeX Font Info:    ... okay on input line 373.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 373.
+LaTeX Font Info:    ... okay on input line 373.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 373.
+LaTeX Font Info:    ... okay on input line 373.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 373.
+LaTeX Font Info:    ... okay on input line 373.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 373.
+LaTeX Font Info:    ... okay on input line 373.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 373.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 373.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 376.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 376.
-LaTeX Font Info:    ... okay on input line 376.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 376.
-LaTeX Font Info:    ... okay on input line 376.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 376.
+LaTeX Font Info:    ... okay on input line 373.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 373.
+LaTeX Font Info:    ... okay on input line 373.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 373.
+LaTeX Font Info:    ... okay on input line 373.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 373.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
@@ -2049,7 +2049,7 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 \makeMPintoPDFobject=\count337
 \everyMPtoPDFconversion=\toks55
 )
-LaTeX Info: Redefining \microtypecontext on input line 376.
+LaTeX Info: Redefining \microtypecontext on input line 373.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -2063,7 +2063,7 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 )
 \AtBeginShipoutBox=\box96
-Package hyperref Info: Link coloring ON on input line 376.
+Package hyperref Info: Link coloring ON on input line 373.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -2073,9 +2073,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count338
 )
-LaTeX Info: Redefining \ref on input line 376.
-LaTeX Info: Redefining \pageref on input line 376.
-LaTeX Info: Redefining \nameref on input line 376.
+LaTeX Info: Redefining \ref on input line 373.
+LaTeX Info: Redefining \pageref on input line 373.
+LaTeX Info: Redefining \nameref on input line 373.
 
 (./thesis.out) (./thesis.out)
 \@outlinefile=\write6
@@ -2137,7 +2137,7 @@ File: siunitx-abbreviations.cfg 2016/03/01 v2.6q siunitx: Abbreviated units
 ) ABD: EveryShipout initializing macros
 \c__siunitx_mathsf_int=\count339
 LaTeX Font Info:    Try loading font information for OT1+ztmcm on input line 37
-6.
+3.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
 File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
@@ -2147,35 +2147,35 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Try loading font information for OML+ztmcm on input line 37
-6.
+3.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omlztmcm.fd
 File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )
 LaTeX Font Info:    Try loading font information for OMS+ztmcm on input line 37
-6.
+3.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsztmcm.fd
 File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
 )
 LaTeX Font Info:    Try loading font information for OMX+ztmcm on input line 37
-6.
+3.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omxztmcm.fd
 File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
 )
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 376.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 373.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 376.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 373.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 376.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 373.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 376.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 373.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
@@ -2183,11 +2183,11 @@ File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 (/usr/local/texlive/2016/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+stmry on input line 376.
+LaTeX Font Info:    Try loading font information for U+stmry on input line 373.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/stmaryrd/Ustmry.fd)
-LaTeX Font Info:    Try loading font information for U+wasy on input line 376.
+LaTeX Font Info:    Try loading font information for U+wasy on input line 373.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/wasysym/uwasy.fd
 File: uwasy.fd 2003/10/30 v2.0 Wasy-2 symbol font definitions
@@ -2203,9 +2203,9 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             See the microtype manual for details.
 \PHD@Title=\box97
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 381.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 378.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 381.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 378.
 \PHD@crest=\box98
 Package epstopdf Info: Source file: <Figs/University_Crest.eps>
 (epstopdf)                    date: 2018-01-12 14:40:19
@@ -2216,15 +2216,15 @@ Package epstopdf Info: Source file: <Figs/University_Crest.eps>
 (epstopdf)                    size: 75023 bytes
 (epstopdf)             Command: <repstopdf --outfile=Figs/University_Crest-eps-
 converted-to.pdf Figs/University_Crest.eps>
-(epstopdf)             \includegraphics on input line 381.
+(epstopdf)             \includegraphics on input line 378.
 Package epstopdf Info: Output file is already uptodate.
 
-<Figs/University_Crest-eps-converted-to.pdf, id=368, 401.5pt x 401.5pt>
+<Figs/University_Crest-eps-converted-to.pdf, id=380, 401.5pt x 401.5pt>
 File: Figs/University_Crest-eps-converted-to.pdf Graphic file (type pdf)
 
 <use Figs/University_Crest-eps-converted-to.pdf>
 Package pdftex.def Info: Figs/University_Crest-eps-converted-to.pdf used on inp
-ut line 381.
+ut line 378.
 (pdftex.def)             Requested size: 87.49088pt x 87.49095pt.
 \PHD@collegecrest=\box99
 \PHD@author=\box100
@@ -2284,7 +2284,7 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 
 ] [12]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 101.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 106.
 )
 \tf@toc=\write7
 \openout7 = `thesis.toc'.
@@ -2361,148 +2361,111 @@ ine 210.
 
  (./Chapter2/chapter2.tex
 Chapter 2.
-<Chapter2/Figs/Raster/minion.png, id=662, 636.6987pt x 582.4962pt>
-File: Chapter2/Figs/Raster/minion.png Graphic file (type png)
-
-<use Chapter2/Figs/Raster/minion.png>
-Package pdftex.def Info: Chapter2/Figs/Raster/minion.png used on input line 26.
-
-(pdftex.def)             Requested size: 437.46112pt x 400.22517pt.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 34.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 34.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 34.
- [7
-
-
-
-] [8 <./Chapter2/Figs/Raster/minion.png>] [9] <Chapter2/Figs/Raster/TomandJerry
-.png, id=684, 324.33366pt x 216.81pt>
-File: Chapter2/Figs/Raster/TomandJerry.png Graphic file (type png)
-
-<use Chapter2/Figs/Raster/TomandJerry.png>
-Package pdftex.def Info: Chapter2/Figs/Raster/TomandJerry.png used on input lin
-e 46.
-(pdftex.def)             Requested size: 131.23967pt x 87.73148pt.
-
-<Chapter2/Figs/Raster/WallE.png, id=685, 341.9605pt x 515.58476pt>
-File: Chapter2/Figs/Raster/WallE.png Graphic file (type png)
-
-<use Chapter2/Figs/Raster/WallE.png>
-Package pdftex.def Info: Chapter2/Figs/Raster/WallE.png used on input line 51.
-(pdftex.def)             Requested size: 131.23967pt x 197.8753pt.
-File: Chapter2/Figs/Raster/minion.png Graphic file (type png)
- <use Chapter2/Figs/Raster/minion.png>
-Package pdftex.def Info: Chapter2/Figs/Raster/minion.png used on input line 56.
-
-(pdftex.def)             Requested size: 131.23967pt x 120.06133pt.
-
-[10
-
- <./Chapter2/Figs/Raster/TomandJerry.png> <./Chapter2/Figs/Raster/WallE.png>]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 75.
- [11
+[7
 
-] [12] <Chapter2/Figs/Raster/lattices.jpg, id=701, 184.69pt x 138.5175pt>
+
+
+] [8] <Chapter2/Figs/Raster/lattices.jpg, id=700, 184.69pt x 138.5175pt>
 File: Chapter2/Figs/Raster/lattices.jpg Graphic file (type jpg)
 
 <use Chapter2/Figs/Raster/lattices.jpg>
-Package pdftex.def Info: Chapter2/Figs/Raster/lattices.jpg used on input line 2
-08.
+Package pdftex.def Info: Chapter2/Figs/Raster/lattices.jpg used on input line 1
+67.
 (pdftex.def)             Requested size: 184.68953pt x 138.51715pt.
 
-Overfull \hbox (12.03586pt too wide) in paragraph at lines 200--225
-[][]\T1/ptm/m/n/12 (-20) Consider a 2-dimensional lat-tice gen-er-ated by the b
-a-sis $\OT1/ztmcm/m/n/12 ([]\OML/ztmcm/m/it/12 ; []\OT1/ztmcm/m/n/12 ) = []$
+Overfull \hbox (0.89102pt too wide) in paragraph at lines 162--181
+[][]\T1/ptm/b/n/12 Example. \T1/ptm/m/n/12 (-20) Con-sider a 2-dimensional lat-
+tice gen-er-ated by the ba-sis $\OT1/ztmcm/m/n/12 ([]\OML/ztmcm/m/it/12 ; []\OT
+1/ztmcm/m/n/12 ) = []$
  []
 
-[13]
-<Chapter2/Figs/Raster/parallelopiped.jpg, id=710, 245.91875pt x 163.61125pt>
+<Chapter2/Figs/Raster/parallelopiped.jpg, id=701, 245.91875pt x 163.61125pt>
 File: Chapter2/Figs/Raster/parallelopiped.jpg Graphic file (type jpg)
 
 <use Chapter2/Figs/Raster/parallelopiped.jpg>
 Package pdftex.def Info: Chapter2/Figs/Raster/parallelopiped.jpg used on input 
-line 233.
+line 189.
 (pdftex.def)             Requested size: 172.14194pt x 114.52708pt.
- [14 <./Chapter2/Figs/Raster/lattices.jpg> <./Chapter2/Figs/Raster/parallelopip
-ed.jpg>] [15]
-Package hyperref Info: bookmark level for unknown todo defaults to 0 on input l
-ine 350.
- [16] [17] [18]
-<Chapter2/Figs/Raster/gso.jpg, id=747, 1445.4pt x 325.215pt>
+
+Overfull \hbox (20.06401pt too wide) in paragraph at lines 183--193
+[]\T1/ptm/b/n/12 Definition 2 \T1/ptm/m/n/12 (-20) (Fun-da-men-tal Par-alellepi
+ped)\T1/ptm/b/n/12 . [][]\T1/ptm/m/it/12 (-20) For an n-dimensional lat-tice ba
+-sis $\OML/ztmcm/m/it/12 B \OT1/ztmcm/m/n/12 = [] \OMS/ztmcm/m/n/12 2
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[9 <./Chapter2/Figs/Raster/lattices.jpg>] [10 <./Chapter2/Figs/Raster/parallelo
+piped.jpg>] [11] [12]
+<Chapter2/Figs/Raster/gso.jpg, id=732, 1445.4pt x 325.215pt>
 File: Chapter2/Figs/Raster/gso.jpg Graphic file (type jpg)
 
 <use Chapter2/Figs/Raster/gso.jpg>
-Package pdftex.def Info: Chapter2/Figs/Raster/gso.jpg used on input line 474.
+Package pdftex.def Info: Chapter2/Figs/Raster/gso.jpg used on input line 402.
 (pdftex.def)             Requested size: 433.62335pt x 97.56525pt.
-
-<Chapter2/Figs/Raster/gsoMatrix.jpg, id=749, 1405.25pt x 481.8pt>
-File: Chapter2/Figs/Raster/gsoMatrix.jpg Graphic file (type jpg)
-
-<use Chapter2/Figs/Raster/gsoMatrix.jpg>
-Package pdftex.def Info: Chapter2/Figs/Raster/gsoMatrix.jpg used on input line 
-486.
-(pdftex.def)             Requested size: 421.57826pt x 144.5411pt.
- [19 <./Chapter2/Figs/Raster/gso.jpg> <./Chapter2/Figs/Raster/gsoMatrix.jpg>] [
-20]
+ [13] [14 <./Chapter2/Figs/Raster/gso.jpg>]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 574.
- [21] [22] [23]
-<Chapter2/Figs/Raster/bkzparams.jpg, id=787, 1349.04pt x 550.055pt>
+put line 495.
+
+[15] [16] [17]
+<Chapter2/Figs/Raster/bkzparams.jpg, id=772, 1349.04pt x 550.055pt>
 File: Chapter2/Figs/Raster/bkzparams.jpg Graphic file (type jpg)
 
 <use Chapter2/Figs/Raster/bkzparams.jpg>
 Package pdftex.def Info: Chapter2/Figs/Raster/bkzparams.jpg used on input line 
-757.
+645.
 (pdftex.def)             Requested size: 404.71512pt x 165.01776pt.
- [24 <./Chapter2/Figs/Raster/bkzparams.jpg>] <Chapter2/Figs/Raster/bestattack.j
-pg, id=797, 680.5425pt x 365.365pt>
+ [18 <./Chapter2/Figs/Raster/bkzparams.jpg>] <Chapter2/Figs/Raster/bestattack.j
+pg, id=781, 680.5425pt x 365.365pt>
 File: Chapter2/Figs/Raster/bestattack.jpg Graphic file (type jpg)
 
 <use Chapter2/Figs/Raster/bestattack.jpg>
 Package pdftex.def Info: Chapter2/Figs/Raster/bestattack.jpg used on input line
- 803.
+ 682.
 (pdftex.def)             Requested size: 204.16432pt x 109.61034pt.
- [25 <./Chapter2/Figs/Raster/bestattack.jpg>] [26] [27] [28] [29] [30]
-Overfull \hbox (4.58382pt too wide) in paragraph at lines 1152--1159
+ [19 <./Chapter2/Figs/Raster/bestattack.jpg>] [20]
+Package hyperref Info: bookmark level for unknown todo defaults to 0 on input l
+ine 817.
+ [21] [22] [23] [24]
+Overfull \hbox (4.58382pt too wide) in paragraph at lines 1022--1029
 [][]\T1/ptm/m/n/12 (-20) Given the for-mal se-cu-rity game,
  []
 
-[31] [32] [33] [34] [35] [36]
-Overfull \hbox (8.98856pt too wide) in paragraph at lines 1555--1570
+[25] [26] [27] [28] [29] [30]
+Overfull \hbox (8.98856pt too wide) in paragraph at lines 1425--1440
 [][]\T1/ptm/m/n/12 (-20) Encryption - Enc $\OT1/ztmcm/m/n/12 ([] \OMS/ztmcm/m/n
 /12 2 \U/msb/m/n/12 Z[]\OT1/ztmcm/m/n/12 )$\T1/ptm/m/n/12 (-20) : Re-turn the c
 i-pher-text $\OML/ztmcm/m/it/12 C \OT1/ztmcm/m/n/12 = ([] = []\OML/ztmcm/m/it/1
 2 :A[]  q; [] \OT1/ztmcm/m/n/12 =
  []
 
-[37] [38] [39]
-Overfull \hbox (1.63722pt too wide) in paragraph at lines 1718--1722
+[31] [32] [33]
+Overfull \hbox (1.63722pt too wide) in paragraph at lines 1588--1592
 [][]\T1/ptm/m/n/12 (-20) We sum-ma-rize the two op-ti-miza-
  []
 
 
-Overfull \hbox (67.02844pt too wide) in paragraph at lines 1732--1739
+Overfull \hbox (67.02844pt too wide) in paragraph at lines 1602--1609
 [][]\T1/ptm/m/n/12 (-20) For a plain-text $\OT1/ptm/b/n/12 m \OMS/ztmcm/m/n/12 
 2 \U/msb/m/n/12 R[]$\T1/ptm/m/n/12 (-20) , re-turn ci-pher-text $\OML/ztmcm/m/i
 t/12 C \OT1/ztmcm/m/n/12 = ([]\OML/ztmcm/m/it/12 ; []\OT1/ztmcm/m/n/12 )$\T1/pt
 m/m/n/12 (-20) .
  []
 
-[40] [41] [42]
+[34] [35] [36]
 
-Package natbib Warning: Citation `van2010fully' on page 43 undefined on input l
-ine 1930.
+Package natbib Warning: Citation `van2010fully' on page 37 undefined on input l
+ine 1800.
 
 
-Package natbib Warning: Citation `EPRINT:SteSte10' on page 43 undefined on inpu
-t line 1930.
+Package natbib Warning: Citation `EPRINT:SteSte10' on page 37 undefined on inpu
+t line 1800.
 
-[43]
-Overfull \hbox (27.23827pt too wide) in paragraph at lines 1987--2001
+[37]
+Overfull \hbox (27.23827pt too wide) in paragraph at lines 1857--1871
 [][]\T1/ptm/m/n/12 (-20) Given 2 ci-pher-text $\OML/ztmcm/m/it/12 c \OT1/ztmcm/
 m/n/12 = ([]\OML/ztmcm/m/it/12 ; []; [] ; []\OT1/ztmcm/m/n/12 )$ \T1/ptm/m/n/12
  (-20) and $\OML/ztmcm/m/it/12 c[] \OT1/ztmcm/m/n/12 = ([]\OML/ztmcm/m/it/12 ; 
@@ -2510,11 +2473,11 @@ m/n/12 = ([]\OML/ztmcm/m/it/12 ; []; [] ; []\OT1/ztmcm/m/n/12 )$ \T1/ptm/m/n/12
  []
 
 
-Package natbib Warning: Citation `EPRINT:LauNaeVai11' on page 44 undefined on i
-nput line 2014.
+Package natbib Warning: Citation `EPRINT:LauNaeVai11' on page 38 undefined on i
+nput line 1884.
 
-[44] [45]
-Overfull \hbox (4.69922pt too wide) in paragraph at lines 2093--2098
+[38] [39]
+Overfull \hbox (4.69922pt too wide) in paragraph at lines 1963--1968
 [][]\T1/ptm/m/n/12 (-20) Decomposition: Rep-re-sent vec-tor $[] \OT1/ztmcm/m/n/
 12 = (\OML/ztmcm/m/it/12 x[]; [] ; x[]\OT1/ztmcm/m/n/12 )$ \T1/ptm/m/n/12 (-20)
  by $\OML/ztmcm/m/it/12 k$ \T1/ptm/m/n/12 (-20) vec-tors $[][] \OMS/ztmcm/m/n/1
@@ -2522,63 +2485,83 @@ Overfull \hbox (4.69922pt too wide) in paragraph at lines 2093--2098
 /it/12 ; \OT1/ztmcm/m/n/12 1\OMS/ztmcm/m/n/12 g[]$\T1/ptm/m/n/12 (-20) .
  []
 
-[46] [47] [48]
-Underfull \hbox (badness 10000) in paragraph at lines 2219--2228
+[40] [41]
+<Chapter2/Figs/Raster/garbledCircuit.png, id=963, 501.875pt x 246.9225pt>
+File: Chapter2/Figs/Raster/garbledCircuit.png Graphic file (type png)
+
+<use Chapter2/Figs/Raster/garbledCircuit.png>
+Package pdftex.def Info: Chapter2/Figs/Raster/garbledCircuit.png used on input 
+line 2063.
+(pdftex.def)             Requested size: 437.46112pt x 215.2428pt.
+
+<Chapter2/Figs/Raster/RedPillBluePill.jpg, id=967, 500.87125pt x 290.08376pt>
+File: Chapter2/Figs/Raster/RedPillBluePill.jpg Graphic file (type jpg)
+
+<use Chapter2/Figs/Raster/RedPillBluePill.jpg>
+Package pdftex.def Info: Chapter2/Figs/Raster/RedPillBluePill.jpg used on input
+ line 2086.
+(pdftex.def)             Requested size: 437.46112pt x 253.37117pt.
+ [42 <./Chapter2/Figs/Raster/garbledCircuit.png>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[43 <./Chapter2/Figs/Raster/RedPillBluePill.jpg>] [44]
+Underfull \hbox (badness 10000) in paragraph at lines 2188--2197
 
  []
 
-[49] [50] [51]
+[45] [46] [47] [48]
 LaTeX Font Info:    Font shape `T1/ptm/bx/it' in size <12> not available
-(Font)              Font shape `T1/ptm/b/it' tried instead on input line 2373.
-) [52]
+(Font)              Font shape `T1/ptm/b/it' tried instead on input line 2342.
+) [49]
 \openout2 = `Chapter3/chapter3.aux'.
 
- (./Chapter3/chapter3.tex
-Chapter 3.
-[53
+ (./Chapter3/chapter3.tex [50
 
 
 
 ]
+Chapter 3.
+[51]
 
-Package natbib Warning: Citation `schoenmakers2006efficient' on page 54 undefin
-ed on input line 67.
-
-
-Package natbib Warning: Citation `paillier1999public' on page 54 undefined on i
-nput line 68.
+Package natbib Warning: Citation `schoenmakers2006efficient' on page 52 undefin
+ed on input line 68.
 
 
-Package natbib Warning: Citation `osadchy2010scifi' on page 54 undefined on inp
-ut line 68.
+Package natbib Warning: Citation `paillier1999public' on page 52 undefined on i
+nput line 69.
 
 
-Package natbib Warning: Citation `blanton2011secure' on page 54 undefined on in
-put line 70.
+Package natbib Warning: Citation `osadchy2010scifi' on page 52 undefined on inp
+ut line 69.
 
-[54] [55] [56]
-Overfull \hbox (12.03055pt too wide) detected at line 247
+
+Package natbib Warning: Citation `blanton2011secure' on page 52 undefined on in
+put line 71.
+
+[52] [53] [54]
+Overfull \hbox (12.03055pt too wide) detected at line 248
 [] []
  []
 
 
-Overfull \hbox (1.17778pt too wide) in paragraph at lines 247--256
+Overfull \hbox (1.17778pt too wide) in paragraph at lines 248--257
 []\T1/ptm/m/n/12 (-20) Similarly, we can let $\OT1/ptm/b/n/12 A[] \OT1/ztmcm/m/
 n/12 = []$ \T1/ptm/m/n/12 (-20) to be the pub-lic pa-ram-e-ters and $\OT1/ptm/b
 /n/12 X[] \OT1/ztmcm/m/n/12 = [[]\OML/ztmcm/m/it/12 ; []; []; M\OT1/ztmcm/m/n/1
 2 ][]$
  []
 
-[57] [58] [59] [60]
+[55] [56] [57] [58]
 
-LaTeX Warning: Reference `sec:Renyi' on page 61 undefined on input line 436.
+LaTeX Warning: Reference `sec:Renyi' on page 59 undefined on input line 437.
 
 
-Package natbib Warning: Citation `EPRINT:LauNaeVai11' on page 61 undefined on i
-nput line 461.
+Package natbib Warning: Citation `EPRINT:LauNaeVai11' on page 59 undefined on i
+nput line 462.
 
-[61] [62]
-Overfull \hbox (80.95715pt too wide) in paragraph at lines 536--551
+[59] [60]
+Overfull \hbox (80.95715pt too wide) in paragraph at lines 537--552
 \OML/ztmcm/m/it/12 Enc[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 Y[]\OT1/ztmcm/m/n
 /12 ))$\T1/ptm/m/n/12 (-20) . $\OMS/ztmcm/m/n/12 A$ \T1/ptm/m/n/12 (-20) and $\
 OMS/ztmcm/m/n/12 C$ \T1/ptm/m/n/12 (-20) runs $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/
@@ -2588,7 +2571,7 @@ $ \T1/ptm/m/n/12 (-20) eval-u-ates $\OML/ztmcm/m/it/12 C[] \OT1/ztmcm/m/n/12 =
  []
 
 
-Overfull \hbox (36.76514pt too wide) in paragraph at lines 536--551
+Overfull \hbox (36.76514pt too wide) in paragraph at lines 537--552
 \T1/ptm/m/n/12 (-20) encryption $\OML/ztmcm/m/it/12 C[]$\T1/ptm/m/n/12 (-20) . 
 $\OMS/ztmcm/m/n/12 A$ \T1/ptm/m/n/12 (-20) and $\OMS/ztmcm/m/n/12 C$ \T1/ptm/m/
 n/12 (-20) does $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 C[]; C[]\OT1/ztmcm/m/n
@@ -2596,36 +2579,36 @@ n/12 (-20) does $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 C[]; C[]\OT1/ztmcm/m/n
 []\OT1/ztmcm/m/n/12 )$\T1/ptm/m/n/12 (-20) .
  []
 
+[61]
+
+LaTeX Warning: Reference `sec:Renyi' on page 62 undefined on input line 612.
+
+[62]
+Underfull \hbox (badness 10000) in paragraph at lines 629--636
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 629--636
+
+ []
+
 [63]
 
-LaTeX Warning: Reference `sec:Renyi' on page 64 undefined on input line 611.
+Package natbib Warning: Citation `EPRINT:LauNaeVai11' on page 64 undefined on i
+nput line 643.
 
-[64]
-Underfull \hbox (badness 10000) in paragraph at lines 628--635
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 628--635
-
- []
-
-[65]
-
-Package natbib Warning: Citation `EPRINT:LauNaeVai11' on page 66 undefined on i
-nput line 642.
-
-[66]) [67]
+[64]) [65]
 \openout2 = `Chapter4/chapter4.aux'.
 
- (./Chapter4/chapter4.tex [68
+ (./Chapter4/chapter4.tex [66
 
 
 
 ]
 Chapter 4.
-[69] [70]
-Underfull \hbox (badness 1292) in paragraph at lines 75--76
+[67] [68]
+Underfull \hbox (badness 1292) in paragraph at lines 76--77
 \OML/ztmcm/m/it/12 D[]\OT1/ztmcm/m/n/12 ((\OML/ztmcm/m/it/12 k^^[; k^^[ \OT1/zt
 mcm/m/n/12 + \OML/ztmcm/m/it/12 r[]\OT1/ztmcm/m/n/12 ]) = \OML/ztmcm/m/it/12 D[
 ]\OT1/ztmcm/m/n/12 ((\OML/ztmcm/m/it/12 k^^[ \OMS/ztmcm/m/n/12 ^^@ \OML/ztmcm/m
@@ -2636,7 +2619,7 @@ cm/m/it/12 C[] \OT1/ztmcm/m/n/12 =
  []
 
 
-Underfull \hbox (badness 1838) in paragraph at lines 78--80
+Underfull \hbox (badness 1838) in paragraph at lines 79--81
 \T1/ptm/m/n/12 (+20) There-fore, $\OML/ztmcm/m/it/12 SD\OT1/ztmcm/m/n/12 (\OML/
 ztmcm/m/it/12 D[]; [][]\OT1/ztmcm/m/n/12 ) \OMS/ztmcm/m/n/12 ^^T \OT1/ztmcm/m/n
 /12 ^^A \OMS/ztmcm/m/n/12 ^^T \OML/ztmcm/m/it/12 ^^N[]=\OT1/ztmcm/m/n/12 (1 \OM
@@ -2647,16 +2630,16 @@ S/ztmcm/m/n/12 ^^@ \OT1/ztmcm/m/n/12 2\OML/ztmcm/m/it/12 ^^N[]\OT1/ztmcm/m/n/12
 tmcm/m/it/12 ^^N[] \OT1/ztmcm/m/n/12 =
  []
 
-[71] [72] [73]) [74]
+[69] [70] [71]) [72]
 \openout2 = `Chapter5/chapter5.aux'.
 
  (./Chapter5/chapter5.tex
 Chapter 5.
-[75
+[73
 
 
 
-] [76]
+] [74]
 Overfull \hbox (7.99121pt too wide) in paragraph at lines 94--98
 \T1/ptm/m/it/12 (-20) scheme. Let $[] \OT1/ztmcm/m/n/12 = \OMS/ztmcm/m/n/12 f\O
 T1/ztmcm/m/n/12 1\OML/ztmcm/m/it/12 ; \OT1/ztmcm/m/n/12 1\OML/ztmcm/m/it/12 ; [
@@ -2672,12 +2655,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 118--119
 
  []
 
-[77] [78]
+[75] [76]
 Overfull \hbox (0.69724pt too wide) in paragraph at lines 232--232
 [] 
  []
 
-[79] [80] [81]
+[77] [78] [79]
 Overfull \hbox (1.67761pt too wide) in paragraph at lines 375--396
 [][]\T1/ptm/m/n/12 (-20) This proof can be done
  []
@@ -2687,7 +2670,7 @@ Overfull \hbox (18.12946pt too wide) in paragraph at lines 399--403
 []
  []
 
-[82]
+[80]
 Overfull \hbox (10.21904pt too wide) detected at line 417
 \OML/ztmcm/m/it/12 R[] \OT1/ztmcm/m/n/12 = \OMS/ztmcm/m/n/12 f[] 2 \OML/ztmcm/m
 /it/12 R[] \OMS/ztmcm/m/n/12 ^^B \OML/ztmcm/m/it/12 R[] \OT1/ztmcm/m/n/12 : \OT
@@ -2699,26 +2682,26 @@ m/m/n/12 (\OML/ztmcm/m/it/12 m[] \OT1/ztmcm/m/n/12 = 0 \OMS/ztmcm/m/n/12 8\OML/
 ztmcm/m/it/12 i \OMS/ztmcm/m/n/12 6\OT1/ztmcm/m/n/12 = 0)\OMS/ztmcm/m/n/12 g
  []
 
-[83] [84]
+[81] [82]
 Overfull \hbox (4.46147pt too wide) in paragraph at lines 538--547
 \T1/ptm/m/n/12 (-20) dif-fer-ent ac-cepted tran-scripts of a same com-mit-ment:
  $\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 c[]; c[]; \OT1/ztmcm/m/n/12 (\OML/ztmcm
 /m/it/12 d[]; []\OT1/ztmcm/m/n/12 ))$
  []
 
-[85]
+[83]
 Overfull \hbox (32.98105pt too wide) in paragraph at lines 583--597
 []\T1/ptm/m/n/12 (-20) Let $\OT1/ztmcm/m/n/12 2[] = 2([])([])[]$\T1/ptm/m/n/12 
 (-20) , $\OT1/ztmcm/m/n/12 2[] = 2[]$\T1/ptm/m/n/12 (-20) , $\OT1/ztmcm/m/n/12 
 2[] = 2[]$
  []
 
-[86]
+[84]
 
-LaTeX Warning: Marginpar on page 87 moved.
+LaTeX Warning: Marginpar on page 85 moved.
 
 
-LaTeX Warning: Marginpar on page 87 moved.
+LaTeX Warning: Marginpar on page 85 moved.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 674.
@@ -2738,7 +2721,7 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 674.
 
-[87]
+[85]
 Overfull \hbox (13.13724pt too wide) detected at line 773
 []
  []
@@ -2746,33 +2729,40 @@ Overfull \hbox (13.13724pt too wide) detected at line 773
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[88]
-Overfull \hbox (40.55074pt too wide) in paragraph at lines 789--796
+[86]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (40.55074pt too wide) in paragraph at lines 826--833
 \T1/ptm/m/n/12 (-20) same chal-lenge space, a $[]$-Protocol of $\OML/ztmcm/m/it
 /12 R[] \OMS/ztmcm/m/n/12 ^ \OML/ztmcm/m/it/12 R[] \OT1/ztmcm/m/n/12 = []$
  []
 
-[89]
-Overfull \hbox (24.90233pt too wide) detected at line 847
+[87]
+Overfull \hbox (24.90233pt too wide) detected at line 869
 []
  []
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[90]
-Overfull \hbox (0.5221pt too wide) in paragraph at lines 1036--1038
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[88] [89] [90]
+Overfull \hbox (0.5221pt too wide) in paragraph at lines 1097--1099
 []\T1/ptm/b/n/12 Theorem 15. [][]\T1/ptm/m/it/12 (-20) Un-der the IND-CPA se-cu
 -rity of BV cryp-tosys-tem, and the zero-knowledge
  []
 
 [91]
-Underfull \hbox (badness 10000) in paragraph at lines 1051--1054
+Underfull \hbox (badness 10000) in paragraph at lines 1112--1115
 
  []
 
 
-Overfull \hbox (80.95715pt too wide) in paragraph at lines 1060--1081
+Overfull \hbox (80.95715pt too wide) in paragraph at lines 1121--1142
 \OML/ztmcm/m/it/12 Enc[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 Y[]\OT1/ztmcm/m/n
 /12 ))$\T1/ptm/m/n/12 (-20) . $\OMS/ztmcm/m/n/12 A$ \T1/ptm/m/n/12 (-20) and $\
 OMS/ztmcm/m/n/12 C$ \T1/ptm/m/n/12 (-20) runs $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/
@@ -2782,7 +2772,7 @@ $ \T1/ptm/m/n/12 (-20) eval-u-ates $\OML/ztmcm/m/it/12 C[] \OT1/ztmcm/m/n/12 =
  []
 
 
-Overfull \hbox (36.76514pt too wide) in paragraph at lines 1060--1081
+Overfull \hbox (36.76514pt too wide) in paragraph at lines 1121--1142
 \T1/ptm/m/n/12 (-20) encryption $\OML/ztmcm/m/it/12 C[]$\T1/ptm/m/n/12 (-20) . 
 $\OMS/ztmcm/m/n/12 A$ \T1/ptm/m/n/12 (-20) and $\OMS/ztmcm/m/n/12 C$ \T1/ptm/m/
 n/12 (-20) does $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 C[]; C[]\OT1/ztmcm/m/n
@@ -2792,48 +2782,48 @@ n/12 (-20) does $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 C[]; C[]\OT1/ztmcm/m/n
 
 [92]
 
-LaTeX Warning: Reference `sec:Renyi' on page 93 undefined on input line 1158.
+LaTeX Warning: Reference `sec:Renyi' on page 93 undefined on input line 1219.
 
 [93]
-Underfull \hbox (badness 10000) in paragraph at lines 1175--1182
+Underfull \hbox (badness 10000) in paragraph at lines 1236--1243
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1175--1182
+Underfull \hbox (badness 10000) in paragraph at lines 1236--1243
 
  []
 
 [94]
-Underfull \hbox (badness 10000) in paragraph at lines 1186--1192
+Underfull \hbox (badness 10000) in paragraph at lines 1247--1253
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1186--1192
+Underfull \hbox (badness 10000) in paragraph at lines 1247--1253
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1186--1192
+Underfull \hbox (badness 10000) in paragraph at lines 1247--1253
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1186--1192
+Underfull \hbox (badness 10000) in paragraph at lines 1247--1253
 
  []
 
-[95]) [96] [97] [98] [99] [100]
+[95]) [96] [97] [98]
 \openout2 = `Chapter6/chapter6.aux'.
 
  (./Chapter6/chapter6.tex
 Chapter 6.
-[101
+[99
 
 
 
-] [102] [103]
+] [100] [101]
 Overfull \hbox (21.33769pt too wide) in paragraph at lines 144--161
 \OML/ztmcm/m/it/12 NTT\OT1/ztmcm/m/n/12 (\OT1/ptm/b/n/12 a\OMS/ztmcm/m/n/12 4\O
 T1/ztmcm/m/n/12 (1\OML/ztmcm/m/it/12 ;  ;  []; [] ;  []\OT1/ztmcm/m/n/12 ))$ \T
@@ -2843,17 +2833,8 @@ b/n/12 a\OT1/ztmcm/m/n/12 )\OMS/ztmcm/m/n/12 4\OT1/ztmcm/m/n/12 (1\OML/ztmcm/m/
 it/12 ;  [];  []; [] ;  []\OT1/ztmcm/m/n/12 )$\T1/ptm/m/n/12 (-20) .
  []
 
-[104] [105] [106]
-<Chapter6/Figs/Raster/RedPillBluePill.jpg, id=1492, 500.87125pt x 290.08376pt>
-File: Chapter6/Figs/Raster/RedPillBluePill.jpg Graphic file (type jpg)
-
-<use Chapter6/Figs/Raster/RedPillBluePill.jpg>
-Package pdftex.def Info: Chapter6/Figs/Raster/RedPillBluePill.jpg used on input
- line 321.
-(pdftex.def)             Requested size: 437.46112pt x 253.37117pt.
- [107 <./Chapter6/Figs/Raster/RedPillBluePill.jpg>] (./Chapter6/Figs/Vector/GC.
-pdf_tex
-<Chapter6/Figs/Vector/GC.pdf, id=1498, page=1, 323.54654pt x 101.55595pt>
+[102] [103] [104] (./Chapter6/Figs/Vector/GC.pdf_tex
+<Chapter6/Figs/Vector/GC.pdf, id=1511, page=1, 323.54654pt x 101.55595pt>
 File: Chapter6/Figs/Vector/GC.pdf Graphic file (type pdf)
 
 <use Chapter6/Figs/Vector/GC.pdf, page 1>
@@ -2861,7 +2842,7 @@ Package pdftex.def Info: Chapter6/Figs/Vector/GC.pdf, page1 used on input line
 53.
 (pdftex.def)             Requested size: 323.54652pt x 101.56033pt.
 
-<Chapter6/Figs/Vector/GC.pdf, id=1499, page=2, 323.54654pt x 101.55595pt>
+<Chapter6/Figs/Vector/GC.pdf, id=1512, page=2, 323.54654pt x 101.55595pt>
 File: Chapter6/Figs/Vector/GC.pdf Graphic file (type pdf)
 
 <use Chapter6/Figs/Vector/GC.pdf, page 2>
@@ -2869,14 +2850,14 @@ Package pdftex.def Info: Chapter6/Figs/Vector/GC.pdf, page2 used on input line
 57.
 (pdftex.def)             Requested size: 323.54652pt x 101.56033pt.
 
-<Chapter6/Figs/Vector/GC.pdf, id=1500, page=3, 323.54654pt x 101.55595pt>
+<Chapter6/Figs/Vector/GC.pdf, id=1513, page=3, 323.54654pt x 101.55595pt>
 File: Chapter6/Figs/Vector/GC.pdf Graphic file (type pdf)
 
 <use Chapter6/Figs/Vector/GC.pdf, page 3>
 Package pdftex.def Info: Chapter6/Figs/Vector/GC.pdf, page3 used on input line 
 61.
 (pdftex.def)             Requested size: 323.54652pt x 101.56033pt.
-) [108 <./Chapter6/Figs/Vector/GC.pdf> <./Chapter6/Figs/Vector/GC.pdf
+) [105 <./Chapter6/Figs/Vector/GC.pdf> <./Chapter6/Figs/Vector/GC.pdf
 
 pdfTeX warning: pdflatex (file ./Chapter6/Figs/Vector/GC.pdf): PDF inclusion: m
 ultiple pdfs with page group included in a single page
@@ -2885,60 +2866,86 @@ ultiple pdfs with page group included in a single page
 pdfTeX warning: pdflatex (file ./Chapter6/Figs/Vector/GC.pdf): PDF inclusion: m
 ultiple pdfs with page group included in a single page
 >]
-Overfull \hbox (66.78676pt too wide) detected at line 477
+Overfull \hbox (66.78676pt too wide) detected at line 427
 []
  []
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[109] [110]) [111] [112]
+<Chapter6/Figs/Raster/subCircuit.jpg, id=1529, 1371.1225pt x 584.1825pt>
+File: Chapter6/Figs/Raster/subCircuit.jpg Graphic file (type jpg)
+
+<use Chapter6/Figs/Raster/subCircuit.jpg>
+Package pdftex.def Info: Chapter6/Figs/Raster/subCircuit.jpg used on input line
+ 440.
+(pdftex.def)             Requested size: 437.46112pt x 186.38063pt.
+
+<Chapter6/Figs/Raster/fullSubstractor.jpg, id=1531, 597.23125pt x 232.87pt>
+File: Chapter6/Figs/Raster/fullSubstractor.jpg Graphic file (type jpg)
+
+<use Chapter6/Figs/Raster/fullSubstractor.jpg>
+Package pdftex.def Info: Chapter6/Figs/Raster/fullSubstractor.jpg used on input
+ line 449.
+(pdftex.def)             Requested size: 437.46112pt x 170.57286pt.
+
+<Chapter6/Figs/Raster/comparisionCircuit.png, id=1533, 405.515pt x 299.1175pt>
+File: Chapter6/Figs/Raster/comparisionCircuit.png Graphic file (type png)
+
+<use Chapter6/Figs/Raster/comparisionCircuit.png>
+Package pdftex.def Info: Chapter6/Figs/Raster/comparisionCircuit.png used on in
+put line 464.
+(pdftex.def)             Requested size: 437.46112pt x 322.69064pt.
+ [106] [107] [108 <./Chapter6/Figs/Raster/subCircuit.jpg> <./Chapter6/Figs/Rast
+er/fullSubstractor.jpg>]
+[109 <./Chapter6/Figs/Raster/comparisionCircuit.png>] [110]) [111]
 \openout2 = `Chapter7/chapter7.aux'.
 
- (./Chapter7/chapter7.tex) (./thesis.bbl [113
+
+(./Chapter7/chapter7.tex) [112
 
 
 
 
+] (./thesis.bbl [113
 
-] [114]
-[115] [116]
-Underfull \hbox (badness 10000) in paragraph at lines 369--375
+] [114] [115] [116]
+Underfull \hbox (badness 10000) in paragraph at lines 392--398
 [][]\T1/ptm/m/n/12 (+20) OPM.  Opm says 5.6 mil-lion fin-ger-prints stolen in c
 y-ber-at-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 369--375
+Underfull \hbox (badness 10000) in paragraph at lines 392--398
 \T1/ptm/m/n/12 (+20) tack, five times as many as pre-vi-ously thought, the wash
 -ing-ton
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 369--375
+Underfull \hbox (badness 10000) in paragraph at lines 392--398
 \T1/ptm/m/n/12 (+20) post.  [][]$https : / / www . washingtonpost . com / news 
 / the-[]switch / wp / 2015 / 09 / 23 /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 369--375
+Underfull \hbox (badness 10000) in paragraph at lines 392--398
 \T1/ptm/m/n/12 (+20) opm-[]now-[]says-[]more-[]than-[]^^\ve-[]million-[]^^\nger
 prints-[]compromised-[]in-[]breaches/$[][].
  []
 
-[117]) [118]
+[117] [118]) [119]
 \openout2 = `Appendix1/appendix1.aux'.
 
- (./Appendix1/appendix1.tex
+ (./Appendix1/appendix1.tex [120
+
+
+]
 Appendix A.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24.88> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 2.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17.28> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 2.
-[119
-
-
-] [120]
+[121] [122]
 LaTeX Font Info:    Try loading font information for T1+cmtt on input line 71.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
@@ -2948,34 +2955,34 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-[121]) [122]
+[123]) [124]
 \openout2 = `Appendix2/appendix2.aux'.
 
  (./Appendix2/appendix2.tex
 Appendix B.
-) [123
+) [125
 
 
 
-] [124
+] [126
 
 
 ] (./thesis.ind)
 
 Package natbib Warning: There were undefined citations.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 456.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 456.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 453.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 453.
 (./thesis.aux (./Dedication/dedication.aux) (./Declaration/declaration.aux)
 (./Acknowledgement/acknowledgement.aux) (./Abstract/abstract.aux)
 (./Chapter1/chapter1.aux) (./Chapter2/chapter2.aux) (./Chapter3/chapter3.aux)
 (./Chapter4/chapter4.aux) (./Chapter5/chapter5.aux) (./Chapter6/chapter6.aux)
 (./Chapter7/chapter7.aux) (./Appendix1/appendix1.aux)
 (./Appendix2/appendix2.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 456.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 456.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 453.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 453.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 64BFA4EFAFD49052BAEE9D4C7CB936D3;19876.
+(rerunfilecheck)             Checksum: 24A6F7DF3FC3B0180A48ECB3291662FE;20788.
 
 
 LaTeX Warning: There were undefined references.
@@ -2985,13 +2992,13 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 41968 strings out of 493014
- 791680 string characters out of 6133351
- 885641 words of memory out of 5000000
- 43807 multiletter control sequences out of 15000+600000
- 140264 words of font info for 426 fonts, out of 8000000 for 9000
+ 41889 strings out of 493014
+ 790862 string characters out of 6133351
+ 877754 words of memory out of 5000000
+ 43735 multiletter control sequences out of 15000+600000
+ 123129 words of font info for 382 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,20n,92p,10383b,1189s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,20n,92p,10383b,1190s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
 live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texl
@@ -3008,10 +3015,10 @@ type1/urw/symbol/usyr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/t
 imes/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmbi
 8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></u
 sr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (142 pages, 1294252 bytes).
+Output written on thesis.pdf (144 pages, 1060940 bytes).
 PDF statistics:
- 1828 PDF objects out of 2073 (max. 8388607)
- 1615 compressed objects within 17 object streams
- 505 named destinations out of 1000 (max. 500000)
- 81187 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 1869 PDF objects out of 2073 (max. 8388607)
+ 1656 compressed objects within 17 object streams
+ 516 named destinations out of 1000 (max. 500000)
+ 66875 words of extra memory for PDF output out of 74296 (max. 10000000)
 

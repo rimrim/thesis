@@ -20,12 +20,13 @@
     "sec:6keyswitch"
     "sec:6hdcomp"
     "sec:6garbled"
-    "fig:RedPillBluePill"
-    "fig:DH21OT"
     "sec:yao-garbled-circuit"
     "sec:4thProcDetails"
     "sec:4thprocSteps"
     "fig:fourthProtocol"
+    "fig:substractor"
+    "fig:fullSubstractor"
+    "fig:comparisionCircuit"
     "alg:hd-comp-homom"
     "sec:6results"))
  :latex)

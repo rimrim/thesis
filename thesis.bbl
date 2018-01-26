@@ -238,6 +238,11 @@ Hoffstein, J., Pipher, J., and Silverman, J. (1996).
 \newblock Ntru: A ring-based public key cryptosystem.
 \newblock {\em Algorithmic number theory}, pages 267--288.
 
+\bibitem[Ishai et~al., 2003]{ishai2003extending24}
+Ishai, Y., Kilian, J., Nissim, K., and Petrank, E. (2003).
+\newblock Extending oblivious transfers efficiently.
+\newblock In {\em Crypto}, volume 2729, pages 145--161. Springer.
+
 \bibitem[Jain et~al., 2007]{jain2007handbook}
 Jain, A., Flynn, P., and Ross, A.~A. (2007).
 \newblock {\em Handbook of biometrics}.
@@ -273,6 +278,17 @@ Kawachi, A., Tanaka, K., and Xagawa, K. (2008).
   hardness of lattice problems.
 \newblock In {\em International Conference on the Theory and Application of
   Cryptology and Information Security}, pages 372--389. Springer.
+
+\bibitem[Kolesnikov et~al., 2009]{kolesnikov2009improved29}
+Kolesnikov, V., Sadeghi, A.-R., and Schneider, T. (2009).
+\newblock Improved garbled circuit building blocks and applications to auctions
+  and computing minima.
+\newblock {\em Cryptology and Network Security}, pages 1--20.
+
+\bibitem[Kolesnikov and Schneider, 2008]{kolesnikov2008improved30}
+Kolesnikov, V. and Schneider, T. (2008).
+\newblock Improved garbled circuit: Free xor gates and applications.
+\newblock {\em Automata, Languages and Programming}, pages 486--498.
 
 \bibitem[Lacharme et~al., 2013]{lacharme2013preimage}
 Lacharme, P., Cherrier, E., and Rosenberger, C. (2013).
@@ -359,6 +375,13 @@ Nagar, A., Nandakumar, K., and Jain, A.~K. (2010).
   templates.
 \newblock {\em Pattern Recognition Letters}, 31(8):733--741.
 
+\bibitem[Naor and Pinkas, 2001]{naor2001efficient35}
+Naor, M. and Pinkas, B. (2001).
+\newblock Efficient oblivious transfer protocols.
+\newblock In {\em Proceedings of the twelfth annual ACM-SIAM symposium on
+  Discrete algorithms}, pages 448--457. Society for Industrial and Applied
+  Mathematics.
+
 \bibitem[Nguyen and Stehl{\'e}, 2006]{nguyen2006lll}
 Nguyen, P.~Q. and Stehl{\'e}, D. (2006).
 \newblock Lll on the average.
@@ -385,6 +408,11 @@ Peikert, C., Vaikuntanathan, V., and Waters, B. (2008).
 \newblock A framework for efficient and composable oblivious transfer.
 \newblock In {\em Annual International Cryptology Conference}, pages 554--571.
   Springer.
+
+\bibitem[Pinkas et~al., 2009]{pinkas2009secure38}
+Pinkas, B., Schneider, T., Smart, N.~P., and Williams, S.~C. (2009).
+\newblock Secure two-party computation is practical.
+\newblock In {\em Asiacrypt}, volume~9, pages 250--267. Springer.
 
 \bibitem[Rackoff and Simon, 1991]{rackoff1991non}
 Rackoff, C. and Simon, D.~R. (1991).
@@ -446,6 +474,13 @@ Shahandashti, S.~F., Safavi-Naini, R., and Ogunbona, P. (2012).
 \newblock In {\em Australasian Conference on Information Security and Privacy},
   pages 426--433. Springer.
 
+\bibitem[Shor, 1994]{shor1994algorithms}
+Shor, P.~W. (1994).
+\newblock Algorithms for quantum computation: Discrete logarithms and
+  factoring.
+\newblock In {\em Foundations of Computer Science, 1994 Proceedings., 35th
+  Annual Symposium on}, pages 124--134. Ieee.
+
 \bibitem[Smart and Vercauteren, 2014]{smart2014fully}
 Smart, N.~P. and Vercauteren, F. (2014).
 \newblock Fully homomorphic simd operations.
@@ -477,6 +512,12 @@ Uludag, U. and Jain, A.~K. (2004).
 Uludag, U., Pankanti, S., Prabhakar, S., and Jain, A.~K. (2004).
 \newblock Biometric cryptosystems: issues and challenges.
 \newblock {\em Proceedings of the IEEE}, 92(6):948--960.
+
+\bibitem[Yao, 1986]{yao1986generate}
+Yao, A. C.-C. (1986).
+\newblock How to generate and exchange secrets.
+\newblock In {\em Foundations of Computer Science, 1986., 27th Annual Symposium
+  on}, pages 162--167. IEEE.
 
 \bibitem[Yasuda et~al., 2014]{yasuda2014practical}
 Yasuda, M., Shimoyama, T., Kogure, J., Yokoyama, K., and Koshiba, T. (2014).

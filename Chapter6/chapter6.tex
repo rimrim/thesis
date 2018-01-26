@@ -310,61 +310,11 @@ and \(\mathbf{m}\) before adding up the results.
 \label{sec:6garbled}
 
 \subsection{Oblivious Transfer}
-\textit{"You take the blue pill, the story ends. You wake up in your bed and
-  believe whatever you want to believe. You take the red pill, you stay in
-  wonderland, and I show you how deep the rabbit hole goes."} - Morpheus to Neo,
-the Matrix.
-
-
-\begin{figure}[htbp!] 
-\centering    
-\includegraphics[width=1.0\textwidth]{RedPillBluePill}
-\caption[Minion]{This is just a long figure caption for the minion in Despicable Me from Pixar}
-\label{fig:RedPillBluePill}
-\end{figure}
-
-What if, in such situation, there is a protocol to give privacy to
-\(Neo\): \(Morpheus\) should not learn about \(Neo\)'s selection. Moreover, the
-protocol can also provide privacy to \(Morpheus\): \(Neo\) should not learn
-anything about the unchosen pill. In cryptography, Oblivious Transfer (OT) is a
-protocol that can support such scenario. In the most basic form, it is a
-two-parties protocol between a \textit{Sender} and a \textit{Receiver}, denoted
-by \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT. The \(Sender\) uses
-two private inputs \(x_{0}, x_{1}\) and the \(Receiver\) uses one input bit
-\(s\). At the completion of the protocol, the \(Receiver\) gets the bit
-\(x_{s}\) without letting the \(Sender\) know any information about the value of
-\(s\): \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix}
-\)-OT\((x_{0},x_{1};s) = x_{s}\).
-
-The general idea is, when the receiver requests an item, the sender sends all the
-items to the receiver and therefore it does not know which item is the one
-requested. However, the response is encrypted in such a way that the receiver
-can only decrypt the one he requested. A concrete implementation example of
-\(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT protocol based on
-discrete log DH is illustrated in figure \ref{fig:DH21OT}. The receiver picks \(h_{0},h_{1}\) such that \(h_{0}h_{1} = h\), he cannot know both \(\log_{g}h_{0}\) and \(\log_{g}h_{1}\). Given \(h_{0}, h_{1}\), the sender returns ElGamal encryptions of bits \(x_{0}, x_{1}\) using \(h_{0},h_{1}\) as public keys. The receiver then decrypts one of the encryption to recover either \(x_{0} or x_{1}\)
-
-\begin{figure}[h!]
-  \centering
-  \begin{equation*}
-    \begin{array}{c c c}
-      \text{\textbf{Sender}} & & \text{\textbf{Receiver}} \\
-      \\
-      (x_{0}, x_{1} \in \{0,1\}) & & (s \in \{0,1\}) \\
-                             & & u \randomsample \mathbb{Z}_{n}\\
-                             & & h_{s} \gets g^{u}\\
-                             & & h_{1-s} \gets h/g^{u}\\
-                             & \xleftarrow{h_{0}, h_{1}} & \\
-      u_{0}, u_{1} \randomsample \mathbb{Z}_{n} & & \\
-      (A_{0}, B_{0}) \gets (g^{u_{0}}, h_{0}^{u_{0}}g^{x_{0}}) & & \\
-      (A_{1}, B_{1}) \gets (g^{u_{1}}, h_{1}^{u_{1}}g^{x_{1}}) & & \\
-                             & \xrightarrow{(A_{0}, B_{0}),(A_{1}, B_{1})} & \\
-      & & x_{s} \gets \log_{g}(B_{s}/A_{s}^{u})
-    \end{array}
-  \end{equation*}
-  \caption{OT protocol based on DH}
-  \label{fig:DH21OT}
-\end{figure}
-
+In 1-out-of-2 Oblivious Transfer protocol (denoted by
+\(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT), a \textit{sender} has
+two choices \(m_{0}, m_{1}\), and a \textit{receiver} has one bit \(b\) as its
+input. At the end of the protocol, the \(receiver\) learns \(m_{b}\) and the
+sender learns nothing about the \(receiver\)'s query.
 
 \subsection{Yao Garbled Circuit}
 \label{sec:yao-garbled-circuit}
@@ -418,7 +368,7 @@ non-XOR gates.
 \subsection{The protocol description}
 \label{sec:4thprocSteps}
     
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
     \begin{equation*}
         \begin{array}{c c c}
@@ -432,6 +382,7 @@ non-XOR gates.
 
                                & \xleftrightarrow{\text{4. Prove \textbf{Q} is binary}} & \\
 
+                               & & \text{Sample \(r \randomsample \mathbb{Z}_{t}\)}\\
                                & & \text{5. Setup garbled circuit GC, for } i = 1,\dots,k \\
 
                                & & \text{6. Setup } (K^{0}_{r_{i}}, K^{1}_{r_{i}}) \text{ for } GC_r \\
@@ -445,7 +396,6 @@ non-XOR gates.
 
                                & & \text{10. } \enc{\mathbf{HD}} = HDBGV(\enc{\mathbf{T}},\enc{\mathbf{Q}}) \\
           
-                               & & \text{11. Sample \(r \randomsample \mathbb{Z}_{t}\)}\\
                                    & & \text{Compute } \enc{\mathbf{HD'}} = \enc{\mathbf{HD + r}}\\
 
                                & \xleftarrow{\enc{\mathbf{HD'}}} & \\
@@ -481,10 +431,42 @@ non-XOR gates.
 \end{figure}
 
 \subsection{The Garble Circuit and Oblivious Transfer}
+We use standard substractor circuit for the operation \(HD = HD' - r\). Given 2
+n-bit bitstring, the circuit is built from 1 half-substractor and \(n-1\)
+full-substractors as in Figure \ref{fig:substractor}
 
-\paragraph{The circuit setup}
+\begin{figure}[htbp!] 
+  \centering    
+  \includegraphics[width=1.0\textwidth]{Chapter6/Figs/Raster/subCircuit}
+  \caption{Substractor Circuit}
+  \label{fig:substractor}
+\end{figure}
 
-\paragraph{Circuit preparation}
+Where a half-substractor is built from 1 XOR gate and 1 AND gate, a full-substractor is built from 2 half-substractors and 1 OR gate (Figure \ref{fig:fullSubstractor})
+
+\begin{figure}[htbp!] 
+  \centering    
+  \includegraphics[width=1.0\textwidth]{Chapter6/Figs/Raster/fullSubstractor}
+  \caption{Half-substractor and Full-substractor}
+  \label{fig:fullSubstractor}
+\end{figure}
+
+For our context, let \(l\) to be the bit length of the HD' and r (\(l\) is
+typically 10-12 bits for 1024-2048 bits biometrics data), so we need about
+\(5l\) gates for the substractor logic gates. The comparision circuit needs not
+to output 3 result as standard ones (where they can output either A > B, A < B
+or A = B), we simply want to check whether \(HD' - r < \tau\), so we can simply
+have another l NAND gates plus \(l-1\) XOR gates for the comparsion circuit (An
+example is as in Figure \ref{fig:comparisionCircuit})
+
+\begin{figure}[htbp!] 
+  \centering    
+  \includegraphics[width=1.0\textwidth]{Chapter6/Figs/Raster/comparisionCircuit}
+  \caption{Comparator Circuit}
+  \label{fig:comparisionCircuit}
+\end{figure}
+
+\paragraph{Garble Circuit preparation}
 We denote \(GC\) to be the garbled circuit prepared by the server. The inputs to
 the circuit include the server's \(GC_{r}\) and the client's \(GC_{h}\), which
 are the cryptographic key \textit{labels} corresponding to the server's input

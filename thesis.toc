@@ -7,96 +7,101 @@
 \contentsline {section}{\numberline {1.3}Contributions of the thesis}{5}{section.1.3}
 \contentsline {section}{\numberline {1.4}Organization of the thesis}{6}{section.1.4}
 \contentsline {chapter}{\numberline {2}Definitions and Preliminaries}{7}{chapter.2}
-\contentsline {section}{\numberline {2.1}Short title}{7}{section.2.1}
-\contentsline {section}{\numberline {2.3}General Notations}{11}{section.2.3}
-\contentsline {section}{\numberline {2.4}Lattices}{11}{section.2.4}
-\contentsline {section}{\numberline {2.5}Lattice Preliminaries}{11}{section.2.5}
-\contentsline {subsection}{\numberline {2.5.1}The motivations}{11}{subsection.2.5.1}
-\contentsline {subsection}{\numberline {2.5.2}The mathematics}{13}{subsection.2.5.2}
-\contentsline {subsection}{\numberline {2.5.3}q-ary lattices and SIS problem}{16}{subsection.2.5.3}
-\contentsline {section}{\numberline {2.6}LWE}{26}{section.2.6}
-\contentsline {section}{\numberline {2.7}Homomorphic Cryptosystems}{43}{section.2.7}
-\contentsline {subsection}{\numberline {2.7.1}Homomorphic Encryption}{43}{subsection.2.7.1}
-\contentsline {subsection}{\numberline {2.7.2}Ciphertext packing}{44}{subsection.2.7.2}
-\contentsline {section}{\numberline {2.8}Zero Knowledge Proof Systems}{45}{section.2.8}
-\contentsline {subsection}{\numberline {2.8.1}Zero Knowledge Proofs and ISIS problem}{45}{subsection.2.8.1}
-\contentsline {subsection}{\numberline {2.8.2}SternExt Protocol}{46}{subsection.2.8.2}
-\contentsline {section}{\numberline {2.9}Garbled Circuit and Oblivious Transfer}{47}{section.2.9}
-\contentsline {section}{\numberline {2.10}The Syntax and Security model}{47}{section.2.10}
-\contentsline {subsubsection}{The threats}{48}{section*.25}
-\contentsline {subsubsection}{The Generic Two-party model}{48}{section*.26}
-\contentsline {subsubsection}{The security model}{50}{section*.27}
-\contentsline {section}{\numberline {2.11}Conclusion}{52}{section.2.11}
-\contentsline {chapter}{\numberline {3}The First Protocol - Computing HD Homomorphically}{53}{chapter.3}
-\contentsline {section}{\numberline {3.1}Introduction}{53}{section.3.1}
-\contentsline {section}{\numberline {3.2}Related Work}{54}{section.3.2}
-\contentsline {section}{\numberline {3.3}The BGV Cryptosystem and Yasuda Packing Method}{55}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Feature codes and HD Computation homomorphically}{55}{subsection.3.3.1}
-\contentsline {section}{\numberline {3.4}Zero-knowledge proof system}{56}{section.3.4}
-\contentsline {section}{\numberline {3.5}Stern-based variant ZKP}{56}{section.3.5}
-\contentsline {subsection}{\numberline {3.5.1}Stern-based ZKP}{56}{subsection.3.5.1}
-\contentsline {section}{\numberline {3.6}Our Protocol}{60}{section.3.6}
-\contentsline {subsubsection}{Correctness}{61}{section*.29}
-\contentsline {subsubsection}{Security}{62}{section*.30}
-\contentsline {section}{\numberline {3.7}Security Proofs}{62}{section.3.7}
-\contentsline {subsection}{\numberline {3.7.1}Security Proof for Theorem\nobreakspace {}\ref {theo:server}: Privacy against Server}{62}{subsection.3.7.1}
-\contentsline {subsection}{\numberline {3.7.2}Security Proof for Theorem\nobreakspace {}\ref {theo:client}: Type I Impersionation attack}{63}{subsection.3.7.2}
-\contentsline {subsection}{\numberline {3.7.3}Security Proof for Theorem\nobreakspace {}\ref {theo:client}: Type II Impersionation attack}{65}{subsection.3.7.3}
-\contentsline {section}{\numberline {3.8}Result Evaluation}{66}{section.3.8}
-\contentsline {subsection}{\numberline {3.8.1}Parameters}{66}{subsection.3.8.1}
-\contentsline {subsection}{\numberline {3.8.2}Limitations and open problems}{67}{subsection.3.8.2}
-\contentsline {section}{\numberline {3.9}Conclusion}{67}{section.3.9}
-\contentsline {chapter}{\numberline {4}The Second Protocol - Covering Circuit Privacy}{69}{chapter.4}
-\contentsline {section}{\numberline {4.1}Introduction}{69}{section.4.1}
-\contentsline {section}{\numberline {4.2}Previous Works}{69}{section.4.2}
-\contentsline {section}{\numberline {4.3}Renyi Divergence Analysis technique}{69}{section.4.3}
-\contentsline {subsection}{\numberline {4.3.1}Correctness Analysis}{73}{subsection.4.3.1}
-\contentsline {paragraph}{correctness analysis}{73}{section*.31}
-\contentsline {section}{\numberline {4.4}Results}{74}{section.4.4}
-\contentsline {chapter}{\numberline {5}The third protocol - Computing and Comparing HD Homomorphically}{75}{chapter.5}
-\contentsline {section}{\numberline {5.1}Introduction}{75}{section.5.1}
-\contentsline {section}{\numberline {5.2}The Homomorphic tools}{76}{section.5.2}
-\contentsline {subsection}{\numberline {5.2.1}Extracting the Most Significant Bit homomorphically}{76}{subsection.5.2.1}
-\contentsline {subsection}{\numberline {5.2.2}Proof of lemma \ref {lemma:bitToBin}}{77}{subsection.5.2.2}
-\contentsline {subsection}{\numberline {5.2.3}Converting from binary-encoded to unary-encoded plaintext}{77}{subsection.5.2.3}
-\contentsline {section}{\numberline {5.3}The Zero Knowledge Tools}{78}{section.5.3}
-\contentsline {subsection}{\numberline {5.3.1}ZKPoPK of Regev Cryptosystem}{78}{subsection.5.3.1}
-\contentsline {subsection}{\numberline {5.3.2}ZKPoPK of BV cryptosystem}{80}{subsection.5.3.2}
-\contentsline {subsection}{\numberline {5.3.3}ZKP of plaintext with zero coefficients}{81}{subsection.5.3.3}
-\contentsline {subsection}{\numberline {5.3.4}ZKP of re-encryption correctness}{83}{subsection.5.3.4}
-\contentsline {subsection}{\numberline {5.3.5}Schnorr-based ZKP technique}{84}{subsection.5.3.5}
-\contentsline {subsection}{\numberline {5.3.6}ZKP and $\sum $-Protocol}{87}{subsection.5.3.6}
-\contentsline {subsection}{\numberline {5.3.7}Combination of ZKP}{88}{subsection.5.3.7}
-\contentsline {section}{\numberline {5.4}Proposed Scheme}{90}{section.5.4}
-\contentsline {subsection}{\numberline {5.4.1}The protocol}{90}{subsection.5.4.1}
+\contentsline {section}{\numberline {2.1}General Notations}{7}{section.2.1}
+\contentsline {section}{\numberline {2.2}Lattices}{8}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}The motivations}{8}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Lattice Preliminaries}{8}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}q-ary lattices and SIS problem}{11}{subsection.2.2.3}
+\contentsline {subsection}{\numberline {2.2.4}A cryptographic example}{12}{subsection.2.2.4}
+\contentsline {subsection}{\numberline {2.2.5}Security of lattice-based cryptography}{13}{subsection.2.2.5}
+\contentsline {subsubsection}{LLL algorithm}{14}{section*.10}
+\contentsline {subsubsection}{LLL solution to $\gamma -SVP$}{16}{section*.11}
+\contentsline {subsubsection}{LLL in practice}{17}{section*.12}
+\contentsline {subsection}{\numberline {2.2.6}An example of parameters choice}{18}{subsection.2.2.6}
+\contentsline {section}{\numberline {2.3}Learning With Error}{20}{section.2.3}
+\contentsline {section}{\numberline {2.4}Homomorphic Cryptosystems}{37}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Homomorphic Encryption}{37}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}Ciphertext packing}{38}{subsection.2.4.2}
+\contentsline {section}{\numberline {2.5}Zero Knowledge Proof Systems}{39}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}Zero Knowledge Proofs and ISIS problem}{39}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}SternExt Protocol}{40}{subsection.2.5.2}
+\contentsline {section}{\numberline {2.6}Garbled Circuit and Oblivious Transfer}{41}{section.2.6}
+\contentsline {subsection}{\numberline {2.6.1}Garbled Circuit}{41}{subsection.2.6.1}
+\contentsline {subsection}{\numberline {2.6.2}Oblivious Transfer}{43}{subsection.2.6.2}
+\contentsline {section}{\numberline {2.7}The Syntax and Security model}{44}{section.2.7}
+\contentsline {subsubsection}{The threats}{44}{section*.21}
+\contentsline {subsubsection}{The Generic Two-party model}{45}{section*.22}
+\contentsline {subsubsection}{The security model}{46}{section*.23}
+\contentsline {section}{\numberline {2.8}Conclusion}{49}{section.2.8}
+\contentsline {chapter}{\numberline {3}The First Protocol - Computing HD Homomorphically}{51}{chapter.3}
+\contentsline {section}{\numberline {3.1}Introduction}{51}{section.3.1}
+\contentsline {section}{\numberline {3.2}Related Work}{52}{section.3.2}
+\contentsline {section}{\numberline {3.3}The BGV Cryptosystem and Yasuda Packing Method}{53}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Feature codes and HD Computation homomorphically}{53}{subsection.3.3.1}
+\contentsline {section}{\numberline {3.4}Zero-knowledge proof system}{54}{section.3.4}
+\contentsline {section}{\numberline {3.5}Stern-based variant ZKP}{54}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Stern-based ZKP}{54}{subsection.3.5.1}
+\contentsline {section}{\numberline {3.6}Our Protocol}{58}{section.3.6}
+\contentsline {subsubsection}{Correctness}{59}{section*.25}
+\contentsline {subsubsection}{Security}{60}{section*.26}
+\contentsline {section}{\numberline {3.7}Security Proofs}{60}{section.3.7}
+\contentsline {subsection}{\numberline {3.7.1}Security Proof for Theorem\nobreakspace {}\ref {theo:server}: Privacy against Server}{60}{subsection.3.7.1}
+\contentsline {subsection}{\numberline {3.7.2}Security Proof for Theorem\nobreakspace {}\ref {theo:client}: Type I Impersionation attack}{61}{subsection.3.7.2}
+\contentsline {subsection}{\numberline {3.7.3}Security Proof for Theorem\nobreakspace {}\ref {theo:client}: Type II Impersionation attack}{63}{subsection.3.7.3}
+\contentsline {section}{\numberline {3.8}Result Evaluation}{64}{section.3.8}
+\contentsline {subsection}{\numberline {3.8.1}Parameters}{64}{subsection.3.8.1}
+\contentsline {subsection}{\numberline {3.8.2}Limitations and open problems}{65}{subsection.3.8.2}
+\contentsline {section}{\numberline {3.9}Conclusion}{65}{section.3.9}
+\contentsline {chapter}{\numberline {4}The Second Protocol - Covering Circuit Privacy}{67}{chapter.4}
+\contentsline {section}{\numberline {4.1}Introduction}{67}{section.4.1}
+\contentsline {section}{\numberline {4.2}Previous Works}{67}{section.4.2}
+\contentsline {section}{\numberline {4.3}Renyi Divergence Analysis technique}{67}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Correctness Analysis}{71}{subsection.4.3.1}
+\contentsline {paragraph}{correctness analysis}{71}{section*.27}
+\contentsline {section}{\numberline {4.4}Results}{72}{section.4.4}
+\contentsline {chapter}{\numberline {5}The third protocol - Computing and Comparing HD Homomorphically}{73}{chapter.5}
+\contentsline {section}{\numberline {5.1}Introduction}{73}{section.5.1}
+\contentsline {section}{\numberline {5.2}The Homomorphic tools}{74}{section.5.2}
+\contentsline {subsection}{\numberline {5.2.1}Extracting the Most Significant Bit homomorphically}{74}{subsection.5.2.1}
+\contentsline {subsection}{\numberline {5.2.2}Proof of lemma \ref {lemma:bitToBin}}{75}{subsection.5.2.2}
+\contentsline {subsection}{\numberline {5.2.3}Converting from binary-encoded to unary-encoded plaintext}{75}{subsection.5.2.3}
+\contentsline {section}{\numberline {5.3}The Zero Knowledge Tools}{76}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}ZKPoPK of Regev Cryptosystem}{76}{subsection.5.3.1}
+\contentsline {subsection}{\numberline {5.3.2}ZKPoPK of BV cryptosystem}{78}{subsection.5.3.2}
+\contentsline {subsection}{\numberline {5.3.3}ZKP of plaintext with zero coefficients}{79}{subsection.5.3.3}
+\contentsline {subsection}{\numberline {5.3.4}ZKP of re-encryption correctness}{81}{subsection.5.3.4}
+\contentsline {subsection}{\numberline {5.3.5}Schnorr-based ZKP technique}{82}{subsection.5.3.5}
+\contentsline {subsection}{\numberline {5.3.6}ZKP and $\sum $-Protocol}{85}{subsection.5.3.6}
+\contentsline {subsection}{\numberline {5.3.7}Combination of ZKP}{86}{subsection.5.3.7}
+\contentsline {section}{\numberline {5.4}Proposed Scheme}{88}{section.5.4}
+\contentsline {subsection}{\numberline {5.4.1}The protocol}{89}{subsection.5.4.1}
 \contentsline {section}{\numberline {5.5}Security Proofs}{92}{section.5.5}
 \contentsline {subsection}{\numberline {5.5.1}Security Proof for Theorem\nobreakspace {}\ref {theo:client}: Type I Impersionation attack}{92}{subsection.5.5.1}
 \contentsline {subsection}{\numberline {5.5.2}Security Proof for Theorem\nobreakspace {}\ref {theo:client}: Type II Impersionation attack}{94}{subsection.5.5.2}
 \contentsline {subsection}{\numberline {5.5.3}Security Proof for Theorem\nobreakspace {}\ref {theo:server}: Privacy against Server}{95}{subsection.5.5.3}
 \contentsline {section}{\numberline {5.6}The algorithms}{96}{section.5.6}
-\contentsline {section}{\numberline {5.7}Evaluation and Results}{99}{section.5.7}
-\contentsline {chapter}{\numberline {6}The fourth protocol - Removing The Overhead}{101}{chapter.6}
-\contentsline {section}{\numberline {6.1}Introduction}{101}{section.6.1}
-\contentsline {section}{\numberline {6.2}The Challenge-Response Technique}{102}{section.6.2}
-\contentsline {section}{\numberline {6.3}The BGV Cryptosystem and CRT packing method}{103}{section.6.3}
-\contentsline {paragraph}{Ciphertext packing}{103}{section*.40}
-\contentsline {paragraph}{Number Theoretic Transform}{103}{section*.41}
-\contentsline {subsection}{\numberline {6.3.1}The rotate and permute function}{105}{subsection.6.3.1}
-\contentsline {paragraph}{Slot Rotation}{105}{section*.42}
-\contentsline {subsection}{\numberline {6.3.2}The flattening gadget}{107}{subsection.6.3.2}
-\contentsline {subsection}{\numberline {6.3.3}The keyswitch and modswitch operation}{107}{subsection.6.3.3}
-\contentsline {section}{\numberline {6.4}HD computation}{107}{section.6.4}
-\contentsline {section}{\numberline {6.5}Garbled Circuit and Oblivious Transfer}{107}{section.6.5}
-\contentsline {subsection}{\numberline {6.5.1}Oblivious Transfer}{107}{subsection.6.5.1}
-\contentsline {subsection}{\numberline {6.5.2}Yao Garbled Circuit}{108}{subsection.6.5.2}
-\contentsline {section}{\numberline {6.6}The details}{109}{section.6.6}
-\contentsline {subsection}{\numberline {6.6.1}The protocol description}{109}{subsection.6.6.1}
-\contentsline {subsection}{\numberline {6.6.2}The Garble Circuit and Oblivious Transfer}{109}{subsection.6.6.2}
-\contentsline {paragraph}{The circuit setup}{109}{section*.46}
-\contentsline {paragraph}{Circuit preparation}{109}{section*.47}
-\contentsline {paragraph}{BGV-based OT}{110}{section*.49}
+\contentsline {section}{\numberline {5.7}Evaluation and Results}{96}{section.5.7}
+\contentsline {chapter}{\numberline {6}The fourth protocol - Removing The Overhead}{99}{chapter.6}
+\contentsline {section}{\numberline {6.1}Introduction}{99}{section.6.1}
+\contentsline {section}{\numberline {6.2}The Challenge-Response Technique}{100}{section.6.2}
+\contentsline {section}{\numberline {6.3}The BGV Cryptosystem and CRT packing method}{101}{section.6.3}
+\contentsline {paragraph}{Ciphertext packing}{101}{section*.38}
+\contentsline {paragraph}{Number Theoretic Transform}{101}{section*.39}
+\contentsline {subsection}{\numberline {6.3.1}The rotate and permute function}{103}{subsection.6.3.1}
+\contentsline {paragraph}{Slot Rotation}{103}{section*.40}
+\contentsline {subsection}{\numberline {6.3.2}The flattening gadget}{105}{subsection.6.3.2}
+\contentsline {subsection}{\numberline {6.3.3}The keyswitch and modswitch operation}{105}{subsection.6.3.3}
+\contentsline {section}{\numberline {6.4}HD computation}{105}{section.6.4}
+\contentsline {section}{\numberline {6.5}Garbled Circuit and Oblivious Transfer}{105}{section.6.5}
+\contentsline {subsection}{\numberline {6.5.1}Oblivious Transfer}{105}{subsection.6.5.1}
+\contentsline {subsection}{\numberline {6.5.2}Yao Garbled Circuit}{105}{subsection.6.5.2}
+\contentsline {section}{\numberline {6.6}The details}{106}{section.6.6}
+\contentsline {subsection}{\numberline {6.6.1}The protocol description}{106}{subsection.6.6.1}
+\contentsline {subsection}{\numberline {6.6.2}The Garble Circuit and Oblivious Transfer}{106}{subsection.6.6.2}
+\contentsline {paragraph}{Garble Circuit preparation}{106}{section*.45}
+\contentsline {paragraph}{BGV-based OT}{110}{section*.47}
 \contentsline {subsection}{\numberline {6.6.3}HD Computation Homomorphically - BGV}{111}{subsection.6.6.3}
 \contentsline {section}{\numberline {6.7}Results}{111}{section.6.7}
-\contentsline {chapter}{References}{113}{chapter*.50}
-\contentsline {chapter}{Appendix \numberline {A}How to install \LaTeX }{119}{Appendix.a.A}
-\contentsline {chapter}{Appendix \numberline {B}Installing the CUED class file}{123}{Appendix.a.B}
+\contentsline {chapter}{References}{113}{chapter*.48}
+\contentsline {chapter}{Appendix \numberline {A}How to install \LaTeX }{121}{Appendix.a.A}
+\contentsline {chapter}{Appendix \numberline {B}Installing the CUED class file}{125}{Appendix.a.B}

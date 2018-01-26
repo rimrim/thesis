@@ -782,9 +782,46 @@ that $P$ knows plaintext encrypted in $2\mathbf{c_0}$
 $\sum-$protocol can be composed together to construct more complex relations.
 There are several forms of decomposition such as AND, OR, NEQ, etc.  We describe
 some forms of composition of \(\sum-protocol\) that are used in our protocol:
-AND-composition, OR-composition. The BV-ZKP (Figure
-\ref{fig:belhamoudaProtocol}) protocol is used to demonstrate how to construct
-advanced $\sum-protocol$.
+AND-composition, OR-composition. We first describe the generic \(\sum-\)protocol
+and its combinations. The BV-ZKP (Figure \ref{fig:belhamoudaProtocol}) protocol
+is an instance of such protocol and the technique can be applied inherently.
+\begin{description}
+\item[$\sum-$protocol] The protocol is a generic 3-moves between 2 parties
+  \(Prover\) and \(Verifier\), it is used to prove (in zero knowledge) a
+  relation \(R(x,w)\), where \(x\) is the public parameters known by both
+  parties and \(w\) is a witness known by the \(Prover\) only. The protocol's
+  view is a set of 3 messages (Figure \ref{fig:sigmaProtocol}): the commitment
+  \(c\) is a function of a random factor \(\rho\), the challenge \(ch\) is
+  normally random and the response \(r\) is a function computed from
+  \(x, w, \rho, ch\). There are 2 extra algorithms for \(\sum-\)protocol: a
+  \(verify(r,ch,c)\) algorithm used by the \(Verifier\) in the last step to
+  check the correctness of the proof result and a simulator \(sim\) that takes
+  \(x\) and a random parameter \(\rho'\) as input and outputs a view
+  \(\bar{c},\bar{ch},\bar{r}\) that is indistinguishable from the genuine view
+  of the protocol.
+  \begin{figure}[h!]
+    \centering
+    \begin{equation*}
+      \begin{array}{c c c}
+        \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+        \\
+        \rho \randomsample random & & \\
+        c = comm(\rho) & & \\
+                               & \xrightarrow{c} & \\
+                               & & ch \randomsample random \\
+                               & \xleftarrow{ch} & \\
+        r = resp(\rho,w,x,ch) & & \\
+                               & \xrightarrow{r} & \\
+                               & & verify(r, ch, c)\\
+      \end{array}
+    \end{equation*}
+    \caption{Sigma Protocol}
+    \label{fig:sigmaProtocol}
+  \end{figure}
+  
+\end{description}
+
+
 \begin{description}
 \item[AND-COMPOSITION] Given two relations $R_1 = \left\{ (v_1,w_1) \right\}$
   and $R_2 = \left\{ (v_2, w_2) \right\}$ with the same challenge space, a
@@ -792,24 +829,9 @@ advanced $\sum-protocol$.
   $R_1 \wedge R_2 = \left\{ (v_1, v_2, w_1, w_2): (v_1;w_1) \in R_1, (v_2,w_2)
     \in R_2\right\}$ can be obtained by running a $\sum$-Protocol for $R_1$ and
   a $\sum$-Protocol for $R_2$ in parallel, using a \emph{common} challenge.
-  (Figure \ref{fig:belhamoudaProtocolAND})
-
-\item[OR-Compostion] In this composition, given the $\sum-protocol$ for 2
-  relations $R_{1}$ and $R_{2}$, the goal is to construct a protocol for the
-  relation
-  $R_{1} \vee R_{2} = \{ (v_1, v_2; w_1, w_2):(v_1;w_1) \in R_1 \vee (v_2;w_2)
-  \in R_2\} $. The main idea to construct this composition is that the verifier
-  can let the prover using the simulator of the \(\sum-protocol\) for one of the
-  relation \(R_{i}\) that the prover does not know the witness
-  \((i = 1 \text{ or } i = 2)\). The verifier provides a single challenge \(c\)
-  such that the prover can split that into two challenges \(c_{1}, c_{2}\)
-  provided that \(c_{1}, c_{2}\) satisfy a liner constraint in terms of \(c\),
-  for example \(c = c_{1} \xor c_{2}\). The final OR-combination proof is
-  obtained by composing one run of the \(\sum-protocol\) with another run of the
-  simulator for the \(\sum-protocol\).
-\end{description}
-
-  \begin{figure}[h]
+  (Figure \ref{fig:belhamoudaProtocolAND} is a concrete example combining 2 ZKP for BV)
+  
+  \begin{figure}[h!]
     \centering
     \begin{equation*}
       \begin{array}{c c c}
@@ -848,6 +870,45 @@ advanced $\sum-protocol$.
     \caption{AND-Composition for ZKP-BV }
     \label{fig:belhamoudaProtocolAND}
   \end{figure}
+
+\item[OR-Compostion] In this composition, given the $\sum-protocol$ for many relations 
+  relations $R_{1}$,$R_{2}$,\dots,\(R_{n}\) the goal is to construct a protocol for the
+  relation
+  $R_{OR}(\vec{x}, w_{i}) $, where \(\exists i \leq n: R(x_{i},w_{i}) = 1\). The main idea to construct this composition is that the verifier
+  can let the prover using the simulator of the \(\sum-protocol\) for the
+  relations \(R_{j}\) that the prover does not know the witness.
+  The verifier provides a single challenge \(c\)
+  such that the prover can split that into challenges \(c_{1}, c_{2}, \dots, c_{n}\)
+  provided that \(c_{i}\) satisfy a liner constraint in terms of \(c\),
+  for example \(c = c_{1} \xor c_{2} \xor \dots \xor c_{n}\). The final OR-combination proof is
+  obtained by composing one run of the \(\sum-protocol\) with other runs of the
+  simulators for the \(\sum-protocol\). (Figure \ref{fig:OR-Combination})
+  \begin{figure}[h!]
+    \centering
+    \begin{equation*}
+      \begin{array}{c c c}
+        \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+        \\
+        \rho_{i} \randomsample random & & \\
+        c_{i} = comm(\rho_{i}) & & \\
+        \text{For } j = 1,\dots,n \wedge j \neq i: & & \\
+        \text{    } \rho_{j} \randomsample random; & & \\
+        \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) & & \\
+                               & \xrightarrow[ch_{j}]{c_{1}, c_{2}, \dots, c_{n}} & \\
+                               & & ch \randomsample \mathbb{Z}_{n} \\
+                               & \xleftarrow{ch} & \\
+        ch_{i} = ch - \sum_{j \neq i}{ch_{j}} & & \\
+        r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) & & \\
+                               & \xrightarrow{r_{1}, r_{2}, \dots, r_{n}} & \\
+                               & & \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
+                               & & ch = \sum_{i \in [n]}ch_{i}\\
+      \end{array}
+    \end{equation*}
+    \caption{}
+    \label{fig:OR-Combination}
+  \end{figure}
+\end{description}
+
 
 
 \section{Proposed Scheme}
@@ -1178,7 +1239,7 @@ a sequence of games as well as the relations among them to demonstrate type II s
 For $j \in \{1,\ldots,q\}$, let $res^{j}$ denote the result of the $j$th authentication protocol run between $\attacker$ and $\challenger$, and $S_0$ be
 the event in the game $0$ such that $res^{j} = Accept$ for some $j=1,\ldots,q$. We have $\Pr[S_0] = \varepsilon_{imp,II}$, the type II success probability of $\attacker$. \\\\
 \textit{Game 1}. From the definition of event $S_0$ in Game 0, it follows that there exists some $j^* \in \{1,\ldots,q\}$ such that $\Pr[res^{j^*} = Accept] \geq \varepsilon_{imp,II}/q$. Furthermore, by an averaging argument, there must exist a set $G$ of $(D_k,X_k,pk_k)$ such that $\Pr[(D_k,X_k,pk_k) \in G] \geq \varepsilon_{imp,II}/(2 \cdot q)$, and for each $(D'_k,X'_k,pk'_k) \in G$, we have $\Pr[res^{j^*} = Accept |(D_k,X_k,pk_k)=(D'_k,X'_k,pk'_k)] \geq  \varepsilon_{imp,II}/(2 \cdot q)$. By $\varepsilon_{ZK1}$-soundness of the zero knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ (cite Golderich's `Foundations of Cryptography' book, volume 1, Prop. 4.7.5), there exists an witness extractor algorithm that runs in expected time $T'=O(\mathrm{poly}(n \log Q) \cdot T / (\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1}))$, where $T$ denotes the run-time of $\attacker$ and outputs a witness containing $sk_k$ for ${ZKPValidEnc}$. Therefore, we obtain a (secret key recovery) attack algorithm against the IND-CPA security of the BV encryption scheme with expected run-time $T'$ and advantage $\varepsilon' \geq \varepsilon_{imp,II}/(2 \cdot q)$. Hence,  if $\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1} > \varepsilon_{imp,II}/(4*q)$, or equivalently, if $\varepsilon_{imp,II} > 2 \cdot q \varepsilon_{ZK1}$, then we obtain a contradiction with the assumption the BV encryption scheme with parameters $Q,n,\sigma$ is IND-CPA against attacks with expected time $O(\mathrm{poly}(n \log Q) \cdot T / \varepsilon_{ZK1})$ and advantage $\geq \varepsilon_{ZK1}$. It follows under the latter assumption that $\varepsilon_{imp,II} \leq 2q \varepsilon_{ZK1} \leq 2 c_1  \cdot \varepsilon_{bio}$, under the assumption that  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
-\varepsilon_{ZK3} + \varepsilon_{ZK4} + \delta) \leq c_1 \cdot \varepsilon_{bio}$.
+\varepsilon_{ZK3} + \varepsilon_{ZK4} + \delta) \leq c_1 \cdot \varepsilon_{subsection}$.
 
 
 \subsection{Security Proof for Theorem~\ref{theo:server}: Privacy against Server}
