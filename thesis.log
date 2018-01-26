@@ -1,10 +1,13 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.9.24)  12 JAN 2018 14:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.9.24)  12 JAN 2018 14:55
 entering extended mode
  restricted \write18 enabled.
- file:line:error style messages enabled.
+ Source specials enabled.
  %&-line parsing enabled.
-**\input thesis.tex
-(./thesis.tex (./Classes/PhDThesisPSnPDF.cls
+**thesis.tex
+(./thesis.tex
+LaTeX2e <2016/03/31>
+Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
+(./Classes/PhDThesisPSnPDF.cls
 
 LaTeX Warning: You have requested document class `Classes/PhDThesisPSnPDF',
                but the document class provides `PhDThesisPSnPDF'.
@@ -2412,8 +2415,8 @@ Package pdftex.def Info: Chapter2/Figs/Raster/lattices.jpg used on input line 2
 (pdftex.def)             Requested size: 184.68953pt x 138.51715pt.
 
 Overfull \hbox (12.03586pt too wide) in paragraph at lines 200--225
-[]\T1/ptm/m/n/12 (-20) Consider a 2-dimensional lat-tice gen-er-ated by the ba-
-sis $\OT1/ztmcm/m/n/12 ([]\OML/ztmcm/m/it/12 ; []\OT1/ztmcm/m/n/12 ) = []$
+[][]\T1/ptm/m/n/12 (-20) Consider a 2-dimensional lat-tice gen-er-ated by the b
+a-sis $\OT1/ztmcm/m/n/12 ([]\OML/ztmcm/m/it/12 ; []\OT1/ztmcm/m/n/12 ) = []$
  []
 
 [13]
@@ -2465,28 +2468,28 @@ Package pdftex.def Info: Chapter2/Figs/Raster/bestattack.jpg used on input line
 (pdftex.def)             Requested size: 204.16432pt x 109.61034pt.
  [25 <./Chapter2/Figs/Raster/bestattack.jpg>] [26] [27] [28] [29] [30]
 Overfull \hbox (4.58382pt too wide) in paragraph at lines 1152--1159
-[]\T1/ptm/m/n/12 (-20) Given the for-mal se-cu-rity game,
+[][]\T1/ptm/m/n/12 (-20) Given the for-mal se-cu-rity game,
  []
 
 [31] [32] [33] [34] [35] [36]
 Overfull \hbox (8.98856pt too wide) in paragraph at lines 1555--1570
-[]\T1/ptm/m/n/12 (-20) Encryption - Enc $\OT1/ztmcm/m/n/12 ([] \OMS/ztmcm/m/n/1
-2 2 \U/msb/m/n/12 Z[]\OT1/ztmcm/m/n/12 )$\T1/ptm/m/n/12 (-20) : Re-turn the ci-
-pher-text $\OML/ztmcm/m/it/12 C \OT1/ztmcm/m/n/12 = ([] = []\OML/ztmcm/m/it/12 
-:A[]  q; [] \OT1/ztmcm/m/n/12 =
+[][]\T1/ptm/m/n/12 (-20) Encryption - Enc $\OT1/ztmcm/m/n/12 ([] \OMS/ztmcm/m/n
+/12 2 \U/msb/m/n/12 Z[]\OT1/ztmcm/m/n/12 )$\T1/ptm/m/n/12 (-20) : Re-turn the c
+i-pher-text $\OML/ztmcm/m/it/12 C \OT1/ztmcm/m/n/12 = ([] = []\OML/ztmcm/m/it/1
+2 :A[]  q; [] \OT1/ztmcm/m/n/12 =
  []
 
 [37] [38] [39]
 Overfull \hbox (1.63722pt too wide) in paragraph at lines 1718--1722
-[]\T1/ptm/m/n/12 (-20) We sum-ma-rize the two op-ti-miza-
+[][]\T1/ptm/m/n/12 (-20) We sum-ma-rize the two op-ti-miza-
  []
 
 
 Overfull \hbox (67.02844pt too wide) in paragraph at lines 1732--1739
-[]\T1/ptm/m/n/12 (-20) For a plain-text $\OT1/ptm/b/n/12 m \OMS/ztmcm/m/n/12 2 
-\U/msb/m/n/12 R[]$\T1/ptm/m/n/12 (-20) , re-turn ci-pher-text $\OML/ztmcm/m/it/
-12 C \OT1/ztmcm/m/n/12 = ([]\OML/ztmcm/m/it/12 ; []\OT1/ztmcm/m/n/12 )$\T1/ptm/
-m/n/12 (-20) .
+[][]\T1/ptm/m/n/12 (-20) For a plain-text $\OT1/ptm/b/n/12 m \OMS/ztmcm/m/n/12 
+2 \U/msb/m/n/12 R[]$\T1/ptm/m/n/12 (-20) , re-turn ci-pher-text $\OML/ztmcm/m/i
+t/12 C \OT1/ztmcm/m/n/12 = ([]\OML/ztmcm/m/it/12 ; []\OT1/ztmcm/m/n/12 )$\T1/pt
+m/m/n/12 (-20) .
  []
 
 [40] [41] [42]
@@ -2500,10 +2503,10 @@ t line 1930.
 
 [43]
 Overfull \hbox (27.23827pt too wide) in paragraph at lines 1987--2001
-[]\T1/ptm/m/n/12 (-20) Given 2 ci-pher-text $\OML/ztmcm/m/it/12 c \OT1/ztmcm/m/
-n/12 = ([]\OML/ztmcm/m/it/12 ; []; [] ; []\OT1/ztmcm/m/n/12 )$ \T1/ptm/m/n/12 (
--20) and $\OML/ztmcm/m/it/12 c[] \OT1/ztmcm/m/n/12 = ([]\OML/ztmcm/m/it/12 ; []
-; [] ; []\OT1/ztmcm/m/n/12 )$\T1/ptm/m/n/12 (-20) ,
+[][]\T1/ptm/m/n/12 (-20) Given 2 ci-pher-text $\OML/ztmcm/m/it/12 c \OT1/ztmcm/
+m/n/12 = ([]\OML/ztmcm/m/it/12 ; []; [] ; []\OT1/ztmcm/m/n/12 )$ \T1/ptm/m/n/12
+ (-20) and $\OML/ztmcm/m/it/12 c[] \OT1/ztmcm/m/n/12 = ([]\OML/ztmcm/m/it/12 ; 
+[]; [] ; []\OT1/ztmcm/m/n/12 )$\T1/ptm/m/n/12 (-20) ,
  []
 
 
@@ -2512,11 +2515,11 @@ nput line 2014.
 
 [44] [45]
 Overfull \hbox (4.69922pt too wide) in paragraph at lines 2093--2098
-[]\T1/ptm/m/n/12 (-20) Decomposition: Rep-re-sent vec-tor $[] \OT1/ztmcm/m/n/12
- = (\OML/ztmcm/m/it/12 x[]; [] ; x[]\OT1/ztmcm/m/n/12 )$ \T1/ptm/m/n/12 (-20) b
-y $\OML/ztmcm/m/it/12 k$ \T1/ptm/m/n/12 (-20) vec-tors $[][] \OMS/ztmcm/m/n/12 
-2 f^^@\OT1/ztmcm/m/n/12 1\OML/ztmcm/m/it/12 ; \OT1/ztmcm/m/n/12 0\OML/ztmcm/m/i
-t/12 ; \OT1/ztmcm/m/n/12 1\OMS/ztmcm/m/n/12 g[]$\T1/ptm/m/n/12 (-20) .
+[][]\T1/ptm/m/n/12 (-20) Decomposition: Rep-re-sent vec-tor $[] \OT1/ztmcm/m/n/
+12 = (\OML/ztmcm/m/it/12 x[]; [] ; x[]\OT1/ztmcm/m/n/12 )$ \T1/ptm/m/n/12 (-20)
+ by $\OML/ztmcm/m/it/12 k$ \T1/ptm/m/n/12 (-20) vec-tors $[][] \OMS/ztmcm/m/n/1
+2 2 f^^@\OT1/ztmcm/m/n/12 1\OML/ztmcm/m/it/12 ; \OT1/ztmcm/m/n/12 0\OML/ztmcm/m
+/it/12 ; \OT1/ztmcm/m/n/12 1\OMS/ztmcm/m/n/12 g[]$\T1/ptm/m/n/12 (-20) .
  []
 
 [46] [47] [48]
@@ -2554,28 +2557,28 @@ Package natbib Warning: Citation `blanton2011secure' on page 54 undefined on in
 put line 70.
 
 [54] [55] [56]
-Overfull \hbox (12.03055pt too wide) detected at line 240
+Overfull \hbox (12.03055pt too wide) detected at line 247
 [] []
  []
 
 
-Overfull \hbox (1.17778pt too wide) in paragraph at lines 240--249
-\T1/ptm/m/n/12 (-20) Similarly, we can let $\OT1/ptm/b/n/12 A[] \OT1/ztmcm/m/n/
-12 = []$ \T1/ptm/m/n/12 (-20) to be the pub-lic pa-ram-e-ters and $\OT1/ptm/b/n
-/12 X[] \OT1/ztmcm/m/n/12 = [[]\OML/ztmcm/m/it/12 ; []; []; M\OT1/ztmcm/m/n/12 
-][]$
+Overfull \hbox (1.17778pt too wide) in paragraph at lines 247--256
+[]\T1/ptm/m/n/12 (-20) Similarly, we can let $\OT1/ptm/b/n/12 A[] \OT1/ztmcm/m/
+n/12 = []$ \T1/ptm/m/n/12 (-20) to be the pub-lic pa-ram-e-ters and $\OT1/ptm/b
+/n/12 X[] \OT1/ztmcm/m/n/12 = [[]\OML/ztmcm/m/it/12 ; []; []; M\OT1/ztmcm/m/n/1
+2 ][]$
  []
 
 [57] [58] [59] [60]
 
-LaTeX Warning: Reference `sec:Renyi' on page 61 undefined on input line 429.
+LaTeX Warning: Reference `sec:Renyi' on page 61 undefined on input line 436.
 
 
 Package natbib Warning: Citation `EPRINT:LauNaeVai11' on page 61 undefined on i
-nput line 454.
+nput line 461.
 
 [61] [62]
-Overfull \hbox (80.95715pt too wide) in paragraph at lines 529--544
+Overfull \hbox (80.95715pt too wide) in paragraph at lines 536--551
 \OML/ztmcm/m/it/12 Enc[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 Y[]\OT1/ztmcm/m/n
 /12 ))$\T1/ptm/m/n/12 (-20) . $\OMS/ztmcm/m/n/12 A$ \T1/ptm/m/n/12 (-20) and $\
 OMS/ztmcm/m/n/12 C$ \T1/ptm/m/n/12 (-20) runs $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/
@@ -2585,7 +2588,7 @@ $ \T1/ptm/m/n/12 (-20) eval-u-ates $\OML/ztmcm/m/it/12 C[] \OT1/ztmcm/m/n/12 =
  []
 
 
-Overfull \hbox (36.76514pt too wide) in paragraph at lines 529--544
+Overfull \hbox (36.76514pt too wide) in paragraph at lines 536--551
 \T1/ptm/m/n/12 (-20) encryption $\OML/ztmcm/m/it/12 C[]$\T1/ptm/m/n/12 (-20) . 
 $\OMS/ztmcm/m/n/12 A$ \T1/ptm/m/n/12 (-20) and $\OMS/ztmcm/m/n/12 C$ \T1/ptm/m/
 n/12 (-20) does $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 C[]; C[]\OT1/ztmcm/m/n
@@ -2595,22 +2598,22 @@ n/12 (-20) does $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 C[]; C[]\OT1/ztmcm/m/n
 
 [63]
 
-LaTeX Warning: Reference `sec:Renyi' on page 64 undefined on input line 604.
+LaTeX Warning: Reference `sec:Renyi' on page 64 undefined on input line 611.
 
 [64]
-Underfull \hbox (badness 10000) in paragraph at lines 621--628
+Underfull \hbox (badness 10000) in paragraph at lines 628--635
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 621--628
+Underfull \hbox (badness 10000) in paragraph at lines 628--635
 
  []
 
 [65]
 
 Package natbib Warning: Citation `EPRINT:LauNaeVai11' on page 66 undefined on i
-nput line 635.
+nput line 642.
 
 [66]) [67]
 \openout2 = `Chapter4/chapter4.aux'.
@@ -2676,7 +2679,7 @@ Overfull \hbox (0.69724pt too wide) in paragraph at lines 232--232
 
 [79] [80] [81]
 Overfull \hbox (1.67761pt too wide) in paragraph at lines 375--396
-[]\T1/ptm/m/n/12 (-20) This proof can be done
+[][]\T1/ptm/m/n/12 (-20) This proof can be done
  []
 
 
@@ -2705,9 +2708,9 @@ Overfull \hbox (4.46147pt too wide) in paragraph at lines 538--547
 
 [85]
 Overfull \hbox (32.98105pt too wide) in paragraph at lines 583--597
-\T1/ptm/m/n/12 (-20) Let $\OT1/ztmcm/m/n/12 2[] = 2([])([])[]$\T1/ptm/m/n/12 (-
-20) , $\OT1/ztmcm/m/n/12 2[] = 2[]$\T1/ptm/m/n/12 (-20) , $\OT1/ztmcm/m/n/12 2[
-] = 2[]$
+[]\T1/ptm/m/n/12 (-20) Let $\OT1/ztmcm/m/n/12 2[] = 2([])([])[]$\T1/ptm/m/n/12 
+(-20) , $\OT1/ztmcm/m/n/12 2[] = 2[]$\T1/ptm/m/n/12 (-20) , $\OT1/ztmcm/m/n/12 
+2[] = 2[]$
  []
 
 [86]
@@ -2759,8 +2762,8 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 [90]
 Overfull \hbox (0.5221pt too wide) in paragraph at lines 1036--1038
-[]\T1/ptm/b/n/12 Theorem 15. []\T1/ptm/m/it/12 (-20) Un-der the IND-CPA se-cu-r
-ity of BV cryp-tosys-tem, and the zero-knowledge
+[]\T1/ptm/b/n/12 Theorem 15. [][]\T1/ptm/m/it/12 (-20) Un-der the IND-CPA se-cu
+-rity of BV cryp-tosys-tem, and the zero-knowledge
  []
 
 [91]
@@ -2901,8 +2904,8 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 ] [114]
 [115] [116]
 Underfull \hbox (badness 10000) in paragraph at lines 369--375
-[]\T1/ptm/m/n/12 (+20) OPM.  Opm says 5.6 mil-lion fin-ger-prints stolen in cy-
-ber-at-
+[][]\T1/ptm/m/n/12 (+20) OPM.  Opm says 5.6 mil-lion fin-ger-prints stolen in c
+y-ber-at-
  []
 
 
@@ -2957,8 +2960,7 @@ Appendix B.
 ] [124
 
 
-]
-No file thesis.ind.
+] (./thesis.ind)
 
 Package natbib Warning: There were undefined citations.
 
@@ -2983,13 +2985,13 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 41966 strings out of 493014
- 791658 string characters out of 6133351
- 885461 words of memory out of 5000000
+ 41968 strings out of 493014
+ 791680 string characters out of 6133351
+ 885641 words of memory out of 5000000
  43807 multiletter control sequences out of 15000+600000
  140264 words of font info for 426 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,20n,92p,10390b,1189s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,20n,92p,10383b,1189s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
 live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texl
@@ -3006,7 +3008,7 @@ type1/urw/symbol/usyr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/t
 imes/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmbi
 8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></u
 sr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (142 pages, 1294261 bytes).
+Output written on thesis.pdf (142 pages, 1294252 bytes).
 PDF statistics:
  1828 PDF objects out of 2073 (max. 8388607)
  1615 compressed objects within 17 object streams

@@ -109,7 +109,14 @@ ct_{1}(\mathbf{T}) = Enc(pm_1(\mathbf{T}))
 ct_{2}(\mathbf{Q}) = Enc(pm_2(\mathbf{Q}))
 \]
 \end{definition}
-The main idea of \cite{yasuda2014practical} is that, in the ring $R_q$ we have $x^n = -1$, then when we do multiplication between $pm_1(\mathbf{T})$ and $pm_2(\mathbf{Q})$, the constant term of the result would be the inner product $\langle \mathbf{T}, \mathbf{Q}\rangle$. We can also do homomorphic multiplication on the ciphertexts and get the ciphertext of the inner product similarly. Furthermore, we can use this result to compute HD as follows, this operation costs one level of multiplication with 3 additions and 3 multiplications on ciphertexts.
+The main idea of \cite{yasuda2014practical} is that, in the ring $R_q$ we have
+$x^n = -1$, then when we do multiplication between $pm_1(\mathbf{T})$ and
+$pm_2(\mathbf{Q})$, the constant term of the result would be the inner product
+$\langle \mathbf{T}, \mathbf{Q}\rangle$. We can also do homomorphic
+multiplication on the ciphertexts and get the ciphertext of the inner product
+similarly. Furthermore, we can use this result to compute HD as follows, this
+operation costs one level of multiplication with 3 additions and 3
+multiplications on ciphertexts.
 
 \begin{theorem}
 Let $C_1 = - \sum_{i=0}^{n-1}x^{n-i}$ and
