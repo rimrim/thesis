@@ -1,12 +1,12 @@
 (TeX-add-style-hook
  "chapter2"
  (lambda ()
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (LaTeX-add-labels
     "chap:definitions"
@@ -45,17 +45,25 @@
     "fig:bestAttack"
     "theo:AjtaiHardness"
     "sub:LWE"
+    "sec:LWEDefs"
     "def:Search-LWEProb"
     "def:Decision-LWEProb"
+    "sec:LWESecurity"
     "theo:RegevLWEHardness"
+    "sec:LWESymmetric"
     "def:IND-CPA Security"
     "theo:reductionCPADLWE"
+    "sec:asymLWE"
     "def:PublicKeyIndCPARegev"
     "def:statisticalDistance"
     "lem:statisticalDistance"
     "lem:LHL"
     "theo:IndCPARegev"
+    "sec:latticeEfficiency"
+    "sec:RLWEPre"
     "def:AjtaiRing"
+    "sec:securityImpact"
+    "sec:furtherOptimizations"
     "lem:SSRing-LWE"
     "sec:defHomo"
     "sec:BVScheme"

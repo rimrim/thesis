@@ -720,1070 +720,859 @@ us the qualitative confidence in the security of the problem.
 
 \section{Learning With Error}
 \label{sub:LWE}
-    \begin{description}
-        \item[intro.] Last chapter we discuss the complexity of the hard
-            problems that are used as the basis of security for lattice-based
-            cryptography. In particular we looked at the LLL algorithm that is
-            used to find short vectors in lattices. This chapter we discuss
-            another use for lattice-based cryptography. So far we have seen how
-            to construct hash function, another main tool in cryptography is
-            encryption: how to provide confidentiality. We will see that we need
-            to use a slightly different type of lattice problem instead of SIS
-            problem: we introduce Learning With Error (LWE) problem, which is
-            much more suitable than SIS for building the encryptions based on
-            it. We will discuss how to use LWE to build symmetric key encryption
-            as well as how to modify it to get public key encryption (Regev
-            cryptosystem). This cryptosystem is a very important foundation, it
-            is the basis for a lot of further
-            developments in the area. We first look at the Learning With Error
-            (LWE) problem
+In the last section, we discussed how to use lattice-based cryptography to
+construct a hash function, this section looks at another main tool in
+cryptography , that is encryption, or how to provide confidentiality. We need to
+use a slightly different type of lattice problem instead of the SIS problem: we
+introduce Learning With Error (LWE) problem, which is much more suitable than
+SIS for building the encryptions based on it. We will discuss how to use LWE to
+build symmetric key encryption as well as how to modify it to get public key
+encryption (Regev cryptosystem). This cryptosystem is a very important
+foundation, it is the basis for a lot of further developments in the area as
+well as the techniques used in the project.
 
-            In the SIS problem, given a matrix $A$, it is asked to find
-            a short vector $\vec{v}$ such that $A\vec{v} = \vec{0}$. The
-            cryptographic hash function that is based on SIS
-            is constructed such that it can take arbitrary inputs and produces
-            collision-resistance outputs. When we do that, we always have a
-            many-to-one
-            function nature in the construction:
-            given an output, it is not possible to derive the original
-            input. This many-to-one property is not useful in encryption
-            context: we cannot decrypt the ciphertext to the original plaintext
-            using such method. In encryption contexts, we usually have the
-            reverse situation: the set of possible inputs might be a lot smaller
-            than the set of possible outputs. The function serving encryption
-            should be at least a one-to-one function that map a plaintext to a unique
-            ciphertext. Or we can even have one-to-many functions that map a
-            plaintext to many possible ciphertexts, as long as there is no
-            intersection between the ciphertext output sets, we are still able
-            to decrypt correctly. We see such situation in non-deterministic
-            cryptosystems where the encryption function takes the message as
-            well as a randomness factor as inputs. Actually, almost all
-            encryptions being used in practice are somehow randomized, the main
-            reason is to stop the leakage of
-            information given many ciphertexts. A deterministic crypto scheme
-            can be exploited if the plaintext space is small, for example,
-            consider a situation where Alice sends deterministic encrypted
-            messages
-            to her
-            agent Bob
-            everyday to instruct him to sell or not to sell some of her
-            companies' shares.
-            An attacker capturing the ciphertexts of several days can easily
-            distinguish such
-            decisions without having to decrypt the messages at all. This is one
-            of the important property that we want to have in cryptogsystems:
-            indistinguishability, also known as IND-CPA. This type of security
-            requires that the adversary cannot distinguish the ciphertexts even
-            when he know all the posibilities of the plaintexts.
+In the SIS problem, given a matrix $A$, it is asked to find a short vector
+$\vec{v}$ such that $A\vec{v} = \vec{0}$. The cryptographic hash function that
+is based on SIS is constructed such that it can take arbitrary inputs and
+produces collision-resistance outputs. When we do that, we always have a
+many-to-one function nature in the construction: given an output, it is not
+possible to derive the original input. This many-to-one property is not useful
+in encryption context: we cannot decrypt the ciphertext to the original
+plaintext using such method. In encryption contexts, we usually have the reverse
+situation: the set of possible inputs might be a lot smaller than the set of
+possible outputs. The function serving encryption should be at least a
+one-to-one function that map a plaintext to a unique ciphertext. Or we can even
+have one-to-many functions that map a plaintext to many possible ciphertexts, as
+long as there is no intersection between the ciphertext output sets, we are
+still able to decrypt correctly. We see such situation in non-deterministic
+cryptosystems where the encryption function takes the message as well as a
+randomness factor as inputs. Actually, almost all encryptions being used in
+practice are somehow randomized, the main reason is to stop the leakage of
+information given many ciphertexts. A deterministic cryptographic scheme can be
+exploited if the plaintext space is small, for example, consider a situation
+where Alice sends deterministic encrypted messages to her agent Bob everyday to
+instruct him to sell or not to sell some of her companies' shares.  An attacker
+capturing the ciphertexts of several days can easily distinguish such decisions
+without having to decrypt the messages at all. This is one of the important
+property that we want to have in cryptosystems: indistinguishability, also known
+as IND-CPA. This type of security requires that the adversary cannot distinguish
+the ciphertexts even when he know all the posibilities of the plaintexts.
 
-            We introduce LWE problem \cite{regev2005lattices} that allows us to construct
-            one-to-one or
-            one-to-many functions. The main idea behind LWE is, given a
-            secret vector and a random lattice point with some 'small noises' added to
-            the point, it is infeasible for an attacker to learn anything from
-            the output but it is easy for the data owner with the secret to
-            revert back the original point. The description of LWE follows.
-        \item [LWE] Fix integers $q, m, n$ and initialize the matrix
-            $A^{m \times n}$. Note that the matrix
-            $A$ is a bit different from SIS regarding its dimension,
-            this is just for convenient representation purpose.
-            $q$ is still the
-            modulus of $a_{i,j}$, where $a_{i,j} \randomsample
-            \mathbb{Z}_q$. Let $\vec{s}^T = \left[ s_1,s_2,\dots,s_n
-            \right]$ be a vector of independent uniformly random
-            elements of $\mathbb{Z}_q$, this is the secret element that
-            corresponds to the secret key of the cryptosystem. Let
-            $\vec{e}^T = [e_1,\dots,e_n,\dots,e_m]$ be a vector of
-            independent 'small' integers, each sampled from a
-            probability distribution $\chi_{\alpha q}$. By 'small', we
-            mean $\norminf{e_i} \leq \alpha . q$ for some parameter
-            $0 < \alpha < 1$. Typically, $\chi_{\alpha q}$ is chosen from a
-            Normal (Gaussian) distribution with standard deviation
-            $\approx \alpha . q$. (From the implementation point of view,
-            one way to do such sampling efficiently is to take
-            the real samples from a normal continuous distribution and round it
-            to the neareast integers, the mean is set to 0 to make sure the
-            samples are small).
+We introduce LWE problem \cite{regev2005lattices} that allows us to construct
+one-to-one or one-to-many functions. The main idea behind LWE is, given a secret
+vector and a random lattice point with some 'small noises' added to the point,
+it is infeasible for an attacker to learn anything from the output but it is
+easy for the data owner with the secret to revert back the original point. The
+description of LWE follows.
 
-            Let
-            \[
-                \vec{y} = \begin{bmatrix}
-                    a_{1,1}, a_{1,2},\dots, a_{1,n}\\
-                    a_{2,1}, a_{2,2},\dots, a_{2,n}\\
-                    \dots,\dots, \dots,\dots\\
-
-                \end{bmatrix}
-            \]
-            \todo[inline]{finish this}
-
-            We discuss two
-            variants of the LWE problems to be used in cryptosystems: Search-LWE
-            and Decision-LWE problems.
-
-            \begin{definition}
-                [Search-LWE Problem.] Given $q,m,n,\alpha$ and a matrix
-                $A \randomsample \mathbb{Z}_q^{m \times n}$ and $\vec{y} =
-                A.\vec{s} + \vec{e} \mod q$ (with $\vec{e} \randomsample
-                    \chi_{\alpha q}^m$ and $\vec{s} \randomsample
-                \mathbb{Z}_q^n$), find $\vec{s}$.
-                \label{def:Search-LWEProb}
-            \end{definition}
-
-            \begin{definition}
-                [Decision-LWE Problem.] Given $q, m, n,
-                \alpha$ and $A \randomsample \mathbb{Z}_q^{m \times n}$,
-                $\vec{y}$, distinguish between the following two scenarios
-                \begin{itemize}
-                    \item \emph{Real Scenario:} $\vec{y} = A.\vec{s} +
-                    \vec{e} \mod \ q$ (with $\vec{e} \randomsample
-                    \chi_{\alpha q}^m$  and $\vec{s} \randomsample
-                    \mathbb{Z}_q^n$)
-                \item \emph{Random Scenario:} $\vec{y} \randomsample
-                    \mathbb{Z}_q^m$.
-                \end{itemize}
-                \label{def:Decision-LWEProb}
-            \end{definition}
-
-            From an attacker's point of view, DLWE is simpler than
-            SLWE. In other words, cryptosystems that rely on DLWE give stronger
-            security assurance because if the attacker cannot solve the simpler
-            problem, he is not able to solve the hard one. Also, we will see
-            that with DLWE, we can construct more efficient cryptosystems. In
-            regards to the hardness of the two problems,
-            we easily see that the SLWE is hard if any poly-time attacker can
-            find $\vec{s}$ with a negligible probability. For DLWE, we can
-            say that it is hard if the adversary cannot solve it better than
-            by merely guessing. One way to quantify how good is an attacker's
-            alogirithm $D$ is to look at the \emph{distinguishing advantage}
-            $Adv(D)$:
-            \[
-                Adv(D) = Pr_{\vec{y}\randomsample Real}[D(A,\vec{y}) = Real] -
-                Pr_{\vec{y}\randomsample Random}[D(A,\vec{y}) = Real]
-            \]
-            From such definition, we say that DLWE is a hard decisional problem
-            if there exists no
-            algorithm $D$ that runs in time $T(D) \leq 2^\lambda$ and has
-            $Adv(D) \geq 2^{-\lambda}$ for a large $\lambda$. We will discuss
-            the correspondence of DLWE with
-            breaking the encryption scheme in terms of the
-            indistinguishability that we mentioned.
-
-        \item [Security of LWE Problem.] An average-case to worst-case
-            connection similar to Theorem (\ref{theo:AjtaiHardness}) for SIS
-            problem can also be established for LWE (\cite{regev2005lattices})
-            \begin{theorem}
-                If there is an algorithm $A$ that solves $DLWE_{q,m,n,\alpha}$
-                in poly-time, with non-negligible distinguishing advantage, for
-                $\alpha . q > 2 \sqrt{n}$. Then there is a quantum algorithm
-                $B$ that solves $\gamma-GapSVP$ in polynomial time for all input
-                lattices $L$ of dimension n with:
-                \[
-                    \gamma = O(n/\alpha)
-                \]
-
-                \label{theo:RegevLWEHardness}
-            \end{theorem}
-            Theoretically we have strong reason to believe that LWE
-            is hard. The theorem even says that it links the security of LWE to
-            the quantum security of the shortest vector problem. It therefore
-            gives us more confidence to use LWE as the basis for quantum
-            resistant cryptographic technique. In practice, the best known
-            attack against LWE is to reduce the problem to the SIS problem:
-            Given a LWE instance $(A \in \mathbb{Z}_q^{m \times
-            n},\vec{y} \in \mathbb{Z}_q^m)$:
-            \begin{itemize}
-                \item Find a short non-zero vector $\vec{v}$ in the SIS lattice
-                    $L_q^\bot(A^T)$ with $\norm{v} \leq \beta$. That is,
-                    $A^T.\vec{v} = \vec{0} \mod q$.
-                \item Compute $e' = \vec{v}^T.\vec{y} \mod q$ and check:
-                    \begin{itemize}
-                        \item In 'Real DLWE Scenario', $e'$ is small
-                        \item In 'Random Scenario', $e'$ is not small
-                    \end{itemize}
-            \end{itemize}
-
-            In other words, solving $DLWE_{q,m,n,\alpha}$ reduces to solving
-            $SIS_{q,m,n,\beta=1/\alpha}$, therefore to secure the system based
-            on DLWE, we must choose parameters so that $SIS_{q,m,n,\beta}$ is
-            hard. (The smaller the noise we choose for DLWE, the larger the
-            $\beta$ becomes, or $\gamma-SVP$ is easier, which is expected).
-            Also, the condition of $\alpha q > 2\sqrt{n}$ is also important as
-            when the noise become small enough, it turns out that there are
-            efficient algebraic attacks against LWE.
+\subsection{Definitions}
+\label{sec:LWEDefs}
+Fix integers $q, m, n$ and initialize the matrix $A^{m \times n}$. Note that the
+matrix $A$ is a bit different from SIS regarding its dimension, this is just for
+convenient representation purpose.  $q$ is still the modulus of $a_{i,j}$, where
+$a_{i,j} \randomsample \mathbb{Z}_q$. Let
+$\vec{s}^T = \left[ s_1,s_2,\dots,s_n \right]$ be a vector of independent
+uniformly random elements of $\mathbb{Z}_q$, this is the secret element that
+corresponds to the secret key of the cryptosystem. Let
+$\vec{e}^T = [e_1,\dots,e_n,\dots,e_m]$ be a vector of independent 'small'
+integers, each sampled from a probability distribution $\chi_{\alpha q}$. By
+'small', we mean $\norminf{e_i} \leq \alpha . q$ for some parameter
+$0 < \alpha < 1$. Typically, $\chi_{\alpha q}$ is chosen from a Normal
+(Gaussian) distribution with standard deviation $\approx \alpha . q$. (From the
+implementation point of view, one way to do such sampling efficiently is to take
+the real samples from a normal continuous distribution and round it to the
+neareast integers, the mean is set to 0 to make sure the samples are small).
 
 
+We discuss two variants of the LWE problems to be used in cryptosystems:
+Search-LWE and Decision-LWE problems.
 
-        \item [Symmetric-Key Encryption from LWE.] We present a randomized cryptosystem
-            based on LWE
-            \begin{description}
-                \item[Key Generation - KeyGen.] Fix integers $q, n$. Pick a secret key
-                    $\vec{s} \randomsample \mathbb{Z}_q^n$.
-                \item [Encryption - Enc.] Fix integers $t,l$. Given a message
-                    $\vec{m} \in \mathbb{Z}_t^l$:
-                    \begin{itemize}
-                        \item Pick $A \randomsample \mathbb{Z}_q^{l \times n}$
-                            and 'small' noise $\vec{e} \randomsample
-                            \chi_{\alpha q}^l$.
-                        \item Compute $\vec{c} = A.\vec{s} + \vec{e} + \lceil
-                            q/t \rfloor . \vec{m} \mod \ q$.
-                        \item Return ciphertext $(A, \vec{c}$.
-                    \end{itemize}
-                \item [Decryption - Dec.] Given a ciphertext $(A,\vec{c})$ and a
-                    secret key $\vec{s}$:
-                    \begin{itemize}
-                        \item Compute $\vec{c'} = \vec{c} - A.\vec{s} \mod \ q$.
-                        \item Compute $\vec{c''}$ by rounding coordinates of
-                            $\vec{c'}$ to the neareast multiple of $\lceil q/t
-                            \rfloor \mod \ q$. This step exploits the fact that
-                            $\vec{e}$ is a 'small' vector rather than a random
-                            one.
-                        \item Return plaintext $\vec{m} =
-                            \frac{\vec{c''}}{\lceil q/t \rfloor}$
-                    \end{itemize}
+\begin{definition}
+  [Search-LWE Problem.] Given $q,m,n,\alpha$ and a matrix
+  $A \randomsample \mathbb{Z}_q^{m \times n}$ and
+  $\vec{y} = A.\vec{s} + \vec{e} \mod q$ (with
+  $\vec{e} \randomsample \chi_{\alpha q}^m$ and
+  $\vec{s} \randomsample \mathbb{Z}_q^n$), find $\vec{s}$.
+  \label{def:Search-LWEProb}
+\end{definition}
 
-                \item [Correctness.] Decryption is correct if the rounding step
-                    succeeds, or if all the noise coordinates $e_i$ of
-                    $\vec{e}$ is sufficiently small:
-                    \[
-                        e_i < \frac{1}{2} . \lceil q/t \rfloor \approx
-                        \frac{q}{2t}
-                    \]
-                    If the noise distribution $\chi_{\alpha q}$ is a normal
-                    distribution with standard deviation $\alpha q$, the
-                    probability that the noise exceeds $\frac{1}{2t\alpha}$ in
-                    magnitude is $p_e \approx 2.\left( 1 - \Phi\left(
-                            \frac{1}{2t\alpha}
-                    \right) \right)$, where $\Phi$ is the cumulative
-                    distribution function of the standard normal distribution
-                    (mean 0 and standard deviation 1). Therefore, to assure
-                    correctness, we need this probability to be sufficiently
-                    small, the following \emph{correctness condition} must
-                    holds:
-                    \[
-                        t << \frac{1}{2\alpha}
-                    \]
-                    We can see that the larger the noise is, the smaller our
-                    message space becomes. However, when the noise is large, LWE
-                    is harder as well: security goes up when noise increase.
-                    Generally, in lattice-based cryptosystems, there is this
-                    trade-off between security and the size of messages to
-                    encrypt.
+\begin{definition}
+  [Decision-LWE Problem.] Given $q, m, n, \alpha$ and
+  $A \randomsample \mathbb{Z}_q^{m \times n}$, $\vec{y}$, distinguish between
+  the following two scenarios
+  \begin{itemize}
+  \item \emph{Real Scenario:} $\vec{y} = A.\vec{s} + \vec{e} \mod \ q$ (with
+    $\vec{e} \randomsample \chi_{\alpha q}^m$ and
+    $\vec{s} \randomsample \mathbb{Z}_q^n$)
+  \item \emph{Random Scenario:} $\vec{y} \randomsample \mathbb{Z}_q^m$.
+  \end{itemize}
+  \label{def:Decision-LWEProb}
+\end{definition}
 
-                \item [Security.] This section discusses how to analyze the
-                    security of lattice-based cryptosystems. Our goal is to show
-                    that if an adversary can break the encryption scheme's
-                    security, then he can also break DLWE problem, which will be
-                    the hard problem that relate to lattice problems that we
-                    known that are hard (SIS or $\gamma-SVP$). The standard
-                    security model that is used in our analysis would be
-                    indistinguishability security against Chosen Plaintext
-                    Attack (IND-CPA). The formal 'security game' is defined between a
-                    challenger $Ch$ and the attacker $B$ against the encryption
-                    scheme
+\subsection{Security of LWE}
+\label{sec:LWESecurity}
+An average-case to worst-case connection similar to Theorem
+(\ref{theo:AjtaiHardness}) for SIS problem can also be established for LWE
+(\cite{regev2005lattices})
+\begin{theorem}
+  If there is an algorithm $A$ that solves $DLWE_{q,m,n,\alpha}$ in poly-time,
+  with non-negligible distinguishing advantage, for $\alpha . q > 2
+  \sqrt{n}$. Then there is a quantum algorithm $B$ that solves $\gamma-GapSVP$
+  in polynomial time for all input lattices $L$ of dimension n with:
+  \[
+    \gamma = O(n/\alpha)
+  \]
 
-                    \begin{description}
-                        \item[CPA Security Game.] The game is defined as
-                            follows.
-                    \begin{itemize}
-                        \item The challenger $Ch$ runs $Keygen$ algorithm and
-                            obtains a
-                            secret key $\vec{s}$.
-                        \item The attacker $B$ is given access to an 'encryption
-                            oracle': $B$ can submit a plaintext $\vec{m}$
-                            and get back from $Ch$ a ciphertext $(A,C) =
-                            Enc(\vec{}, \vec{m})$. $B$ can query the oracle as
-                            many times as he wants. When B finishes the query
-                            phrase, he submits a pair of 'challenge messages'
-                            $\vec{m_0^*},\vec{m_1^*}$.
-                        \item Challenger picks a random bit $b \randomsample
-                            U(0,1)$, computes a 'challenge ciphertext'
-                            $(A^*, C^*) = Enc(\vec{s}, \vec{m_b^*})$ for the
-                            challenge message selected by $b$, and sends
-                            $(A^*, C^*)$ to  $B$.
-                        \item $B$ can continue querying the 'encryption oracle'
-                            if he would like. Finally, he outputs a guess
-                            $b'$ for the bit $b$ chosen by the challenger. The
-                            attacker wins the game if $b' = b$.
-                    \end{itemize}
-                    \begin{definition}
-                        [IND-CPA security.] A cryptosystem is IND-CPA secure
-                        with a security level $\lambda$
-                        if any attack algorithm $B$ with
-                        run-time $T(B) \leq 2^\lambda$ can only win the security game
-                        with probability $\leq \frac{1}{2} +
-                        \frac{1}{2^\lambda}$.
-                    (Note that we have to restrict the run-time of the attacker
-                    as we know that for any cryptosystem, an attacker with
-                    unlimited time can always win the game with probability 1
-                    using brute force search.)
-                        \label{def:IND-CPA Security}
-                    \end{definition}
+  \label{theo:RegevLWEHardness}
+\end{theorem}
+Theoretically we have strong reason to believe that LWE is hard. The theorem
+even says that it links the security of LWE to the quantum security of the
+shortest vector problem. It therefore gives us more confidence to use LWE as the
+basis for quantum resistant cryptographic technique. In practice, the best known
+attack against LWE is to reduce the problem to the SIS problem: Given a LWE
+instance $(A \in \mathbb{Z}_q^{m \times n},\vec{y} \in \mathbb{Z}_q^m)$:
+\begin{itemize}
+\item Find a short non-zero vector $\vec{v}$ in the SIS lattice $L_q^\bot(A^T)$
+  with $\norm{v} \leq \beta$. That is, $A^T.\vec{v} = \vec{0} \mod q$.
+\item Compute $e' = \vec{v}^T.\vec{y} \mod q$ and check:
+  \begin{itemize}
+  \item In 'Real DLWE Scenario', $e'$ is small
+  \item In 'Random Scenario', $e'$ is not small
+  \end{itemize}
+\end{itemize}
 
-                \item [Security Reduction from IND-CPA to DLWE.] Given the formal security game,
-                    we need to prove that the cryptosystem defined satisfies
-                    such model. By applying the security reduction technique, we demonstrate
-                    that if an attacker could somehow break the cryptosystem,
-                    then he could also solve DLWE, which was proved (Regev,
-                    2005) to be a
-                    lattice-related hard problem:
+In other words, solving $DLWE_{q,m,n,\alpha}$ reduces to solving
+$SIS_{q,m,n,\beta=1/\alpha}$, therefore to secure the system based on DLWE, we
+must choose parameters so that $SIS_{q,m,n,\beta}$ is hard. (The smaller the
+noise we choose for DLWE, the larger the $\beta$ becomes, or $\gamma-SVP$ is
+easier, which is expected).  Also, the condition of $\alpha q > 2\sqrt{n}$ is
+also important as when the noise become small enough, it turns out that there
+are efficient algebraic attacks against LWE.
 
-                Suppose there was
-                    an efficient IND-CPA attack algorithm $B$, breaking
-                    $2^\lambda$ security of the LWE encryption scheme:
-                    \begin{itemize}
-                        \item $B$ runs in time $T_B$ and wins IND-CPA game with
-                            probability 1/2 + $\varepsilon_b$ (with $T_B <
-                            2^\lambda$ and $\varepsilon_B > 1/2^\lambda$).
-                        \item $B$ makes $Q$ encryption queries overall,
-                            including the challenge ciphertext.
-                    \end{itemize}
-                    Then, given a DLWE instance $(q,n,A,\vec{y})$, we build a
-                    distinguisher
-                    algorithm $D$ that runs as follows:
-                    \begin{itemize}
-                        \item D runs attacker $B$ against the encryption scheme, $D$ acts as the challenger. When $B$ makes its $i^{th}$
-                            encryption oracle query $\vec{m_i}$, $D$ uses the
-                            $i^{th}$ block $A_i \in \mathbb{Z}_q^{l \times n}$
-                            of $l$ consecutive rows of $A$ and corresponding
-                            $i^{th}$ block $\vec{y_i}\in \mathbb{Z}_q^l$ of
-                            $l$ consecutive rows of $\vec{y}$ to answer the
-                            oracle query with $(A_i, \vec{c_i}$, where:
-                                \[
-                                    \vec{c_i} = \vec{y_i} + \lceil q/t \rfloor .
-                                    \vec{m_i} \mod q.
-                                \]
-                        \item Similarly, when $B$ makes its challenge query
-                                $(\vec{m_0^*},\vec{m_1^*})$. D chooses a random
-                                bit $b$ and uses the next (not yet used) blocks
-                                $A_{i^*}, \vec{y}_{i^*}$ of $A$ and
-                                $\vec{y}$ to respond with $(A^* = A_{i^*},
-                                \vec{c^*} = \vec{y}_{i^*} + \lceil q/t \rfloor .
-                            \vec{m_b^*} \mod q)$.
-                        \item The rest of encryption oracle queries of
-                            $B$ answered as above.
-                        \item When $B$ returns a guess $b'$ for $b$, $D$ returns
-                            'Real' if $b' = b$, and 'Random' if $b' \neq b$.
-                    \end{itemize}
-                    \todo[inline]{draw the split of A and \(\vec{y}\)}
-                    The distinguisher $D$ works because:
-                    \begin{itemize}
-                        \item If $\vec{y}$ comes from the real scenario, then we
-                            can rewrite each of the block $\vec{y_i} =
-                            A_i\vec{s} + \vec{e_i}$, for $i = 1,\dots,q$. When
-                            replacing this onto $\vec{c_i}$, we see that it
-                            behaves exactly the same as in the encryption
-                            algorithm: $\vec{c_i} = A_i\vec{s} + \lceil q/t
-                            \rfloor \vec{m_i} + \vec{e_i}$, in which the
-                            attacker $B$ wins the game with good probability
-                            $1/2 + \varepsilon_B$. Hence D also returns 'Real'
-                            with good probability $1/2 + \varepsilon_B$.
-                        \item If $\vec{y}$ comes from the 'Random' scenario,
-                            $\vec{y}$ is independent and uniformly random in
-                            $\mathbb{Z}_q^{l.Q}$, therefore, in challenge
-                            ciphertext, $\vec{c_i}$ is uniformly random in
-                            $\mathbb{Z}_q^l$, independent of bit $b$ - Hence,
-                            $B$ gets no information on $b$ and wins the game
-                            with probability exactly $1/2$. So, $D$ returns
-                            'Real' with probability $1/2$
-                    \end{itemize}
-                    In conclusion, the distinguishing advantage of $D$ is
-                    $\varepsilon_B > 1/2^\lambda$. Also, the run-time of
-                    $D$ is approximately the run-time of $B$, which is
-                    $2^\lambda$.
-                    \begin{theorem}
-                        IND-CPA security of LWE cryptosystem with Q queries to the
-                        encryption oracle is at least as hard as DLWE
-                        \label{theo:reductionCPADLWE}
-                    \end{theorem}
+\subsection{Symmetric cryptosystem from LWE}
+\label{sec:LWESymmetric}
+We present a randomized cryptosystem based on LWE
+\begin{description}
+\item[Key Generation - KeyGen.] Fix integers $q, n$. Pick a secret key
+  $\vec{s} \randomsample \mathbb{Z}_q^n$.
+\item [Encryption - Enc.] Fix integers $t,l$. Given a message
+  $\vec{m} \in \mathbb{Z}_t^l$:
+  \begin{itemize}
+  \item Pick $A \randomsample \mathbb{Z}_q^{l \times n}$ and 'small' noise
+    $\vec{e} \randomsample \chi_{\alpha q}^l$.
+  \item Compute
+    $\vec{c} = A.\vec{s} + \vec{e} + \lceil q/t \rfloor . \vec{m} \mod \ q$.
+  \item Return ciphertext $(A, \vec{c}$.
+  \end{itemize}
+\item [Decryption - Dec.] Given a ciphertext $(A,\vec{c})$ and a secret key
+  $\vec{s}$:
+  \begin{itemize}
+  \item Compute $\vec{c'} = \vec{c} - A.\vec{s} \mod \ q$.
+  \item Compute $\vec{c''}$ by rounding coordinates of $\vec{c'}$ to the
+    neareast multiple of $\lceil q/t \rfloor \mod \ q$. This step exploits the
+    fact that $\vec{e}$ is a 'small' vector rather than a random one.
+  \item Return plaintext $\vec{m} = \frac{\vec{c''}}{\lceil q/t \rfloor}$
+  \end{itemize}
+
+\item [Correctness.] Decryption is correct if the rounding step succeeds, or if
+  all the noise coordinates $e_i$ of $\vec{e}$ is sufficiently small:
+  \[
+    e_i < \frac{1}{2} . \lceil q/t \rfloor \approx \frac{q}{2t}
+  \]
+  If the noise distribution $\chi_{\alpha q}$ is a normal distribution with
+  standard deviation $\alpha q$, the probability that the noise exceeds
+  $\frac{1}{2t\alpha}$ in magnitude is
+  $p_e \approx 2.\left( 1 - \Phi\left( \frac{1}{2t\alpha} \right) \right)$,
+  where $\Phi$ is the cumulative distribution function of the standard normal
+  distribution (mean 0 and standard deviation 1). Therefore, to assure
+  correctness, we need this probability to be sufficiently small, the following
+  \emph{correctness condition} must holds:
+  \[
+    t << \frac{1}{2\alpha}
+  \]
+  We can see that the larger the noise is, the smaller our message space
+  becomes. However, when the noise is large, LWE is harder as well: security
+  goes up when noise increase.  Generally, in lattice-based cryptosystems, there
+  is this trade-off between security and the size of messages to encrypt.
+
+\item [Security.] This section discusses how to analyze the security of
+  lattice-based cryptosystems. Our goal is to show that if an adversary can
+  break the encryption scheme's security, then he can also break DLWE problem,
+  which will be the hard problem that relate to lattice problems that we known
+  that are hard (SIS or $\gamma-SVP$). The standard security model that is used
+  in our analysis would be indistinguishability security against Chosen
+  Plaintext Attack (IND-CPA). The formal 'security game' is defined between a
+  challenger $Ch$ and the attacker $B$ against the encryption scheme
+
+  \begin{description}
+  \item[CPA Security Game.] The game is defined as follows.
+    \begin{itemize}
+    \item The challenger $Ch$ runs $Keygen$ algorithm and obtains a secret key
+      $\vec{s}$.
+    \item The attacker $B$ is given access to an 'encryption oracle': $B$ can
+      submit a plaintext $\vec{m}$ and get back from $Ch$ a ciphertext
+      $(A,C) = Enc(\vec{}, \vec{m})$. $B$ can query the oracle as many times as
+      he wants. When B finishes the query phrase, he submits a pair of
+      'challenge messages' $\vec{m_0^*},\vec{m_1^*}$.
+    \item Challenger picks a random bit $b \randomsample U(0,1)$, computes a
+      'challenge ciphertext' $(A^*, C^*) = Enc(\vec{s}, \vec{m_b^*})$ for the
+      challenge message selected by $b$, and sends $(A^*, C^*)$ to $B$.
+    \item $B$ can continue querying the 'encryption oracle' if he would
+      like. Finally, he outputs a guess $b'$ for the bit $b$ chosen by the
+      challenger. The attacker wins the game if $b' = b$.
+    \end{itemize}
+    \begin{definition}
+      [IND-CPA security.] A cryptosystem is IND-CPA secure with a security level
+      $\lambda$ if any attack algorithm $B$ with run-time $T(B) \leq 2^\lambda$
+      can only win the security game with probability
+      $\leq \frac{1}{2} + \frac{1}{2^\lambda}$.  (Note that we have to restrict
+      the run-time of the attacker as we know that for any cryptosystem, an
+      attacker with unlimited time can always win the game with probability 1
+      using brute force search.)
+      \label{def:IND-CPA Security}
+    \end{definition}
+
+  \item [Security Reduction from IND-CPA to DLWE.] Given the formal security
+    game, we need to prove that the cryptosystem defined satisfies such
+    model. By applying the security reduction technique, we demonstrate that if
+    an attacker could somehow break the cryptosystem, then he could also solve
+    DLWE, which was proved (Regev, 2005) to be a lattice-related hard problem:
+
+    Suppose there was an efficient IND-CPA attack algorithm $B$, breaking
+    $2^\lambda$ security of the LWE encryption scheme:
+    \begin{itemize}
+    \item $B$ runs in time $T_B$ and wins IND-CPA game with probability 1/2 +
+      $\varepsilon_b$ (with $T_B < 2^\lambda$ and
+      $\varepsilon_B > 1/2^\lambda$).
+    \item $B$ makes $Q$ encryption queries overall, including the challenge
+      ciphertext.
+    \end{itemize}
+    Then, given a DLWE instance $(q,n,A,\vec{y})$, we build a distinguisher
+    algorithm $D$ that runs as follows:
+    \begin{itemize}
+    \item D runs attacker $B$ against the encryption scheme, $D$ acts as the
+      challenger. When $B$ makes its $i^{th}$ encryption oracle query
+      $\vec{m_i}$, $D$ uses the $i^{th}$ block
+      $A_i \in \mathbb{Z}_q^{l \times n}$ of $l$ consecutive rows of $A$ and
+      corresponding $i^{th}$ block $\vec{y_i}\in \mathbb{Z}_q^l$ of $l$
+      consecutive rows of $\vec{y}$ to answer the oracle query with
+      $(A_i, \vec{c_i}$, where:
+      \[
+        \vec{c_i} = \vec{y_i} + \lceil q/t \rfloor .  \vec{m_i} \mod q.
+      \]
+    \item Similarly, when $B$ makes its challenge query
+      $(\vec{m_0^*},\vec{m_1^*})$. D chooses a random bit $b$ and uses the next
+      (not yet used) blocks $A_{i^*}, \vec{y}_{i^*}$ of $A$ and $\vec{y}$ to
+      respond with
+      $(A^* = A_{i^*}, \vec{c^*} = \vec{y}_{i^*} + \lceil q/t \rfloor .
+      \vec{m_b^*} \mod q)$.
+    \item The rest of encryption oracle queries of $B$ answered as above.
+    \item When $B$ returns a guess $b'$ for $b$, $D$ returns 'Real' if $b' = b$,
+      and 'Random' if $b' \neq b$.
+    \end{itemize}
+    The distinguisher $D$ works because:
+    \begin{itemize}
+    \item If $\vec{y}$ comes from the real scenario, then we can rewrite each of
+      the block $\vec{y_i} = A_i\vec{s} + \vec{e_i}$, for $i = 1,\dots,q$. When
+      replacing this onto $\vec{c_i}$, we see that it behaves exactly the same
+      as in the encryption algorithm:
+      $\vec{c_i} = A_i\vec{s} + \lceil q/t \rfloor \vec{m_i} + \vec{e_i}$, in
+      which the attacker $B$ wins the game with good probability
+      $1/2 + \varepsilon_B$. Hence D also returns 'Real' with good probability
+      $1/2 + \varepsilon_B$.
+    \item If $\vec{y}$ comes from the 'Random' scenario, $\vec{y}$ is
+      independent and uniformly random in $\mathbb{Z}_q^{l.Q}$, therefore, in
+      challenge ciphertext, $\vec{c_i}$ is uniformly random in $\mathbb{Z}_q^l$,
+      independent of bit $b$ - Hence, $B$ gets no information on $b$ and wins
+      the game with probability exactly $1/2$. So, $D$ returns 'Real' with
+      probability $1/2$
+    \end{itemize}
+    In conclusion, the distinguishing advantage of $D$ is
+    $\varepsilon_B > 1/2^\lambda$. Also, the run-time of $D$ is approximately
+    the run-time of $B$, which is $2^\lambda$.
+    \begin{theorem}
+      IND-CPA security of LWE cryptosystem with Q queries to the encryption
+      oracle is at least as hard as DLWE
+      \label{theo:reductionCPADLWE}
+    \end{theorem}
 
 
-                    \end{description}
+  \end{description}
 
 
-            \end{description}
+\end{description}
 
-        \item [Public-key Encryption from LWE.] This section discuss a
-            technique to modify Symmetric-Key to Public-key Encryption
-            (Regev's cryptosystem, 2005). This cryptosystem is the basis
-            for a lot of other lattice-based cryptographic techniques and the
-            ones that are used
-            later in our project. The idea is,
-            suppose that we use symmetric key sytem to encrypt a message
-            $\vec{m} = \vec{0}$, we observe that $Enc(\vec{s}, m) =
-            Enc(\vec{s},0) + [\vec{0}, m] \mod \ q$ ( recall that
-                $[\vec{a}, \vec{a}\vec{s} + \vec{e} + m] = [\vec{a},
-            \vec{a}\vec{s} + \vec{e}] + [\vec{0}, m]$). This implies
-            that we can encrypt a message by adding itself to the
-            encryption of zero $Enc(0)$, and therefore can use that
-            $Enc(0)$ as the public key! However, the ciphertext encrypted this
-            way can be simply
-            broken by just one substraction. Our next attempt can be
-            publishing several $\vec{p_i} = Enc(\vec{s}, 0)$, they are
-            all different as our scheme is non-deterministic. During
-            encryption, we can generate a random linear combination of
-            such encryptions to have a 'fresh' $Enc(0)$ and used it for
-            encryption.
-            \begin{description}
-                \item [Keygen.] Fix integers $q, m, n$. Select a secret key
-                    $\vec{s} \randomsample \mathbb{Z}_q^n$ and publish the
-                    public key $(A,\vec{p})$, where $A \randomsample
-                    \mathbb{Z}_q^{m \times n}$ and $\vec{p} = A.\vec{s} +
-                    \vec{e} \mod q$ with $\vec{e} \randomsample \chi_{\alpha
-                    q}^m$.
-                \item [Encryption - Enc.] Fix integers $t, B_r$. Given a message
-                    $m \in \mathbb{Z}_t$ and the public key $(A,\vec{p})$,
-                    select coefficients vector $\vec{r} \randomsample \left\{
-                    -B_r, \dots, B_r \right\}^m$ and compute and return:
-                    \[
-                        (\vec{a}^T, c) = ( \vec{r}^T . A,  \vec{r}^T .
-                        \vec{p} + \lceil q/t \rfloor . m \mod q)
-                    \]
-                \item [Decryption - Dec.] Given a ciphertext $(\vec{a}^T, c)$
-                    and the secret key $\vec{s}$:
-                    \begin{itemize}
-                        \item Compute $c' = c - \vec{a}^T . \vec{s} \mod q$
-                        \item Compute $c''  \in \mathbb{Z}_q$ by rounding
-                            $c'$ to the neareast multiple of $\lceil q/t
-                            \rfloor \mod q$.
-                        \item Return plaintext $m = \frac{c''}{\lceil q/t
-                            \rfloor}$.
-                    \end{itemize}
-                \item [Observation.] For small $r_i$: $r_1.Enc(\vec{s},0) +
-                    r_2.Enc(\vec{s}, 0) + \dots + r_i.Enc(\vec{s},0) =
-                    Enc(\vec{s}, 0)$.
-                \item [Correctness.] The condition for correct decryption is
-                    similar to the sysmmetric setting where the new noise
-                    $e < \frac{1}{2}. \frac{q}{t}$. The noise used in the
-                    public key randomizing process
-                    growths ($|e| > |e_1|, |e_2|,\dots,|e_i|$), but it is still small as long
-                    as $r_i$ are small. Generally, if the original noise
-                    distribution is normal with standard deviation $\alpha q$,
-                    then the distribution of the new noise $e =
-                    \vec{r}\vec{e}$ is also normal
-                    distributed with standard deviation $\alpha q
-                    \norm{\vec{r}}$. Also, the expected value of
-                    $\norm{\vec{r}} \approx \sqrt{B_r(B_r + 1)m/3}$. At the end,
-                    to ensure the correctness of the system,
-                    we need to set up the parameters such that the
-                    probability that the noise grow big is small. The error
-                    probability per coordinates $p_e$ is the probability that a
-                    standard normal random variable (mean 0, standard deviation
-                    1) exceeds $\frac{1}{2t\alpha}$ in magnitude:
-                    \[
-                        p_e \approx 2 . \left( 1 - \Phi\left(
-                            \frac{1}{2t\alpha}.\sqrt{\frac{3}{B_r(B_r+1)m}} \right)
-                    \right)
-                    \]
-                    Where $\Phi$ is the cumulative distribution function of the
-                    standard normal distribution. We can rewrite the following
-                    correctness condition in terms of $t$:
-                    \[
-                        t << \frac{1}{2\alpha}.\sqrt{\frac{3}{B_r(B_r + 1)m}}
-                    \]
-                    Again, we see that if we use larger noise, we have better
-                    level of security but our message space becomes smaller. In
-                    the Public-key scheme, we lose another factor of
-                    $O(\sqrt{m}$ in $t$ when doing
-                    randomization, compared with the symmetric-key system.
-                \item [Security.] Similar to the symmetric key system, we first define the IND-CPA attack
-                    model for an attacker $B$ and a challenger $Ch$:
-                    \begin{itemize}
-                        \item $Ch$ runs KeyGen algorithm to obtain a secret key
-                            $\vec{s}$ and a public key $(A,\vec{p})$. The public
-                            key is given to the attacker $B$.
-                        \item $B$ does not need to access an encryption oracle,
-                            it can simulate the operation itself, this is the
-                            main difference compared to the symmetric security
-                            model. $B$ just send
-                            to $Ch$ a pair of 'challenge messages'
-                            $\vec{m_0^*}, \vec{m_1^*}$.
-                        \item $Ch$ selects a random bit $b \randomsample
-                            {0,1}$ and compute the 'challenge ciphertext'
-                            $(\vec{a^*}, c^*) = Enc((A, \vec{p}), \vec{m_b^*})$
-                            for the challenge message selected by $b$, and gives
-                            the result to $B$.
-                        \item Attacker $B$ outputs a guess $b'$ for the bit
-                            $b$ chosen by the challenger. $B$ wins the game if
-                            $b' = b$.
-                    \end{itemize}
-                    \begin{definition}
-                        [Regev IND-CPA security.] The public key cryptosystem is
-                        secure at $2^\lambda$ level if any attacker $B$ with
-                        run-time $T(B) \leq 2^\lambda$ wins the game with
-                        probability $\leq 1/2 + 1/2^\lambda$.
+\subsection{Assymmetric Cryptosystem from LWE}
+\label{sec:asymLWE}
+This section discuss a technique to modify Symmetric-Key to Public-key
+Encryption (Regev's cryptosystem, 2005). This cryptosystem is the basis for a
+lot of other lattice-based cryptographic techniques and the ones that are used
+later in our project. The idea is, suppose that we use symmetric key sytem to
+encrypt a message $\vec{m} = \vec{0}$, we observe that
+$Enc(\vec{s}, m) = Enc(\vec{s},0) + [\vec{0}, m] \mod \ q$ ( recall that
+$[\vec{a}, \vec{a}\vec{s} + \vec{e} + m] = [\vec{a}, \vec{a}\vec{s} + \vec{e}] +
+[\vec{0}, m]$). This implies that we can encrypt a message by adding itself to
+the encryption of zero $Enc(0)$, and therefore can use that $Enc(0)$ as the
+public key! However, the ciphertext encrypted this way can be simply broken by
+just one substraction. Our next attempt can be publishing several
+$\vec{p_i} = Enc(\vec{s}, 0)$, they are all different as our scheme is
+non-deterministic. During encryption, we can generate a random linear
+combination of such encryptions to have a 'fresh' $Enc(0)$ and used it for
+encryption.
+\begin{description}
+\item [Keygen.] Fix integers $q, m, n$. Select a secret key
+  $\vec{s} \randomsample \mathbb{Z}_q^n$ and publish the public key
+  $(A,\vec{p})$, where $A \randomsample \mathbb{Z}_q^{m \times n}$ and
+  $\vec{p} = A.\vec{s} + \vec{e} \mod q$ with
+  $\vec{e} \randomsample \chi_{\alpha q}^m$.
+\item [Encryption - Enc.] Fix integers $t, B_r$. Given a message
+  $m \in \mathbb{Z}_t$ and the public key $(A,\vec{p})$, select coefficients
+  vector $\vec{r} \randomsample \left\{ -B_r, \dots, B_r \right\}^m$ and compute
+  and return:
+  \[
+    (\vec{a}^T, c) = ( \vec{r}^T . A, \vec{r}^T .  \vec{p} + \lceil q/t \rfloor
+    . m \mod q)
+  \]
+\item [Decryption - Dec.] Given a ciphertext $(\vec{a}^T, c)$ and the secret key
+  $\vec{s}$:
+  \begin{itemize}
+  \item Compute $c' = c - \vec{a}^T . \vec{s} \mod q$
+  \item Compute $c'' \in \mathbb{Z}_q$ by rounding $c'$ to the neareast multiple
+    of $\lceil q/t \rfloor \mod q$.
+  \item Return plaintext $m = \frac{c''}{\lceil q/t \rfloor}$.
+  \end{itemize}
+\item [Observation.] For small $r_i$:
+  $r_1.Enc(\vec{s},0) + r_2.Enc(\vec{s}, 0) + \dots + r_i.Enc(\vec{s},0) =
+  Enc(\vec{s}, 0)$.
+\item [Correctness.] The condition for correct decryption is similar to the
+  sysmmetric setting where the new noise $e < \frac{1}{2}. \frac{q}{t}$. The
+  noise used in the public key randomizing process growths
+  ($|e| > |e_1|, |e_2|,\dots,|e_i|$), but it is still small as long as $r_i$ are
+  small. Generally, if the original noise distribution is normal with standard
+  deviation $\alpha q$, then the distribution of the new noise
+  $e = \vec{r}\vec{e}$ is also normal distributed with standard deviation
+  $\alpha q \norm{\vec{r}}$. Also, the expected value of
+  $\norm{\vec{r}} \approx \sqrt{B_r(B_r + 1)m/3}$. At the end, to ensure the
+  correctness of the system, we need to set up the parameters such that the
+  probability that the noise grow big is small. The error probability per
+  coordinates $p_e$ is the probability that a standard normal random variable
+  (mean 0, standard deviation 1) exceeds $\frac{1}{2t\alpha}$ in magnitude:
+  \[
+    p_e \approx 2 . \left( 1 - \Phi\left(
+        \frac{1}{2t\alpha}.\sqrt{\frac{3}{B_r(B_r+1)m}} \right) \right)
+  \]
+  Where $\Phi$ is the cumulative distribution function of the standard normal
+  distribution. We can rewrite the following correctness condition in terms of
+  $t$:
+  \[
+    t << \frac{1}{2\alpha}.\sqrt{\frac{3}{B_r(B_r + 1)m}}
+  \]
+  Again, we see that if we use larger noise, we have better level of security
+  but our message space becomes smaller. In the Public-key scheme, we lose
+  another factor of $O(\sqrt{m}$ in $t$ when doing randomization, compared with
+  the symmetric-key system.
+\item [Security.] Similar to the symmetric key system, we first define the
+  IND-CPA attack model for an attacker $B$ and a challenger $Ch$:
+  \begin{itemize}
+  \item $Ch$ runs KeyGen algorithm to obtain a secret key $\vec{s}$ and a public
+    key $(A,\vec{p})$. The public key is given to the attacker $B$.
+  \item $B$ does not need to access an encryption oracle, it can simulate the
+    operation itself, this is the main difference compared to the symmetric
+    security model. $B$ just send to $Ch$ a pair of 'challenge messages'
+    $\vec{m_0^*}, \vec{m_1^*}$.
+  \item $Ch$ selects a random bit $b \randomsample {0,1}$ and compute the
+    'challenge ciphertext' $(\vec{a^*}, c^*) = Enc((A, \vec{p}), \vec{m_b^*})$
+    for the challenge message selected by $b$, and gives the result to $B$.
+  \item Attacker $B$ outputs a guess $b'$ for the bit $b$ chosen by the
+    challenger. $B$ wins the game if $b' = b$.
+  \end{itemize}
+  \begin{definition}
+    [Regev IND-CPA security.] The public key cryptosystem is secure at
+    $2^\lambda$ level if any attacker $B$ with run-time $T(B) \leq 2^\lambda$
+    wins the game with probability $\leq 1/2 + 1/2^\lambda$.
 
-                        \label{def:PublicKeyIndCPARegev}
-                    \end{definition}
+    \label{def:PublicKeyIndCPARegev}
+  \end{definition}
 
-                    We introduce another technique to analyze the security of a
-                    cryptosystem. Unlike the symmetric key scenario, where we
-                    built a distinguisher using an assumed attacker and proved
-                    the security by contradiction, in this scenario, we measure the
-                    closeness of probability distribution of the ciphertexts
-                    from the real attack and the reduction. The idea is, if the
-                    distance is small enough, the attack algorithm
-                    cannot distinguish the ciphertexts. In cryptography,
-                    statistical distance usually used to measure such
-                    distance
-                    \begin{definition}
-                        [Statistical Distance.] For two probability
-                        distributions $D_1$ and $D_2$ on a discrete set
-                        $S$, the statistical distance $\Delta(D_1,D_2)$ is
-                        defined as
-                        \[
-                            \Delta(D_1, D_2) = \frac{1}{2}. \sum_{s \in
-                            S}|D_1(x) - D_2(x)|
-                        \]
-                        \label{def:statisticalDistance}
-                    \end{definition}
-                    \begin{lemma}
-                        Let $D_1, D_2$ be any two distributions, and $A$ be any
-                        algorithm, then:
-                        \[
-                            |Pr_{x\randomsample D_1}[A(x) = 1] -
-                            Pr_{x\randomsample D_2}[A(x) = 1]| \leq \Delta(D_1,
-                            D_2)
-                        \]
-                        \label{lem:statisticalDistance}
-                    \end{lemma}
-                    This lemma is very useful because it says,
-                    if we make the distance
-                    small enough (negligible), then no matter what algorithm an attacker
-                    uses, he is not able to distinguish the distributions by
-                    non-negligible advantage. We will show that the distribution
-                    that we generate in the security reduction that the
-                    distinguisher shows to the attacker is within a negligible
-                    statistical distance to what the attacker sees in the real
-                    attack.
+  We introduce another technique to analyze the security of a
+  cryptosystem. Unlike the symmetric key scenario, where we built a
+  distinguisher using an assumed attacker and proved the security by
+  contradiction, in this scenario, we measure the closeness of probability
+  distribution of the ciphertexts from the real attack and the reduction. The
+  idea is, if the distance is small enough, the attack algorithm cannot
+  distinguish the ciphertexts. In cryptography, statistical distance usually
+  used to measure such distance
+  \begin{definition}
+    [Statistical Distance.] For two probability distributions $D_1$ and $D_2$ on
+    a discrete set $S$, the statistical distance $\Delta(D_1,D_2)$ is defined as
+    \[
+      \Delta(D_1, D_2) = \frac{1}{2}. \sum_{s \in S}|D_1(x) - D_2(x)|
+    \]
+    \label{def:statisticalDistance}
+  \end{definition}
+  \begin{lemma}
+    Let $D_1, D_2$ be any two distributions, and $A$ be any algorithm, then:
+    \[
+      |Pr_{x\randomsample D_1}[A(x) = 1] - Pr_{x\randomsample D_2}[A(x) = 1]|
+      \leq \Delta(D_1, D_2)
+    \]
+    \label{lem:statisticalDistance}
+  \end{lemma}
+  This lemma is very useful because it says, if we make the distance small
+  enough (negligible), then no matter what algorithm an attacker uses, he is not
+  able to distinguish the distributions by non-negligible advantage. We will
+  show that the distribution that we generate in the security reduction that the
+  distinguisher shows to the attacker is within a negligible statistical
+  distance to what the attacker sees in the real attack.
 
-                    \begin{description}
-                        \item[Security Reduction from DLWE.] Suppose there was
-                            an efficient IND-CPA attack algorithm $B$ that
-                            breaks $2^\lambda$ security of Regev's public key
-                            system. ($B$ runs in time $T_B$ and wins IND-CPA
-                                game with probability $1/2 + \varepsilon_B$
-                                    with $T_B < 2^\lambda$ and $\varepsilon_B >
-                            1/2^\lambda$).
+  \begin{description}
+  \item[Security Reduction from DLWE.] Suppose there was an efficient IND-CPA
+    attack algorithm $B$ that breaks $2^\lambda$ security of Regev's public key
+    system. ($B$ runs in time $T_B$ and wins IND-CPA game with probability
+    $1/2 + \varepsilon_B$ with $T_B < 2^\lambda$ and
+    $\varepsilon_B > 1/2^\lambda$).
 
-                            Then, given a DLWE instance $(q,n,A,\vec{y})$, DLWE
-                            algorithm $D$ works as follows:
-                            \begin{itemize}
-                                \item $D$ runs attacker $B$ on input public key
-                                    $(A, \vec{p} = \vec{y})$.
-                                \item When $B$ makes its challenge query
-                                $(\vec{m_0^*}, \vec{m_1^*})$, $D$ behaves
-                                like the real challenger: chooses a random bit
-                                $b$ and selects coefficient vector
-                                $\vec{r} \randomsample \left\{ -B_r, \dots, B_r
-                                \right\}^m$, computes and sends back:
-                                \[
-                                    (\vec{a^*}, \vec{c^*}) = (\vec{r}.A,
-                                        \vec{r}.\vec{y} + \lceil q/t \rfloor .
-                                        m_b \mod q
-                                \]
-                            \item When $B$ returns a guess $b'$ for $b$,
-                                $D$ returns 'Real' if $b'=b$ and 'Random' if
-                                $b' \neq b$.
-                            \end{itemize}
+    Then, given a DLWE instance $(q,n,A,\vec{y})$, DLWE algorithm $D$ works as
+    follows:
+    \begin{itemize}
+    \item $D$ runs attacker $B$ on input public key $(A, \vec{p} = \vec{y})$.
+    \item When $B$ makes its challenge query $(\vec{m_0^*}, \vec{m_1^*})$, $D$
+      behaves like the real challenger: chooses a random bit $b$ and selects
+      coefficient vector
+      $\vec{r} \randomsample \left\{ -B_r, \dots, B_r \right\}^m$, computes and
+      sends back:
+      \[
+        (\vec{a^*}, \vec{c^*}) = (\vec{r}.A, \vec{r}.\vec{y} + \lceil q/t
+        \rfloor .  m_b \mod q
+      \]
+    \item When $B$ returns a guess $b'$ for $b$, $D$ returns 'Real' if $b'=b$
+      and 'Random' if $b' \neq b$.
+    \end{itemize}
 
-    \item [Why does $D$ work.] Consider two $LWE$ scenarios
-        for $\vec{y}$:
-        \begin{itemize}
-            \item 'Real' LWE scenario, $\vec{y} =
-                A.\vec{s} + \vec{e}$. The public key and
-                challenge ciphertext returned by $D$ to
-                $B$ are computed exactly as in the real
-                IND-CPA game, so $B$ wins the game with good
-                probability $1/2 + \varepsilon_B$, hence
-                $D$ returns 'Real' with probability
-                $1/2 + \varepsilon_B$.
-            \item 'Random' LWE scenario, $\vec{p} =
-                \vec{y}$ is independent and uniformly random
-                in $\mathbb{Z}_q^m$. We use the following
-                'Leftover Hash Lemma'(LHL), this is a
-                property related to the way we generate the
-                fresh encryptions of 0 from the public one:
-                The new matrix $A' = \vec{r}A$ is within
-                statistically distance negligible to
-                uniformly random when the vector $\vec{r}$ is big
-                enough.
-                \begin{lemma}
-                    [Leftover Hash Lemma (LHL).]
-                    Let $C \randomsample \mathbb{Z}_q^{m
-                    \times (n+1)}$ and $\vec{r} \in \left\{
-                    -B_r, \dots, B_r \right\}^m$. If the
-                    following condition holds:
-                    \[
-                        (2B_r + 1)^m >> q^{n+1}
-                    \]
-                    then the probability distribution $P$ of the pair
-                    $(C, \vec{r}.C \mod q)$ is statistically indistinguishable
-                    from the uniform distribution $\mathbb{Z}_q^{m \times n}
-                    \times \mathbb{Z}_q^{n+1}$. More precisely, the statistical
-                    distance $\Delta(P,U)$ between the probability distributions
-                    $P,U$ is at most
-                    \[
-                        \frac{1}{2} . \sqrt{\frac{q^{n+1}}{(2B_r + 1)^m}}
-                    \]
-                    \label{lem:LHL}
-                \end{lemma}
-                The lemma also gives us indication about how large parameters should
-                be. The proof continues as follows:
-            \item If the distribution P of $(A, \vec{y}, \vec{a^*} =
-                \vec{r} . A, \vec{r}. \vec{y})$ was exactly $U(\mathbb{Z}_q^{m
-                \times n} \times \mathbb{Z}_q^{n+1})$, then similar to the
-                symmetric key case, the ciphertext $(\vec{a}, c^* =
-                \vec{r}\vec{y} + \lceil q/t \rfloor.m_b)$ is independent of
-                $b$ and the public key $\vec{y}$, that contains no information
-                on $b$, and hence $D$ returns 'Real' with probability 1/2.
-            \item By LHL, $\Delta(P,U) \leq \frac{1}{2}.
-                \sqrt{\frac{q^{n+1}}{(2B_r+1)^m}}=\delta$. and $\delta \leq
-                \frac{1}{2^{\lambda+1}}$ is negligible. From the property of
-                statistical distance, $D$ returns 'Real' with probability
-                $\leq 1/2 + \delta \leq 1/2 + 1/2^{\lambda+1}$. The
-                distinguishing advantage of $D$
-                \[
-                    Adv(D) \geq \varepsilon_B - \frac{1}{2^{\lambda+1}} \geq
-                    \frac{1}{2^\lambda} - \frac{1}{2^{\lambda+1}} \geq
-                    \frac{1}{2^{\lambda+1}}.
-                \]
-                Also, the run-time of $D$ is approximately the run-time of
-                $B$, which is $O\left( 2^\lambda \right)$. This contradicts with
-                $2^{\lambda + 1}$ security of DLWE
+  \item [Why does $D$ work.] Consider two $LWE$ scenarios for $\vec{y}$:
+    \begin{itemize}
+    \item 'Real' LWE scenario, $\vec{y} = A.\vec{s} + \vec{e}$. The public key
+      and challenge ciphertext returned by $D$ to $B$ are computed exactly as in
+      the real IND-CPA game, so $B$ wins the game with good probability
+      $1/2 + \varepsilon_B$, hence $D$ returns 'Real' with probability
+      $1/2 + \varepsilon_B$.
+    \item 'Random' LWE scenario, $\vec{p} = \vec{y}$ is independent and
+      uniformly random in $\mathbb{Z}_q^m$. We use the following 'Leftover Hash
+      Lemma'(LHL), this is a property related to the way we generate the fresh
+      encryptions of 0 from the public one: The new matrix $A' = \vec{r}A$ is
+      within statistically distance negligible to uniformly random when the
+      vector $\vec{r}$ is big enough.
+      \begin{lemma}
+        [Leftover Hash Lemma (LHL).]  Let
+        $C \randomsample \mathbb{Z}_q^{m \times (n+1)}$ and
+        $\vec{r} \in \left\{ -B_r, \dots, B_r \right\}^m$. If the following
+        condition holds:
+        \[
+          (2B_r + 1)^m >> q^{n+1}
+        \]
+        then the probability distribution $P$ of the pair
+        $(C, \vec{r}.C \mod q)$ is statistically indistinguishable from the
+        uniform distribution
+        $\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{n+1}$. More precisely,
+        the statistical distance $\Delta(P,U)$ between the probability
+        distributions $P,U$ is at most
+        \[
+          \frac{1}{2} . \sqrt{\frac{q^{n+1}}{(2B_r + 1)^m}}
+        \]
+        \label{lem:LHL}
+      \end{lemma}
+      The lemma also gives us indication about how large parameters should
+      be. The proof continues as follows:
+    \item If the distribution P of
+      $(A, \vec{y}, \vec{a^*} = \vec{r} . A, \vec{r}. \vec{y})$ was exactly
+      $U(\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{n+1})$, then similar to
+      the symmetric key case, the ciphertext
+      $(\vec{a}, c^* = \vec{r}\vec{y} + \lceil q/t \rfloor.m_b)$ is independent
+      of $b$ and the public key $\vec{y}$, that contains no information on $b$,
+      and hence $D$ returns 'Real' with probability 1/2.
+    \item By LHL,
+      $\Delta(P,U) \leq \frac{1}{2}.
+      \sqrt{\frac{q^{n+1}}{(2B_r+1)^m}}=\delta$. and
+      $\delta \leq \frac{1}{2^{\lambda+1}}$ is negligible. From the property of
+      statistical distance, $D$ returns 'Real' with probability
+      $\leq 1/2 + \delta \leq 1/2 + 1/2^{\lambda+1}$. The distinguishing
+      advantage of $D$
+      \[
+        Adv(D) \geq \varepsilon_B - \frac{1}{2^{\lambda+1}} \geq
+        \frac{1}{2^\lambda} - \frac{1}{2^{\lambda+1}} \geq
+        \frac{1}{2^{\lambda+1}}.
+      \]
+      Also, the run-time of $D$ is approximately the run-time of $B$, which is
+      $O\left( 2^\lambda \right)$. This contradicts with $2^{\lambda + 1}$
+      security of DLWE
 
-                \begin{theorem}
-                    If LHL condition holds, IND-CPA security of Regev's
-                    encryption scheme is at least as hard as $DLWE_{q,m,n,\alpha}$
-                    \label{theo:IndCPARegev}
-                \end{theorem}
-            \item For future reference of parameter choices, we consider this
-                example of choosing parameters for Regev's cryptosystem. We can
-                rearrange the requirements for the LHL condition hold, it tells
-                us how large $m$ should be:
-                \[
-                    (2B_r + 1 )^m \geq 2^{2(\lambda + 1)}.q^{n+1}
-                \]
-                or
-                \[
-                    m \geq \frac{(n+1).\log q + 2.(\lambda+1)}{\log{2B_r + 1}}
-                \]
+      \begin{theorem}
+        If LHL condition holds, IND-CPA security of Regev's encryption scheme is
+        at least as hard as $DLWE_{q,m,n,\alpha}$
+        \label{theo:IndCPARegev}
+      \end{theorem}
+    \item For future reference of parameter choices, we consider this example of
+      choosing parameters for Regev's cryptosystem. We can rearrange the
+      requirements for the LHL condition hold, it tells us how large $m$ should
+      be:
+      \[
+        (2B_r + 1 )^m \geq 2^{2(\lambda + 1)}.q^{n+1}
+      \]
+      or
+      \[
+        m \geq \frac{(n+1).\log q + 2.(\lambda+1)}{\log{2B_r + 1}}
+      \]
 
-        \end{itemize}
+    \end{itemize}
 
-                    \end{description}
+  \end{description}
 
-            \end{description}
-        \item [Efficiency of Lattice-based crypto.] For any
-            cryptosystem, we are interested in some aspects in terms of
-            efficiency:
-            \begin{itemize}
-                \item Key length is important as the key might be
-                    stored in the memory or the public key will be sent
-                    over the network (communication size).
-                \item Ciphertext size, we would like to reduce this as
-                    much as possible. The expansion ratio of the
-                    ciphertext should not be too big.
-                \item Computation time for doing encryption and
-                    decryption.
-            \end{itemize}
-            For the Regev's Public-key encryption scheme, the public key
-            is $pk=(A \randomsample \mathbf{Z}_q^{m \times n},
-            \vec{p} = A.\vec{s} + \vec{e})$, hence, $length(pk) =
-            m.(n+1)\log q \geq n^2\log q$. According to the 'lattice
-            rule of thumb', we can see that the key length is at least
-            quadratic in the security parameter $\lambda$:
-            $O(\lambda^2)$, this is a very large factor compared to ones
-            of
-            classical public key systems.
-            Similarly, we will get the ciphertext
-            expansion ratio is at least $O(\lambda)$, which is also
-            large (in practice we would want something close to 1). In
-            terms of the encryption time, the main cost is in the matrix
-            multiplication operation, and generally it is also at least
-            quadratic in $\lambda$: $O(\lambda^2)$. We will discuss
-            approaches to improve all of the aspects in this section.
+\end{description}
 
-            \begin{description}
-                \item[Reducing Ciphertext Expansion.] The first idea was proposed by
-                    \cite{peikert2008framework} to improve Regev's public key scheme by
-                    squeezing more messages to a ciphertext.
-                    The observation is the $\vec{a^T} = \vec{r^T}. A
-                    \mod q$ part of the ciphertext is independent of the message
-                    $m$ and takes lots of space. In stead of using a new
-                    randomness for each message $m$, we can 'reuse' a randomness
-                    with new secret keys $\vec{s_i}$, to encrypt many integer
-                    messages , encoded in an integer vector. The modified scheme
-                    is presented as follows, with $l$ being the number of secret
-                    key vectors.
-                    \begin{itemize}
-                        \item Secret-key $S = (\vec{s_1}, \dots, \vec{s_l}) \in
-                            \mathbb{Z}_q^{n \times l} \log q$.
-                        \item Public-key $pk = (A \randomsample \mathbb{Z}_q^{m
-                            \times n},P=(\vec{p_1}, \dots, \vec{p_l}))$ where
-                            $\vec{p_i} = A.\vec{s_i} + \vec{e_i} \mod q$, with
-                            $\vec{e_i} \randomsample \chi_{\alpha q}^m$.
-                        \item Encryption - Enc $(\vec{m} \in \mathbb{Z}_t^l)$:
-                            Return the ciphertext $C = (\vec{a}^T=
-                            \vec{r}^T.A \mod q, \vec{c}^T = \vec{r}^.P + \lceil
-                        q/t \rfloor . \vec{m} \mod q)$. We see that the
-                        ciphertext size increases from $n\log q$ to $(n+l)\log
-                        q$, the message length also increases from one integer
-                        to $l$ integers. The expansion ratio
-                        $\frac{(n+l)\log q}{l \log t}$ is therefore can be
-                        reduced by using larger $l$, for example, if $l=n$, the
-                        ratio is as good as 2. Note that IND-CPA security still
-                        holds as the scheme does not reuse $\vec{p_i}$ during
-                        encryptions \todo[inline]{Put in Security reduction if have
-                        time later (slide 8/33 or Ron's lecture), the idea is
-                        having $l$ instances of DLWE and show that if we can break
-                        the security of this scheme then we can break at least one
-                        of the DLWE instance}.
-                        Although $\vec{p_i}$ do make the public key
-                        size a bit bigger, but $A$'s size still dominate.
-                    \item Decryption - $Dec(C = (\vec{a}^T, \vec{c}^T))$:
-                        Compute $\vec{c'}^T = \vec{c}^T - \vec{a}^T.S \mod q$
-                        and round to the neareast multiple of $\lceil q/t
-                        \rfloor \mod q$ to get $\vec{c''}$. Return plaintext
-                        $\vec{m} = \frac{\vec{c''}}{\lceil q/t \rfloor}$
-                    \end{itemize}
-                \item [Reducing Storage and Computation.] The
-                    approach toward this problem has an interesting history,
-                    it evolved even before the introduction of LWE. The idea is
-                    to put some structure to the matrix $A$: So far all the
-                    elements of $A$ are chosen uniformly at random, recall that
-                    $A$ is a random $m \times n$ matrix with $m \geq n$, the
-                    total number of elements in the matrix is $m.n \geq n^2$:
-                    \[
-                        A = \begin{bmatrix}
-                            a_{1,1}& a_{1,2}& \dots& a_{1,n}\\
-                            a_{2,1}& a_{2,2}& \dots& a_{2,n}\\
-                            \vdots& \vdots& \ddots& \vdots\\
-                            a_{n,1}& a_{n,2}& \dots& a_{n,n}\\
-                            \vdots& \vdots& \ddots& \vdots\\
-                            a_{m,1}& a_{m,2}& \dots& a_{m,n}
-                        \end{bmatrix}
-                    \]
-                    If we do not choose the elements independently but having some
-                    corelations between the rows or columns, then we do not have
-                    to specify $n^2$ elements anymore to describe $A$. In other
-                    words, we can derive elements from existing one. The
-                    question is how to do that securely? The most common
-                    approach was introduced by
-                    \cite{hoffstein1998ntru, micciancio2007generalized}, it is a special
-                    structured type of matrix called negacyclic matrix, denoted
-                    by $rot(\vec{a})$, where $\vec{a}$ is an n-dimensional
-                    vector. Once $\vec{a}$ is specified, which is the first
-                    column of the rot() matrix, all the other columns can then
-                    be derived from the first one: the rule is quite simple, the
-                    next column is generated by rotate the previous column by one
-                    position and change the sign of the first element:
-                    \[
-                        \begin{bmatrix}
-                            a_{0}& -a_{n-1}& -a_{n-2}& \dots& -a_1\\
-                            a_1& a_0& -a_{n-1}& \dots& -a_2\\
-                            a_2& a_1& a_0& \dots& -a_3\\
-                            \vdots& \vdots& \vdots& \ddots& \vdots\\
-                            a_{n-1}& a_{n-2}& a_{n-3}& \dots& a_0
-                        \end{bmatrix}
-                    \]
-                    The output of $rot(\vec{a})$ is a square $n \times n$
-                    matrix. In order to construct the matrix $A$, we can do
-                    \[
-                        A = \begin{bmatrix}
-                            rot(\vec{a_1})\\
-                            rot(\vec{a_2})\\
-                            \vdots\\
-                            rot(\vec{a}_{m/n})
-                        \end{bmatrix}
-                    \]
-                    Therefore, the storage for the matrix $A$ reduces from $m \times n
-                    \log q$ to $m \log q$ as we only need to store the first
-                    column of the matrix.
-                    Another nice property of this rotational structure is its
-                    correspondence with the ring multiplication operation of the
-                    ring $R_q = \mathbb{Z}_q[x]/(x^n+1)$. In other words,
-                    the expensive
-                    operation of one matrix multiplied by a vector can be done
-                    in one polynomial multiplication operation: For two
-                    n-dimensional vectors
-                    $\vec{a}, \vec{x}$
-                    that represented by two
-                    polynomials $a(x), s(x) \in \mathbb{Z}_q[x]$ of degree less
-                    than $n -1$, let $c(x) = a(x).s(x) \mod x^n + 1$, or
-                    $c(x) = \sum_{i<n}s_ix^ia(x) \mod x^n + 1$. We observe that
-                    $x(a_0 + a_1x + a_2x^2 + \dots + a_{n-1}x^{n-1}) \mod x^n + 1
-                    =-a_{n-1} + a_0x + a_1x^2 + \dots + a_{n-2}x^{n-1}$.
+\subsection{Efficiency of Lattice-based cryptosystems}
+\label{sec:latticeEfficiency}
 
-                    Hence,
-                    $rot(\vec{a}).\vec{s} \mod q = a(x).s(x) \mod x^n + 1$ can
-                    be presented as:
-                    \[
-                        \begin{bmatrix}
-                            c_0\\
-                            c_1\\
-                            \vdots\\
-                            c_{n-1}
-                        \end{bmatrix} = \begin{bmatrix}
-                            a_0& -a_{n-1}& -a_{n-2}& \dots& -a_1\\
-                            a_1& a_0& -a_{n-1}& \dots& -a_2\\
-                            \vdots& \vdots& \vdots& \ddots& \vdots&\\
-                            a_{n-1}& a_{n-2}& a_{n-3}& \dots& a_0
-                        \end{bmatrix}.\begin{bmatrix}
-                            s_0 \\ s1\\ \vdots\\ s_{n-1}
-                        \end{bmatrix}
-                    \]
-            After reinterpreting the operation this way, we can apply fast
-            algorithm to do polynomial multiplication to speed up the
-            computation time. Specifically, we can go from $O(n^3)$ cost of
-            matrix-vector multiplication down to $O(n \log n)$ Fast Fourier
-            Transform (FFT) polynomial multiplication.
+For any cryptosystem, we are interested in some aspects in terms of efficiency:
+\begin{itemize}
+\item Key length is important as the key might be stored in the memory or the
+  public key will be sent over the network (communication size).
+\item Ciphertext size, we would like to reduce this as much as possible. The
+  expansion ratio of the ciphertext should not be too big.
+\item Computation time for doing encryption and decryption.
+\end{itemize}
+For the Regev's Public-key encryption scheme, the public key is
+$pk=(A \randomsample \mathbf{Z}_q^{m \times n}, \vec{p} = A.\vec{s} + \vec{e})$,
+hence, $length(pk) = m.(n+1)\log q \geq n^2\log q$. According to the 'lattice
+rule of thumb', we can see that the key length is at least quadratic in the
+security parameter $\lambda$: $O(\lambda^2)$, this is a very large factor
+compared to ones of classical public key systems.  Similarly, we will get the
+ciphertext expansion ratio is at least $O(\lambda)$, which is also large (in
+practice we would want something close to 1). In terms of the encryption time,
+the main cost is in the matrix multiplication operation, and generally it is
+also at least quadratic in $\lambda$: $O(\lambda^2)$. We will discuss approaches
+to improve all of the aspects in this section.
 
-            \textbf{Reducing Computation with FFT.} There are several variants
-            of Fourier Transform (FT), one of the classical usage of FT in
-            engineering is to convert a time function of periodic signal to the
-            frequency domain of that function. The version of FT
-            that we will use is similar but it works on discrete structure: the
-            input to the FT is a n-dimensional vector (which can also be
-            represented in terms
-            of a polynomial), the output is another polynomial whose coefficients
-            are the evaluations of the input polynomial at the $n$ roots of unity.
-            If the FFT is done in $\mathbb{Z}_q$, it is called the Number
-            Theoric Transform (NTT) (The original FT usually works with complex
-            numbers). Recall that the NTT's roots of unity are $\zeta_i$ such that
-            $\zeta_i^n = -1\mod q$ and in order for $\zeta_i$ to exist,
-            the condition on $q$ is $q -1$ is divisible $2n$.
-            The polynomial multiplication speed up of $\mathbf{c(x) = a(x).s(x)} \mod x^n
-            +1$, where $\mathbf{a(x),s(x)} \in \mathbb{Z}_q[x]$ can be done as
-            follows.
-            \begin{itemize}
-                \item Choose $q$ such that $2n$ divides $q-1$, then $x^n + 1$
-                    has $n$ zeros in $\mathbb{Z}_q$ of the form $\zeta^{2i + 1}$
-                    for $i = 0,\dots,n-1$, where $\zeta \in \mathbb{Z}_q$ is a
-                    primitive $2n^{th}$ root of $1$ in $\mathbb{Z}_q$.
-                \item Evaluate $\mathbf{a(x)}$ and $\mathbf{s(x)}$ at the n
-                    points $\zeta^{2i + 1}$ in $\mathbb{Z}_q$ to compute the
-                    evaluation vectors
-                    $\mathbf{(a(\zeta),\dots,a(\zeta^{2n-1}))}$ and
-                    $\mathbf{(s(\zeta), \dots, s(\zeta^{2n - 1}))}$. This
-                    operation corresponds to multiplication by an FFT-like
-                    matrix and takes $O(n \log n)$ multiplication/addition over
-                    the ring $\mathbb{Z}_q$.
-                \item Multiply the evaluations at each point
-                    $\mathbf{c(\zeta^{2i + 1}) =
-                    a(\zeta^{2i+1})s(\zeta^{2i+1})}$ for $i = 0,\dots,n-1$.
-                \item Interpolate (inverse NTT) $\mathbf{(c(\zeta), \dots,
-                    c(\zeta^{2n-1}))}$ to reconstruct $\mathbf{c(x)}$. This
-                    operation again takes $O(n\log n)$ multiplications/additions
-                    over $\mathbb{Z}_q$.
-            \end{itemize}
-            The details of NTT
-            algorithms are not discussed in this project, we remark that the
-            time to compute polynomial multiplication with NTT is $O(n \log n)$
-            in stead of $O(n^2)$ if we use classical arithmetic method.
+\begin{description}
+\item[Reducing Ciphertext Expansion.] The first idea was proposed by
+  \cite{peikert2008framework} to improve Regev's public key scheme by squeezing
+  more messages to a ciphertext.  The observation is the
+  $\vec{a^T} = \vec{r^T}. A \mod q$ part of the ciphertext is independent of the
+  message $m$ and takes lots of space. In stead of using a new randomness for
+  each message $m$, we can 'reuse' a randomness with new secret keys
+  $\vec{s_i}$, to encrypt many integer messages , encoded in an integer
+  vector. The modified scheme is presented as follows, with $l$ being the number
+  of secret key vectors.
+  \begin{itemize}
+  \item Secret-key
+    $S = (\vec{s_1}, \dots, \vec{s_l}) \in \mathbb{Z}_q^{n \times l} \log q$.
+  \item Public-key
+    $pk = (A \randomsample \mathbb{Z}_q^{m \times n},P=(\vec{p_1}, \dots,
+    \vec{p_l}))$ where $\vec{p_i} = A.\vec{s_i} + \vec{e_i} \mod q$, with
+    $\vec{e_i} \randomsample \chi_{\alpha q}^m$.
+  \item Encryption - Enc $(\vec{m} \in \mathbb{Z}_t^l)$: Return the ciphertext
+    $C = (\vec{a}^T= \vec{r}^T.A \mod q, \vec{c}^T = \vec{r}^.P + \lceil q/t
+    \rfloor . \vec{m} \mod q)$. We see that the ciphertext size increases from
+    $n\log q$ to $(n+l)\log q$, the message length also increases from one
+    integer to $l$ integers. The expansion ratio $\frac{(n+l)\log q}{l \log t}$
+    is therefore can be reduced by using larger $l$, for example, if $l=n$, the
+    ratio is as good as 2. Note that IND-CPA security still holds as the scheme
+    does not reuse $\vec{p_i}$ during encryptions. Although $\vec{p_i}$ do make
+    the public key size a bit bigger, but $A$'s size still dominate.
+  \item Decryption - $Dec(C = (\vec{a}^T, \vec{c}^T))$: Compute
+    $\vec{c'}^T = \vec{c}^T - \vec{a}^T.S \mod q$ and round to the neareast
+    multiple of $\lceil q/t \rfloor \mod q$ to get $\vec{c''}$. Return plaintext
+    $\vec{m} = \frac{\vec{c''}}{\lceil q/t \rfloor}$
+  \end{itemize}
+\item [Reducing Storage and Computation.] The approach toward this problem has
+  an interesting history, it evolved even before the introduction of LWE. The
+  idea is to put some structure to the matrix $A$: So far all the elements of
+  $A$ are chosen uniformly at random, recall that $A$ is a random $m \times n$
+  matrix with $m \geq n$, the total number of elements in the matrix is
+  $m.n \geq n^2$:
+  \[
+    A = \begin{bmatrix}
+      a_{1,1}& a_{1,2}& \dots& a_{1,n}\\
+      a_{2,1}& a_{2,2}& \dots& a_{2,n}\\
+      \vdots& \vdots& \ddots& \vdots\\
+      a_{n,1}& a_{n,2}& \dots& a_{n,n}\\
+      \vdots& \vdots& \ddots& \vdots\\
+      a_{m,1}& a_{m,2}& \dots& a_{m,n}
+    \end{bmatrix}
+  \]
+  If we do not choose the elements independently but having some corelations
+  between the rows or columns, then we do not have to specify $n^2$ elements
+  anymore to describe $A$. In other words, we can derive elements from existing
+  one. The question is how to do that securely? The most common approach was
+  introduced by \cite{hoffstein1998ntru, micciancio2007generalized}, it is a
+  special structured type of matrix called negacyclic matrix, denoted by
+  $rot(\vec{a})$, where $\vec{a}$ is an n-dimensional vector. Once $\vec{a}$ is
+  specified, which is the first column of the rot() matrix, all the other
+  columns can then be derived from the first one: the rule is quite simple, the
+  next column is generated by rotate the previous column by one position and
+  change the sign of the first element:
+  \[
+    \begin{bmatrix}
+      a_{0}& -a_{n-1}& -a_{n-2}& \dots& -a_1\\
+      a_1& a_0& -a_{n-1}& \dots& -a_2\\
+      a_2& a_1& a_0& \dots& -a_3\\
+      \vdots& \vdots& \vdots& \ddots& \vdots\\
+      a_{n-1}& a_{n-2}& a_{n-3}& \dots& a_0
+    \end{bmatrix}
+  \]
+  The output of $rot(\vec{a})$ is a square $n \times n$ matrix. In order to
+  construct the matrix $A$, we can do
+  \[
+    A = \begin{bmatrix}
+      rot(\vec{a_1})\\
+      rot(\vec{a_2})\\
+      \vdots\\
+      rot(\vec{a}_{m/n})
+    \end{bmatrix}
+  \]
+  Therefore, the storage for the matrix $A$ reduces from $m \times n \log q$ to
+  $m \log q$ as we only need to store the first column of the matrix.  Another
+  nice property of this rotational structure is its correspondence with the ring
+  multiplication operation of the ring $R_q = \mathbb{Z}_q[x]/(x^n+1)$. In other
+  words, the expensive operation of one matrix multiplied by a vector can be
+  done in one polynomial multiplication operation: For two n-dimensional vectors
+  $\vec{a}, \vec{x}$ that represented by two polynomials
+  $a(x), s(x) \in \mathbb{Z}_q[x]$ of degree less than $n -1$, let
+  $c(x) = a(x).s(x) \mod x^n + 1$, or
+  $c(x) = \sum_{i<n}s_ix^ia(x) \mod x^n + 1$. We observe that
+  $x(a_0 + a_1x + a_2x^2 + \dots + a_{n-1}x^{n-1}) \mod x^n + 1 =-a_{n-1} + a_0x
+  + a_1x^2 + \dots + a_{n-2}x^{n-1}$.
 
-            In summary, by using this structured rot matrix, not only does we
-            save storage of the key from $O(n^2)$ to $O(n)$, but also the time
-            of the most expensive operation from $O(n^2)$ to $O(n\log n)$.
+  Hence, $rot(\vec{a}).\vec{s} \mod q = a(x).s(x) \mod x^n + 1$ can be presented
+  as:
+  \[
+    \begin{bmatrix}
+      c_0\\
+      c_1\\
+      \vdots\\
+      c_{n-1}
+    \end{bmatrix} = \begin{bmatrix}
+      a_0& -a_{n-1}& -a_{n-2}& \dots& -a_1\\
+      a_1& a_0& -a_{n-1}& \dots& -a_2\\
+      \vdots& \vdots& \vdots& \ddots& \vdots&\\
+      a_{n-1}& a_{n-2}& a_{n-3}& \dots& a_0
+    \end{bmatrix}.\begin{bmatrix} s_0 \\ s1\\ \vdots\\ s_{n-1}
+    \end{bmatrix}
+  \]
+  After reinterpreting the operation this way, we can apply fast algorithm to do
+  polynomial multiplication to speed up the computation time. Specifically, we
+  can go from $O(n^3)$ cost of matrix-vector multiplication down to
+  $O(n \log n)$ Fast Fourier Transform (FFT) polynomial multiplication.
 
-        \item [Ring Variant of Regev's public-key cryptosystem.] We summarize
-            the two optimizations and derive the following \emph{Ring} variant
-            of Regev's encryption scheme over the ring $\mathbb{R}_q =
-            \mathbb{Z}_q[x]/(x^n + 1)$, with $m' = m/n$ and $l = n$:
-            \begin{description}
-                \item[KeyGen.] Secret key $sk = \mathbf{s} \randomsample
-                    \mathbb{R}_q$, public key $pk = (\mathbf{A} \randomsample
-                        \mathbb{R}_q^{m' \times 1}, \vec{\mathbf{p}} =
-                        \mathbf{As} +
-                    \vec{\mathbf{e}} \mod q )$, with $\vec{\mathbf{e}} =
-                    [\mathbf{e_1, \dots, e_{m'}}] \randomsample \chi_{\alpha
-                    q}^n$. Note that the length of the public key is now
-                    $O(n \log^2 q) = O(\lambda \log^2 \lambda)$ bits, or
-                    'quasi-linear' in security $\lambda$.
-                \item [Encryption.] For a plaintext $\mathbf{m} \in
-                    \mathbb{R}_t$, return ciphertext $C = (\mathbf{a = rA},
-                    \mathbf{c = rp + \lceil q/t \rfloor. m \mod q })$. Note that
-                    the
-                    ciphertext expansion ratio is now $O(\log \lambda)$ and the
-                    encryption time (with NTT method) also reduces to 'quasi-linear':
-                    $O(\lambda \log^2 \lambda)$.
-                \item [Decryption.] Given a ciphertext $C = \mathbf{(a,c)}$,
-                    compute $\mathbf{c' = c - a.s}$ and round the result to the
-                    neareast multiple of $\lceil q/t \rfloor \mod q$ to get
-                    $\mathbf{c''} \in \mathbb{R}_q$. Return the plaintext
-                    $\mathbf{m} = \frac{\mathbf{c''}}{\lceil q/t \rfloor} \in
-                    \mathbb{R}_t$.
-            \end{description}
-        \item [Ring Variant of other cryptographic schemes.] The improvements
-            discussed above based on the polynomial ring $\mathbb{R}_q$ can also
-            be applied to improve the efficiency of other cryptographic schemes
-            such as the Ajtai's hash function that was detailed in section
-            \missref{}. The idea is again replacing the matrix $A$ with the
-            structured matrix $rot(\vec{a})$.
+  \textbf{Reducing Computation with FFT.} There are several variants of Fourier
+  Transform (FT), one of the classical usage of FT in engineering is to convert
+  a time function of periodic signal to the frequency domain of that
+  function. The version of FT that we will use is similar but it works on
+  discrete structure: the input to the FT is a n-dimensional vector (which can
+  also be represented in terms of a polynomial), the output is another
+  polynomial whose coefficients are the evaluations of the input polynomial at
+  the $n$ roots of unity.  If the FFT is done in $\mathbb{Z}_q$, it is called
+  the Number Theoric Transform (NTT) (The original FT usually works with complex
+  numbers). Recall that the NTT's roots of unity are $\zeta_i$ such that
+  $\zeta_i^n = -1\mod q$ and in order for $\zeta_i$ to exist, the condition on
+  $q$ is $q -1$ is divisible $2n$.  The polynomial multiplication speed up of
+  $\mathbf{c(x) = a(x).s(x)} \mod x^n +1$, where
+  $\mathbf{a(x),s(x)} \in \mathbb{Z}_q[x]$ can be done as follows.
+  \begin{itemize}
+  \item Choose $q$ such that $2n$ divides $q-1$, then $x^n + 1$ has $n$ zeros in
+    $\mathbb{Z}_q$ of the form $\zeta^{2i + 1}$ for $i = 0,\dots,n-1$, where
+    $\zeta \in \mathbb{Z}_q$ is a primitive $2n^{th}$ root of $1$ in
+    $\mathbb{Z}_q$.
+  \item Evaluate $\mathbf{a(x)}$ and $\mathbf{s(x)}$ at the n points
+    $\zeta^{2i + 1}$ in $\mathbb{Z}_q$ to compute the evaluation vectors
+    $\mathbf{(a(\zeta),\dots,a(\zeta^{2n-1}))}$ and
+    $\mathbf{(s(\zeta), \dots, s(\zeta^{2n - 1}))}$. This operation corresponds
+    to multiplication by an FFT-like matrix and takes $O(n \log n)$
+    multiplication/addition over the ring $\mathbb{Z}_q$.
+  \item Multiply the evaluations at each point
+    $\mathbf{c(\zeta^{2i + 1}) = a(\zeta^{2i+1})s(\zeta^{2i+1})}$ for
+    $i = 0,\dots,n-1$.
+  \item Interpolate (inverse NTT) $\mathbf{(c(\zeta), \dots, c(\zeta^{2n-1}))}$
+    to reconstruct $\mathbf{c(x)}$. This operation again takes $O(n\log n)$
+    multiplications/additions over $\mathbb{Z}_q$.
+  \end{itemize}
+  The details of NTT algorithms are not discussed in this project, we remark
+  that the time to compute polynomial multiplication with NTT is $O(n \log n)$
+  in stead of $O(n^2)$ if we use classical arithmetic method.
 
-            \begin{definition}
-                [Ring variant of Ajtai's Hash Function.] Given an input
-                $\mathbf{x} \in \mathbb{R}^{m'}$ having 'small' coordinates
-                $(\norm{\mathbf{x}} \leq d)$, selects a matrix over
-                $\mathbb{R}_q$ $A=(\mathbf{a_1, \dots,
-                a_{m'}})$ uniformly random to be the hash function's public key.
-                The output of the function is defined as
-                \[
-                    g_{q,m,n,d,A}(\mathbf{x}) = A.\vec{\mathbf{x}} =
-                    \mathbf{a_1.x_1 + \dots + a_{m'}.x_{m'}} \in \mathbb{R}_q
-                \]
-                \label{def:AjtaiRing}
-            \end{definition}
-            This has function has improve the efficiency to $O(n\log n)$ for the
-            key $A$, the computation is $O(n\log^2 n)$. A practical
-            implementation was done \cite{lyubashevsky2008swifft} with some further
-            optimizations for a specific set of parameters: $n = 64, m = 16, q =
-            257$. The hash compresses 1024-bit input to 512-bit output with the
-            key length 8kbits. The performance is competitive to other hash
-            functions, which is about 60 CPU cycles/bytes.
+  In summary, by using this structured rot matrix, not only does we save storage
+  of the key from $O(n^2)$ to $O(n)$, but also the time of the most expensive
+  operation from $O(n^2)$ to $O(n\log n)$.
+\end{description}
 
-        \item [Security Impact.] We want to learn how is security impacted when
-            switching from using completely random matrix $A$ to the structured
-            polynomials to improve the efficiency of lattice-based cryptographic
-            schemes. We have to discuss
-            the hardness of Ring-SIS or Ring-LWE compared to the
-            original problems. Many works have been done on this, we will see
-            that when
-            choosing the parameters properly, we can obtain the same level of
-            security. The definition of the problems follows.
-            \begin{definition}
-                [Decision Ring Learning with Errors (Decision-RLWE)] Given
-                    $q, m, n, \alpha, A \randomsample {R}_q^{m' \times
-                    n}$ and $\vec{y}$, distinguish between the following two
-                    scenarios:
-                    \begin{itemize}
-                        \item 'Real' Scenario: $\vec{y} = A.\vec{s} +
-                            \vec{e} \mod q$ (with $\vec{e} \randomsample
-                                \chi_{\alpha q}^{m'}$ and $\vec{s} \randomsample
-                            \mathbb{Z}_q^n$)
-                        \item 'Random' Scenario: $\vec{y} \randomsample
-                            \mathbb{Z}_q^m$
-                    \end{itemize}
-            \end{definition}
-            There is a similar theoretical result to LWE with regards to
-            average-case to worst-case lattice reduction for Ring-SIS/Ring-LWE.
-            \cite{lyubashevsky2010ideal}. The work proved that if we can find an efficient
-            algorithm that breaks Ring-LWE for random instance over the ring,
-            then we can use it to break $\gamma-SVP$ on some structured sets of
-            lattices called ideal lattices. Furthermore, we also have practical
-            reason to believe that RLWE is hard: The best known attack on RLWE is to
-            reduce it to RSIS, and the hardness of RSIS is assessed similarly to
-            SIS.
+\subsection{The Ring Variant Systems - RLWE}
+\label{sec:RLWEPre}
+We summarize the two optimizations and derive the following \emph{Ring} variant
+of Regev's encryption scheme over the ring
+$\mathbb{R}_q = \mathbb{Z}_q[x]/(x^n + 1)$, with $m' = m/n$ and $l = n$:
+\begin{description}
+\item[KeyGen.] Secret key $sk = \mathbf{s} \randomsample \mathbb{R}_q$, public
+  key
+  $pk = (\mathbf{A} \randomsample \mathbb{R}_q^{m' \times 1}, \vec{\mathbf{p}} =
+  \mathbf{As} + \vec{\mathbf{e}} \mod q )$, with
+  $\vec{\mathbf{e}} = [\mathbf{e_1, \dots, e_{m'}}] \randomsample \chi_{\alpha
+    q}^n$. Note that the length of the public key is now
+  $O(n \log^2 q) = O(\lambda \log^2 \lambda)$ bits, or 'quasi-linear' in
+  security $\lambda$.
+\item [Encryption.] For a plaintext $\mathbf{m} \in \mathbb{R}_t$, return
+  ciphertext
+  $C = (\mathbf{a = rA}, \mathbf{c = rp + \lceil q/t \rfloor. m \mod q })$. Note
+  that the ciphertext expansion ratio is now $O(\log \lambda)$ and the
+  encryption time (with NTT method) also reduces to 'quasi-linear':
+  $O(\lambda \log^2 \lambda)$.
+\item [Decryption.] Given a ciphertext $C = \mathbf{(a,c)}$, compute
+  $\mathbf{c' = c - a.s}$ and round the result to the neareast multiple of
+  $\lceil q/t \rfloor \mod q$ to get $\mathbf{c''} \in \mathbb{R}_q$. Return the
+  plaintext
+  $\mathbf{m} = \frac{\mathbf{c''}}{\lceil q/t \rfloor} \in \mathbb{R}_t$.
+\end{description}
+The improvements discussed above based on the polynomial ring $\mathbb{R}_q$ can
+also be applied to improve the efficiency of other cryptographic schemes such as
+the Ajtai's hash function that was detailed in Definition \ref{def:Ajtai's Hash
+  Function}. The idea is again replacing the matrix $A$ with the structured
+matrix $rot(\vec{a})$.
 
-            It is important to mention that all the worst-case to average-case
-            reduction results need the polynomial ring $R$ to satisfy some
-            conditions for the connection to hold. The choice
-            of polynomial ring is very important for security: there was choice such
-            as $\frac{\mathbb{Z}[x]}{x^n - 1}$ which was proved to be insecure
-            in some systems such as the original NTRU.
+\begin{definition}
+  [Ring variant of Ajtai's Hash Function.] Given an input
+  $\mathbf{x} \in \mathbb{R}^{m'}$ having 'small' coordinates
+  $(\norm{\mathbf{x}} \leq d)$, selects a matrix over $\mathbb{R}_q$
+  $A=(\mathbf{a_1, \dots, a_{m'}})$ uniformly random to be the hash function's
+  public key.  The output of the function is defined as
+  \[
+    g_{q,m,n,d,A}(\mathbf{x}) = A.\vec{\mathbf{x}} = \mathbf{a_1.x_1 + \dots +
+      a_{m'}.x_{m'}} \in \mathbb{R}_q
+  \]
+  \label{def:AjtaiRing}
+\end{definition}
+This has function has improve the efficiency to $O(n\log n)$ for the key $A$,
+the computation is $O(n\log^2 n)$. A practical implementation was done
+\cite{lyubashevsky2008swifft} with some further optimizations for a specific set
+of parameters: $n = 64, m = 16, q = 257$. The hash compresses 1024-bit input to
+512-bit output with the key length 8kbits. The performance is competitive to
+other hash functions, which is about 60 CPU cycles/bytes.
 
-        \item [Further optimizations.] Lately, there were some works that improved
-            the Ring-Regev encryption scheme further. Firstly, the public key
-            size of the scheme is still a vector of polynomials:
-            $(A,\mathbf{p}) \in R_{q}^{m' \times 2}$. The security requirement
-            specifies the lower limit of $m'$. Also, the ciphertext includes two
-            ring element $(\mathbf{a,c})$. The first problem solved was how to
-            reduce these factors even further, to just 2 or even 1 ring element. There
-            were two solutions proposed:
-            \begin{description}
-                \item[ElGamal analogue of Ring-Regev \cite{lyubashevsky2010ideal}] This scheme
-                    is similar to discrete-log based scheme of ElGamal system
-                    and could reduce the public key and ciphertext to 2 elements
-                    of the ring $R_q$. Recall the Diffie-Hellman/ElGamal
-                    encryption scheme in a group $G$ of order $q$ with a
-                    generator $g$:
-                    \begin{description}
-                        \item[Public Key.] $(g, p_b = g^b) \in G^2$,
-                            \textbf{Secret key:} $b \randomsample G$.
-                        \item [Encryption.] Given $m \in G$, sample $a
-                            \randomsample G$ and compute the ciphertext
-                            $(p_a = g^a \in G, c = p_b^a.m = g^{ab}.m \in G)$.
-                        \item [Decryption.] Given $(p_a, c) \in G^2$, compute
-                            $c/p_a^b = c/g^{ab} = m$
-                    \end{description}
-                    The Ring-based ElGamal system in $R_q$ immitates the
-                    classical scheme as follows.
-                    \begin{description}
-                        \item[Public key.] $(\mathbf{g} \randomsample R_q,
-                            \mathbf{p_b = g.b + e_b})$ where $\mathbf{b,e_b}
-                            \randomsample \chi_{\alpha q}$.
-                        \item [Secret key.] $\mathbf{b} \randomsample R_q$
-                        \item [Encryption.] For $\mathbf{m} \in R_t$, sample
-                            $\mathbf{a,e_a,e_c} \randomsample \chi_{\alpha q}$
-                            and compute $$(\mathbf{p_a = g.a + e_a}, \mathbf{c =
-                            p_b.a + e_c + \lceil q/t \rfloor . m}) \in
-                            R_q^2$$
-                        \item [Decryption.] Given a ciphertext
-                            $(\mathbf{p_a,c}) \in G^2$:
-                            \[
-                                \mathbf{c - p_a.b = c - (g.a.b + e_a.b)} =
-                                \lceil q/t \rfloor .\mathbf{m} + \mathbf{e_c.a}
-                                + \mathbf{e_a.b} \approx \lceil q/t
-                                \rfloor.\mathbf{m}
-                            \]
-                    \end{description}
+\subsubsection{SecurityImpact}
+\label{sec:securityImpact}
+We want to learn how is security impacted when switching from using completely
+random matrix $A$ to the structured polynomials to improve the efficiency of
+lattice-based cryptographic schemes. We have to discuss the hardness of Ring-SIS
+or Ring-LWE compared to the original problems. Many works have been done on
+this, we will see that when choosing the parameters properly, we can obtain the
+same level of security. The definition of the problems follows.
+\begin{definition}
+  [Decision Ring Learning with Errors (Decision-RLWE)] Given
+  $q, m, n, \alpha, A \randomsample {R}_q^{m' \times n}$ and $\vec{y}$,
+  distinguish between the following two scenarios:
+  \begin{itemize}
+  \item 'Real' Scenario: $\vec{y} = A.\vec{s} + \vec{e} \mod q$ (with
+    $\vec{e} \randomsample \chi_{\alpha q}^{m'}$ and
+    $\vec{s} \randomsample \mathbb{Z}_q^n$)
+  \item 'Random' Scenario: $\vec{y} \randomsample \mathbb{Z}_q^m$
+  \end{itemize}
+\end{definition}
+There is a similar theoretical result to LWE with regards to average-case to
+worst-case lattice reduction for Ring-SIS/Ring-LWE.
+\cite{lyubashevsky2010ideal}. The work proved that if we can find an efficient
+algorithm that breaks Ring-LWE for random instance over the ring, then we can
+use it to break $\gamma-SVP$ on some structured sets of lattices called ideal
+lattices. Furthermore, we also have practical reason to believe that RLWE is
+hard: The best known attack on RLWE is to reduce it to RSIS, and the hardness of
+RSIS is assessed similarly to SIS.
 
-                \item[NTRUEEncrypt \cite{hoffstein1998ntru}] Both of the public-key and ciphertext
-                    could be shrunk to just a single ring element in
-                    $R_q$, which is as small as we can hope for
-                    ideally. We discuss some variants and their
-                    properties. We saw that one of the issue of the
-                    Elgamal analogue scheme discussed above is the
-                    small secrets generated from the encryption
-                    process. The natural question to ask is what is
-                    the security effect of changing from something
-                    completely random to something small? It turns out
-                    that this variant of Ring-LWE with secret sampled
-                    from error distribution (SSRing-LWE) is as hard as
-                    the original Ring-LWE
-                    \cite{lyubashevsky2008lattice}. This helps gaining
-                    more efficiency without trading of security.
+It is important to mention that all the worst-case to average-case reduction
+results need the polynomial ring $R$ to satisfy some conditions for the
+connection to hold. The choice of polynomial ring is very important for
+security: there was choice such as $\frac{\mathbb{Z}[x]}{x^n - 1}$ which was
+proved to be insecure in some systems such as the original NTRU.
 
-                    \begin{lemma}[SSRing-LWE]
-                      \label{lem:SSRing-LWE}
-                      Ring-LWE with parameters \(m', n, \alpha, q\) and secret sampled from the error distribution is as
-                      hard as standard Ring-LWE with parameter \(m' + 1, n, \alpha, q\)
-                    \end{lemma}
+\subsubsection{Further Optimizations}
+\label{sec:furtherOptimizations}
+Lately, there were some works that improved the Ring-Regev encryption scheme
+further. Firstly, the public key size of the scheme is still a vector of
+polynomials: $(A,\mathbf{p}) \in R_{q}^{m' \times 2}$. The security requirement
+specifies the lower limit of $m'$. Also, the ciphertext includes two ring
+element $(\mathbf{a,c})$. The first problem solved was how to reduce these
+factors even further, to just 2 or even 1 ring element. There were two solutions
+proposed:
+\begin{description}
+\item[ElGamal analogue of Ring-Regev \cite{lyubashevsky2010ideal}] This scheme
+  is similar to discrete-log based scheme of ElGamal system and could reduce the
+  public key and ciphertext to 2 elements of the ring $R_q$. Recall the
+  Diffie-Hellman/ElGamal encryption scheme in a group $G$ of order $q$ with a
+  generator $g$:
+  \begin{description}
+  \item[Public Key.] $(g, p_b = g^b) \in G^2$, \textbf{Secret key:}
+    $b \randomsample G$.
+  \item [Encryption.] Given $m \in G$, sample $a \randomsample G$ and compute
+    the ciphertext $(p_a = g^a \in G, c = p_b^a.m = g^{ab}.m \in G)$.
+  \item [Decryption.] Given $(p_a, c) \in G^2$, compute $c/p_a^b = c/g^{ab} = m$
+  \end{description}
+  The Ring-based ElGamal system in $R_q$ immitates the classical scheme as
+  follows.
+  \begin{description}
+  \item[Public key.] $(\mathbf{g} \randomsample R_q, \mathbf{p_b = g.b + e_b})$
+    where $\mathbf{b,e_b} \randomsample \chi_{\alpha q}$.
+  \item [Secret key.] $\mathbf{b} \randomsample R_q$
+  \item [Encryption.] For $\mathbf{m} \in R_t$, sample
+    $\mathbf{a,e_a,e_c} \randomsample \chi_{\alpha q}$ and
+    compute
+    $$(\mathbf{p_a = g.a + e_a}, \mathbf{c = p_b.a + e_c + \lceil q/t \rfloor
+      . m}) \in R_q^2$$
+  \item [Decryption.] Given a ciphertext $(\mathbf{p_a,c}) \in G^2$:
+    \[
+      \mathbf{c - p_a.b = c - (g.a.b + e_a.b)} = \lceil q/t \rfloor .\mathbf{m}
+      + \mathbf{e_c.a} + \mathbf{e_a.b} \approx \lceil q/t \rfloor.\mathbf{m}
+    \]
+  \end{description}
+\item[NTRUEEncrypt \cite{hoffstein1998ntru}] Both of the public-key and
+  ciphertext could be shrunk to just a single ring element in $R_q$, which is as
+  small as we can hope for ideally. We discuss some variants and their
+  properties. We saw that one of the issue of the Elgamal analogue scheme
+  discussed above is the small secrets generated from the encryption
+  process. The natural question to ask is what is the security effect of
+  changing from something completely random to something small? It turns out
+  that this variant of Ring-LWE with secret sampled from error distribution
+  (SSRing-LWE) is as hard as the original Ring-LWE
+  \cite{lyubashevsky2008lattice}. This helps gaining more efficiency without
+  trading of security.
 
-                    The original NTRU scheme was first introduced in 1996, working with the ring \(R^{-} =
-                    \mathbb{Z}[x]/(x^{n} -1 \)
-                    ) instead. We briefly describe the scheme as follows.
-                    \begin{description}
-                    \item[Setup] Ring parameters: a prime \(n\), \(q \approx n\) a power of 2, a small \(p\), and the
-                      ring \(R^{-}\mathbb{Z}[x]/(x^{n} -1 )\)
-                    \item[KeyGen] Secret key \(sk f, g\randomsample
-                      R^{-} \) sampled independently from a
-                      distribution \(\chi_{\sigma}\) with \(f\)
-                    \end{description}
+  \begin{lemma}[SSRing-LWE]
+    \label{lem:SSRing-LWE}
+    Ring-LWE with parameters \(m', n, \alpha, q\) and secret sampled from the
+    error distribution is as hard as standard Ring-LWE with parameter
+    \(m' + 1, n, \alpha, q\)
+  \end{lemma}
 
-                    The
-                    main issue with the original NTRU was its security: it
-                    relied on another problem called 'NTRU key-cracking' (which
-                        was not
-                    well understood) besides
-                    Ring-LWE. There was later a variant that only relied on
-                    Ring-LWE \cite{stehle2011making},
+  The original NTRU scheme was first introduced in 1996, working with the ring
+  \(R^{-} = \mathbb{Z}[x]/(x^{n} -1 \) ) instead. We briefly describe the scheme
+  as follows.
+  \begin{description}
+  \item[Setup] Ring parameters: a prime \(n\), \(q \approx n\) a power of 2, a
+    small \(p\), and the ring \(R^{-}\mathbb{Z}[x]/(x^{n} -1 )\)
+  \item[KeyGen] Secret key \(sk f, g\randomsample R^{-} \) sampled independently
+    from a distribution \(\chi_{\sigma}\) with \(f\)
+  \end{description}
 
-            \end{description}
+  The main issue with the original NTRU was its security: it relied on another
+  problem called 'NTRU key-cracking' (which was not well understood) besides
+  Ring-LWE. There was later a variant that only relied on Ring-LWE
+  \cite{stehle2011making},
+\end{description}
 
-            \end{description}
-
-    \end{description}
-
-    \begin{description}
-        \item[To Appendix: Normal Distribution] Probability distribution
-            function, mean (or expected value) of the random variables,
-            standard deviation measure how wide the distribution is
-            relative to the mean (the width of the Gaussian graph). Statistic
-            shows that the probability that we can sample something within 3
-            standard deviation is high (95 \%). In our context, the noise
-            integers sampled from the Gaussian distribution are 95\% to be
-            within 3 standard deviation $\alpha q$.
-    \end{description}
+    % \begin{description}
+    %     \item[To Appendix: Normal Distribution] Probability distribution
+    %         function, mean (or expected value) of the random variables,
+    %         standard deviation measure how wide the distribution is
+    %         relative to the mean (the width of the Gaussian graph). Statistic
+    %         shows that the probability that we can sample something within 3
+    %         standard deviation is high (95 \%). In our context, the noise
+    %         integers sampled from the Gaussian distribution are 95\% to be
+    %         within 3 standard deviation $\alpha q$.
+    % \end{description}
 
 %%% Local Variables:
 %%% mode: latex

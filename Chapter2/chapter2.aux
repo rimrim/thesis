@@ -67,30 +67,43 @@
 \@writefile{toc}{\contentsline {section}{\numberline {2.3}Learning With Error}{20}{section.2.3}}
 \newlabel{sub:LWE}{{2.3}{20}{Learning With Error}{section.2.3}{}}
 \citation{regev2005lattices}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ finish this}{21}{section*.15}}
 \citation{regev2005lattices}
-\newlabel{def:Search-LWEProb}{{11}{22}{Search-LWE Problem}{definition.11}{}}
-\newlabel{def:Decision-LWEProb}{{12}{22}{Decision-LWE Problem}{definition.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}Definitions}{21}{subsection.2.3.1}}
+\newlabel{sec:LWEDefs}{{2.3.1}{21}{Definitions}{subsection.2.3.1}{}}
+\newlabel{def:Search-LWEProb}{{11}{21}{Search-LWE Problem}{definition.11}{}}
+\newlabel{def:Decision-LWEProb}{{12}{21}{Decision-LWE Problem}{definition.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}Security of LWE}{22}{subsection.2.3.2}}
+\newlabel{sec:LWESecurity}{{2.3.2}{22}{Security of LWE}{subsection.2.3.2}{}}
 \newlabel{theo:RegevLWEHardness}{{7}{22}{}{theorem.7}{}}
-\newlabel{def:IND-CPA Security}{{13}{25}{IND-CPA security}{definition.13}{}}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ draw the split of A and \(\mathaccentV {vec}17E{y}\)}{25}{section*.16}}
-\newlabel{theo:reductionCPADLWE}{{8}{26}{}{theorem.8}{}}
-\newlabel{def:PublicKeyIndCPARegev}{{14}{28}{Regev IND-CPA security}{definition.14}{}}
-\newlabel{def:statisticalDistance}{{15}{28}{Statistical Distance}{definition.15}{}}
-\newlabel{lem:statisticalDistance}{{4}{28}{}{lemma.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.3}Symmetric cryptosystem from LWE}{22}{subsection.2.3.3}}
+\newlabel{sec:LWESymmetric}{{2.3.3}{22}{Symmetric cryptosystem from LWE}{subsection.2.3.3}{}}
+\newlabel{def:IND-CPA Security}{{13}{24}{IND-CPA security}{definition.13}{}}
+\newlabel{theo:reductionCPADLWE}{{8}{25}{}{theorem.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.4}Assymmetric Cryptosystem from LWE}{25}{subsection.2.3.4}}
+\newlabel{sec:asymLWE}{{2.3.4}{25}{Assymmetric Cryptosystem from LWE}{subsection.2.3.4}{}}
+\newlabel{def:PublicKeyIndCPARegev}{{14}{27}{Regev IND-CPA security}{definition.14}{}}
+\newlabel{def:statisticalDistance}{{15}{27}{Statistical Distance}{definition.15}{}}
+\newlabel{lem:statisticalDistance}{{4}{27}{}{lemma.4}{}}
 \newlabel{lem:LHL}{{5}{29}{Leftover Hash Lemma (LHL)}{lemma.5}{}}
-\newlabel{theo:IndCPARegev}{{9}{30}{}{theorem.9}{}}
+\newlabel{theo:IndCPARegev}{{9}{29}{}{theorem.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.5}Efficiency of Lattice-based cryptosystems}{29}{subsection.2.3.5}}
+\newlabel{sec:latticeEfficiency}{{2.3.5}{29}{Efficiency of Lattice-based cryptosystems}{subsection.2.3.5}{}}
 \citation{peikert2008framework}
-\@writefile{tdo}{\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Put in Security reduction if have time later (slide 8/33 or Ron's lecture), the idea is having $l$ instances of DLWE and show that if we can break the security of this scheme then we can break at least one of the DLWE instance}{31}{section*.17}}
 \citation{hoffstein1998ntru,micciancio2007generalized}
 \citation{lyubashevsky2008swifft}
-\newlabel{def:AjtaiRing}{{16}{34}{Ring variant of Ajtai's Hash Function}{definition.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.6}The Ring Variant Systems - RLWE}{33}{subsection.2.3.6}}
+\newlabel{sec:RLWEPre}{{2.3.6}{33}{The Ring Variant Systems - RLWE}{subsection.2.3.6}{}}
+\newlabel{def:AjtaiRing}{{16}{33}{Ring variant of Ajtai's Hash Function}{definition.16}{}}
 \citation{lyubashevsky2010ideal}
 \citation{lyubashevsky2010ideal}
+\@writefile{toc}{\contentsline {subsubsection}{SecurityImpact}{34}{section*.15}}
+\newlabel{sec:securityImpact}{{2.3.6}{34}{SecurityImpact}{section*.15}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Further Optimizations}{34}{section*.16}}
+\newlabel{sec:furtherOptimizations}{{2.3.6}{34}{Further Optimizations}{section*.16}{}}
 \citation{hoffstein1998ntru}
 \citation{lyubashevsky2008lattice}
 \citation{stehle2011making}
-\newlabel{lem:SSRing-LWE}{{6}{36}{SSRing-LWE}{lemma.6}{}}
+\newlabel{lem:SSRing-LWE}{{6}{35}{SSRing-LWE}{lemma.6}{}}
 \citation{rivest1978data}
 \citation{smart2014fully}
 \citation{van2010fully}
@@ -99,16 +112,17 @@
 \citation{homenc}
 \citation{brakerski2011fully}
 \citation{lyubashevsky2010ideal}
-\@writefile{toc}{\contentsline {section}{\numberline {2.4}Homomorphic Cryptosystems}{37}{section.2.4}}
-\newlabel{sec:defHomo}{{2.4}{37}{Homomorphic Cryptosystems}{section.2.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}Homomorphic Encryption}{37}{subsection.2.4.1}}
-\newlabel{sec:BVScheme}{{2.4.1}{37}{Homomorphic Encryption}{definition.18}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}Homomorphic Cryptosystems}{36}{section.2.4}}
+\newlabel{sec:defHomo}{{2.4}{36}{Homomorphic Cryptosystems}{section.2.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}Homomorphic Encryption}{36}{subsection.2.4.1}}
+\newlabel{sec:BVScheme}{{2.4.1}{36}{Homomorphic Encryption}{definition.18}{}}
 \citation{smart2014fully}
 \citation{yasuda2014practical}
 \citation{EPRINT:LauNaeVai11}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Ciphertext packing}{38}{subsection.2.4.2}}
-\newlabel{sub:ciphertext_packing}{{2.4.2}{38}{Ciphertext packing}{subsection.2.4.2}{}}
 \citation{yasuda2014practical}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Ciphertext packing}{37}{subsection.2.4.2}}
+\newlabel{sub:ciphertext_packing}{{2.4.2}{37}{Ciphertext packing}{subsection.2.4.2}{}}
+\newlabel{theo:HDComputation}{{10}{37}{\cite {yasuda2014practical}}{theorem.10}{}}
 \citation{goldwasser1989knowledge}
 \citation{bellare1992defining}
 \citation{goldwasser1989knowledge}
@@ -119,39 +133,38 @@
 \citation{stern1993new}
 \citation{ling2013improved}
 \citation{ling2013improved}
-\newlabel{theo:HDComputation}{{10}{39}{\cite {yasuda2014practical}}{theorem.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.5}Zero Knowledge Proof Systems}{39}{section.2.5}}
-\newlabel{sec:defZKP}{{2.5}{39}{Zero Knowledge Proof Systems}{section.2.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Zero Knowledge Proofs and ISIS problem}{39}{subsection.2.5.1}}
-\newlabel{sec:zkpisis}{{2.5.1}{39}{Zero Knowledge Proofs and ISIS problem}{subsection.2.5.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Zero Knowledge Proof Systems}{38}{section.2.5}}
+\newlabel{sec:defZKP}{{2.5}{38}{Zero Knowledge Proof Systems}{section.2.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Zero Knowledge Proofs and ISIS problem}{38}{subsection.2.5.1}}
+\newlabel{sec:zkpisis}{{2.5.1}{38}{Zero Knowledge Proofs and ISIS problem}{subsection.2.5.1}{}}
 \citation{kawachi2008concurrently}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}SternExt Protocol}{40}{subsection.2.5.2}}
-\newlabel{append:Stern}{{2.5.2}{40}{SternExt Protocol}{subsection.2.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}SternExt Protocol}{39}{subsection.2.5.2}}
+\newlabel{append:Stern}{{2.5.2}{39}{SternExt Protocol}{subsection.2.5.2}{}}
 \citation{yao1986generate}
-\@writefile{toc}{\contentsline {section}{\numberline {2.6}Garbled Circuit and Oblivious Transfer}{41}{section.2.6}}
-\newlabel{sec:defMPP}{{2.6}{41}{Garbled Circuit and Oblivious Transfer}{section.2.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.1}Garbled Circuit}{41}{subsection.2.6.1}}
-\newlabel{sec:garbledCircuitPre}{{2.6.1}{41}{Garbled Circuit}{subsection.2.6.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.6}Garbled Circuit and Oblivious Transfer}{40}{section.2.6}}
+\newlabel{sec:defMPP}{{2.6}{40}{Garbled Circuit and Oblivious Transfer}{section.2.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.1}Garbled Circuit}{40}{subsection.2.6.1}}
+\newlabel{sec:garbledCircuitPre}{{2.6.1}{40}{Garbled Circuit}{subsection.2.6.1}{}}
 \citation{kolesnikov2008improved30}
 \citation{pinkas2009secure38}
 \citation{kolesnikov2009improved29}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.6}{\ignorespaces Garbled Circuit example\relax }}{42}{figure.caption.18}}
-\newlabel{fig:garbledCircuit}{{2.6}{42}{Garbled Circuit example\relax }{figure.caption.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.6}{\ignorespaces Garbled Circuit example\relax }}{41}{figure.caption.17}}
+\newlabel{fig:garbledCircuit}{{2.6}{41}{Garbled Circuit example\relax }{figure.caption.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.2}Oblivious Transfer}{41}{subsection.2.6.2}}
+\newlabel{sec:obliviousTransferPre}{{2.6.2}{41}{Oblivious Transfer}{subsection.2.6.2}{}}
 \citation{naor2001efficient35}
 \citation{ishai2003extending24}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.2}Oblivious Transfer}{43}{subsection.2.6.2}}
-\newlabel{sec:obliviousTransferPre}{{2.6.2}{43}{Oblivious Transfer}{subsection.2.6.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.7}{\ignorespaces Minion}}{43}{figure.caption.19}}
-\newlabel{fig:RedPillBluePill}{{2.7}{43}{Minion}{figure.caption.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.7}{\ignorespaces Minion}}{42}{figure.caption.18}}
+\newlabel{fig:RedPillBluePill}{{2.7}{42}{Minion}{figure.caption.18}{}}
 \citation{OPMsays563:online}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.8}{\ignorespaces OT protocol based on DH\relax }}{44}{figure.caption.20}}
-\newlabel{fig:DH21OT}{{2.8}{44}{OT protocol based on DH\relax }{figure.caption.20}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.7}The Syntax and Security model}{44}{section.2.7}}
-\newlabel{sec:syntaxModel}{{2.7}{44}{The Syntax and Security model}{section.2.7}{}}
-\@writefile{toc}{\contentsline {subsubsection}{The threats}{44}{section*.21}}
-\newlabel{sec:privacyReqs}{{2.7}{44}{The threats}{section*.21}{}}
 \citation{uludag2004attacks}
 \citation{higo2015privacy}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.8}{\ignorespaces OT protocol based on DH\relax }}{43}{figure.caption.19}}
+\newlabel{fig:DH21OT}{{2.8}{43}{OT protocol based on DH\relax }{figure.caption.19}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.7}The Syntax and Security model}{43}{section.2.7}}
+\newlabel{sec:syntaxModel}{{2.7}{43}{The Syntax and Security model}{section.2.7}{}}
+\@writefile{toc}{\contentsline {subsubsection}{The threats}{43}{section*.20}}
+\newlabel{sec:privacyReqs}{{2.7}{43}{The threats}{section*.20}{}}
 \citation{zhang2015fingerprints}
 \citation{zhang2015fingerprints}
 \citation{feng2011fingerprint}
@@ -159,12 +172,12 @@
 \citation{hirano2013cryptographically}
 \citation{higo2015privacy}
 \citation{jain2007handbook}
-\@writefile{toc}{\contentsline {subsubsection}{The Generic Two-party model}{45}{section*.22}}
 \citation{FVConGoi2:online}
-\@writefile{toc}{\contentsline {subsubsection}{The security model}{46}{section*.23}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.8}Conclusion}{49}{section.2.8}}
+\@writefile{toc}{\contentsline {subsubsection}{The Generic Two-party model}{44}{section*.21}}
+\@writefile{toc}{\contentsline {subsubsection}{The security model}{45}{section*.22}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.8}Conclusion}{48}{section.2.8}}
 \@setckpt{Chapter2/chapter2}{
-\setcounter{page}{50}
+\setcounter{page}{49}
 \setcounter{equation}{0}
 \setcounter{enumi}{2}
 \setcounter{enumii}{0}
@@ -188,11 +201,11 @@
 \setcounter{parentequation}{0}
 \setcounter{Item}{9}
 \setcounter{Hfootnote}{0}
-\setcounter{bookmark@seq@number}{29}
+\setcounter{bookmark@seq@number}{35}
 \setcounter{ContinuedFloat}{0}
 \setcounter{subfigure}{0}
 \setcounter{subtable}{0}
-\setcounter{@todonotes@numberoftodonotes}{3}
+\setcounter{@todonotes@numberoftodonotes}{0}
 \setcounter{float@type}{8}
 \setcounter{algorithm}{1}
 \setcounter{ALG@line}{11}

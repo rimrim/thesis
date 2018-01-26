@@ -21,3 +21,4 @@
 *.pdf
 thesis.pdf
 *.synctex
+*.aux
