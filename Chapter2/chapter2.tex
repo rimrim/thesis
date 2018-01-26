@@ -41,21 +41,21 @@
 
 % \end{landscape}
 
-\section{General Notations}
+\section{Notation}
 \label{sec:defGeneral}
-We use the following notations throughout the thesis:
+We use the following notation throughout the thesis:
 \begin{description}
 \item[Vectors, Matrices] We denote column vectors by standard vector notation
   (e.g., \(\vec{x}, \vec{y}\)) and matrices by bold upper-case letters (e.g.,
   \(\mathbf{A}, \mathbf{B}\)). We write \(\vec{b}^{T}\) to convert a vector
-  \(\vec{b}\) to a row vector. The length of a vector
+  \(\vec{b}\) into a row vector. The length of a vector
   \(\vec{b} = [b_{0}, b_{1}, \dots, b_{n-1}]\) (\textit{norms}) is denoted by
   \(\norm{\vec{b}} = \sqrt{b_{0}^{2} + b_{1}^{2} + \dots + b_{n-1}^{2}}\) for
   Euclidean norm and \(\norminf{\vec{b}} = max(|b_{i}|)\) for infinity norm. The
   \(i\) component of a vector is denoted interchangebly as \(b_{i}\) or
   \(b[i]\).
 \item[Groups and Rings] Sets of numbers are denoted as standard (e.g.,
-  \(\mathbb{R}\) for set of rational numbers, \(\mathbb{Z}\) for integers), we
+  \(\mathbb{R}\) for the set of rational numbers, \(\mathbb{Z}\) for integers), we
   denote \(\mathbb{Z}_{q}\) to be the set of integers modulo \(q\) (in the range
   \((-q/2,q/2]\)).\(\mathbb{Z}[n]\) denotes polynomials of order \(n\) with
   elements in \(\mathbb{Z}\), \(R_{q}\) denotes the ring of polynomial modulo
@@ -72,38 +72,38 @@ We use the following notations throughout the thesis:
 \section{Lattices}
 \label{sec:defLattices}
 
-\subsection{The motivations}
+\subsection{Motivation}
 \label{ssub:The motivations}
 We choose lattice-based cryptography as the main techniques used in the
 thesis for several reasons:
 \begin{description}
 \item[Provable Security.] Lattice-based cryptosystems' security can be related
-  to known computationally hard problems such as Shortest Vector Problem (SVP)
-  or Closest Vector Problem (CVP) and therefore we can demonstrate the security
-  property in terms of mathematical proofs. For classical system such as RSA,
-  there is no proof showing that breaking RSA is as hard as factoring an integer
-  even though in many cases the best attack we know is to do such operation.
+  to known computationally hard problems such as the Shortest Vector Problem (SVP)
+  or the Closest Vector Problem (CVP) and therefore allow to demonstrate the security
+  property in terms of mathematical proofs. For classical systems such as RSA,
+  there is no proof showing that breaking RSA is as hard as factoring an integer,
+  even though in many cases the best attack we are aware of is to carry out an operation of this type.
 \item[Quantum Resistance.] In 1994, Shor \cite{shor1994algorithms} showed that
   we can write a program with quantum computers to factor a large integer
   into prime factors.The latest D-Wave systems initial deployments show that the
   idea is feasible in near future. If this happens, it has significant
-  implications to the currently used public key cryptosystems such as RSA: they
+  implications for the currently used public key cryptosystems such as RSA, which
   will be broken. Lattice based cryptography is currently one of the best
-  candidates that resists even quantum attacks.
+  candidates to resist even quantum attacks.
 \item[Homomorphic Operations.] Finally, lattice-based cryptography allows us to
-  do operations that we could not do before: computing on encrypted data. This
-  special type of operatation can provide privacy features in online
-  communications.
-\item[Research Activities.] Lattice-based systems have been researched actively
-  in the last decade and the development has come to the stage that it can be
-  implemented and can be used in the foreseable future.
-\item[Performance.] Lattice-based cryptography has the potential to give us very
-  fast operations and it is a good option for high performance required
-  cryptographic application
+  perform operations unfeasible before, namely,computing on encrypted data. This
+  special type of processing is able to protect privacy in online
+  communication.
+\item[Research Progress.] Research on Lattice-based systems has been promoted actively
+  in the last decade and has reached a stage allowing for
+  implementation in a near future.
+\item[Performance.] Lattice-based cryptography has the potential to achieve very
+  fast operations and is therefore a good option for high-performance requiring
+  cryptographic applications.
 \end{description}
-We will recall some of the mathematics behind lattices (they are actually
-mathematical objects). We will look at the definitions and some of the hard
-problems that we will base the security on and how to use lattice to build
+We will recall some of the mathematics behind lattices (lattices are actually
+mathematical objects). We will look into the definitions and take some of the core
+problems underpinning security into consideration, focusing on how to use lattices to build
 cryptographic schemes.
 
 
@@ -144,7 +144,7 @@ cryptographic schemes.
 
 \subsection{Lattice Preliminaries}
 \label{ssub:The mathematics}
-This is an area of mathematics that combines both matrices, vector algebra
+This is an area of mathematics combining both matrices, vector algebra
 and integer variables. The definitions include:
 
 \begin{definition}[Lattice]
@@ -171,13 +171,13 @@ $(\vec{b1}, \vec{b2}) = \left( \begin{bmatrix} 1 \\ 2
 To generate a lattice from a basis, we compute all the integer multiples of
 each vector of the basis, then we add them together to generate new vectors. The
 result is an infinite grid of vectors, this grid is a lattice. We can illustrate
-two or three dimensional lattice easily, for higher dimensions, it is not
-possible to draw the lattice, but the intuition stays the same and all the
-algebraic operations can be done easily on the coordinates of the vectors. In
-lattice-based cryptography, we work with high dimension lattices ($n > 100$) for
-security properties. In fact, we can also say that a lattice is an infinite
-group (a group is a mathematical structure, a set with one operation on it.)
-with the main operation is addition.
+two or three dimensional lattices easily, for higher dimensions, it is not
+possible to draw them, but the intuition stands and all 
+algebraic operations can be performed easily on the coordinates of the vectors. In
+lattice-based cryptography, we work with high dimensional lattices ($n > 100$) for
+security reasons. In fact, we can also say that a lattice is an infinite
+group (a group is a mathematical structure, a set with one operation on it),
+the main operation being addition.
 
 \begin{definition}[Fundamental Paralellepiped]
   For an n-dimensional lattice basis
@@ -203,9 +203,9 @@ geometric and algebraic approaches.
   matrix U with $det(U) = \pm 1$, such U is called unimodular matrix.
   \label{lem:detBasis}
 \end{lemma}
-Where $det(U)$ denotes the determinant of the matrix $U$.  Geometrically, the
+$det(U)$ denotes the determinant of the matrix $U$.  Geometrically, the
 determinant computes the area (or volume) of the paralellogram of a lattice. We
-can associate each point of a lattice with a paralellogram, consequently, for a
+can associate each point of a lattice with a paralellogram; consequently, for a
 large n-dimensional ball $S$, the number of lattice points in $S$ is
 $\approx vol(S) / det(L)$.
 \begin{definition}[Determinant]
@@ -217,9 +217,8 @@ $\approx vol(S) / det(L)$.
   For an n-dimensional lattice $L(B)$, we have $det(L(B)) = |det(B)|$.
   \label{lem:determinant2}
 \end{lemma}
-In cryptography, we are interested in computationally hard problems, there are
-some problems related to geometry of lattices that are hard, including Shortest
-Vector Problem (SVP) and Closest Vector Problem (CVP).
+Cryptography involves handling of computationally complex problems. Some are related to the geometry of lattices, such as the Shortest
+Vector Problem (SVP) and the Closest Vector Problem (CVP).
 \begin{definition}
   For an n-dimensional lattice $L$, its \emph{minimum} $\lambda(L)$ is the
   length of the shortest non-zero vector of $L$:
@@ -233,10 +232,10 @@ Vector Problem (SVP) and Closest Vector Problem (CVP).
   $\lambda(L) \leq \sqrt(n).det(L)^{1/n}$.
   \label{the:minkowski1}
 \end{theorem}
-As mentioned, the problem of finding SVP of a lattice is hard as the dimension
-grows, in theoretical computer science, this problem is categorized as
+As mentioned, the problem of finding SVP of a lattice becomes harder as the dimensions
+grow: in theoretical computer science, this problem is categorized as
 NP-hard. In cryptography, we do not use SVP as it is, we use a variant of the
-problem, the definition of approximate SVP problem $\gamma-SVP$ follows.
+problem, the definition of approximate SVP problem $\gamma-SVP$, defined below.
 \begin{definition}
   [$\gamma$-SVP problem] Given a basis $B$ for an n-dimensional lattice $L$,
   find $\vec{b} \in L$ with $0 \leq \norm{\vec{b}} \leq \lambda(L)$.
@@ -246,31 +245,30 @@ As $\gamma$ increases, the problem becomes easier. We have good algorithms to
 find $\gamma$-SVP as follows
 \begin{itemize}
 \item For $\gamma \geq 2^{O(n)}$: LLL algorithm solves in Poly(n) time.
-\item For $\gamma \leq O(1)$: NP-hard, it is not likely that there exists
-  Poly(n) algorithm to solve the problem.
+\item For $\gamma \leq O(1)$: NP-hard, it is not likely that a Poly(n) algorithm to solve the problem exists.
 \end{itemize}
 In cryptography, many systems depend on this $\gamma$-SVP problem, where
 $\gamma$ is in between the two extremes $\gamma \approx O(n^c)$. Even with this
-factor, the best algorithm (including quantum ones) still take $2^{O(n)}$ time
+factor, the best algorithm (including quantum ones) still takes $2^{O(n)}$ time
 to solve $\gamma$-SVP. ( In classical cryptosystems for example RSA, the best
-algorithm to solve the integer factorization problem take
-$\approx O(2^{n^{1/2}})$ in time, this is why we need 4096 bits key to obtain
+algorithm to solve the integer factorization problem takes
+$\approx O(2^{n^{1/2}})$ time, this is why we need a 4096 bits key to obtain
 about 64 bits of security for lattices).
 
 \subsection{q-ary lattices and SIS problem}
 \label{sub:q-ary lattices and SIS problem}
-There are many useful subclasses of special lattices, in cryptography, we often
-use one of them called \emph{q-ary} lattices, which relate to a problem called
+There are many useful subclasses of special lattices. In cryptography, we often
+use one of these, called \emph{q-ary} lattices, which relate to a problem termed
 Short Integer Solution - SIS (This is a hard problem used in many cryptographic
-design, our ZKP technique is also based on a variant of this problem). Recall
-that our motivation for lattice-based cryptosystem is the hardness of
+design solutions, our ZKP technique is also based on a variant of this problem). Recall
+that our motivation for lattice-based cryptosystems is the hardness of the
 $\gamma-SVP$ problem given a basis $B$. It is critical to initially chose the
-basis $B$ to make sure that solutions to such hard problem is hard to find. (As
-there are easy instances of $\gamma-SVP$, even for $\gamma=1$. We need a way to
+basis $B$ to make sure that solutions to the challenges it gives rise to are hard to find,as
+there are easy instances of $\gamma-SVP$, even for $\gamma=1$. We thus need a way to
 generate \emph{random} lattices' bases for which $\gamma-SVP$ is hard to solve
-'on-average'. One possible answer is from \cite{ajtai1996generating}: a random
-\emph{q-ary} lattice, based on this, we can prove how hard it is to find short
-vectors in it.
+'on-average'. One possible answer comes from \cite{ajtai1996generating}: random
+\emph{q-ary} lattices, for which the hardness of finding short
+vectors within them can be proved.
 
 \begin{definition}[Ajtai's perp lattices]
   Given an integer \emph{q} and a uniformly random matrix
@@ -281,15 +279,15 @@ vectors in it.
       q \right\}
   \]
 \end{definition}
-It might not be clear from the definition of lattices, but the set of all vector
+Although it might not be clear from the aforementioned definition of lattices, the set of all vectors
 $\vec{v}$ actually forms a lattice. They can be generated by some basis, and
 there is a fast algorithm to compute such basis. The parameters for these
-lattices are $A$ and $q$, we can choose a lattice to work on by selecting random
-values for the parameters. This particular set of \emph{q-ary} lattices is nice
-because Ajtai mathematically proved that: If there is an algorithm to break the
-$\gamma-SVP$ problem for these lattice, then we could use the algorithm to break
-$\gamma-SVP$ for any lattices. This is the \emph{worst-case to average-case}
-security reduction and gives us confidence that the problem is hard on average.
+lattices are $A$ and $q$ and we can choose a lattice to work on by selecting random
+values for these parameters. This particular set of \emph{q-ary} lattices is convenient
+because Ajtai mathematically proved that If there is an algorithm to break the
+$\gamma-SVP$ problem for these lattices, we could use the same algorithm to break
+$\gamma-SVP$ for any lattice. This is the \emph{worst-case to average-case}
+security reduction and gives us confidence in concluding that the problem is hard on average.
 \begin{definition}[Small Integer Solution (SIS) problem]
   $SIS_{q,m,n,\gamma}$ Given n and matrix $A$ sampled uniformly in
   $\mathbb{Z_q^{n \times m}}$, find $\vec{z} \in \mathbb{Z}^{m \times n}$ such
@@ -299,7 +297,7 @@ security reduction and gives us confidence that the problem is hard on average.
 Informally, SIS is just the name given to the $\gamma-SVP$ problem for the
 particular \emph{q-ary} lattices. $\beta$ is the approximation parameter, it
 tells us how short the lattice vector should be. Some relations between SIS and
-$\gamma-SVP$
+$\gamma-SVP$:
 \begin{itemize}
 \item $det(L_q^\bot(A)) = q^n$
 \item By Minkowski's Theorem, $\lambda(L_q^\bot(A)) \leq \sqrt{m}$, for
@@ -311,26 +309,26 @@ $\gamma-SVP$
 
 \subsection{A cryptographic example}
 \label{sec:ajtaiHash}
-Cryptographic hash functions have many applications in many security contexts to
-provide authenticity and integrity. One of the main properties of cryptographic
-hash functions is collision resistant: it is hard to find 2 message inputs that
-produce same hash value output. The current constructions being used in practice
-are not lattice-based but base on non-linear boolean functions. We discuss how
-to construct one variant from lattice and demonstrate the relevant techniques
-that will be used during in the security proofs and parameter choices of the
-thesis. The security of this function is directly related to the hardness of
-the SIS problem that we saw before
+Cryptographic hash functions have many applications to
+provide authenticity and integrity in different security contexts. One of the main properties of cryptographic
+hash functions is collision resistancy: it is hard to find 2 message inputs
+producing the same hash value output. The current constructions being used in practice
+are not lattice-based but based on non-linear boolean functions. We discuss how
+to construct a variant from lattices and show the relevant techniques
+to be used during security proofs and parameter choices throughout this
+thesis. The security level of this function is directly related to the hardness of
+the SIS problem pointed out before
 \begin{definition}[Ajtai's Hash Function.]
   Pick $A=(\mathbf{a_{i,j}}) \randomsample \mathbb{Z}_q$ ($A$ is the function
   'public key'). Given $\vec{x} \in \mathbb{Z}^{mn}$ having 'small' coordinates
-  ($\norminf{\vec{x}} \leq d$), the hash function out put is defined as
+  ($\norminf{\vec{x}} \leq d$), the hash function output is defined as
   \[
     g_{q,m,n,d,A}(\vec{x}) = A . \vec{x} \mod \ q
   \]
   \label{def:Ajtai's Hash Function}
 \end{definition}
-We see that from a long input vector, we obtain a short output vector, that is
-our hash value. We can choose the parameters to make sure that constraint is
+We can see here that from a long input vector, we obtain a short output vector, that is
+our hash value. The parameter values should be chosen so as to make sure that this constraint is
 satisfied. The important question is how do we determine the security of this
 function, or how can we know that this function is collision resistant. We
 introduce this concept of security reduction, which is used frequently in
