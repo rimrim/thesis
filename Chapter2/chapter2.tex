@@ -1141,7 +1141,7 @@ encryption.
       sends back:
       \[
         (\vec{a^*}, \vec{c^*}) = (\vec{r}.A, \vec{r}.\vec{y} + \lceil q/t
-        \rfloor .  m_b \mod q
+        \rfloor .  m_b) \mod q
       \]
     \item When $B$ returns a guess $b'$ for $b$, $D$ returns 'Real' if $b'=b$
       and 'Random' if $b' \neq b$.
@@ -1584,7 +1584,7 @@ proposed:
 Homomorphic Encryption (HE) is a family of cryptosystems that allows operations
 on encrypted data. The idea was introduced since late 1970s
 \cite{rivest1978data} and has been actively researched lately
-(\cite{smart2014fully}, \cite{van2010fully}, \cite{EPRINT:SteSte10},
+(\cite{smart2014fully}, \cite{van2010fully} , \cite{stehle2010faster}
 \cite{gentry2013homomorphic}, etc) since the break through work of Gentry
 \cite{homenc}.  Although the idea of Fully Homomorphic Encryption (arbitrary
 number of operations) is feasible, its performance has not been considered
@@ -1668,7 +1668,7 @@ method, which is based on Chinese Remainder Theorem \cite{smart2014fully}. The
 method allows Single Instruction, Multiple Data (SIMD) operations on encrypted
 data. However, we do not use this packing technique as there is not yet known
 efficient method to compute HD based on it. We instead apply the method from
-\cite{yasuda2014practical}, which is an extension of \cite{EPRINT:LauNaeVai11},
+\cite{yasuda2014practical}, which is an extension of \cite{naehrig2011can},
 the technique allow HD computation in just one level of multiplication. The
 definition follows.
 \begin{definition}

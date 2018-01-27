@@ -459,7 +459,7 @@ In the authentication step, \(\enc{HD}\) is decryptable if \(\norminf{\langle \e
 we let \(U\) to be the upper bound of \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle}\), and using the fact that
 \(\norminf{a + b} \leq \norminf{a} + \norminf{b}\) and \(\norminf{a.b} \leq n.\norminf{a}.\norminf{b}\). From theorem
 ~\ref{theo:HDComputation} we can derive \(\norminf{\langle \enc{HD},\mathbf{s} \rangle} \leq 2nU + 2nU^{2}\). As in the
-work of \cite{EPRINT:LauNaeVai11}, we can take \(U\) to be \(2t \sigma^{2} \sqrt{n}\), which is an experimental
+work of \cite{naehrig2011can}, we can take \(U\) to be \(2t \sigma^{2} \sqrt{n}\), which is an experimental
 estimation. Therefore, the final correctness condition for authentication is \( 16n^{2}t^{2}\sigma^{4} < q\)
 \begin{lemma}[Condition for Correct Decryption of HD]
   \label{le:hdcorrectness}
@@ -640,7 +640,7 @@ the event in the game $0$ such that $res^{j} = Accept$ for some $j=1,\ldots,q$. 
 \subsection{Parameters}
 \label{sec:parameters}
 We consider how to set concrete parameters. From Lemma \ref{le:hdcorrectness} and \ref{le:Renyi} and
-\cite{EPRINT:LauNaeVai11}, we can take \(\sigma = 50\) to make the protocol secure against the lattice attacks
+\cite{naehrig2011can}, we can take \(\sigma = 50\) to make the protocol secure against the lattice attacks
 (\cite{micciancio2008lattice}) and
 also satisfy the circuit privacy requirement. We can take \(t = 2048\) to define the plaintext space ring \(R_{t}\),
 this is enough to cover Hamming Distance of bit string up to 2048 bits. We need \(n \geq 2048\) for the packing
