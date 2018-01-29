@@ -351,7 +351,7 @@ the hash function.
   function $g$: Given a random instance $(A,q)$, $CF$ outputs
   $\vec{x_1} \neq \vec{x_2}$ such that $A\vec{x_1} = A\vec{x_2}$.
 
-  We then can use $CF$ to build another algorithm $S$ that solves SIS problems
+  We then can use $CF$ to build another algorithm $S$ that solves SIS problem
   for any instance $(A,q)$:
   \begin{itemize}
   \item Runs $CF$ on $(A,q)$ to get $\vec{x_1},\vec{x_2}$.
@@ -365,17 +365,17 @@ the hash function.
   of the vectors). Moreover, $S$ is efficient as $CF$ is efficient (run-time
   $T_S \approx T_{CF})$.
 \end{proof}
-This has been the first application of lattices in cryptography and it actually
+This was the first application of lattices in cryptography and it actually
 triggered other modern techniques. The next important questions are
 \begin{itemize}
 \item How should we choose the parameters to obtain a given security level?
-\item How to secure is SIS problem related to $\gamma-SVP$ problem?
+\item How a SIS problem is related to a $\gamma-SVP$ problem?
 \end{itemize}
 
 \subsection{Security of lattice-based cryptography}
 \label{sec:latticeSecurity}
 Lenstra–Lenstra–Lovász (LLL) and its various improvements are the main ways to
-access the security of lattice-based systems (by accessing the security of
+access the security of lattice-based systems (by assessing the security of
 underlying problems, such as SVP .or $\gamma-SVP$). From there, it allows us to
 choose the size of the parameters for the problem at hand (such as dimensions), in order
 to provide guarantee of security against the best known attack.
@@ -395,13 +395,13 @@ Gram-Schmidt Orthogonization (GSO)
 \end{definition}
 GSO is basically a way to convert a basis that we have (that are not orthogonal)
 into another set of vectors are orthogonal. Figure \ref{fig:gso} shows an
-example of GSO in 2-dimensional
+example of a 2-dimensional GSO. 
 \begin{figure}[h]
   \centering \includegraphics[scale=0.3]{gso}
   \caption{Example of GSO in 2-dimensions}
   \label{fig:gso}
 \end{figure}
-GSO is used as part of the LLL algorithm to find short vector of a lattice.
+GSO is used as part of the LLL algorithm to find a short vector of a lattice.
 Note that the $GSO(B)$ is not another basis for the original lattice, it is just
 a related matrix, it has the same determinant as the original one.
 
@@ -429,8 +429,8 @@ a related matrix, it has the same determinant as the original one.
 \subsubsection{LLL algorithm}
 \label{sec:LLLalgorithm}
 The Lenstra–Lenstra–Lovász (LLL) algorithm not only finds short vectors but also
-manipulates the basis of the lattice into another basis of the lattice. Given
-some basis as an input to LLL (whose vectors are long), LLL makes sequential
+converts the basis of the lattice into another basis of the lattice. Given
+some long basis as an input to LLL, LLL makes sequential
 modifications to it, every modification still keeping it as the basis of the
 lattice but slightly improving it. As the improvements repeat, the sizes
 of the vectors of the basis are reduced, until a matrix that
@@ -448,7 +448,7 @@ vectors are
 
 \begin{description}
 \item [LLL property 1.] Takes the current basis of the lattice and computes the
-  GS coefficients $\mu_{i,j}$. It checks $|\mu_{i,j}| \leq 1/2$, that is, the
+  GS coefficients $\mu_{i,j}$. It computes $|\mu_{i,j}| \leq 1/2$, checking the
   length of the projections on the previous vectors are at most half of the
   actual full vector. If this condition is not satisfied, LLL modifies the basis
   until the condition obtains.
@@ -467,10 +467,10 @@ vectors are
   into all the projections along the previous $\vec{b_j^*}$. It then checks the 
   sum of the current orthogonal component against the the sum of the previous orthogonal component (for example, if
   we look at $\vec{b_{i+1}}$, we check
-  $\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2$). If this quantity is big
+  $\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2$). If this quantity is large
   enough, it points at the fact that we have a lot left over after removing the
-  components along the previous one. The bigger this length, the more
-  orthogonal the basis becomes. The algorithm tries to make it big enough. The
+  components along the previous vector. The larger this length, the more
+  orthogonal the basis becomes. The algorithm tries to make it large enough. The
   parameter $\delta$ of the algorithm defines this magnitude (the larger
   $\delta$ is, the better the result returned by the algorithm).
 
@@ -520,7 +520,7 @@ orthogonal matrix. For an intuitive comprhension of the algorithm, we refer the 
   \]
   For any constant $1/4 < \delta < 1$, this is polynomial in bit length of the
   algorithm input. Moreover, the run-time for each iteration is also polynomial
-  in the input bit length. Overall, run-time is polynomial in input length, or
+  in the input bit length. Overall, run-time is polynomial in input length, in other words,
   LLL is efficient!
   \label{theo:LLLRunTime}
 \end{theorem}
@@ -550,7 +550,7 @@ that vector compared to the shortest vector in the lattice.
 %   $\norm{\vec{b_1^*}}$ can only be at most \todo[inline]{finish proof}
 % \end{proof}
 
-In summary, the first vector of LLL output is bounded by
+In summary, the first vector of LLL output is bound by
 \[
   \norm{\vec{b_1^*}} \leq (1/(\delta-1/4))^{(n-1)/2}.\lambda(L)
 \]
@@ -570,7 +570,7 @@ so fast that LLL is not useful to break the security of underlying
 cryptosystems.
 \begin{theorem}
   The LLL algorithm solves in polynomial time $\gamma-SVP$ for $n-dim$ lattices,
-  with $\gamma \leq 2^{(n-1)/2}$. Can also be shown that Hermite Factor
+  with $\gamma \leq 2^{(n-1)/2}$. It can also be shown also be shown that Hermite Factor
   $\gamma_{HF} = \frac{\norm{\vec{b_1}}}{det(L)^{1/n}} \leq 2^{(n-1)/4}$
   \label{theo:LLLHF}
 \end{theorem}
@@ -578,7 +578,7 @@ cryptosystems.
 \subsubsection{LLL in practice}
 \label{sec:LLLinPractice}
 This section discusses the trade-off between the running time and the length of
-the output of the attack. This helps us in selecting parameters for
+the output of the attack. This helps us in selecting parameter values for
 state-of-the-art lattice attack
 
 In practice, we try to improve this bound so that LLL can get a shorter vector. One way
@@ -592,7 +592,9 @@ order to reduce this $HF$ further, LLL can be modified. There are several
 ways to do that. The basic idea is to combine LLL with an exhaustive search
 (enumeration algorithm). The best lattice exhaustive search algorithm
 (Fincke-Phost/Kannan) does it in time $2^{O(n\log(n)}$, it is even worse than
-exponential. There are variants of such a method, but they all take at least
+exponential growth. 
+
+There are variants of such a method, but they all take at least
 exponential time with respect of the dimension $n$ (with the expense of using $2^{O(n)}$
 memory). In general, all enumeration algorithms are very inefficient. Therefore,
 combining LLL with bruteforcing is a more practical approach: BKZ is the typical
@@ -633,7 +635,7 @@ $\gamma-SVP$ using BKZ is:
 \end{remark}
 
 For concrete values of parameters, Chen and Nguyen \cite{chen2011bkz} gave
-numerial estimates for the Hermite Factor and time for random lattices versus block
+numerical estimates for the Hermite Factor and time for random lattices versus block
 size for optimized BKZ variant:
 
 \begin{figure}[h]
@@ -643,7 +645,7 @@ size for optimized BKZ variant:
 \end{figure}
 
 From table 2, for a given $HF$ that we want BKZ to achieve, it gives us the
-block size parameter $k$ that needs to be used. Note that the $HF$ is much
+block size parameter $k$ that needed for use in the attack. Note that the $HF$ is much
 smaller than what we had for LLL (whose $HF \approx 1.02^{n-1}$ in
 practice). Once we have the block size, we can look it up in table 3 to know the
 running time of the algorithm.
@@ -685,8 +687,7 @@ $l(m^*) = min(q, 2^{2.sqrt{n\log q\log \delta}})$. The condition for the failure
     \log(\delta)}
 \]
 We have looked at the best practical algorithms to attack lattice problems (LLL
-and its variants). In theory, there is also Ajtai's proof, where the hardness of solving the SIS problem for random matrices is addressed. The connection between average case and  worst-case complexity of lattice problems in general (lattices that are completely unrelated
-to the \emph{q-ary} ones) is the theoretical foundation of lattice-based
+and its variants). In theory, there is also Ajtai's proof, where the hardness of solving the SIS problem for random matrices is addressed. The connection between average case and  worst-case complexity of lattice problems in general is the theoretical foundation of lattice-based
 cryptography. We present Ajtai's average-case to worst-case connection Theorem
 (1996, improved by \cite{gentry2008trapdoors}).
 
@@ -703,7 +704,7 @@ cryptography. We present Ajtai's average-case to worst-case connection Theorem
 \end{theorem}
 
 Although the theorem does not directly yield concrete information to choose
-parameter values securing a cryptosystem of the type discussed previously, it does provide  qualitative confidence in the security of the problem.
+parameter values securing a cryptosystem of the type discussed previously, it does provide qualitative confidence in the security of the problem.
 
 \section{Learning With Error}
 \label{sub:LWE}
@@ -715,7 +716,7 @@ use a type of lattice problem slightly different from the SIS problem, much more
 In the SIS problem, given a matrix $A$, it is asked to find a short vector
 $\vec{v}$ such that $A\vec{v} = \vec{0}$. The cryptographic hash function 
  based on SIS is constructed so as to allow arbitrary inputs and
-produce collision-resistance outputs. Such an architecture always implies a
+produce collision-resistance outputs. Such operation always implies a
 many-to-one function type in the construction: given an output, the original input cannot be derived from it. This many-to-one property is not useful
 in encryption contexts: we cannot decrypt the ciphertext to obtain the original
 plaintext using such a method. In encryption contexts, we usually have the reverse
@@ -730,7 +731,7 @@ randomness factor as inputs. Actually, almost all encryptions being used in
 practice are somehow randomized, the main reason being to stop the leakage of
 information given many ciphertexts. A deterministic cryptographic scheme can be
 exploited if the plaintext space is small: suppose that Alice sends deterministic encrypted messages to her agent Bob everyday instructing him to sell or keep some of her companies' shares.  An attacker capturing the ciphertexts sent throughout several days can easily distinguish such decisions without having to decrypt the messages at all. This is one of the important properties that we want to include in cryptosystems: indistinguishability, also known as IND-CPA. This type of security prevents the adversary from distinguishing
-the ciphertexts, even if all the possible plaintext are known.
+the ciphertexts, even if all the possible plaintexts are known.
 
 We introduce the LWE problem \cite{regev2005lattices} allowing to construct
 one-to-one or one-to-many functions. The main idea behind LWE is that, given a secret
