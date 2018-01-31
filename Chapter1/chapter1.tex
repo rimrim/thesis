@@ -22,70 +22,63 @@ one does not have to carry or remember anything during authentication.
 Biometric authentication is lately deployed widely in many platforms thanks to
 the reduced cost of hardware.
 
-Various traits from body have been proposed and used for person recognition and
-verification. The three most popular traits deployed are fingerprint, face and
-iris modalities. Traits such as palmprint, hand geometry, voice are deployed in
-some commercial applications. There are many other traits proposed by
-researchers (such as gait, ear, keystroke dynamics, etc) but yet to attain
+Various body features have been proposed and used for recognition and
+verification of a person's identity, the three most popular ones being fingerprints, face and
+iris modalities. Some commercial applications enforce other recognition techniques, based on palm-prints, hand geometry and voice. There are many other idiosyncracies proposed by
+researchers (such as gait, ear, keystroke dynamics, etc.) but yet to attain a
 sufficient level of technological maturity for deployment. Regardless of the
-traits used, in biometrics verification systems, there are generally 2 stages:
+traits used, in biometrics verification systems, there are generally two stages:
 enrollment and authentication. In the enrollment stage, a user registers his
-biometric template with a server, later in the authentication stage, he extracts
-his template again and submit to the server to authenticate. Unlike password
-authentication where a user always enters the same password he used when
-registered, in biometrics system, the query template of a genuine user is only
-very similar to the registered one due to many factors (for instance, the user
-might touch the fingerprint sensor in different corners when
-authenticating). The server has to compute some kind of distance between the
+biometric template on a server. In the authentication stage, he extracts
+his template again and submits it to the server to prove his identity. Unlike password
+authentication, where a user always enters the same password he chose when
+registering, in biometric systems, the query template of a genuine user is not exactly the same, but only very similar to the registered one, as, for instance, the user
+might touch the fingerprint sensor on different corners when
+authenticating. The server has to compute some kind of distance between the
 registered and the query templates and compares the result with some threshold
-values to decide the authentication results. Compared to SYK and SYH, the SYA
-factor has these 2 parameters, namely False Acceptance Rate (FAR) and False
-Rejection Rate(FRR): FAR is the rate that the system wrongly accepts an
-impersonating user, FRR is the rate that the system rejects a genuine
+values to decide on the authentication results. Compared to SYK and SYH, the SYA
+factor has two parameters, namely, False Acceptance Rate (FAR) and False
+Rejection Rate (FRR): FAR is the rate the rate at which the system wrongly accepts an
+impersonating user, FRR is the rate the rate at which rejects a genuine
 user. Different biometrics authentication systems use different extraction
-methods and distance measures to reduce FAR and FRR, this is also an active
-research area. In this thesis, we do not focus on template extraction techniques
-or improving FAR and FRR but we are interested on methods to provide extra
-privacy and security features to any methods that are based on Hamming Distance
+methods and distance measures to reduce FAR and FRR (this is also an active
+research area). In this thesis, we do not focus on template extraction techniques
+or on improving FAR and FRR; instead, we are interested on means providing extra
+privacy and security features to any methods based on Hamming Distance
 of biometrics represented by bitstrings.
 
 \section{Privacy-preserving Biometric Authentication}
 \label{sec:privacyLiteratures}
-Many biometrics authentication systems do not have protection for the data
-stored in server. A server breach incident would result a catastrophic
-consequence (in 2015, nearly 6 millions of plaintext fingerprint data of US
-goverment employees were leaked due to a security attack
-\cite{OPMsays563:online}). We see that the main drawback of SYA authentication
-is lack of biometric privacy against server exposure. If biometric data is ever
-revealed or stolen, the victims may be vulnerable to impersonation attacks for
-the rest of their life, as it is nearly impossible to change one’s fingerprints
-or iris, unlike password or smartcard approaches. Hence there is a strong
-motivation to develop authentication systems that protect the privacy of
-biometric data. There are four main approaches to privacy preserving biometrics
+Many biometrics authentication systems lack of protection for the data
+stored on a server. A server breach incident can thus result in catastrophic
+consequences: in 2015, nearly 6 millions plaintext fingerprint data tokens of US
+government employees were leaked due to a security attack
+\cite{OPMsays563:online}. When biometric data is revealed or stolen, the victims become vulnerable to impersonation attacks for the rest of their lives, as, unlike password or smartcards, one’s fingerprints or iris are nearly impossible to change. Biometric privacy poorly protected against server exposure can therefore be considered as the main drawback of SYA authentication. SYA proving nonetheless the most convenient authentication method from the usability point of view, a strong
+motivation arose to enhance it with an adequate privacy protection of
+biometric data. There are four main approaches to privacy-preserving biometrics
 authentication at present (details avalable in surveys of \cite{jain201650} and
 \cite{jain2008biometric}) \begin{itemize} \item Transforming biometric data
   using a key-less many-to-one transformation, also known as `Non-Invertible'
   transforms (e.g.~\cite{ratha2007generating}): Since the function is key-less,
   biometric impersonation security under server exposure is vulnerable to
   off-line brute-force attacks, also known as FAR
-  attacks~\cite{uludag2004attacks,roberts2007biometric}, that are the biometric
+  attacks~\cite{uludag2004attacks,roberts2007biometric}, which are the biometric
   analogue of off-line dictionary attacks on weak password hashing. Moreover,
-  the many-to-one mapping trades-off the biometric accuracy (FRR) performance of
-  the biometric scheme. A solution to overcome such issue is to introduce a
-  cryptographic secret key authentication factor, i.e transforming the
+  the many-to-one mapping trades off the biometric accuracy (FRR) performance of
+  the biometric scheme. A solution to overcome such an issue is to introduce a
+  cryptographic secret-key authentication factor, i.e., to transform the
   registered biometric template stored on the server by encrypting it with a
   secret key stored at the client's side. With this second authentication
   factor, verification will require the secret key, which prevents brute-force
-  attacks. Generally speaking, two-factor security can be obtained if the system
-  is secure when either the secret key is exposed (e.g., client's device is
-  stolen), or if the encrypted biometric stored in the server is leaked (e.g.,
+  attacks. Generally speaking, two-factor security can still protect the system when either the secret key is exposed (e.g., the client's device is
+  stolen), or the encrypted biometric data stored in the server is leaked (e.g.,
   server breach). All other approaches we consider below are based on this
   two-factor method.
 
 
-\item Transforming biometric data using a keyed `distance-preserving' encryption scheme:  Here, the distance between the queried and registered biometric templates is compared by the server using the encrypted query and registered templates.  Typical techniques in this category include
+\item Transforming biometric data using a keyed `distance-preserving' encryption scheme:  Here, the distance between the biometric query template and the biometric registered one is measured by the server using encrypted versions of them.  Typical techniques in this category include
             cancelable biometrics and biohashing (\cite{teoh2008cancellable}, \cite{jin2004biohashing}, 2P-MCC (\cite{cappelli2010minutia}). %The security of this approach is unclear that was not based on standard cryptographic assumptions.
-). However, the security of such encryption schemes is unclear as they are based on heuristic and non-standard cryptographic assumptions, and several have been found to be insecure (e.g.~\cite{lee2009inverse,lacharme2013preimage}).
+However, the security of such encryption schemes is unclear as they are based on heuristic and non-standard cryptographic assumptions, several of them having been found to be insecure (e.g.~\cite{lee2009inverse,lacharme2013preimage}).
 
 %\item
 %            depends on the security of the key, this is the main
