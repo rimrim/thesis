@@ -429,7 +429,7 @@ shorter vectors.
 In more detail, LLL looks at the property of the GSO of the basis to make its vectors 'approximately' orthogonal. The size of the GSO basis defines the
 length of the projections of one vector along the earlier vectors. The larger
 these are, the less orthogonal the basis vectors are, because they have larger
-components along the earlier vectors. LLL tries to reduce those coefficients
+components compared with the earlier vectors. LLL tries to reduce those coefficients
 (projection coefficients), to make them more orthogonal, which will also make
 them shorter. There are 2 tests that LLL performs to define how orthogonal the basis
 vectors are:
@@ -512,7 +512,7 @@ orthogonal matrix is obtained. For an intuitive comprehension of the algorithm, 
 \label{sec:LLLsolution}
 The question is how short the vectors of LLL's output are, or what kind of
 approximate SVP LLL is able to solve: If LLL is run on some basis, a
-reduced basis is produced as its output The shortest vector in that reduced basis is then taken into consideration, in order to evaluate the difference between its length and the length of the shortest vector of the lattice.
+reduced basis is produced as its output. The shortest vector in that reduced basis is then taken into consideration, in order to evaluate the difference between its length and the length of the shortest vector of the lattice.
 \begin{theorem}
   [Short vector from LLL]. The LLL algorithm solves in polynomial time
   $\gamma-SVP$ for $n-dim$ lattices, with $\gamma < 2^{(n-1)/2}$.
@@ -563,9 +563,7 @@ This section discusses the trade-off between the running time and the length of
 the output of the attack. This relation helps to select the appropriate parameter values for
 state-of-the-art lattice attacks.
 
-In practice, this bound should be optimized so that LLL can get a shorter vector. This can be brought about if, as in our approach, worst-case analysis is applied
-on the output provided by LLL, although, generally, the output vectors tend to be shorter than
-that. When running LLL experimentally (\cite{nguyen2006lll}) on a random lattice, it will become apparent that it performs much better than the bound proved. Specifically, $HF$
+When running LLL experimentally (\cite{nguyen2006lll}) on a random lattice, it will become apparent that it performs much better than the bound showed in Theorem \ref{theo:LLLHF}. Specifically, $HF$
 is close to $1.02^{n-1}$. Although this factor is still exponential in dimension
 $n$, slow growth allows LLL to be used on large dimension lattices. In
 order to reduce $HF$ further, LLL can be modified. There are several
@@ -729,7 +727,7 @@ $0 < \alpha < 1$. Typically, $\chi_{\alpha q}$ is chosen from a Normal
 (Gaussian) distribution with standard deviation $\approx \alpha . q$. (From the
 implementation point of view, one way to achieve such sampling efficiently is to take
 the real samples from a normal continuous distribution and round them to the
-nearest integers, the mean is set to 0 to make sure the samples are small).
+nearest integers, the mean of the distribution is set to 0 to make sure the samples are small).
 
 
 We discuss two variants of the LWE problems to be used in cryptosystems:
@@ -916,7 +914,7 @@ To randomized cryptosystem based on LWE:
     \begin{itemize}
     \item If $\vec{y}$ comes from the real scenario, then each of
       the blocks $\vec{y_i} = A_i\vec{s} + \vec{e_i}$, for $i = 1,\dots,q$ can be rewritten. When
-      replacing this onto $\vec{c_i}$, it behaves exactly the same
+      replacing this onto $\vec{c_i}$, $D$ behaves exactly the same
       as in the encryption algorithm:
       $\vec{c_i} = A_i\vec{s} + \lceil q/t \rfloor \vec{m_i} + \vec{e_i}$, in
       which the attacker $B$ wins the game with probability
@@ -1100,7 +1098,7 @@ bserv  Again, we observe that if a larger noise is used, a better level of secur
       uniformly random in $\mathbb{Z}_q^m$. To generate the fresh
       encryptions of 0 from the public key, the 'Leftover Hash
       Lemma'(LHL) property is used: The new matrix $A' = \vec{r}A$ is
-      within negligible statistical distance with respect to the uniformly random distribution when the vector $\vec{r}$ is big enough.
+      within negligible statistical distance with respect to the uniform distribution when the vector $\vec{r}$ is big enough.
       \begin{lemma}
         [Leftover Hash Lemma (LHL).]  Let
         $C \randomsample \mathbb{Z}_q^{m \times (n+1)}$ and
@@ -1171,12 +1169,12 @@ bserv  Again, we observe that if a larger noise is used, a better level of secur
 \subsection{Efficiency of Lattice-based cryptosystems}
 \label{sec:latticeEfficiency}
 
-The following properties of any cryptosystem, seem relevant to its efficiency:
+The following properties of any cryptosystem are used to evaluate its efficiency:
 \begin{itemize}
 \item Public key size : The length of the public key is important, as this key may be stored in the local memory or sent over the network.
-\item Ciphertext size: It should be reduced as much as possible. The
+\item Ciphertext size: It should be reduced as much as possible to save up communication size. The
   expansion ratio of the ciphertext should be kept small.
-\item Processing time: The computation time for performing encryption and decryption should be minimized.
+\item Processing time: The computation time for performing encryption and decryption should be minimized to improve general efficiency.
 \end{itemize}
 For the Regev's Public-key encryption scheme, the public key is
 $pk=(A \randomsample \mathbf{Z}_q^{m \times n}, \vec{p} = A.\vec{s} + \vec{e})$,
@@ -1194,7 +1192,7 @@ to improve all of these aspects below.
 \item[Reducing Ciphertext Expansion.] The first attempt to improve Regev's public key scheme by squeezing more messages into a ciphertext was proposed by
   \cite{peikert2008framework} .  It has been observed that the
   $\vec{a^T} = \vec{r^T}. A \mod q$ part of the ciphertext is independent of the
-  message $m$ and takes lots of space. Instead of using a new randomness for
+  message $m$ and takes lots of space. Instead of using a new random nonce for
   each message $m$, the one already used can be re-instantiated with new secret keys
   $\vec{s_i}$ to encrypt several integer messages, by encoding it in an integer
   vector. The modified scheme is presented as follows, with $l$ being the number
@@ -1292,7 +1290,7 @@ to improve all of these aspects below.
   \]
   After reinterpreting the operation this way, a fast algorithm can be put at work for
   polynomial multiplication, in order to speed up the computation time. Specifically, the cost of matrix-vector multiplication can go down from $O(n^3)$  to
-  $O(n \log n)$ (Fast Fourier Transform (FFT) polynomial multiplication).
+  $O(n \log n)$ (Fast Fourier Transform - FFT polynomial multiplication).
 
   \textbf{Reducing Computation with FFT.} There are several variants of Fourier
   Transform (FT). One of the classical usages of FT in engineering is to convert
@@ -1382,7 +1380,7 @@ the computation is $O(n\log^2 n)$. A practical implementation has been put forwa
 \cite{lyubashevsky2008swifft} with some further optimizations for a specific set
 of parameters: $n = 64, m = 16, q = 257$. The hash compresses 1024-bit input to
 512-bit output with the key length being 8kbits. The performance is competitive to
-other hash functions, which are about 60 CPU cycles/bytes.
+other hash functions, which are about 60 CPU cycles/byte.
 
 \subsubsection{SecurityImpact}
 \label{sec:securityImpact}
@@ -1462,20 +1460,20 @@ proposed:
   properties. As one of the issues of the Elgamal analogue scheme
   discussed above relates to the small secrets generated during the encryption
   process, the natural question to ask is how changing from something completely random to something small can affect the security level of the encryption. It turns out
-  that this variant of the Ring-LWE with secret sampled from error distribution
+  that this variant of the Ring-LWE with secrets sampled from error distribution
   (SSRing-LWE) is as hard as the original Ring-LWE problem
   \cite{lyubashevsky2008lattice}. It helps gaining efficiency without
   compromising security.
 
   \begin{lemma}[SSRing-LWE]
     \label{lem:SSRing-LWE}
-    Ring-LWE with parameters \(m', n, \alpha, q\) and secret sampled from the
+    Ring-LWE with parameters \(m', n, \alpha, q\) and secrets sampled from the
     error distribution is as hard as standard Ring-LWE with parameter
     \(m' + 1, n, \alpha, q\)
   \end{lemma}
 
   The original NTRU scheme was first introduced in 1996, working with the ring
-  \(R^{-} = \mathbb{Z}[x]/(x^{n} -1 \) ) instead. We briefly describe the scheme
+  \(R^{-} = \mathbb{Z}[x]/(x^{n} -1 \) ) instead of modulo $x^n + 1$. We briefly describe the scheme
   as follows.
   \begin{description}
   \item[Setup] Ring parameters: a prime \(n\), \(q \approx n\) a power of 2, a
@@ -1486,7 +1484,7 @@ proposed:
 
   The main issue with the original NTRU was its security: it relied on a
   problem known as 'NTRU key-cracking' (which was not well understood at the time) and on
-  Ring-LWE. A variant of it, only relying on Ring-LWE has been brought up later.
+  Ring-LWE. A variant of it, only relying on Ring-LWE has been brought up in 2011.
   \cite{stehle2011making},
 \end{description}
 
