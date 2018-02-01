@@ -11,71 +11,63 @@
 \section{Introduction}
 \label{sec:firstProcIntro}
 Many biometrics privacy preserving authentication protocols rely on a trusted
-third party to keep the client's secret key to decrypt the authentication result
-\missref{}. Our first attempt to improve the security of such schemes is to
-remove the role of such party. We cannot let the server keeping the key due to
-privacy requirement, in order to rely on the client only to decrypt the distance
-plaintext, we would need to solve the following challenges:
+third party to keep the client's secret key used to decrypt the authentication result
+\missref{}. Our first attempt to improve the security of such schemes has been to
+remove the role of such a party. As it proves inconvenient, due to privacy issues, to allow the server to keep the client's secret key, the distance plaintext decryption should be performed by the client, which, in turn, raises the following challenges:
 \begin{description}
-\item[Multifactor secure] A malicious client with a compromised secret key
-  should not learn any information about the templates distance (and the
-  registered template) when he decrypts the homomorphic ciphertext result sent
-  by the server.
-\item[Malicious Client Model] It is important for the protocol to be secure
-  against the \textit{active client }model, where an adversary does not simply follow the
-  protocol transcript and tries to learn information (this model is also known
-  as \textit{Semi Honest}, \textit{Honest-But-Curious}, or \textit{Passive} Client Model). In the 
+\item[Multifactor security] A malicious client with a compromised secret key
+  about the distance between the registred template and the extracted template while he decrypting the homomorphic ciphertext result sent by the server.
+\item[Malicious Client Model Impact] It is important for the protocol to be secure
+  against the \textit{active client }model, by which an adversary does not simply follow the
+  protocol transcript but also tries to draw information (this model is also known
+  as \textit{Semi Honest}, \textit{Honest-But-Curious}, or \textit{Passive} Client Model). 
 \end{description}
 
-The first issue was resolved by having the server masking the distance with some
+The first issue has been solved forcing the server to mask the distance between templates by means of some
 random value before sending it to the client
 (\cite{mandal2015comprehensive}). In this chapter, we discuss the solution to
 the second issue, where a new Zero-Knowledge-Proof (ZKP) technique for
-lattice-based cryptosystem is introduced to enforce the client to prove that he
-is actually following the protocol honestly. The technique not only provides a
-proof of plaintext knowledge, it has another important aspect to prove the
+lattice-based cryptosystems is introduced so as to compel the client to prove that the protocol is followed honestly. The technique not only provides a
+proof of plaintext knowledge, it has another important advantage, namely, to prove the
 binary format of the query template as well. Therefore, we can use the ZKP at
-two stages: When the client first sends the query when he start authenticating,
-and at the final step where he proves that he decrypts the Hamming Distance (HD)
-correctly.
+two stages: When the client first sends the query in order to start authenticating,
+and at the final step, proving that the Hamming Distance is correctly decrypted.
 
 
 \section{Related Work}
 \label{sec:iscRelatedWor}
-In a biometric authentication system, a user $\mathcal{U}$ first enrols his fingerprint template $X$ with the server
-$\mathcal{S}$. $\mathcal{U}$ later authenticates with $\mathcal{S}$ using the same finger with a template $Y$, $\server$
+In a biometric authentication system, a user $\mathcal{U}$ first registers his fingerprint template $X$ on the server
+$\mathcal{S}$. $\mathcal{U}$ later authenticates before $\mathcal{S}$ using the same finger with a template $Y$, $\server$
 uses an algorithm $Verify(X,Y)$ to obtain the result of the authentication: \textbf{Accept} or
-\textbf{Reject}. Different biometric system might use different methods to compute the distance $\Delta$ between $X$ and
-$Y$ in the algorithm $verify$. The distance $\Delta$ is compared to some predifined threshold value $\tau$ to determine
-the result of the authentication. We refer the reader to \cite{jain2007handbook} for biometric feature extraction and
-comparison techniques. Unlike password based system where $\user$ always uses one same query for many authentications,
-all biometric systems have the concept of False Acceptance Rate (FAR), where the systems \textbf{Accept} an incorrect
-template; and False Rejection Rate (FRR), where the systems \textbf{Reject} a genuine one.  Balancing these 2 rates
+\textbf{Reject}. Different biometric systems might use different methods to compute the distance $\Delta$ between $X$ and
+$Y$ within the algorithm $verify$. The distance $\Delta$ is compared to some predifined threshold value $\tau$ to determine
+the result of the authentication trial. We refer the reader to \cite{jain2007handbook} for biometric feature extraction and
+comparison techniques. Unlike password based systems, where $\user$ always uses one and the same same query for many authentication trials,
+all biometric systems implement the concept of False Acceptance Rate (FAR), corresponding to the system's \textbf{Accept} answer while receiving an incorrect
+template; and False Rejection Rate (FRR), where the system's \textbf{Reject} answer follows reception of a genuine one.  Balancing these 2 rates
 while keeping good performances is one of the main challenges that fingerprint verification algorithms
-\cite{FVConGoi2:online} are trying to solve. In this work, we consider the biometric data are represented as binary
-codes and HD is used to measure the similarity between two of them. We refer the readers to \cite{daugman2003importance}
-or \cite{FujitsuD7:online} for examples of 2048-bit iris codes generation and HD comparison.
+\cite{FVConGoi2:online} try to solve. In this work, we consider that biometric data are represented as binary
+codes and that HD is used to measure the similarity between two of them. We refer the readers to \cite{daugman2003importance}
+or \cite{FujitsuD7:online} for examples of 2048-bit iris code generation and HD comparison.
 
 There are three main approaches for privacy-preserving biometric authentication (\cite{jain201650},
 \cite{belguechi2011overview}, \cite{jain2008biometric}). In the \emph{Feature transformation approach} (cancelable
 biometrics or biohashing, such as \cite{teoh2008cancellable}, \cite{cappelli2010minutia}), the template data are
-encrypted using a client's key, it is single factor and not secure if the key is leaked. The \emph{Biometric
+encrypted using a client's key. Being a single factor protection, it has a low security level as the key might be leaked. The \emph{Biometric
   cryptosystem approach} (fuzzy vault and fuzzy commitment, \cite{uludag2004biometric}, \cite{nagar2010hybrid}) is based
-on error correcting codes and it is not well understood the tradeoff between biometric accuracy and security. We focus
-our work on the last approach, \emph{Homomorphic Encryption}, which seems to be the best candidate to provide all of the
-system design requirements mentioned.
+on error correcting codes and the trade-off between biometric accuracy and security seems to be insufficiently understood . We focus
+our work on the last approach, \emph{Homomorphic Encryption}, which appears as the best candidate to provide all of the system design requirements mentioned.
 
-The idea was first proposed in 2006 (\cite{schoenmakers2006efficient}) using addictive homomorphic system Paillier
-(\cite{paillier1999public}). In 2010, Osadchy et al. (\cite{osadchy2010scifi}) providing privacy-preserving feature by
-combining Paillier system with oblivious transfer protocol. SCiFI uses 900-bit vector to represent face image data and
+The idea was first proposed in 2006 (\cite{schoenmakers2006efficient}) using the Paillier addictive homomorphic system
+(\cite{paillier1999public}). In 2010, Osadchy et al. (\cite{osadchy2010scifi}) provided a privacy-preserving feature by
+combining Paillier system with an oblivious transfer protocol. SCiFI uses 900-bit vector to represent face image data and
 Hamming Distance (HD) to compare two vectors. \cite{blanton2011secure} developed a similar system for iris and
-fingerprints but using DGK cryptosystem \cite{damgard2008homomorphic} and garble circuit technique instead, they
+fingerprints but using the DGK cryptosystem \cite{damgard2008homomorphic} and garble circuit technique instead. They
 represented biometric data as 2048-bit vectors and also used HD for threshold comparison. \cite{yasuda2014practical}
-proposed an approach based on Somewhat Homomorphic Encryption (SHE) \cite{brakerski2011fully}, they introduced a
+proposed an approach based on Somewhat Homomorphic Encryption (SHE) \cite{brakerski2011fully}. They introduced a
 ciphertext packing technique to speed up the HD computation operation. There have been variations and improvements over
-time (\cite{shahandashti2012private}, \cite{mandal2015comprehensive}, etc). However, most of the protocols are only
-secure against a semi-honest client, many relied on one or more trusted third parties with the client's secret key to
-decrypt the HD.
+time (\cite{shahandashti2012private}, \cite{mandal2015comprehensive}, etc.). However, most of the protocols are only
+secure against a semi-honest client, many of them relying on one or more trusted third parties with the client's secret key being used to decrypt the HD.
 
 
 
@@ -84,16 +76,15 @@ decrypt the HD.
 
 \subsection{Feature codes and HD Computation homomorphically}
 \label{sec:HDComp}
-Biometrics are used in authentication as they are unique for each person. There are
+Biometrics are used in authentication as the human features they record systematically differ from one person to another. There are
 many algorithms that extract the data used in the process (\cite{FVConGoi2:online})
-(we refer to this data as biometric templates). Many works (such as
+(we refer to this data as "biometric templates"). Many works (such as
 \cite{daugman2003importance} and \cite{FujitsuD7:online}) use Hamming Distance (HD)
-as the metric to measure the similarity of the stored and query templates, we also
-use HD to evaluate our idea (\ref{protocol:step3}). In the work of
-\cite{yasuda2014practical}, the authors proposed a clever approach that can compute
-HD of two n-bits templates $X$ and $Y$ in ciphertext domain. Specifically, the
-method pack all the bits of a template into a single ciphertext, and a linear
-combination of homomorphic operations would give the result of HD. We quickly
+as the metrics to measure the similarity of the stored and query templates, and we equally do so to evaluate our hypothesis (\ref{protocol:step3}). In the work of
+\cite{yasuda2014practical}, the authors propose an innovative to compute
+the HD of two n-bits templates $X$ and $Y$ in the ciphertext domain. Specifically, the
+method packs all the bits of a template into a single ciphertext, and a linear
+combination of homomorphic operations would purveys an HD result. We sketchily
 present their method below.
 \begin{definition}
 For $\mathbf{T} = (t_0, \dots,
@@ -110,13 +101,12 @@ ct_{1}(\mathbf{T}) = Enc(pm_1(\mathbf{T}))
 ct_{2}(\mathbf{Q}) = Enc(pm_2(\mathbf{Q}))
 \]
 \end{definition}
-The main idea of \cite{yasuda2014practical} is that, in the ring $R_q$ we have
-$x^n = -1$, then when we do multiplication between $pm_1(\mathbf{T})$ and
-$pm_2(\mathbf{Q})$, the constant term of the result would be the inner product
-$\langle \mathbf{T}, \mathbf{Q}\rangle$. We can also do homomorphic
-multiplication on the ciphertexts and get the ciphertext of the inner product
-similarly. Furthermore, we can use this result to compute HD as follows, this
-operation costs one level of multiplication with 3 additions and 3
+The main idea of \cite{yasuda2014practical} is that, if in the ring $R_q$ 
+$x^n = -1$, then, when multiplying $pm_1(\mathbf{T})$ by
+$pm_2(\mathbf{Q})$, the constant term of the result will be the inner product
+$\langle \mathbf{T}, \mathbf{Q}\rangle$. If homomorphic
+multiplication is applied to the ciphertexts, the ciphertext of their inner product will
+similarly show as a result of it. Furthermore, this result can be used to compute HD as shown below, the operation costs being one level of multiplication with 3 additions and 3
 multiplications on ciphertexts.
 
 \begin{theorem}
@@ -147,16 +137,15 @@ Enc(C_2) - 2*ct_1(\mathbf{T})*ct_2(\mathbf{Q})$
 \section{Zero-knowledge proof system}
 \label{sec:introzkp}
 Suppose that \emph{Paul} has found a solution
-to a hard problem and he wants to convince \emph{Vicky} that it has
-been solved. \emph{Paul} can simply write out the solution and gives
-to \emph{Vicky}. However it would not be nice if \emph{Vicky} is a
-dishonest person that brings the solution to show others and claims that
-it was her who solved the problem. Zero Knowledge Proof (ZKP) is a
-beautiful cryptographic concept that allows \emph{Paul} to do the proof
-in such a way that \emph{Vicky} does not learn any information more
-than the fact that the problem has been solved. Since introduced
+to a hard problem and he wants to convince \emph{Vicky} that the problem has
+been solved by him. \emph{Paul} can simply write out the solution and give it
+to \emph{Vicky}. However, \emph{Vicky} could be as
+dishonest as to show the solution to others and claim that
+it was her who solved the problem. The Zero Knowledge Proof (ZKP) is a
+beautiful cryptographic concept allowing \emph{Paul} to produce the proof
+in such a way that \emph{Vicky} does not learn any information besides the fact that the problem has been solved. Since introduced
 in the 80s \cite{goldwasser1989knowledge}, ZKP has been extensively
-studied and currently being the important building blocks in many cryptographic
+studied and is currently an important building block of many cryptographic
 protocols: identification schemes ( \cite{fiat1986prove}, \cite{feige1988zero},
 \cite{guillou1990paradoxical}, \cite{schnorr1991efficient},
 \cite{stern1993new}, \cite{kawachi2008concurrently},\dots), group signatures(
@@ -164,9 +153,9 @@ protocols: identification schemes ( \cite{fiat1986prove}, \cite{feige1988zero},
 \cite{boneh2004short}, \cite{boneh2004group}, \cite{groth2007fully}\dots),
 anonymous credential systems ( \cite{camenisch2008efficient},
 \cite{camenisch2001efficient}, \cite{belenkiy2009randomizable},
-\cite{chase2013malleable},\dots), interactive encryption protocol(
+\cite{chase2013malleable},\dots), interactive encryption protocols(
 \cite{galil1985symmetric}, \cite{goldreich2009foundations},
-\cite{goldwasser2005proof}, \cite{katz2003efficient},\dots), and much more.
+\cite{goldwasser2005proof}, \cite{katz2003efficient},\dots), and many more.
 
 
 
@@ -205,12 +194,10 @@ Recall that we need to construct a proof for the ISIS relation:
   \times \mathbb{Z}^m: (\|\vec{x}\|_\infty \leq \beta) \land
   (\mathbf{A}\vec{x} = \vec{y} \mod q) \}
 \]
-There are several approaches to construct such proof (e.g. \cite{lyubashevsky2008lattice},
-\cite{micciancio2003statistical}, \cite{stern1993new}). We discuss an approach based on \cite{stern1993new} in this
-work. We refer our readers to the original paper for the detailed steps of the protocol and we denote
-\(\mathbf{Stern}_{A,x,y}\) for the whole proof. Provided such a proof, it can be applied to do a Zero Knowledge Proof of
-Plaintext Knowledge (ZKPoPK) for latticed-based cryptosystems. For example, in the work of \cite{ling2013improved} with
-an extenstion (denoted by \(\mathbf{SternExt}\)), plaintext knowledge proof was done by proving the encryption relation
+There are several approaches to construct such a proof (e.g. \cite{lyubashevsky2008lattice},
+\cite{micciancio2003statistical}, \cite{stern1993new}). We here discuss an approach based on \cite{stern1993new}. We refer our readers to the original paper for the detailed steps of the protocol and denote the whole proof protocol
+\(\mathbf{Stern}_{A,x,y}\). It can be applied to implement a Zero Knowledge Proof of
+Plaintext Knowledge (ZKPoPK) for latticed-based cryptosystems. For example, an extension of the work of \cite{ling2013improved}  (denoted by \(\mathbf{SternExt}\)), allows to compute plaintext knowledge by proving the encryption relation
 of Regev's cryptosystem \cite{regev2009lattices}:
 
 \begin{equation*}
@@ -223,22 +210,21 @@ of Regev's cryptosystem \cite{regev2009lattices}:
   \end{multlined}
 \end{equation*}
 
-The proof worked by letting $\mathbf{A'} = \begin{bmatrix} p_1, 1\\p0, 0
+The proof works by letting $\mathbf{A'} = \begin{bmatrix} p_1, 1\\p0, 0
 \end{bmatrix} $ and $\mathbf{y} = \begin{bmatrix} c_1\\c_0
-\end{bmatrix}$ being the public parameters and let $\mathbf{x} =
+\end{bmatrix}$ be the public parameters and by letting $\mathbf{x} =
 \begin{bmatrix}
   \vec{r}\\M
 \end{bmatrix}$ be the \emph{Prover}'s witness. We observe that $\mathbf{A'} \mathbf{x} = \mathbf{y} \mod q$, that is,
-$\mathbf{x}$ is a solution to the ISIS problem, provided that $\norminf{\vec{r}} \approx |M|$ AND the \emph{Prover} must
-know $\vec{r}$. This solution only works in the symmetric key setting, in many other contexts, the client does not know
-$\vec{r}$ as encryption is done by other parties using public key. For such situation, we can look at the decryption
+$\mathbf{x}$, is a solution to the ISIS problem, provided that $\norminf{\vec{r}} \approx |M|$ AND the \emph{Prover} within a symmetric key setting. In many other contexts, the client does not know
+$\vec{r}$, as encryption is ensured by other parties using public keys. For such situations, we can look at the decryption
 equation:
 \begin{align*}
   c_1 - c_0\vec{s} &= p_1\vec{r} + M - p_0\vec{r}\vec{s} \\
                    &= \mathbf{A}\vec{s}\vec{r} + t\vec{e}\vec{r} + M - \mathbf{A}\vec{r}\vec{s}\\
                    &= t\tilde{e} + M
 \end{align*}
-Therefore, we can write the decryption relation as:
+Therefore, we can write out the decryption relation as:
 \begin{equation*}
   \begin{multlined}[][\LTcapwidth]
     R_{Regev,dec}^{q,m,n,t\chi} = \{((p_0,p_1),(c_0,c_1),\vec{s},\vec{e},\tilde{e}, M) \in (\mathbb{Z}_q^{m \times n}
@@ -247,13 +233,12 @@ Therefore, we can write the decryption relation as:
   \end{multlined}
 \end{equation*}
 Similarly, we can let $\mathbf{A}_{Stern} = \begin{bmatrix} c_0, t, 0, 1\\p_0, 0, t, 0
-\end{bmatrix}$ to be the public parameters and \(\mathbf{X}_{Stern} = [\vec{s},\tilde{e},\vec{e},M]^T\) and try applying \textbf{SternExt} to obtain the ZKPoPK. However, it will not work because the original
+\end{bmatrix}$ (the public parameters) and let \(\mathbf{X}_{Stern} = [\vec{s},\tilde{e},\vec{e},M]^T\) and try applying \textbf{SternExt} to obtain the ZKPoPK. However, this will not work because the original
 solution proves that $\norminf{\mathbf{X}_{Stern}} <
-\beta$. In this situation, we want to prove the bound of separate components differently: in our above example,
+\beta$. In such cases, we want to prove the bound of separate components differently: in our above example,
 $\norminf{\tilde{e}} >
-\norminf{\vec{e}}$. In Regev cryptosystem, the problem might not be clear enough as the norm of each vector in
-$\mathbf{X}_{Stern}$ is quite close to each other, for other latticed-based system, we can see a big difference. For
-example, if we look at the BV system's decryption relation:
+\norminf{\vec{e}}$. In a Regev cryptosystem, the problem might not be clear enough, as the norms of each vector in
+$\mathbf{X}_{Stern}$ are quite close to each other. In other latticed-based system, the difference can be big, as for example, the BV system's decryption relation:
 \begin{equation*}
   \begin{multlined}[][\LTcapwidth]
   R_{BV}^{q,n,t,\chi} = \{((\mathbf{c_0}, \mathbf{c_1}),(\mathbf{p_0}, \mathbf{p_1}), \mathbf{s},\mathbf{e'}, \mathbf{e}, \mathbf{m} \in
@@ -265,7 +250,7 @@ example, if we look at the BV system's decryption relation:
 
 Our \emph{Prover}'s witness in this situation is
 \(\mathbf{X}_{Stern} = [\mathbf{s, e', e, m}]^{T}\) with $\norminf{s} \approx \norminf{e} < \norminf{e'} << \norminf{m}$.  Therefore, instead of proving
-$\norminf{\mathbf{X}_{Stern}} < \beta$, we need a proof with different constraints on the witness's components. We
+$\norminf{\mathbf{X}_{Stern}} < \beta$, we need a proof with different constraints on the witness' components. We
 present a solution for this problem.
 \subsubsection*{Our construction}
 % There are several requirements need to be

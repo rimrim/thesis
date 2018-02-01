@@ -13,33 +13,31 @@
 \section{User Authentication and Biometrics}
 \label{sec:biometricIntro}
 User authentication is the process of verifying the claimed identity of a user,
-which is an important aspect in the big picture of information and network
-security. Generally, there are three factors that can be used for this purpose:
+and is therefore a crucial component within the big picture of information and network
+security. Generally speaking, there are three types of identifying modes ("factors"):
 Something You Know (SYK), such as password; Something You Have (SYH), such as
-smartcard and Something You Are (SYA), such as iris or fingerprint. The last
-factor, also known as biometrics, can be considered the most usable factor as
-one does not have to carry or remember anything during authentication.
-Biometric authentication is lately deployed widely in many platforms thanks to
-the reduced cost of hardware.
+smartcard, and Something You Are (SYA), such as an iris or a fingerprint idiosyncracy. The last
+factor, also known as biometrics, can be considered to be the most convenient one, as it
+exempts system-users from carrying or remembering something for authentication purposes.
+Stimulated by the reduced cost of the hardware it consumes and by its unsurpassed usability level, biometric authentication has lately been deployed profusely on numerous platform types.
 
 Various body features have been proposed and used for recognition and
 verification of a person's identity, the three most popular ones being fingerprints, face and
 iris modalities. Some commercial applications enforce other recognition techniques, based on palm-prints, hand geometry and voice. There are many other idiosyncracies proposed by
-researchers (such as gait, ear, keystroke dynamics, etc.) but yet to attain a
+researchers (such as gait, ear, keystroke dynamics, etc.), yet to attain a
 sufficient level of technological maturity for deployment. Regardless of the
 traits used, in biometrics verification systems, there are generally two stages:
 enrollment and authentication. In the enrollment stage, a user registers his
-biometric template on a server. In the authentication stage, he extracts
-his template again and submits it to the server to prove his identity. Unlike password
-authentication, where a user always enters the same password he chose when
-registering, in biometric systems, the query template of a genuine user is not exactly the same, but only very similar to the registered one, as, for instance, the user
-might touch the fingerprint sensor on different corners when
-authenticating. The server has to compute some kind of distance between the
-registered and the query templates and compares the result with some threshold
-values to decide on the authentication results. Compared to SYK and SYH, the SYA
+biometric template on a server. In the authentication stage, he produces
+a template afresh and submits it to the server to prove his identity. Unlike password
+authentication, where a user always enters the same string he chose when
+registering, in biometric systems, the query template of a genuine user is not exactly equal, but only very similar to the registered one, because, in the case of fingerprints, for instance, when
+authenticating, the user might not touch the sensor on exactly the same corner he pressed while registering . The server has thus to compute some kind of distance between the
+registered and the query templates, and compare the result to some threshold
+values, in order to decide on the authentication results. Unlike SYK and SYH, the SYA
 factor has two parameters, namely, False Acceptance Rate (FAR) and False
-Rejection Rate (FRR): FAR is the rate the rate at which the system wrongly accepts an
-impersonating user, FRR is the rate the rate at which rejects a genuine
+Rejection Rate (FRR): FAR is the rate at which the system wrongly accepts an
+impersonating user, FRR is the rate at which rejects a genuine
 user. Different biometrics authentication systems use different extraction
 methods and distance measures to reduce FAR and FRR (this is also an active
 research area). In this thesis, we do not focus on template extraction techniques
@@ -64,21 +62,21 @@ authentication at present (details avalable in surveys of \cite{jain201650} and
   off-line brute-force attacks, also known as FAR
   attacks~\cite{uludag2004attacks,roberts2007biometric}, which are the biometric
   analogue of off-line dictionary attacks on weak password hashing. Moreover,
-  the many-to-one mapping trades off the biometric accuracy (FRR) performance of
+  the many-to-one mapping trades off the accuracy (FRR) performance of
   the biometric scheme. A solution to overcome such an issue is to introduce a
   cryptographic secret-key authentication factor, i.e., to transform the
   registered biometric template stored on the server by encrypting it with a
   secret key stored at the client's side. With this second authentication
   factor, verification will require the secret key, which prevents brute-force
   attacks. Generally speaking, two-factor security can still protect the system when either the secret key is exposed (e.g., the client's device is
-  stolen), or the encrypted biometric data stored in the server is leaked (e.g.,
+  stolen), or the encrypted biometric data stored on the server is leaked (e.g.,
   server breach). All other approaches we consider below are based on this
   two-factor method.
 
 
 \item Transforming biometric data using a keyed `distance-preserving' encryption scheme:  Here, the distance between the biometric query template and the biometric registered one is measured by the server using encrypted versions of them.  Typical techniques in this category include
             cancelable biometrics and biohashing (\cite{teoh2008cancellable}, \cite{jin2004biohashing}, 2P-MCC (\cite{cappelli2010minutia}). %The security of this approach is unclear that was not based on standard cryptographic assumptions.
-However, the security of such encryption schemes is unclear as they are based on heuristic and non-standard cryptographic assumptions, several of them having been found to be insecure (e.g.~\cite{lee2009inverse,lacharme2013preimage}).
+However, the security of such encryption schemes is unclear, as they are based on heuristic and non-standard cryptographic assumptions, several of them being reputedly insecure (e.g.~\cite{lee2009inverse,lacharme2013preimage}).
 
 %\item
 %            depends on the security of the key, this is the main
@@ -86,16 +84,13 @@ However, the security of such encryption schemes is unclear as they are based on
 %        the user's privacy is not assured
 %    as the server decrypts and read the biometrics data when doing
 %authentication, or a malicious server can even brute-force the key and/or the biometrics itself (Hill-climbing attack).
-\item Biometric cryptosystems / Fuzzy hashing: This approach is based on error
-    correcting codes techniques (\cite{uludag2004biometric}, \cite{nagar2010hybrid}) to extract a noiseless cryptographic key from a noisy biometric. However, depending on parameter settings, these techniques may leak significant information, and the tradeoff between biometric accuracy (False Acceptance Rate and False Rejection Rate) and security are
-    controversial or not well understood, and in practice the technique may  needs strong restriction of accuracy. In particular, the underlying error
-correcting codes can only handle a specific range of the threshold depending on the usability parameters.
+\item Biometric cryptosystems / Fuzzy hashing: This approach is based on techniques using error-correcting codes (\cite{uludag2004biometric}, \cite{nagar2010hybrid}) to extract a noiseless cryptographic key from noisy biometric data. However, depending on parameter settings, these techniques may leak significant information, and the trade-off between biometric accuracy (False Acceptance Rate and False Rejection Rate) and security remains controversial or not well understood. In practice, the implemented techniques require strong restrictions on accuracy: in particular, the underlying error-correcting codes are only capable of handling a specific range of the threshold, depending on the defined usability parameters.
 
 \item Secure Computation / Homomorphic encryption techniques
     (\cite{yasuda2014practical}, \cite{shahandashti2012private},
-    \cite{higo2015privacy}): In this approach, the biometrics data is encrypted
-    in the server using a homomorphic encryption scheme. The operations on
-    encrypted data would measure the similarity between the request and the
+    \cite{higo2015privacy}): In this approach, the biometric data is encrypted
+    on the server using a homomorphic encryption scheme. The operations on
+    encrypted data are meant to measure the similarity between the requested and the
     stored templates. This approach has the potential to overcome the heuristic
     security issues of the above approaches (by using an encryption scheme based
     on standard cryptographic assumptions), as well as the biometric accuracy
@@ -103,137 +98,137 @@ correcting codes can only handle a specific range of the threshold depending on 
     underlying biometric scheme). However, existing protocols following this
     approach suffer from other significant drawbacks. In particular, earlier
     approaches~\cite{shahandashti2012private} were based on the Paillier
-    \emph{additive} homomorphic scheme and offer a limited efficiency due to
+    \emph{additive} homomorphic scheme and are granted with limited efficiency due to
     both the inefficiency of homomorphic operations of the Pailler scheme, and
     the extra protocol overhead required to handle the `addition-only'
-    homomorphism limitation of the Paillier scheme. Besides, Paillier system
+    homomorphism limitation of the this scheme. Besides, the Paillier system
     does not provide \emph{long term} security (it is not quantum resistent).
-    The efficiency is
-    significantly improved by a recent protocol of Yasuda et
-    al.~\cite{yasuda2014practical} based on lattice-based SomeWhat Homomorphic
-    encryption (SWHE) supports both homomorphic additions and multiplications.
+    Its efficiency has been
+    significantly improved by a recent protocol due to Yasuda et
+    al.~\cite{yasuda2014practical}, grunded on lattice-based SomeWhat Homomorphic
+    encryption (SWHE), which supports both homomorphic additions and multiplications.
     The cryptosystem used is believed to be quantum-resistant as
     well.
     However, this protocol requires the use of a trusted-third party server to
     verify the final authentication result: The main server stores encrypted
-    biometric and compute HD homomorphically while the other server stores the
+    biometric data and computes HD homomorphically, while another other server stores the
     decryption key and decrypts/verifies the HD.
-    As a result, it is not secure under
-    server exposure attack (as keys from trusted server can decrypt data on the
-    main one).
+    The method is thus not secure against
+    server exposure attacks, as keys hold by the trusted server are able to decrypt data stored on the
+    main one.
   \end{itemize}
 
-  We focus our work on the fourth approach with different improvements, the goal
-  is to design authentication protocol that satisfies more complex security and
-  usability requirements according to the current trends. The requirements include:
+  We focus our work on the fourth approach, adding various improvements to it, the goal
+  being to design an authentication protocol able to satisfy more complex security and
+  usability requirements according to the current trends. These requirements include:
 \begin{description}
 \item [Privacy against server exposure.] The biometric data should be securely
-  encrypted prior to uploading to the server, using a key stored only to the
-  biometric owner. Ideally, the server storing the encrypted biometric should
-  not be able to comprehend the data, in other words, it does not have the
+  encrypted prior to uploading it to the server, using a key stored only by the
+  biometric data owner. Ideally, the server storing the encrypted biometric information should
+  not be able to comprehend the data. In other words, it should not possess the
   encryption key.
 
-\item [Quantum resistant privacy. ] Considering quantum computing is developing
-  fast and the biometric data will persist over the lifetime of a user, the
-  encrypted biometric data should have long term security against quantum
+\item [Quantum resistant privacy. ] Considering that quantum computing is developing
+  fast and that biometric data will persist over the lifetime of a user,
+  encrypted biometric data should be granted long term security against quantum
   computing attacks.
 \item [No reliance on trusted third parties. ] With the wide exposure of cloud
-  computing to potential attacks, the protocol should not rely on one or more
-  cloud-based trusted third parties to help with the authentication process.
-\item [Security against malicious client.] An attacker attempting to impersonate
-  the real client to the server should not be able to authenticate without a
-  genuine biometric, even if the attacker is malicious and does not follow the
-  authentication protocol, i.e. the impersonation attacker cannot be assumed to
+  computing to potential attacks, the protocol should not rely on any
+  cloud-based trusted third parties to carry out the authentication process.
+\item [Security against malicious clients.] An attacker attempting to impersonate
+  the real client before the server should not be able to authenticate without
+  genuine biometric features, even being malicious and not following the
+  authentication protocol. Consequently, an impersonation attacker should never be assumed to
   be `honest but curious'(HBC).
 \item [Two factor security.] If the client is responsible for decrypting
   biometric-related data, the protocol should be multi-factor secure: an
-  attacker with a compromised key should not be able to authenticate without a
-  genuine biometric.
+  attacker with a compromised key should not be able to authenticate without
+  genuine biometric features.
 \item [Practical performance.] The computation time and communication size of
-  the whole protocol should be within practical time frame.
+  the whole protocol should remain within a practical time frame.
 \end{description}
 Previous protocols in the literature do not meet one or more of our
 requirements. In particular, many previous protocols
 (\cite{bringer2007application}, \cite{erkin2009privacy},
 \cite{osadchy2010scifi}) assume honest-but-curious clients and are insecure in
-the authentication context that involves malicious clients. The few protocols
+an authentication context involving malicious clients. The few protocols
 involving malicious clients (\cite{shahandashti2012private},
 \cite{vsedvenka2015secure}) are not quantum-resistant. Previous practical
 quantum-resistant protocols (\cite{yasuda2014practical},
-\cite{mandal2015comprehensive}) are not secure against malicious client and
-involve the use of a trusted third-party verification server and therefore
-client privacy is not completely achieved.
+\cite{mandal2015comprehensive}) are not secure against malicious clients and
+involve a trusted third-party verification server, thus compromising the
+client's privacy.
 
 \section{Contributions of the thesis}
 \label{sec:thesisContributions}
-We propose different protocols to support above requirements. Our
-technique combines state-of-the-art cryptographic tools such as Homomorphic
-Encryption (HE) and Zero-Knowledge-Proof (ZKP) to balance security and usability
-of the system. The techniques are all lattice-based, which is currently the best
-candidate for long term security against quantum attacks. Our protocol also
-achieves privacy against server exposure without relying on a trusted third
-party. The contributions include:
+We propose different protocols to support the above stated requirements. Our
+technique combines state-of-the-art cryptographic tools, such as Homomorphic
+Encryption (HE) and Zero-Knowledge-Proof (ZKP), aimed at balancing the security and the usability
+of the system. The techniques we put forward are all lattice-based, which is currently the best
+framework for preserving long term security against quantum attacks. Our protocol also
+achieves privacy protection against server exposure, by avoiding to rely on a trusted third
+party. Our contributions include:
 \begin{itemize}
-\item Quantum resistant and provable-secure biometric authentication protocols
-  that does not rely on trusted third-parties. (Section
-  \ref{sub:the_new_protocol}). The server stores the encrypted data and does
-  homomorphic operations to compute the distance (HD) to decide the
+\item Quantum-resistant and provable-secure biometric authentication protocols
+  that do not rely on trusted third-parties. (Section
+  \ref{sub:the_new_protocol}). The server stores the encrypted data and performs
+  homomorphic operations to compute the distance (HD) allowing to decide on the
   authentication result. It does not need a third party to decrypt the encrypted
-  HD but sending it to the client for decryption. The client uses ZKP to
-  convince the server that the ciphertext was decrypted correctly.
-\item The protocols provide security under malicious client model, this is done
-  by new ZKP techniques that we design specifically for different ciphertext
-  packing methods . It is also applicable to do proof of plaintext knowledge for
-  the BGV Homomorphic Encryption scheme (\cite{brakerski2011fully}) that we
-  adapted. We have different ZKP variants are based on \cite{stern1993new} and
-  \cite{schnorr1989efficient}, which are the two main approaches for Zero
+  HD but, instead, sends it to the client for decryption. The client uses ZKP to
+  convince the server that the ciphertext was correctly decrypted.
+\item The protocols provide security under the malicious client model.This is achieved
+  by new ZKP techniques we designed specifically for different ciphertext
+  packing methods. It is also applicable to the proving of plaintext knowledge for
+  the BGV Homomorphic Encryption scheme (\cite{brakerski2011fully}) we
+  adapted. We apply different ZKP variants based on \cite{stern1993new} and
+  \cite{schnorr1989efficient}, the two main approaches for Zero
   Knowledge Proof.
-\item Due to the noise inherent inside lattice-based homomorphic encryption and
+\item Due to the noise inherent to lattice-based homomorphic encryption and
   its correlation with the evaluated ciphertext, we observe that there can be
-  information leakage about the original plaintexts used in the homomorphic
-  computations to a two-factor attacker that exposed the client's secret key. We
-  propose an approach to cover such leakage without significantly reducing the
+  information leakage affecting the original plaintexts used in the homomorphic
+  computations of a two-factor attacker having exposed the client's secret key. We
+  propose an approach to cover such leakages without significantly reducing the
   efficiency of the protocol: the approach is a new application of Renyi
-  Divergence (RD) based analysis to show the security of the protocol with a
-  small 'imperfect' one-time pad. (Section \ref{sec:Renyi}). This correlation of
+  Divergence (RD)-based analysis to uncover the security of the protocol with a
+  small 'imperfect' one-time pad. (Section \ref{sec:Renyi}). The correlation of
   Homomorphic Encryption noise with the original plaintext before homomorphic
-  evaluation was observed as a problem of "circuit privacy" in theoretical HE
+  evaluation, has been considered to be a problem of "circuit privacy" in theoretical HE
   literature (\cite{sander1999non}, \cite{ishai2007evaluating}), but the
   proposed solutions (\cite{homenc}, \cite{ostrovsky2014maliciously},
-  \cite{gentry2010hop}) involves 'smudging' (imperfect masking) or bootstrapping
-  techniques with an exponentially large noise (in the security parameter) that
-  reduces efficiency. In contrast, our Renyi-based method can use much smaller
-  imperfect masks leading to better efficiency. This is the first application of
-  Renyi divergence techniques to circuit privacy of HE to our knowledge.
+  \cite{gentry2010hop}) involve 'smudging' (imperfect masking) or bootstrapping
+  techniques. Such techniques produce an exponentially large noise (in the security parameter), which
+  reduces efficiency. By contrast, our Renyi-based method can manage with much smaller
+  imperfect masks, which leads to an increased efficiency of the process. To our knowledge, this is the first application of
+  Renyi divergence techniques to circuit privacy of HE.
 \item We propose a new Oblivious Transfer (OT) approach to obtain inputs to
-  Garbled Circuits. Unlike traditional OT approaches where the receiver obtains
-  keys as inputs to a garbled circuit, our approach is compatible with the
-  undernearth homomorphic cryptosystem and obtain nicely the encryptions of the
-  keys to the circuit. The approach is very effective with only one level of
-  homomorphic multiplication operation and can be applied to other application
-  scenarios where secure multy-parties computation is required.
+  Garbled Circuits. Unlike traditional OT approaches, where the receiver obtains
+  keys as inputs to a garbled circuit, our one is compatible with the
+  underlying homomorphic cryptosystem and smoothly integrates the encryptions of the
+  keys to the circuit. The approach proves effective with just one level of
+  homomorphic multiplication operations and can be deployed on various application
+  scenarios requiring secure multy-party computations.
 \end{itemize}
 
 \section{Organization of the thesis}
 The thesis is organized as follows:
 \begin{description}
-\item In Chapter \ref{chap:definitions}, we describe the general notations and
+\item In Chapter \ref{chap:definitions}, we describe the general notation and
   recall the basics of Lattice-based cryptography, Authentication, Zero
-  Knowledge Proof and Secure Multiparties Protocols that are used throughout the
+  Knowledge Proof and Secure Multi-party Protocols used throughout the
   thesis.
 \item In Chapter \ref{chap:firstProtocol}, we present our first variant of the
-  protocol that removes the role of trusted third parties in a privacy
+  protocol removing the role of trusted third parties in a privacy
   preserving authentication system.
 \item In Chapter \ref{chap:renyiDivergence}, we present the new technique to
   cover circuit privacy while still keeping the parameters of the homomorphic
-  cryptosystems being in practical thresholds.
+  cryptosystems within practical thresholds.
 \item In Chapter \ref{chap:thirdProtocol}, we construct the third variant of the
-  protocol to do both of the tasks computing and comparing the Hamming Distance
+  protocol for both computing and comparing the Hamming Distance
   homomorphically (The previous protocols only compute HD on ciphertexts).
 \item In Chapter \ref{chap:fourthProtocol}, we present the last variant of the
-  protocol, which removes the computation and communication overheads with the
-  extra cost during the initialization stage (one time only cost).
-\item In the last Chapter, we conclude the thesis and stat the open problems for
+  protocol, which removes the computation and communication overheads (and the
+  extra cost they imply) during the initialization stage (one-time only cost).
+\item In the last Chapter, we conclude the thesis and state the open problems for
   future research.
 \end{description}
 \label{sec:introOrganize}
