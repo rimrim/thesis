@@ -290,7 +290,8 @@ security reduction and allows for confidence in concluding that the problem is h
   that $A\vec{v} = \vec{0}$ and $\norminf{v} \leq \beta$.
   \label{def:SISProblem}
 \end{definition}
-Informally, SIS is just the name given to the $\gamma-SVP$ problem for particular \emph{q-ary} lattices. $\beta$ is the approximation parameter, it
+Informally, SIS is just the name given to the $\gamma-SVP$ problem for
+particular \emph{q-ary} lattices. $\beta$ is the approximation parameter, it
 tells how short the lattice vector should be. Some relations between SIS and
 $\gamma-SVP$ follow:
 \begin{itemize}
@@ -1456,14 +1457,15 @@ proposed:
   \end{description}
 \item[NTRUEEncrypt \cite{hoffstein1998ntru}] Both the public-key and the
   ciphertext could be shrunk to just a single ring element in $R_q$, which is as
-  small as we can ideally hope for. We here discuss some variants of this technique and their
-  properties. As one of the issues of the Elgamal analogue scheme
-  discussed above relates to the small secrets generated during the encryption
-  process, the natural question to ask is how changing from something completely random to something small can affect the security level of the encryption. It turns out
-  that this variant of the Ring-LWE with secrets sampled from error distribution
-  (SSRing-LWE) is as hard as the original Ring-LWE problem
-  \cite{lyubashevsky2008lattice}. It helps gaining efficiency without
-  compromising security.
+  small as we can ideally hope for. We here discuss some variants of this
+  technique and their properties. As one of the issues of the Elgamal analogue
+  scheme discussed above relates to the small secrets generated during the
+  encryption process, the natural question to ask is how changing from something
+  completely random to something small can affect the security level of the
+  encryption. It turns out that this variant of the Ring-LWE with secrets
+  sampled from error distribution (SSRing-LWE) is as hard as the original
+  Ring-LWE problem \cite{lyubashevsky2008lattice}. It helps gaining efficiency
+  without compromising security.
 
   \begin{lemma}[SSRing-LWE]
     \label{lem:SSRing-LWE}
@@ -1472,15 +1474,15 @@ proposed:
     \(m' + 1, n, \alpha, q\)
   \end{lemma}
 
-  The original NTRU scheme was first introduced in 1996, working with the ring
-  \(R^{-} = \mathbb{Z}[x]/(x^{n} -1 \) ) instead of modulo $x^n + 1$. We briefly describe the scheme
-  as follows.
-  \begin{description}
-  \item[Setup] Ring parameters: a prime \(n\), \(q \approx n\) a power of 2, a
-    small \(p\), and the ring \(R^{-}\mathbb{Z}[x]/(x^{n} -1 )\)
-  \item[KeyGen] Secret key \(sk f, g\randomsample R^{-} \) sampled independently
-    from a distribution \(\chi_{\sigma}\) with \(f\)
-  \end{description}
+  % The original NTRU scheme was first introduced in 1996, working with the ring
+  % \(R^{-} = \mathbb{Z}[x]/(x^{n} -1 \) ) instead of modulo $x^n + 1$. We briefly describe the scheme
+  % as follows.
+  % \begin{description}
+  % \item[Setup] Ring parameters: a prime \(n\), \(q \approx n\) a power of 2, a
+  %   small \(p\), and the ring \(R^{-}\mathbb{Z}[x]/(x^{n} -1 )\)
+  % \item[KeyGen] Secret key \(sk f, g\randomsample R^{-} \) sampled independently
+  %   from a distribution \(\chi_{\sigma}\) with \(f\)
+  % \end{description}
 
   The main issue with the original NTRU was its security: it relied on a
   problem known as 'NTRU key-cracking' (which was not well understood at the time) and on
@@ -1508,18 +1510,60 @@ proposed:
 \label{sec:defHomo}
 
 \subsection{Homomorphic Encryption}
-Homomorphic Encryption (HE) is a family of cryptosystems that allows operations
-on encrypted data. The idea was introduced since late 1970s
-\cite{rivest1978data} and has been actively researched lately
+Homomorphic Encryption (FHE) has been considered the ``Swiss Army Knife''
+of cryptography as it provides a powerful tool (operation on encrypted data) to
+many cryptographic application: Outsourcing storage and computation, Private
+Information Retrieval, Multiparties Computation, etc . The idea was introduced
+since late 1970s \cite{rivest1978data} and has been actively researched lately
 (\cite{smart2014fully}, \cite{van2010fully} , \cite{stehle2010faster}
 \cite{gentry2013homomorphic}, etc) since the break through work of Gentry
-\cite{homenc}.  Although the idea of Fully Homomorphic Encryption (arbitrary
+\cite{homenc}. This section introduce the concept and discuss some properties
+and connections with secure computation protocols.
+
+\begin{definition}
+  [Syntax]A homomorphic public key encryption scheme has four procedures:
+  \(\mathbb{E} = (KeyGen, Encrypt, Decrypt, Evalutate)\)
+  \begin{itemize}
+  \item \((sk,pk) \gets KeyGen(1^{\lambda},1^{\tau})\) takes the security
+    parameter \(\lambda\) and functionality parameter \(\tau\) and outputs a
+    keypair.
+  \item \(c \gets Encrypt(pk, b)\) takes a plaintext bit and the public key,
+    outputs a ciphertext.
+  \item \(b \gets Decrypt(sk, c)\) takes a ciphertext and the secret key,
+    outputs a plaintext bit.
+  \item \(\mathbf{c}' \gets Evaluate(pk, \pi, \mathbf{c})\) takes a circuit
+    \(\pi\), the public key, and a vector of ciphertext \(\mathbf{c}\), outputs
+    another vector of ciphertext \(\mathbf{c}'\)
+  \end{itemize}
+\end{definition}
+
+The syntax in the definition can be extended naturally to vectors of plaintexts
+and ciphertexts. We refer to the ciphertexts output from the \(Encrypt\)
+operation as ``fresh ciphertext'' and outputs from \(Evaluate\) as ``evaluated
+ciphertext''. There are three circuit families related to \textit{homomorphic capacity } of \(\mathbb{E}\):
+\begin{description}
+\item[Fully Homomorphic Encryption] We say that \(\mathbb{E}\) is fully
+  homomorphic if it is correct for all boolean circuit. In this case we can
+  ignore the parameter \(\tau\) (\(\tau = 1\)).
+\item[Leveled/Somewaht Homomorphic Encryption] \(\mathbb{E}\) is considered
+  somewhat homomorphic if it is correct for families of circuit of depth up to
+  \(\tau\).
+\item[Additive Homomorphic Encryption] We say that \(\mathbb{E}\) is additively
+  homomorphic if it is correct for families of circuit made up of only XOR
+  gates. Here we also ignore the parameter \(\tau\).
+\end{description}
+
+
+\subsection{Somewhat Homomorphic Encryption}
+Although the idea of Fully Homomorphic Encryption (arbitrary
 number of operations) is feasible, its performance has not been considered
-practical enough. We only present a Somewhat Homomorphic Encryption system, the
-BV system by \cite{brakerski2011fully}, it allows additions and some levels of
-multiplications on the ciphertexts, and it serves well our purpose. The security
-of this cryptosystem is based on the hardness of the Ring-Learning With Error
-(RLWE) problem \cite{lyubashevsky2010ideal}, we informally describe the concept.
+practical enough. In this project, we focus our work on Somewhat Homomorphic
+Encryption (SHE) systems: the BV system by \cite{brakerski2011fully} and the BGV
+system \cite{brakerski2014leveled}, they allows additions and some levels of
+multiplications on the ciphertexts, and they serves well our purpose in the
+privacy preserving authentication context. The security of these cryptosystems
+is based on the hardness of the Ring-Learning With Error (RLWE) problem
+\cite{lyubashevsky2010ideal}. This section discuss briefly such systems.
 \begin{description}
 \item[The Ring Learning With Errors Problem.]
   \begin{definition}
@@ -1628,13 +1672,81 @@ multiplications on ciphertexts.
 \end{theorem}
 \section{Zero Knowledge Proof Systems}
 \label{sec:defZKP}
-\subsection{Zero Knowledge Proofs and ISIS problem}
-\label{sec:zkpisis}
+\subsection{Definitions}
+\label{sec:zkpdefinitions}
 Zero Knowledge Proofs (ZKP), first introduced by \cite{goldwasser1989knowledge},
 is a strong cryptographic tool , a beautiful notion that goes beyond the limits
 of traditional proofs: In a ZKP system, a $Prover$ P convinces a $Verifier$ P
 that some statement is true without leaking any thing but the validity of the
-assertion. There are several types of ZKP, which are the building blocks in many
+assertion. This section review some standard definitions of ZKP and a specific
+system (Stern-ZKP) that serve as the basic tool in the later constructions of
+the thesis.
+
+Traditionally, proofs are are static objects that can be expressed in written
+form so that they can be verified later. However, after one verifies the
+validity of a statement, he learns all the information about the proof, this is
+sometimes undesirable. Interactive proof works differently. It is an interative
+protocol between two parties: a prover and a verifier. The protocol involves
+messages exchange between them and at the end, the verifier outputs a bit
+``Accept'' if he is convinced that the statement is true, otherwise he output
+``Reject''. We focus on a specific category of ZKP: \(\sum\)-protocol. There are
+generally 3 messages exchanged in one round of such protocol. The prover first
+sends a ``commitment'' to the verifier, who will send back a random
+``challenge''. The prover then computes and sends a ``response'' so that the
+verifier can check the validity of the statement using a function of the
+messages received. In each round, a dishonest prover may guess the verifier's
+challenge to prepare the proper response with some constant
+probability. However, the protocol can be repeated many rounds to reduce the
+probability of guessing correctly all the challenges to negligibly small.  More
+formally, an interactive proof system for a language \(L \subset \{0,1\}^{*}\)
+is defined as follows.
+
+\begin{definition}
+  [Interactive Proof System] An interactive proof system for a language
+  \(L \subset \{0,1\}^{*}\) with soundness error \(s \in [0,1]\) is a two-party
+  protocol \(\Angle{P,V}\), between a PPT \(verifier \) V and a computationally
+  unbound \(prover \) P, which satisfies the following properties
+  \begin{itemize}
+  \item Completeness: \(\forall x \in L\): \(Pr[P(x) \leftrightarrow V(x) = 1] = 1\)
+  \item Soundness: \(\forall x \notin L\): \(Pr[P(x) \leftrightarrow V(x) = 1] \leq s\)
+  \end{itemize}
+\end{definition}
+Where \(P(x) \leftrightarrow V(X)\) denotes the output of V after interacting
+with P on input x.
+
+An interactive proof is said to be \(zero-knowledge \) if after reading the
+proof, the verifier cannot learn anything new from the messages except for the
+fact that \(x \in L\). This intuition is formulated by the concept of
+\(simulator\). Give \(x \in L\), if there exists an efficient \(simulator\) that
+can produce the transcript (the view) of the communication between the prover
+and the verifier, it means that the interaction does not provide additional
+knowledge for the verifier. There are different definition of \(zero-knowledge\)
+depending on the security model at hand. For instance, ZK can be defined with
+respect to \textit{honest verifier model} or \textit{malicious verifier model},
+the ZK property can be either \textit{perfect, statistical or computational}. In
+this thesis, we are interested in \textit{statistical } ZK proofs.
+
+\begin{definition}
+  [Statistical ZKP] An interactive proof system \(\Angle{P,V}\) for a language
+  \(L \subset \{0,1\}^{*}\) is called \textit{statistical zero knowledge } if
+  for any PPT verifier \(\hat{V}\), there exists a PPT simulator \(S\), such
+  that \(\forall x \in L\), the following conditions hold
+  \begin{itemize}
+  \item \(Pr[S^{\hat{V}}(x) = \bot] \leq 1/2\)
+  \item \(View_{\hat{V}}[P(x) \leftrightarrow \hat{V}(x)] \approx S^{\hat{V}}(x)\)
+  \end{itemize}
+\end{definition}
+Where \(View_{V}[P(x) \leftrightarrow V(x)]\) denotes the view of \(V\) on
+\(x\), or all the messages sent from \(P\) to \(V\) and \(S^{V(x)}\) denotes the
+output distribution of \(S\) having black box access to \(V\) on input \(x\),
+conditioned on \(S(x) \neq \bot\).  We can also say that the simulator \(S\) is
+required to output a transcript that is statistically close to the real
+interaction with probability at least 1/2.
+
+\subsection{ZKPoPK and ISIS problem}
+\label{sec:zkpIsisi}
+
+There are several types of ZKP, which are the building blocks in many
 cryptographic protocols (anonymous credential systems, identification schemes,
 group signatures, etc). In this work, we focus on ZKP of knowledge (ZKPoK)
 (\cite{bellare1992defining}, \cite{goldwasser1989knowledge}), where P needs to

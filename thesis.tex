@@ -113,6 +113,24 @@
 \usepackage{wasysym}
 \usepackage{amssymb}
 \usepackage{hyperref}
+\usepackage[
+ n,
+ advantage,
+ operators,
+ sets,
+ adversary,
+ landau,
+ probability,
+ notions,
+ logic,
+ ff,
+ mm,
+ primitives,
+ events,
+ complexity ,
+ asymptotics ,
+ keys
+]{cryptocode}
 
 
 \newtheorem{definition}{Definition}
@@ -145,7 +163,7 @@
     \Rightarrowfill\crcr\noalign{\kern.4pt\nointerlineskip}
     $\hfil\displaystyle{#1}\hfil$\crcr}}}
 \makeatother
-\newcommand{\enc}[1]{\left\llbracket#1\right\rrbracket}
+\renewcommand{\enc}[1]{\left\llbracket#1\right\rrbracket}
 
 \newcommand{\mult}{\cdot}
 \newcommand{\Amult}{\otimes}
@@ -154,7 +172,7 @@
 \newcommand{\wn}{\omega( \sqrt{\log n})}
 \newcommand{\wnd}{\omega( \sqrt{\log N})}
 \newcommand{\On}{\Omega(\sqrt{n})}
-\newcommand{\norm}[1]{\Vert #1 \Vert}
+% \newcommand{\norm}[1]{\Vert #1 \Vert}
 \newcommand{\norminf}[1]{\Vert #1 \Vert_{\infty}}
 \newcommand{\normb}[1]{\Vert #1 \Vert_{2,\infty}}
 \newcommand{\inner}[1]{\langle #1  \rangle}
@@ -162,7 +180,7 @@
 \newcommand{\rot}[1]{\text{rot}(#1)}
 \newcommand{\Rot}[1]{\text{Rot}(#1)}
 \newcommand{\ps}[2]{\langle #1 , #2 \rangle}
-\newcommand{\dist}{\text{dist}}
+% \newcommand{\dist}{\text{dist}}
 \newcommand{\mZ}{\mathbb{Z}}
 \newcommand{\mT}{\mathbb{T}}
 \newcommand{\mQ}{\mathbb{Q}}
@@ -265,13 +283,13 @@
 % nabt = No abort at step #1 event
 \newcommand{\nabt}[1]{\ensuremath{\neg Ab(#1)}}
 % supp = Support of a distribution/function
-\newcommand{\supp}[1]{\ensuremath{\mathrm{Supp}(#1)}}
+% \newcommand{\supp}[1]{\ensuremath{\mathrm{Supp}(#1)}}
 % sdist = Statistical distance between a pair of distributions
 \newcommand{\sdist}[2]{\ensuremath{\Delta\left(#1,#2\right)}}
 % flor = Floor function (largest integer not exceeding argument)
 \newcommand{\flor}[1]{\ensuremath{\lfloor #1 \rfloor}}
 % ceil = Ceiling function (smallest integer not less than argument)
-\newcommand{\ceil}[1]{\ensuremath{\left\lceil #1 \right\rceil}}
+% \newcommand{\ceil}[1]{\ensuremath{\left\lceil #1 \right\rceil}}
 % vc = Vector (bold math)
 \newcommand{\vc}[1]{\ensuremath{\mathbf{#1}}}
 % veca = Alternative vector (when bold is already used)
@@ -299,7 +317,7 @@
 % lcm = Lowest Common Multiple of two integers
 \newcommand{\lcm}{\ensuremath{\mathrm{lcm}}}
 % xor = XOR symbol
-\newcommand{\xor}{\ensuremath{\oplus}}
+% \newcommand{\xor}{\ensuremath{\oplus}}
 % rnd = Round function (Closest integer to argument)
 \newcommand{\rnd}[1]{\ensuremath{\left\lceil #1 \right\rfloor}}
 
