@@ -1038,7 +1038,7 @@ bserv  Again, we observe that if a larger noise is used, a better level of secur
   cryptosystem. Unlike the symmetric key scenario, where a
   distinguisher is built using an assumed attacker and proving the security by
   contradiction, in this scenario, the closeness of probability
-  distribution of the ciphertexts from the real attack and the reduction are measured. The
+  distribution of the ciphertexts from the real attack and the ciphertexts from the reduction are measured. The
   idea is that, if the obtained distance is small enough, the attack algorithm will not be able to
   distinguish the ciphertexts. In cryptography, statistical distance is usually
   used to measure such distances.
@@ -1192,8 +1192,8 @@ to improve all of these aspects below.
 \begin{description}
 \item[Reducing Ciphertext Expansion.] The first attempt to improve Regev's public key scheme by squeezing more messages into a ciphertext was proposed by
   \cite{peikert2008framework} .  It has been observed that the
-  $\vec{a^T} = \vec{r^T}. A \mod q$ part of the ciphertext is independent of the
-  message $m$ and takes lots of space. Instead of using a new random nonce for
+  $\vec{a^T} = \vec{r^T}. A \mod q$ part of the ciphertext is independent of the length of
+  message $m$ and takes lots of space. Instead of using a new random one for
   each message $m$, the one already used can be re-instantiated with new secret keys
   $\vec{s_i}$ to encrypt several integer messages, by encoding it in an integer
   vector. The modified scheme is presented as follows, with $l$ being the number
@@ -1511,14 +1511,14 @@ proposed:
 
 \subsection{Homomorphic Encryption}
 Homomorphic Encryption (FHE) has been considered the ``Swiss Army Knife''
-of cryptography as it provides a powerful tool (operation on encrypted data) to
-many cryptographic application: Outsourcing storage and computation, Private
+of cryptography, as it provides a powerful tool (operation on encrypted data) to
+many cryptographic applications: Outsourcing storage and computation, Private
 Information Retrieval, Multiparties Computation, etc . The idea was introduced
-since late 1970s \cite{rivest1978data} and has been actively researched lately
+in the late 1970s \cite{rivest1978data} and has been actively researched lately
 (\cite{smart2014fully}, \cite{van2010fully} , \cite{stehle2010faster}
-\cite{gentry2013homomorphic}, etc) since the break through work of Gentry
-\cite{homenc}. This section introduce the concept and discuss some properties
-and connections with secure computation protocols.
+\cite{gentry2013homomorphic}, etc), since the breakthrough work of Gentry
+\cite{homenc}. This section introduces the concept and discusses some properties of it
+and its connections with secure computation protocols.
 
 \begin{definition}
   [Syntax]A homomorphic public key encryption scheme has four procedures:
@@ -1538,18 +1538,18 @@ and connections with secure computation protocols.
 \end{definition}
 
 The syntax in the definition can be extended naturally to vectors of plaintexts
-and ciphertexts. We refer to the ciphertexts output from the \(Encrypt\)
-operation as ``fresh ciphertext'' and outputs from \(Evaluate\) as ``evaluated
-ciphertext''. There are three circuit families related to \textit{homomorphic capacity } of \(\mathbb{E}\):
+and ciphertexts. We refer to the ciphertext output from the \(Encrypt\)
+operation as ``fresh ciphertext'' and to the outputs from \(Evaluate\) as ``evaluated
+ciphertext''. There are three circuit families related to the \textit{homomorphic capacity } of \(\mathbb{E}\):
 \begin{description}
 \item[Fully Homomorphic Encryption] We say that \(\mathbb{E}\) is fully
-  homomorphic if it is correct for all boolean circuit. In this case we can
+  homomorphic if it is correct for all boolean circuits. If this is the case, we can
   ignore the parameter \(\tau\) (\(\tau = 1\)).
 \item[Leveled/Somewaht Homomorphic Encryption] \(\mathbb{E}\) is considered
   somewhat homomorphic if it is correct for families of circuit of depth up to
   \(\tau\).
 \item[Additive Homomorphic Encryption] We say that \(\mathbb{E}\) is additively
-  homomorphic if it is correct for families of circuit made up of only XOR
+  homomorphic if it is correct for families of circuits made up of only XOR
   gates. Here we also ignore the parameter \(\tau\).
 \end{description}
 
@@ -1557,67 +1557,66 @@ ciphertext''. There are three circuit families related to \textit{homomorphic ca
 \subsection{Somewhat Homomorphic Encryption}
 Although the idea of Fully Homomorphic Encryption (arbitrary
 number of operations) is feasible, its performance has not been considered
-practical enough. In this project, we focus our work on Somewhat Homomorphic
+practical enough. In this project, we focus on Somewhat Homomorphic
 Encryption (SHE) systems: the BV system by \cite{brakerski2011fully} and the BGV
-system \cite{brakerski2014leveled}, they allows additions and some levels of
-multiplications on the ciphertexts, and they serves well our purpose in the
-privacy preserving authentication context. The security of these cryptosystems
+system \cite{brakerski2014leveled}, which allow for additions and some levels of
+multiplications on the ciphertexts. They serve our purpose in
+privacy preserving authentication contexts. The security of these cryptosystems
 is based on the hardness of the Ring-Learning With Error (RLWE) problem
-\cite{lyubashevsky2010ideal}. This section discuss briefly such systems.
+\cite{lyubashevsky2010ideal}. This section briefly discusses such systems.
 \begin{description}
 \item[The Ring Learning With Errors Problem.]
   \begin{definition}
-    [RWLE] Given parameters $q,n$ define the ring
-    \(R_{q} = \frac{\mathbb{Z}_{q}[x]}{x^{n} + 1} \) and a distribution
-    \(\chi_{\alpha q}\) defines a small noise distribution, the
-    $RWLE_{q,n,\chi}$ problem asks to distinguish two distributions. In the
-    first distribution, one samples uniformly $(\mathbf{a_i},\mathbf{b_i})$ from
-    $R_q^2$.  In the second distribution, one first samples
-    $\mathbf{s} \randomsample R_q$, $\mathbf{e_i} \randomsample \chi$ and
-    generates $(\mathbf{a_i},\mathbf{b_i})$ by sampling
-    $\mathbf{a_i} \randomsample R_q$ and compute
+    [RWLE] Given parameters $q,n$ defining the ring
+    \(R_{q} = \frac{\mathbb{Z}_{q}[x]}{x^{n} + 1} \) and 
+    \(\chi_{\alpha q}\) defining a small noise distribution, the
+    $RWLE_{q,n,\chi}$ problem aims at distinguishing two distributions. In the
+    first one, $(\mathbf{a_i},\mathbf{b_i})$ are uniformly sampled from
+    $R_q^2$.  In the second distribution,
+    $\mathbf{s} \randomsample R_q$, $\mathbf{e_i} \randomsample \chi$ are sampled first, then
+    generate $(\mathbf{a_i},\mathbf{b_i})$ by sampling
+    $\mathbf{a_i} \randomsample R_q$, and finally compute
     $\mathbf{b_i} = \mathbf{a_i}.\mathbf{s} + \mathbf{e_i}$.
   \end{definition}
 
 \item [SHE Scheme construction]
   \label{sec:BVScheme}
-  The BV cryptosystem is as follows.
+  The BV cryptosystem works as follows.
   \begin{description}
   \item[Setup.] Initiate $(n,m,q,t, \chi)$ to define the ciphertext space $R_q$,
     the plaintext space $R_t = \frac{\mathbb{Z}_{t}[x]}{x^{n} + 1}$, and the
     error distribution, note that \(t << q\).
-  \item[KeyGen.] The secret key $sk$ can be chosen by select a small element
-    $\mathbf{s} \in R_{q}$, one can do $\mathbf{s} \randomsample \chi^{n}$. The
-    public key $pk$ is a pair of ring element $(\mathbf{p_0},\mathbf{p_1})$
+  \item[KeyGen.] The secret key $sk$ can be chosen by selecting a small element
+    $\mathbf{s} \in R_{q}$, $\mathbf{s} \randomsample \chi^{n}$ is performed. The
+    public key $pk$ is a pair of ring elements $(\mathbf{p_0},\mathbf{p_1})$,
     where $\mathbf{p_1} \randomsample R_q$ and
     $\mathbf{p_0} = -(\mathbf{p_1}\mathbf{s} + t\mathbf{e})$ with
     $\mathbf{e} \randomsample \chi^{n}$.
   \item[Encryption.] Given a plaintext $\mathbf{m} \in R_t$ and a public key
-    $pk=(\mathbf{p_0},\mathbf{p_1})$, the encryption first does
-    $\mathbf{u},\mathbf{f},\mathbf{g} \randomsample \chi$ and compute a fresh
+    $pk=(\mathbf{p_0},\mathbf{p_1})$, the encryption first calculates
+    $\mathbf{u},\mathbf{f},\mathbf{g} \randomsample \chi$, then computes a fresh
     ciphertext by
     \[
       Enc_{pk}(\mathbf{m}) = (\mathbf{c_0},\mathbf{c_1}) =
       (\mathbf{p_0}\mathbf{u} + t\mathbf{g} + \mathbf{m},
       \mathbf{p_1}\mathbf{u} + t\mathbf{f})
     \]
-    Conventionally, we use $\enc{P}$ to denote the encryption of a plaintext $P$
-    under BV scheme with the public key and we do not take into account the
-    randomness. When we want to specify also the noise used in the encryption,
-    we write $\enc{(P,e)}$, where $e$ is the noise.
+    By convention, $\enc{P}$ denotes the encryption of a plaintext $P$
+    under the BV scheme with the public key, and randomness is not taken into account. When the noise used in the encryption has to be specified,
+    $\enc{(P,e)}$ is used to represent it, $e$ being the noise.
   \item[Decryption.] Although the above encryption generates ciphertexts of 2
     elements only in $R_q$, the homomorphic operations (discussed next) will
-    make the ciphertext longer. We can write the decryption for ciphertext
-    $c=(\mathbf{c_0},\mathbf{c_1},\dots,\mathbf{c_L})$ with secret key
+    make the ciphertext longer. The decryption for ciphertext appears as
+    $c=(\mathbf{c_0},\mathbf{c_1},\dots,\mathbf{c_L})$, with secret key
     $sk = (1, \mathbf{s}, \mathbf{s^2},\dots, \mathbf{s^L})$ as
     $ Dec(\mathbf{c},sk) = \left[\left[ \langle \mathbf{c}, \mathbf{sk} \rangle
       \right]_Q \right]_t $.
-  \item[Homomorphic Operations.] Given 2 ciphertext
+  \item[Homomorphic Operations.] Given 2 ciphertexts
     $c = (\mathbf{c_0},\mathbf{c_1},\dots,\mathbf{c_L})$ and
     $c' = (\mathbf{c'_0},\mathbf{c'_1},\dots,\mathbf{c'_{K}})$, before any
-    operations, the ciphertexts are padded with zeros first if necessary (to
-    make $K = L$, assume that $K < L$ initially).  The homomorphic addition
-    $add(c,c')$ is computed by component wise addition
+    operations are carried out, the ciphertexts are padded with zeros first if necessary (to
+    make $K = L$, assuming that, initially, $K < L$).  The homomorphic addition
+    $add(c,c')$ is computed by the component wise addition
     $add(c,c') = (\mathbf{c_0} +\mathbf{c'_0}, \dots,
     \mathbf{c_L}+\mathbf{c'_L})$. The homomorphic multiplication $mult(c,c')$ is
     computed by
@@ -1632,42 +1631,39 @@ is based on the hardness of the Ring-Learning With Error (RLWE) problem
 \end{description}
 \subsection{Ciphertext packing}
 \label{sub:ciphertext_packing}
-Given a bit string plaintext $m \in \{0,1\}^*$, there are several ways that one
-can encode it to a polynomial, or a ring element \textbf{m} $\in$ R$_{t}$ before
-encryption. A recent popular approach for BV cryptosystem is called CRT packing
-method, which is based on Chinese Remainder Theorem \cite{smart2014fully}. The
+Given a bit string plaintext $m \in \{0,1\}^*$, there are several ways to encode it as a polynomial, or a ring element \textbf{m} $\in$ R$_{t}$ before
+encryption. A recent popular approach for BV cryptosystems is called CRT packing
+method, and based on Chinese Remainder Theorem \cite{smart2014fully}. The
 method allows Single Instruction, Multiple Data (SIMD) operations on encrypted
-data. However, we do not use this packing technique as there is not yet known
-efficient method to compute HD based on it. We instead apply the method from
+data. However, we do not use this packing technique as there is not yet a known
+efficient method to compute HD based on it. We instead apply the method of
 \cite{yasuda2014practical}, which is an extension of \cite{naehrig2011can},
-the technique allow HD computation in just one level of multiplication. The
+the technique allowing HD computation in just one level of multiplication. The
 definition follows.
 \begin{definition}
   For $\mathbf{T} = (t_0, \dots, t_{n-1})$ and
-  $\mathbf{Q} = (q_0, \dots, q_{n-1})$, we define two types of polynomials in
+  $\mathbf{Q} = (q_0, \dots, q_{n-1})$, two types of polynomials are defined in
   the ring $R_Q$ of the SHE scheme:
   $ pm_1(\mathbf{T}) = \sum_{i=0}^{n-1}t_ix^i \ \textnormal{and} \
   pm_2(\mathbf{Q}) = - \sum_{j=0}^{n-1}q_jx^{n-j} $.  The two types of packed
   ciphertexts are defined as
   $ \enc{pm_{1}(\mathbf{T})} \textnormal{ and } \enc{pm_2(\mathbf{Q})} $
 \end{definition}
-In the ring $R_Q$ we have $x^n = -1$, then when we do multiplication between
-$pm_1(\mathbf{T})$ and $pm_2(\mathbf{Q})$, the constant term of the result would
-be the inner product $\langle \mathbf{T}, \mathbf{Q}\rangle$. We can also do
-homomorphic multiplication on the ciphertexts and get the ciphertext of the
-inner product similarly. Furthermore, we can use this result to compute HD as
-follows, this operation costs one level of multiplication with 3 additions and 3
-multiplications on ciphertexts.
+If $x^n = -1$ in the ring $R_Q$, then, when $pm_1(\mathbf{T})$ is multiplied by
+$pm_2(\mathbf{Q})$, the constant term of the result equals the inner product $\langle \mathbf{T}, \mathbf{Q}\rangle$. Homomorphic multiplication of the ciphertexts produces the ciphertext of the
+inner product similarly. Furthermore, these result can be used to compute HD as
+follows, this operation costing one level of multiplication with 3 additions and 3
+multiplications on ciphertexts:
 
 \begin{theorem}[\cite{yasuda2014practical}]
   \label{theo:HDComputation}
   Let $C_1 = - \sum_{i=0}^{n-1}x^{n-i}$ and
-  $C_2 = 2 - C_1 = \sum_{i=0}^{n-1}x^i$. Let $Enc(HD)$ be a ciphertext given by
+  $C_2 = 2 - C_1 = \sum_{i=0}^{n-1}x^i$. Let $Enc(HD)$ be a ciphertext provided by
   \[
     \enc{pm_{1}(\mathbf{T})}*\enc{ C_1 } + \enc{pm_{2}(\mathbf{Q})}*
     \enc{ C_2 } - 2*\enc{pm_{1}(\mathbf{T})}*\enc{pm_{2}(\mathbf{Q})}
   \]
-  Then, the constant term of $Dec(Enc(HD))$ gives the Hamming Distance of
+  Then, the constant term of $Dec(Enc(HD))$ discloses the Hamming Distance of
   $\mathbf{T}$ and $\mathbf{Q}$.
 \end{theorem}
 \section{Zero Knowledge Proof Systems}
@@ -1675,31 +1671,25 @@ multiplications on ciphertexts.
 \subsection{Definitions}
 \label{sec:zkpdefinitions}
 Zero Knowledge Proofs (ZKP), first introduced by \cite{goldwasser1989knowledge},
-is a strong cryptographic tool , a beautiful notion that goes beyond the limits
+is a strong cryptographic tool, a beautiful concept that goes beyond the limits
 of traditional proofs: In a ZKP system, a $Prover$ P convinces a $Verifier$ P
-that some statement is true without leaking any thing but the validity of the
+that some statement is true without leaking any information other than the validity of the
 assertion. This section review some standard definitions of ZKP and a specific
-system (Stern-ZKP) that serve as the basic tool in the later constructions of
-the thesis.
+system (Stern-ZKP) that serves as the basic tool in the later constructs of
+this thesis.
 
-Traditionally, proofs are are static objects that can be expressed in written
-form so that they can be verified later. However, after one verifies the
-validity of a statement, he learns all the information about the proof, this is
-sometimes undesirable. Interactive proof works differently. It is an interative
-protocol between two parties: a prover and a verifier. The protocol involves
-messages exchange between them and at the end, the verifier outputs a bit
-``Accept'' if he is convinced that the statement is true, otherwise he output
-``Reject''. We focus on a specific category of ZKP: \(\sum\)-protocol. There are
-generally 3 messages exchanged in one round of such protocol. The prover first
+Traditionally, proofs are static objects that can be expressed in written
+form so that they can be verified. However, in non-secure environments, when the
+validity of a proof statement is verified, information handled by the protocol having produced the proof can sometimes be gained by the verification agent. To prevent leakages of this kind, interactive proof systems work differently. The protocol involves message exchanges between a prover and a verifier and a final "Accept" bit output issued by the verifier, if convinced that the proof statement is true (otherwise he outputs ``Reject''). We here focus on a specific category of ZKP: \(\sum\)-protocol, where generally 3 messages are exchanged in every round of the protocol. The prover first
 sends a ``commitment'' to the verifier, who will send back a random
-``challenge''. The prover then computes and sends a ``response'' so that the
-verifier can check the validity of the statement using a function of the
-messages received. In each round, a dishonest prover may guess the verifier's
-challenge to prepare the proper response with some constant
-probability. However, the protocol can be repeated many rounds to reduce the
-probability of guessing correctly all the challenges to negligibly small.  More
+``challenge''. The prover then computes and sends a ``response'', so that the
+verifier can check the validity of the statement using a function of the received
+message. In each round, a dishonest prover may guess the verifier's
+challenge to prepare the proper response with some constant success
+probability. Notwithstanding, the protocol can be repeated many rounds to reduce the
+probability of guessing correctly all the challenges to a negligibly small value.  More
 formally, an interactive proof system for a language \(L \subset \{0,1\}^{*}\)
-is defined as follows.
+is defined as follows:
 
 \begin{definition}
   [Interactive Proof System] An interactive proof system for a language
