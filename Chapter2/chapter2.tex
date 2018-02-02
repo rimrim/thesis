@@ -1193,7 +1193,7 @@ to improve all of these aspects below.
 \item[Reducing Ciphertext Expansion.] The first attempt to improve Regev's public key scheme by squeezing more messages into a ciphertext was proposed by
   \cite{peikert2008framework} .  It has been observed that the
   $\vec{a^T} = \vec{r^T}. A \mod q$ part of the ciphertext is independent of the length of
-  message $m$ and takes lots of space. Instead of using a new random one for
+  message $m$ and takes lots of space. Instead of using a new random nonce for
   each message $m$, the one already used can be re-instantiated with new secret keys
   $\vec{s_i}$ to encrypt several integer messages, by encoding it in an integer
   vector. The modified scheme is presented as follows, with $l$ being the number
@@ -1694,7 +1694,7 @@ is defined as follows:
 \begin{definition}
   [Interactive Proof System] An interactive proof system for a language
   \(L \subset \{0,1\}^{*}\) with soundness error \(s \in [0,1]\) is a two-party
-  protocol \(\Angle{P,V}\), between a PPT \(verifier \) V and a computationally
+  protocol \(\Angle{P,V}\), involving a PPT \(verifier \) V and a computationally
   unbound \(prover \) P, which satisfies the following properties
   \begin{itemize}
   \item Completeness: \(\forall x \in L\): \(Pr[P(x) \leftrightarrow V(x) = 1] = 1\)
@@ -1707,20 +1707,20 @@ with P on input x.
 An interactive proof is said to be \(zero-knowledge \) if after reading the
 proof, the verifier cannot learn anything new from the messages except for the
 fact that \(x \in L\). This intuition is formulated by the concept of
-\(simulator\). Give \(x \in L\), if there exists an efficient \(simulator\) that
+\(simulator\). Given \(x \in L\), if there exists an efficient \(simulator\) that
 can produce the transcript (the view) of the communication between the prover
-and the verifier, it means that the interaction does not provide additional
-knowledge for the verifier. There are different definition of \(zero-knowledge\)
+and the verifier, then it can be certified that the interaction does not provide any additional
+knowledge for the verifier. There are different definitions of \(zero-knowledge\)
 depending on the security model at hand. For instance, ZK can be defined with
-respect to \textit{honest verifier model} or \textit{malicious verifier model},
+respect to an \textit{honest verifier model} or to an \textit{malicious verifier model},
 the ZK property can be either \textit{perfect, statistical or computational}. In
 this thesis, we are interested in \textit{statistical } ZK proofs.
 
 \begin{definition}
   [Statistical ZKP] An interactive proof system \(\Angle{P,V}\) for a language
-  \(L \subset \{0,1\}^{*}\) is called \textit{statistical zero knowledge } if
+  \(L \subset \{0,1\}^{*}\) is considered to be \textit{statistical zero knowledge } if
   for any PPT verifier \(\hat{V}\), there exists a PPT simulator \(S\), such
-  that \(\forall x \in L\), the following conditions hold
+  that \(\forall x \in L\), and the following conditions hold
   \begin{itemize}
   \item \(Pr[S^{\hat{V}}(x) = \bot] \leq 1/2\)
   \item \(View_{\hat{V}}[P(x) \leftrightarrow \hat{V}(x)] \approx S^{\hat{V}}(x)\)
@@ -1730,8 +1730,8 @@ Where \(View_{V}[P(x) \leftrightarrow V(x)]\) denotes the view of \(V\) on
 \(x\), or all the messages sent from \(P\) to \(V\) and \(S^{V(x)}\) denotes the
 output distribution of \(S\) having black box access to \(V\) on input \(x\),
 conditioned on \(S(x) \neq \bot\).  We can also say that the simulator \(S\) is
-required to output a transcript that is statistically close to the real
-interaction with probability at least 1/2.
+required to output a transcript that is statistically blind to the real
+interaction with probability of at least 1/2.
 
 \subsection{ZKPoPK and ISIS problem}
 \label{sec:zkpIsisi}
@@ -1740,12 +1740,12 @@ There are several types of ZKP, which are the building blocks in many
 cryptographic protocols (anonymous credential systems, identification schemes,
 group signatures, etc). In this work, we focus on ZKP of knowledge (ZKPoK)
 (\cite{bellare1992defining}, \cite{goldwasser1989knowledge}), where P needs to
-also convince V that he knows a "witness" for the given statement, we then apply
-such proof to enforce the user to follow the authentication protocol transcript
+also convince V that he knows a "witness" for the given statement. We then apply
+this proof to constrain the user to follow the authentication protocol transcript,
 and therefore claim that the protocol is secure against malicious clients.
 ZKPoK has been actively studied in the last 30 years (\cite{feige1988zero},
 \cite{rackoff1991non}, \cite{micciancio2003statistical},
-\cite{ling2013improved}), we focus our work on techniques to do ZKPoK for an
+\cite{ling2013improved}), we focus our work on techniques to implement ZKPoK for an
 important hard-on-average problem in lattice-based cryptography: the
 Inhomogeneous Small Integer Solution (ISIS) problem. The proof relation is
 \[ R_{ISIS_{n,m,Q,\beta}} = \{ ((\mathbf{A},\vec{y}),\vec{x}) \in
@@ -1754,27 +1754,27 @@ Inhomogeneous Small Integer Solution (ISIS) problem. The proof relation is
 \]
 The secret witness of \(P\) is \(\vec{x}\) and the public parameters for \(V\)
 are \((\mathbf{A},\vec{y})\).  One of the main research directions was initiated
-by Stern (\cite{stern1993new}), he proposed the solution for a simpler problem
+by Stern (\cite{stern1993new}), who proposed the solution for a simpler problem
 (Syndrome Decoding Problem).  Ling et. al. (\cite{ling2013improved}) developed a
 scheme to fully support ISIS proofs. The proof is a 3-move interactive protocol
-: P starts the protocol by computing and sends to V three commitments; V then
-sends to P a random challenge; P reveals two of the three commitments according
+: P starts the protocol by computing and sending three commitments to V; V then
+sends P a random challenge; P reveals two of the three commitments according
 to the challenge. The $Prover$'s witness is the secret vector $\vec{x}$, the
 public inputs are $\mathbf{A}$ and $\vec{y}$. The protocol is detailed in
 Appendix \ref{append:Stern}. We refer readers to \cite{ling2013improved} for
 correctness and statistical zero-knowledge proofs. We note that from their
 result, each round of communication costs $\log\beta\tilde{O}(n \log Q)$ bits
-and we denote \textbf{SternExt(A,x,y)} for the whole run
+and we denote the whole run \textbf{SternExt(A,x,y)}.
 
 
 \subsection{SternExt Protocol}
 \label{append:Stern}
 The protocol includes 2 phases
 \begin{description}
-\item[Setup.] Let COM be a statistical hiding and computational biding commitment scheme (\cite{kawachi2008concurrently}
-  shown that such scheme can be constructed based on the hardness of ISIS problem).  Before the interaction, P and V
+\item[Setup.] Let COM be a statistical hiding and computational biding commitment scheme (\cite{kawachi2008concurrently}.
+  show that such scheme can be constructed based on the hardness of ISIS problem).  Before the interaction, P and V
   create matrix $\mathbf{A'} \in \mathbb{Z}_Q^{n\times 3m}$ by extending $\mathbf{A}$ (padding $\mathbf{A}$ with $2m$
-  zero-columns). P also does some extra preparation steps:
+  zero-columns). P also executes some extra preparation steps:
   \begin{itemize}
   \item Decomposition: Represent vector $\vec{x} = (x_0, \dots, x_{m-1})$ by $k$ vectors
     ${\vec{u'}}_j \in \{-1,0,1\}^m$. The algorithm first breaks each $x_i$ to its binary representation:
@@ -1782,16 +1782,16 @@ The protocol includes 2 phases
     constructed by ${\vec{u'}}_j = (b_{0,j}, b_{1,j}, \dots, b_{m-1,j})$. Note that $\vec{x}$ can be reconstruct by
     $\vec{x} = \sum_{j = 0}^{k - 1}2^j{\vec{u'}}_j$.
   \item Extension: This step masks the number of -1s,1s and 0s in each ${\vec{u'}}_j$ by transforming each
-    ${\vec{u'}}_j \in \{-1,0,1\}^m$ to another $\vec{u}_j \in \{-1,0,1\}^{3m}$. The mask is done by padding to each
-    ${\vec{u}}_j$ a random vector $\vec{t} \in \{-1,0,1\}^{2m}$ such that after the masking is done, the number of -1s,
-    0s, and 1s in $\vec{u}_j$ are equal to each other and equal m. We observe that
+    ${\vec{u'}}_j \in \{-1,0,1\}^m$ to another $\vec{u}_j \in \{-1,0,1\}^{3m}$. The mask is built by padding to each
+    ${\vec{u}}_j$ a random vector $\vec{t} \in \{-1,0,1\}^{2m}$ such that after the masking is completed, the number of -1s,
+    0s, and 1s in $\vec{u}_j$ is the same and equals m. We observe that
     \[
       \mathbf{A'}\sum_{j=0}^{k-1}2^j\vec{u}_j = \vec{y} \mod Q \iff \mathbf{A}\vec{x} = \vec{y} \mod Q
     \]
   \end{itemize}
 \item[The interactive proof system.]  The $Prover$ P ad the $Verifier$ V interact as follows
   \begin{enumerate}
-  \item \textbf{Commitment.} P does sampling
+  \item \textbf{Commitment.} P samples
     $\vec{r_0}, \vec{r_1}, \dots, \vec{r_{k-1}} \randomsample \mathbb{Z}_Q^{3m}$,
     $\pi_{0}, \dots, \pi_{k-1} \randomsample \mathcal{S}_{3m}$ and sends the commitments to V:
     \[
@@ -1803,19 +1803,19 @@ The protocol includes 2 phases
         \mathbf{c_3} = COM(\pi_0(\vec{u}_0 + \vec{r}_0), \dots, \pi_{k-1}(\vec{u}_{k-1} + \vec{r}_{k-1}))
       \end{cases}
     \]
-  \item \textbf{Challenge.} After receiving the commitments $\mathbf{c_i}$, V send a challenge
+  \item \textbf{Challenge.} After receiving the commitments $\mathbf{c_i}$, V sends a challenge
     $Ch \randomsample \{1,2,3\}$ to the $Prover$ P.
   \item \textbf{Response.} P replies as follows:
     \begin{itemize}
     \item If $Ch = 1$, P reveals $\mathbf{c_2}$ and $\mathbf{c_3}$: For each $j$, let $v_j = \pi_j(\vec{u}_j)$, and
-      $w_j = \pi_j(\vec{r}_j)$ and send back $RSP = (v_0,\dots, v_{k-1},w_0,\dots,w_{k-1}$).
+      $w_j = \pi_j(\vec{r}_j)$ and sends back $RSP = (v_0,\dots, v_{k-1},w_0,\dots,w_{k-1}$).
     \item If $Ch = 2$, P reveals $\mathbf{c_1}$ and $\mathbf{c_3}$: For each $j$, let $\phi_j = \pi_j$,
-      $\vec{z}_j = \vec{u}_j +\vec{r}_j$ and send back
+      $\vec{z}_j = \vec{u}_j +\vec{r}_j$ and sends back
       $RSP = (\phi_0,\dots,\phi_{k-1}, \vec{z}_0, \dots, \vec{z}_{k-1})$.
     \item If $Ch = 3$, P reveals $\mathbf{c_1}$ and $\mathbf{c_2}$: For each $j$, let $\psi_i = \pi_j$,
-      $\vec{s}_j = \vec{r}_j$ and send back $RSP = (\psi_0, \dots, \psi_{k-1}, \vec{s}_0, \dots, \vec{s}_{k-1})$.
+      $\vec{s}_j = \vec{r}_j$ and sends back $RSP = (\psi_0, \dots, \psi_{k-1}, \vec{s}_0, \dots, \vec{s}_{k-1})$.
     \end{itemize}
-  \item \textbf{Verification.} Receiving the response $RSP$, V can do the following checks
+  \item \textbf{Verification.} Receiving the response $RSP$, V engages in the following protocol:
     \begin{itemize}
     \item If $Ch = 1$, check that $\vec{v}_j \in \{-1,0,1\}^{3m}$ and
       \[
@@ -1841,7 +1841,7 @@ The protocol includes 2 phases
         \end{cases}
       \]
     \end{itemize}
-    In each case, V outputs $Accept$ if and only if all the conditions hold. Otherwise he outputs $Reject$. Also note
+    In each case, V outputs $Accept$ if and only if all the conditions hold. Otherwise, V outputs $Reject$. Also note
     that all the computations are done in $\mathbb{Z}_Q$.
 
   \end{enumerate}
@@ -1853,11 +1853,11 @@ The protocol includes 2 phases
 \subsection{Garbled Circuit}
 \label{sec:garbledCircuitPre}
 
-The garbled circuit concept was originally proposed in \cite{yao1986generate} to
-allow two parties to evaluate securely any functions (represented by logic
-circuit). It is secure in the sense that the communicating parties do not learn
-any information about the others' inputs but only the output of the
-function. The idea is that given a circuit (composed of gates connected by
+The "garbled circuit" concept was originally proposed in \cite{yao1986generate} to
+allow two parties to evaluate securely any functions (represented by a logic
+circuit). It is secure in the sense that the communicating parties do not acquire
+any information about the others' inputs, as they only have access to the output of the
+function. The idea is that, given a circuit (composed of gates connected by
 wires), the server ``garbles'' the circuit by randomly assigning two encryption
 keys \(\omega_{j,0}\) and \(\omega_{j,1}\) to each wire \(\omega_{j}\). The pair
 of keys represent respectively values 0 and 1, which are possible values of the
@@ -1867,12 +1867,12 @@ this can be done: Computing the output key of a gate requires knowning two of
 its input's keys.
 
 After garbling the gates, the server sends the ciphertext tables to the client
-and also its' keys corresponding to the server's input values. The client uses
+and also the keys corresponding to the server's input values. The client uses an
 \textit{Oblivious Transfer } technique (discussed below) to obtain the keys
 corresponding to the client's input values. After having the keys for each wire,
-the client can in turn decrypt the gates until it learn the final output keys
+the client can, in turn, decrypt the gates until discovering the final output keys
 (which can be encoded initially in a special way to represent value 0 or 1). The
-wires' keys are also referred to as \textit{label} in literature.
+wires' keys are also referred to as \textit{labels} in literature.
 
 \begin{figure}[htbp!] 
   \centering    
@@ -1881,12 +1881,12 @@ wires' keys are also referred to as \textit{label} in literature.
   \label{fig:garbledCircuit}
 \end{figure}
 
-Recent works provides optimizations to improve computation and communication
+Recent works provides optimizations to improve the computation and communication
 overhead associated with encrypt/decrypt operations and ciphertext tables'
 sizes. In \cite{kolesnikov2008improved30}, the authors proposed a modification to
 allow XOR gates to be evaluated \textit{for free}: the labels of XOR gates are
 not chosen independently but by \(\omega_{i,0} = \omega_{i,1} \xor r\), for some
-random value of \(r\). Pinkas et al. \cite{pinkas2009secure38} introduced a way to reduce communication size of binary gates by 25\%: each gate can be specified by three ciphertexts instead of all four. Finally, \cite{kolesnikov2009improved29} improve some commonly used circuits such as addition, comparision, etc. by reducing the number of non-XOR gates.
+random value of \(r\). Pinkas et al. \cite{pinkas2009secure38} introduced a way to reduce the communication size of binary gates by 25\%: each gate can be specified by three ciphertexts instead of all four. Finally, \cite{kolesnikov2009improved29} improve some commonly used circuits such as addition, comparision, etc., by reducing the number of non-XOR gates.
 
 \subsection{Oblivious Transfer}
 \label{sec:obliviousTransferPre}
@@ -1894,7 +1894,7 @@ random value of \(r\). Pinkas et al. \cite{pinkas2009secure38} introduced a way 
 \textit{"You take the blue pill, the story ends. You wake up in your bed and
   believe whatever you want to believe. You take the red pill, you stay in
   wonderland, and I show you how deep the rabbit hole goes."} - Morpheus to Neo,
-the Matrix.
+The Matrix.
 
 
 \begin{figure}[htbp!] 
@@ -1904,26 +1904,26 @@ the Matrix.
 \label{fig:RedPillBluePill}
 \end{figure}
 
-What if, in such situation, there is a protocol to give privacy to
+What if, in such situation, there were a protocol to give privacy to
 \(Neo\): \(Morpheus\) should not learn about \(Neo\)'s selection. Moreover, the
 protocol can also provide privacy to \(Morpheus\): \(Neo\) should not learn
 anything about the unchosen pill. In cryptography, Oblivious Transfer (OT) is a
-protocol that can support such scenario. 
-In the most basic form, it is a
+protocol able to support such scenario. 
+In its most basic form, it is a
 two-parties protocol between a \textit{Sender} and a \textit{Receiver}, denoted
 by \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT. The \(Sender\) uses
 two private inputs \(x_{0}, x_{1}\) and the \(Receiver\) uses one input bit
 \(s\). At the completion of the protocol, the \(Receiver\) gets the bit
-\(x_{s}\) without letting the \(Sender\) know any information about the value of
+\(x_{s}\), without letting the \(Sender\) acquire any information about the value of
 \(s\): \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix}
 \)-OT\((x_{0},x_{1};s) = x_{s}\).
 
-The general idea is, when the receiver requests an item, the sender sends all the
-items to the receiver and therefore it does not know which item is the one
+The general idea is that, when the receiver requests an item, the sender sends all the available
+items to him, then he is unaware of which one has been requested
 requested. However, the response is encrypted in such a way that the receiver
 can only decrypt the one he requested. A concrete implementation example of
 \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT protocol based on
-discrete log DH is illustrated in figure \ref{fig:DH21OT}. The receiver picks \(h_{0},h_{1}\) such that \(h_{0}h_{1} = h\), he cannot know both \(\log_{g}h_{0}\) and \(\log_{g}h_{1}\). Given \(h_{0}, h_{1}\), the sender returns ElGamal encryptions of bits \(x_{0}, x_{1}\) using \(h_{0},h_{1}\) as public keys. The receiver then decrypts one of the encryption to recover either \(x_{0} or x_{1}\)
+discrete log DH is illustrated in figure \ref{fig:DH21OT}. The receiver picks \(h_{0},h_{1}\) such that \(h_{0}h_{1} = h\), he cannot access both \(\log_{g}h_{0}\) and \(\log_{g}h_{1}\). Given \(h_{0}, h_{1}\), the sender returns ElGamal encryptions of bits \(x_{0}, x_{1}\) using \(h_{0},h_{1}\) as public keys. The receiver then decrypts one of the encryptions to recover either \(x_{0} or x_{1}\)
 
 \begin{figure}[h!]
   \centering
@@ -1947,12 +1947,11 @@ discrete log DH is illustrated in figure \ref{fig:DH21OT}. The receiver picks \(
   \label{fig:DH21OT}
 \end{figure}
 
-Efficient implementations of Oblivious Transfer can be found from \cite{naor2001efficient35}. The techniques from \cite{ishai2003extending24} can reduce a large number of OT protocol executions to \(\lambda\), where \(\lambda\) is the security parameter. In this thesis, we propose a new OT technique to be used with lattice-based cryptosystem.
+Efficient implementations of Oblivious Transfer can be found in \cite{naor2001efficient35}. The techniques found in \cite{ishai2003extending24} can reduce a large number of OT protocol executions to \(\lambda\), where \(\lambda\) is the security parameter. In this thesis, we propose a new OT technique to be used with lattice-based cryptosystems.
 
 \section{The Syntax and Security model}
 \label{sec:syntaxModel}
-We first describe the protocol and its security model in generic form.  We then can use them as a framework to apply and
-analyze in our specific proposal.
+We first describe the protocol and its security model generically.  We then go into details and further use it as a framework in our specific proposal.
 
 % \subsubsection{Desirable properties}
 % \label{sec:privacyProps}
@@ -1970,24 +1969,24 @@ There are common security threats to many authentication systems such as Trojan 
 attack, etc. Biometrics authentication systems are also vulnerable to such attacks. We can
 borrow ideas from secure password-based schemes to address such issues. However, there are two categories of
 vulnerabilities that are specific to biometric systems.  The first one is impersonation, or spoofing, the attack happens
-at the client side where the adversary tries to cheat the system with counterfeit or invalid inputs.  The other issue is
-at the server side with the privacy concern.
+at the client's side as the adversary tries to cheat the system with counterfeit or invalid inputs.  The other issue is
+at the server's side and yields privacy concerns.
 
 We will discuss the formal models that capture all the known threats of biometric authentication:
 \begin{itemize}
 \item Confidential data leakage due to attacks on the template database: Server breaches of biometric data always have
   catastrophic consequences (\cite{OPMsays563:online}), as we cannot change our fingerprints as easily as changing our
   passwords.
-\item Hill-Climbing attack from the server side: This is also a privacy threat where the server trying to compute good
+\item Hill-Climbing attack from the server's side: This is a privacy threat where the server tries to compute good
   inputs $X$ from the distance information between $X$ and $Y$ (\cite{uludag2004attacks}, \cite{higo2015privacy}). Note
   that Hill-Climbing attack by the client is very limited due to the limitation of the number of false authentication
   attempts in almost every biometric authentication system.
-\item Impersonation by malicious client when the secret key of the user is known (replay attack): This happens when an
-  attacker has access to the user's device but not his biometric, for example, in stolen device
-  scenarios.(\cite{zhang2015fingerprints})
-\item Impersonation by malicious client when the biometric template of the user is known (spoofing attack): This happens
-  when an attacker collects biometric data and tries to reconstruct the template for authentication, for example,
-  rebuilding the fingerprint from captured photos (\cite{zhang2015fingerprints},\cite{feng2011fingerprint}).
+\item Impersonation by a malicious client when the secret key of the user is known (replay attack): This happens when an
+  attacker has access to the user's device but not to his biometric data, as, for example, in stolen device
+  scenarios (\cite{zhang2015fingerprints}).
+\item Impersonation by a malicious client when the biometric template of the user is known (spoofing attack): This happens
+  when an attacker collects biometric data and tries to reconstruct the template for authentication, as, for example, by
+  rebuilding fingerprints from captured photos (\cite{zhang2015fingerprints},\cite{feng2011fingerprint}).
 \item Cross matching of biometric data among databases: This threat uses information of the same user from different
   compromised databases to reconstruct the biometric template.
 \end{itemize}
@@ -1996,46 +1995,46 @@ We will discuss the formal models that capture all the known threats of biometri
 
 \begin{description}
 \item[Entities:] There can be 2 or 3 typical entities involved in a secure biometric authentication system. The user
-  $\mathcal{U}$, an authentication server $\mathcal{S}$, and a decryptor, who is a third party trusted by both of the
-  users and the server. The decryptor presents in some systems (\cite{mandal2015comprehensive},
+  $\mathcal{U}$, an authentication server $\mathcal{S}$, and a decryptor, who is a third party trusted by both the
+  user and the server. The decryptor appears in some systems (\cite{mandal2015comprehensive},
   \cite{hirano2013cryptographically}, \cite{higo2015privacy}), with the assumption that there is no collusion between
-  this entity and $\user$ or $\server$. In our work, we aim to avoid the assumption of trusted decryptor party, so we
-  only have two parties, $\user$ and $\server$.
+  this entity and $\user$ or $\server$. In our work, we avoid the assumption of a trusted decryptor party, so that
+  only two parties are left: $\user$ and $\server$.
 \item[Biometrics Features in non-private setting] In biometric authentication systems (e.g., fingerprint authentication
   system), a user $\mathcal{U}$ first
-  enrolls his fingerprint template $X$ with the server $\mathcal{S}$. $\mathcal{U}$ later authenticates with
+  registers his fingerprint template $X$ on the server $\mathcal{S}$. $\mathcal{U}$ later authenticates before
   $\mathcal{S}$ using the same finger with a template $Y$, $\server$ uses an algorithm $Verify(X,Y)$ to obtain the
-  result of the authentication: \textbf{Accept} or \textbf{Reject}. Different fingerprint system might use different
-  features of fingers such as minutia or fingercode to compute this distance $\Delta$ between $X$ and $Y$ in the
+  result of the authentication: \textbf{Accept} or \textbf{Reject}. Different fingerprint systems might use different
+  features of fingers such as minutia or fingercode to compute the distance $\Delta$ between $X$ and $Y$ within the
   algorithm $Verify$. The distance $\Delta$ is compared to some predifined threshold value $\tau$ to determine the
   result of the authentication. We refer the reader to \cite{jain2007handbook} for biometric feature extraction and
   comparison techniques.\\
 
-  Unlike password based system where $\user$ always uses one same query for many authentication, all biometric systems
-  have the concept of False Acceptance Rate (FAR), where the system \textbf{Accept} an incorrect template; and False
-  Rejection Rate (FRR), where the system \textbf{Reject} a genuine one.  Balancing these 2 rates while keeping good
-  performances is one of the main challenges that fingerprint verification algorithms \cite{FVConGoi2:online} are trying
-  to solve. We also reflect these two rates in our models.
+  Unlike password based systems, where $\user$ always uses one and the same query for many authentication trials, all biometric systems
+  have the concept of False Acceptance Rate (FAR) (for the system \textbf{Accept}ing an incorrect template), and False
+  Rejection Rate (FRR), (for the system \textbf{Reject}ing a genuine one).  As balancing these 2 rates while keeping good
+  performances is one of the main challenges that fingerprint verification algorithms \cite{FVConGoi2:online} need to face,
+we also reflect these two rates in our models.
 
-\item[Algorithms and Procedures in privacy-preserving setting:] We describe the high level constructions of the protocol
-  as follows
+\item[Algorithms and Procedures in privacy-preserving settings:] We describe the high-level constructions of the protocol
+  as follows:
   \begin{description}
   \item[Enroll:] This procedure inserts records into the server's database.
     \begin{itemize}
     \item Input: Client: identity $k$, a registered template $X_k$; Server: Parameters of the cryptographic tools used.
-    \item Output: A public-private key pair $(sk_k, pk_k)$ for the user $\user_k$. The server learns the protected
+    \item Output: A public-private key pair $(sk_k, pk_k)$ for the user $\user_k$. The server stores the protected
       template of $T_k$ of $X_k$.
     \end{itemize}
-  \item[Auth:] This procedure allows a user to authenticate with the system.
+  \item[Auth:] This procedure allows a user to authenticate to the system.
     \begin{itemize}
     \item Input: Client: identity $k$, a query template $Y_k$ and the secret key $sk_k$; Server: record $(k, T_k, pk_k)$
-    \item Output: The server learns the authentication result $res=\{\textbf{Accept,Reject}\}$
+    \item Output: The server computes the authentication result $res=\{\textbf{Accept,Reject}\}$
     \end{itemize}
 
-  \item[Correctness Requirement:] A genuine user $\user_k$ does $(sk_k, T_k) \gets \mathbf{Enroll}(k, X_k)$ using a
-    $X_k \in Supp(D_k)$ and later uses his biometric template $Y_k \randomsample D_k$ to do
+  \item[Correctness Requirement:] A genuine user $\user_k$ executes $(sk_k, T_k) \gets \mathbf{Enroll}(k, X_k)$ using a
+    $X_k \in Supp(D_k)$ and later uses his biometric template $Y_k \randomsample D_k$ to perform
     $$res \gets \mathbf{Auth}( (k, Y_k, sk_k), (k, T_k, pk_k))$$
-    The privacy-preserving protocol works correctly if FRR under this system is exactly equal to FRR of the non-privacy
+    The privacy-preserving protocol works correctly if the FRR under this system is exactly equal to the FRR of the non-privacy
     preserving system:
     \[
       Pr[res = verify(X_k,Y_k)] = 1
@@ -2045,7 +2044,7 @@ We will discuss the formal models that capture all the known threats of biometri
 
 \subsubsection{The security model}
 \begin{description}
-\item[Privacy against an Honest But Curious server:] The security model is defined in terms of following security games.
+\item[Privacy against an Honest But Curious server:] The security model is defined in terms of the following security games.
   % Although the model assumes the server behaves honestly \emph{within} the protocol (since we our main aim is security
   % against passive exposure of server contents), it does allow the server to adversarially choose the client's
   % \emph{input} query templates $Y_i$ to try to learn about the attacked user's template $X_k$, so our model implies
@@ -2053,7 +2052,7 @@ We will discuss the formal models that capture all the known threats of biometri
 
 \item[The real game $\mathbf{Real}_{\attacker}(D_k,X_k)$:] This is the game for a privacy attack against the
   privacy-preserving protocol for the underlying biometric system, between an attacker $\attacker$ and a challenger
-  $\challenger$. The input the game is an attacked $\user_k$ biometric distribution $D_k \in D_{bio}$ and a user
+  $\challenger$. The input of the game is an attacked $\user_k$ biometric distribution $D_k \in D_{bio}$ and a user
   template $X_k \in Supp(D_k)$.
   \begin{enumerate} %$\challenger$ selects a $\user_k$ with $D_k \in D_{bio}$ . For any $X_k \in Supp(D_k)$,
   \item $\challenger$ runs $(T_k, sk_k) \gets \mathbf{Enrol}(k,X_k)$ and sends $T_k$ to $\attacker$.
@@ -2065,51 +2064,51 @@ We will discuss the formal models that capture all the known threats of biometri
       \[
         res \gets \mathbf{Auth_i}((k, Y_i, sk_k), (k, T_k, pk_k))
       \]
-    \item Let $V_i$ denotes the $i^{th}$ view of $\server$ when $\challenger$ runs $\mathbf{Auth_i}$. $\challenger$
+    \item $V_i$ denotes the $i^{th}$ view of $\server$ when $\challenger$ runs $\mathbf{Auth_i}$. $\challenger$
       sends the view $V_i$ to $\attacker$.
     \end{itemize}
-  \item $\attacker$ outputs a bit $\beta$, representing some information that $\attacker$ has learned about
+  \item $\attacker$ outputs a bit $\beta$, representing some information that $\attacker$ has discovered about
     $(D_k,X_k)$. The game output is $\mathbf{Real}_{\attacker}(D_k,X_k) = \beta$.
   \end{enumerate}
 
 \item[The ideal game $\mathbf{Ideal}_{\attacker'}(D_k,X_k)$:] This is the game for a privacy attack against an ideal
-  privacy scenario for the underlying biometric authentication system, where the attacker $\attacker'$ interacts with a
-  challenger $\challenger'$. The input the game is an attacked $\user_k$ biometric distribution $D_k \in D_{bio}$ and a
-  user template $X_k \in Supp(D_k)$. In this ideal game, the information $\attacker'$ can learn about $(D_k,X_k)$ is the
+  privacy scenario for the underlying biometric authentication system, where an attacker $\attacker'$ interacts with a
+  challenger $\challenger'$. The input of the game is an attacked $\user_k$ biometric distribution $D_k \in D_{bio}$ and a
+  user template $X_k \in Supp(D_k)$. In this ideal game, the information $\attacker'$ can obtain about $(D_k,X_k)$ is the
   value of \(HD_{X_{k}, Y_{k}}\) and the bit $Verify(X_k,Y_i)$.
   \begin{enumerate}
   \item For $i = 1 \dots q$:
     \begin{itemize}
-    \item $\attacker'$ chooses query template $Y_i \in \{0,1\}^n$ and send it to $\challenger'$.
+    \item $\attacker'$ chooses query template $Y_i \in \{0,1\}^n$ and sends it to $\challenger'$.
     % \item $\challenger'$ computes $res_i = verify(X_k, Y_i) \in \{\mathbf{Accept},\mathbf{Reject}\}$.
     \item $\challenger'$ sends $HD_{X,Y_{i}}$ to $\attacker'$.
     \end{itemize}
-  \item $\attacker'$ output a bit $\beta'$, representing some information that $\attacker'$ has learned about
+  \item $\attacker'$ output a bit $\beta'$, representing some information that $\attacker'$ has gathered about
     $(D_k,X_k)$. The game output is $\mathbf{Ideal}_{\attacker'}(D_k,X_k) = \beta'$.
   \end{enumerate}
 \end{description}
 \begin{definition}
   [Privacy Security against Server] We say that a biometric authentication protocol is $q$-private in the sense of
   biometric template privacy against an honest but curious server $\server$ if for every efficient real-game attacker
-  $\attacker$, there exists an efficient ideal-game attacker $\attacker'$ such that, for all $(D_k,X_k)$ we have:
+  $\attacker$, there exists an efficient ideal-game attacker $\attacker'$ such that, for all $(D_k,X_k)$ the following stands:
   \[
     |\Pr[\mathbf{Real}_{\attacker}(D_k,X_k) = 1] - \Pr[\mathbf{Ideal}_{\attacker'}(D_k,X_k) = 1]| \leq negl(\lambda).
   \]
 \end{definition}
 
 \begin{description}
-\item[Security against the malicious client:] In this work, we aim for security against active client, where an attacker
+\item[Security against a malicious client:] In this work, we aim at security against an active client, where an attacker
   $\attacker$ is assumed not to follow the protocol transcript.
   \begin{description}
-  \item[Biometric Impersonation:] FAR is the usual biometric impersonation probability, it is inherent to the biometrics
-    themselves without any cryptographic protocols. We first discuss this security game (which will be refered to as
-    \textit{biometric impersonation}), then we elaborate the discussion to the models with privacy-preserving
+  \item[Biometric Impersonation:] FAR is the usual biometric impersonation probability, it is inherent to biometrics
+    itself without any cryptographic protocols. We first discuss this security game (which will be refered to as
+    \textit{biometric impersonation}), we then elaborate the discussion to account for models with privacy-preserving
     requirements.
     \begin{description}
     \item[Setup:] $\challenger$ samples $X_k \randomsample D_{k}$ from a random $\user_k$ ($D_k \randomsample D_{bio}$).
-    \item[Query:] $\attacker$ is given access to the authentication oracle $verify(X_k,Y)$ that returns the
+    \item[Query:] $\attacker$ is given access to the authentication oracle $verify(X_k,Y)$, which returns the
       authentication result of $\user_k$ with a query template $Y$. $\attacker$ has $q$ attempts to make queries, in
-      each attempt, $\attacker$ chooses a $Y_{q}$ by himself and does $verify(X_k,Y_{q})$.
+      each attempt, $\attacker$ chooses a $Y_{q}$ by himself and executes $verify(X_k,Y_{q})$.
     \item[Guess:] $\attacker$ outputs $Y_{q'}$ such that $verify(X_k,Y_{q'}) = \textbf{Accept}$.
     \end{description}
     The advantage of $\attacker$ in the game is defined as
@@ -2119,26 +2118,26 @@ We will discuss the formal models that capture all the known threats of biometri
     In this basic model, when $q=1$, the advantage of $\attacker$ is $FAR$.  In other words, we can say the advantage of
     $\attacker$ is $ \textbf{Adv}^{bio}_\attacker(\lambda) \leq q\times FAR$.
 
-  \item[Privacy-Preserving Protocol:] This model extend the above protocol and captures the client side attacks
+  \item[Privacy-Preserving Protocol:] This model extends the above protocol and captures the client side attacks
     mentioned in section \ref{sec:privacyReqs}.
     \begin{description}
     \item[Setup:] The setup phase includes 2 steps:
       \begin{itemize}
       \item $\challenger$ samples $X_k \randomsample D_{k}$ from a random $\user_k$ ($D_k \randomsample D_{bio}$).
-      \item $\challenger$ runs $\textbf{Enroll}(k, X_k)$ that returns $(sk_k, T_k)$.
+      \item $\challenger$ runs $\textbf{Enroll}(k, X_k)$, which returns $(sk_k, T_k)$.
       \end{itemize}
     \item[Query:] In the query phase:
       \begin{itemize}
-      \item $\attacker$ is given access to the authentication oracle $\mathbf{Auth}(Y)$ that returns the authentication
+      \item $\attacker$ is given access to the authentication oracle $\mathbf{Auth}(Y)$ returning the authentication
         result of $\user_k$ with a query template $Y$.
-      \item $\attacker$ chooses the attack type $t \in \{I,II\}$ which specifies the scenario of key exposed or template
-        exposed.
+      \item $\attacker$ chooses the attack type $t \in \{I,II\}$ which specifies the scenario of key exposure or template
+        exposure.
 
-      \item $\challenger$ gives $sk_k$ if $t = I$ or $T_k$ if $t = II$ to $\attacker$. Note that, this model reflects
-        the 2-factors authentication (the secret key and the biometric template), if $\attacker$ requests both factors,
+      \item $\challenger$ passes $sk_k$ if $t = I$ or $T_k$ if $t = II$ to $\attacker$. Note that this model reflects
+        the 2-factors authentication (the secret key and the biometric template), and, thus, if $\attacker$ requests both factors,
         he loses the game.
-      \item $\challenger$ and $\attacker$ runs $\mathbf{Auth()}$ $q$ times, For the $i^{th}$ run, $\attacker$ plays the
-        client's role that chooses and sends $Y_i$ to $\challenger$, $\challenger$ plays the server's role that replies
+      \item $\challenger$ and $\attacker$ run $\mathbf{Auth()}$ $q$ times, For the $i^{th}$ run, $\attacker$ plays the
+        client's role, choosing and sending $Y_i$ to $\challenger$, $\challenger$ plays the server's role, replying
         with $res_i = \mathbf{Auth}(Y_i)$.
       \end{itemize}
     \item[Guess:] $\attacker$ wins the game if it outputs $Y$ such that $\mathbf{Auth}(Y) = \textbf{Accepted}$.
@@ -2148,16 +2147,16 @@ We will discuss the formal models that capture all the known threats of biometri
       \textbf{Adv}^{Imp}_\attacker(\lambda) = Pr[\attacker \ wins] \
     \]
     We would want this advantage value not to be too large compared to the non-privacy-preserving biometric
-    impersonation model's advantage $\textbf{Adv}^{bio}_\attacker(\lambda)$, which was bounded by $q \times FAR$.
+    impersonation model's advantage $\textbf{Adv}^{bio}_\attacker(\lambda)$, which was bound by $q \times FAR$.
 
   \end{description}
 
 \end{description}
 \begin{definition}
   [Impersonation Security] We say that a biometric authentication protocol is c-secure in the sense of template
-  protection against the malicious user $\user$ if $\textbf{Adv}^{Imp}_\attacker(\lambda)$ is not greater than
-  $\textbf{Adv}^{bio}_\attacker(\lambda)$ in some factor $c$ (if $c = 1$ we would have perfectly the same security level
-  as the non-privacy-preserving system):
+  protection against a malicious user $\user$ if $\textbf{Adv}^{Imp}_\attacker(\lambda)$ is not greater than
+  $\textbf{Adv}^{bio}_\attacker(\lambda)$ in some factor $c$ (if $c = 1$,  the security level reached would be exactly the same one 
+  as in non-privacy-preserving systems):
   \[\textbf{Adv}^{Imp}_\attacker(\lambda) \leq c \times \textbf{Adv}^{bio}_\attacker(\lambda)\]
 \end{definition}
 

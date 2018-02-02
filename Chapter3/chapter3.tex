@@ -19,7 +19,7 @@ remove the role of such a party. As it proves inconvenient, due to privacy issue
   about the distance between the registred template and the extracted template while he decrypting the homomorphic ciphertext result sent by the server.
 \item[Malicious Client Model Impact] It is important for the protocol to be secure
   against the \textit{active client }model, by which an adversary does not simply follow the
-  protocol transcript but also tries to draw information (this model is also known
+  protocol transcript but also tries to draw information from it (this model is also known
   as \textit{Semi Honest}, \textit{Honest-But-Curious}, or \textit{Passive} Client Model). 
 \end{description}
 
@@ -378,7 +378,7 @@ Enrol, and Authenticate.
     client privacy against long term quantum attacks.
     \begin{itemize}
     \item $\lambda$: General security parameter of the cryptosystem (the adversary's winning chance in the CPA security game is \(1/2^{\lambda}\))
-    \item $n$: Integer $n$ defining the plaintext and ciphertext ring spaces. This will be refered to as the degree of
+    \item $n$: Integer $n$ defining the plaintext and ciphertext rings. This will be refered to as the degree of
       the polynomial objects or dimension of the underlying lattice during correctness and security proofs.
     \item $t$: Integer $t$ defining the plaintext space ring $R_t = \mathbb{Z}_t[x]/x^n+1$.
     \item $q$: Integer $q$ defining the ciphertext space ring $R_q = \mathbb{Z}_q[x]/x^n+1$
@@ -470,7 +470,7 @@ provided in Appendix \ref{append:Proofs}
 
 \section{Security Proofs}
 \label{append:Proofs}
-\subsection{Security Proof for Theorem~\ref{theo:server}: Privacy against Server}
+\subsection{Security Proof for Theorem~\ref{theo:server}: Privacy against HBC Server}
 \label{append:ProofsPrivacy }
 
 The proof of Theorem \ref{theo:client} can be gained using a sequence of games between a challenger $\challenger$ and
