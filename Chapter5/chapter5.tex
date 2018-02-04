@@ -12,30 +12,29 @@
 
 \section{Introduction}
 \label{sub:introChap3}
-In the previous chapter, we assumed that given the Hamming Distance (HD) of two
-binary bitstring templates, it is infeasible to infer or learn any information
-about the original templates. The assumption is plausible as long as the
+In the previous chapter, we assumed that, given the Hamming Distance (HD) between two
+binary bitstring templates, it is infeasible for an attacker to infer or acquire any information
+about the original templates stored on the server. This assumption is plausible as long as the
 distributions of the registered and the queried templates are not in any way
-correlated, studying about those distributions is out of scope of the
-project. However, in this chapter, we introduce our first attempt to hide this
-information from the server as well. Such result not only helps the protocol
-working regardless of such dependence, it is also the first step we can make to
-improve the authentication protocol to be secured against an \textit{active }
-server security model. Although the communication size of this variant might not
-be suitable to apply in practice for current network infrastructures, one can
-still find it helpful when using some generic techniques of the protocol when
+correlated (analysing these distributions is out of scope of the
+project). However, in this chapter, we introduce our first attempt to hide 
+information from the server as well. Our results not only cause the protocol
+to work regardless of the aforementioned dependencies, it is also the first step we take to
+secure the authentication protocol against an \textit{active} server security model. Although the communication size of this variant might not
+be suitable in practice for current network infrastructures, one can
+still find some generic techniques used within it to be helpful while
 applying them to balance the computation time and the communication size of
-lattice-based cryptographic protocols. The contributions of this variant includes
+lattice-based cryptographic protocols. The contributions of this variant include:
 \begin{itemize}
 \item A technique to compare Hamming Distance (HD) homomorphically by computing
   the Most Significant Bit (MSB) of a specific ciphertext.
 \item A packing methods conversion technique to transform a ciphertext
   encrypting a binary-encoded to a unary-encoded plaintext.
-\item Some extensions of the Zero Knowledge Proof (ZKP) technique that we used
-  in previous chapter to prove also the formats of a message in addition to the
-  knowledge of the plaintext itself.
+\item Some extensions of the Zero Knowledge Proof (ZKP) technique we used
+  in previous chapter to check the format of a message, in addition to the
+  information carried by the plaintext itself.
 \item The combination of ZKP protocols to balance the communication size
-  tradeoffs when used with lattice-based cryptosystem.
+  trade-offs when used with lattice-based cryptosystems.
 \end{itemize}
 
 \section{The Homomorphic tools}
