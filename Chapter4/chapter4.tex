@@ -18,7 +18,7 @@
 \label{sec:secProcRenyi}
 % \subsection{Renyi Divergence and its application in noise masking}
 % \label{sec:Renyi_original}
-Consider the a product ciphertexts result in BV cryptosystem (section \ref{sec:BVScheme}).
+Consider a ciphertext product result  in a BV cryptosystem (section \ref{sec:BVScheme}).
 \[
 mult(c,c') = (\mathbf{c_0}\mathbf{c_0'}, \mathbf{c_0}\mathbf{c_1'} + \mathbf{c_1}\mathbf{c_0'}, \mathbf{c_1}\mathbf{c_1'})
 \]
@@ -26,9 +26,9 @@ The noise term of this result ciphertext correlates to both $\mathbf{s}$ and $\m
 In many contexts, this leakage might be fine for a genuine user with a secret key because s/he is supposed to know the key and decrypt the message.
 However, in many other contexts, especially in multi-factor authentication
 scenarios, this is not the case. For instance, in our system, we do not want the
-client to know the Hamming Distance result, so that an attacker with a stolen
+client to know the Hamming Distance value, so that an attacker with a stolen
 device and a secret key cannot derive information about the data stored in the
-server. We propose to mask this leakage by homomorphically adding the ciphertext
+server from ?. We propose to mask this leakage by homomorphically adding the ciphertext
 $Enc(HD)$ with $Enc(r)$ to refresh the noise terms, together with masking the Hamming Distance. The question is how much can
 we shift the original noise distribution to preserve correctness while providing
 the new security measure.

@@ -85,8 +85,8 @@ thesis for several reasons:
   even though in many cases the best attack we are aware of is to carry out an operation of this type.
 \item[Quantum Resistance.] In 1994, Shor \cite{shor1994algorithms} showed that
   we can write a program for quantum computers to factor a large integer
-  into prime factors.The latest D-Wave systems initial deployments show that the
-  idea is feasible in near future. If this happens, it has significant
+  into prime factors. The latest D-Wave systems initial deployments show that the
+  idea is feasible in near future. If this happens, it will have significant
   implications for the currently used public key cryptosystems such as RSA, which
   will be broken. Lattice based cryptography is currently one of the best
   candidates to resist even quantum attacks.
@@ -173,7 +173,7 @@ each vector of the basis, then we add them together to generate new vectors. The
 result is an infinite grid of vectors, this grid is a lattice. We can illustrate
 two or three dimensional lattices easily, for higher dimensions, it is not
 possible to draw them, but the intuition stands and all 
-algebraic operations can be performed easily on the coordinates of the vectors. Lattice-based cryptography, works with high dimensional lattices ($n > 100$) for
+algebraic operations can be performed easily on the coordinates of the vectors. Lattice-based cryptography works with high dimensional lattices ($n > 100$) for
 security reasons. In fact, we can also say that a lattice is an infinite
 group (a group is a mathematical structure, a set with a single operation on it),
 the main one being addition.
@@ -213,7 +213,7 @@ $\approx vol(S) / det(L)$.
   $det(L(B))$ is the n-dimensional volume of the FP P(B).
 \end{definition}
 \begin{lemma}
-  For an n-dimensional lattice $L(B)$, we have $det(L(B)) = |det(B)|$.
+  For an n-dimensional lattice $L(B)$, $det(L(B)) = |det(B)|$.
   \label{lem:determinant2}
 \end{lemma}
 Cryptography involves handling of computationally complex problems. Some are related to the geometry of lattices, such as the Shortest
@@ -227,7 +227,7 @@ Vector Problem (SVP) and the Closest Vector Problem (CVP).
   \label{def:minLattice}
 \end{definition}
 \begin{theorem}
-  [Minkowski's First Theorem] For any n-dimensional lattice $L$, we have
+  [Minkowski's First Theorem] For any n-dimensional lattice $L$,
   $\lambda(L) \leq \sqrt(n).det(L)^{1/n}$.
   \label{the:minkowski1}
 \end{theorem}
@@ -241,7 +241,7 @@ problem, the definition of approximate SVP problem $\gamma-SVP$, defined below i
   \label{def:gammaSVP}
 \end{definition}
 As $\gamma$ increases, the problem becomes easier. We have good algorithms to
-find $\gamma$-SVP as follows
+find $\gamma$-SVP as follows:
 \begin{itemize}
 \item For $\gamma \geq 2^{O(n)}$: LLL algorithm solves in Poly(n) time.
 \item For $\gamma \leq O(1)$: NP-hard, it is not likely that a Poly(n) algorithm to solve the problem exists.
@@ -260,9 +260,9 @@ There are many useful subclasses of special lattices. In cryptography,
 one of these, termed \emph{q-ary} lattices, which relates to the so-called
 Short Integer Solution - SIS, is in common use (SIS is a hard problem appearing in many cryptographic design solutions, the ZKP technique referred to below is based on a variant of this problem). The use of lattice-based cryptosystems is enforced by the hardness of the
 $\gamma-SVP$ problem given a basis $B$. It is critical to initially chose the
-basis $B$ in order to make sure that solutions to the challenges it gives rise to are hard to find,as there are easy instances of $\gamma-SVP$, even for $\gamma=1$. A way to
+basis $B$ in order to make sure that solutions to the challenges it gives rise to are hard to find, as there are easy instances of $\gamma-SVP$, even for $\gamma=1$. A way to
 generate \emph{random} lattices' bases for which $\gamma-SVP$ is hard to solve
-'on-average'is therefore needed. One possible answer comes from \cite{ajtai1996generating}: random
+'on-average' is therefore needed. One possible answer comes from \cite{ajtai1996generating}: random
 \emph{q-ary} lattices, for which the hardness of finding short
 vectors within them can be proved.
 
@@ -292,7 +292,7 @@ security reduction and allows for confidence in concluding that the problem is h
 \end{definition}
 Informally, SIS is just the name given to the $\gamma-SVP$ problem for
 particular \emph{q-ary} lattices. $\beta$ is the approximation parameter, it
-tells how short the lattice vector should be. Some relations between SIS and
+defines how short the lattice vector should be. Some relations between SIS and
 $\gamma-SVP$ follow:
 \begin{itemize}
 \item $det(L_q^\bot(A)) = q^n$
@@ -579,7 +579,7 @@ memory). In general, all enumeration algorithms are very inefficient. Therefore,
 combining LLL with bruteforcing is a more practical approach: BKZ is the typical
 algorithm in this category.  BKZ allows trades-off between run-time and
 approximation factor $\gamma$, LLL is modified by changing the block size $k$ of
-vectors in the swapping step. As $k$: is increased, the lattice of
+vectors in the swapping step. As $k$ is increased, the lattice of
 dimension $k$ is searched for by using brute force search first and then running LLL with a smaller k dimension. The 'interpolation' between the two extremes of LLL (corresponding to
 $k = 2, \gamma = 2^{O(n)}, T = n^c$) and the enumeration (corresponding to
 $k = n, \gamma=1, T = 2^{O(n\log(n)}$)) are computed. In between, BKZ can achieve
@@ -634,13 +634,13 @@ We discuss Ajtai's hash function as an example of how to choose parameter values
 a given security level. We showed that if there is an algorithm that can break the
 collision-resistance property of the hash function, it can be use it to find a
 short vector of the SIS problem with length $\beta = 2d\sqrt{m}$. The question
-is how to choose the values of the parameters $q,n,m,d$ for the hash function to get a
+is how to choose the values of the parameters $q,n,m,d$ for the hash function to reach a
 given security level $\lambda$ based on the hardness of SIS. According to the
-BKZ state-of-the-art attack, to get running time of $2^\lambda$, the information in
-table 3 can be used to derive the block size and the corresponding Hermite Factor $\gamma_{HF}$.
+BKZ state-of-the-art attack, to attain a running time of $2^\lambda$, the block size and the corresponding Hermite Factor $\gamma_{HF}$ can be derived from the information contained in
+table 3.
 This information allows to understand that the best attacker can compute a non-zero vector $\vec{v}$ in a SIS
 lattice $L_q(A)$ of norm $\leq l = min(q, \gamma_{HF}.det(L_q(A))^{1/m})$. 
-Comparing $l$ with $\beta$ (or $2d\sqrt{m}$), if $l < \beta$, predicts the success or the failure of a possible attack.
+The result of comparing $l$ with $\beta$ (or $2d\sqrt{m}$), if $l < \beta$, predicts the success or the failure of a possible attack.
 
 There are often ways to optimize such attacks, as the attacker can choose parameter values allowing him to minimize effort. For example in the attack of the SIS problem mentioned in
 \cite{micciancio2008lattice}, the attacker can look at a subset $m' \leq m$ of
@@ -682,7 +682,7 @@ cryptography. We present Ajtai's average-case to worst-case connection Theorem
 \end{theorem}
 
 Although the theorem does not directly yield concrete information to choose
-parameter values securing a cryptosystem of the type discussed previously, it does provide qualitative confidence in the security of the problem.
+parameter values securing a cryptosystem of the type discussed previously, it does provide qualitative confidence in the security level of the problem.
 
 \section{Learning With Error}
 \label{sub:LWE}
@@ -700,12 +700,12 @@ in encryption contexts: ciphertexts cannot be decrypted in order to obtain the o
 plaintexts using such a method. In encryption contexts, the reverse
 situation is usually the case : the set of possible inputs might be a lot smaller than the set of
 possible outputs. The function serving encryption should be at least a
-one-to-one function that maps a plaintext to a unique ciphertext. Or there may even
+one-to-one function mapping a plaintext to a unique ciphertext. Or there may even
 be one-to-many functions mapping a plaintext to many possible ciphertexts: as
 long as there is no intersection between the ciphertext output sets, it is
 still possible to achieve a correct decryption. Such situations appear in non-deterministic
 cryptosystems, where the encryption function takes the message as well as a
-randomness factor as inputs. Actually, almost all encryptions being used in
+randomness factor as its inputs. Actually, almost all encryptions being used in
 practice are somehow randomized, the main reason being to stop the leakage of
 information given many ciphertexts. A deterministic cryptographic scheme can be
 exploited if the plaintext space is small: suppose that Alice sends deterministic encrypted messages to her agent Bob everyday instructing him to sell or keep some of her companies' shares.  An attacker capturing the ciphertexts sent throughout several days can easily distinguish such decisions without having to decrypt the messages at all. This is one of the important properties that we want to include in cryptosystems: indistinguishability, also known as IND-CPA. This type of security prevents the adversary from distinguishing the ciphertexts, even if all the possible plaintexts are known.
@@ -713,7 +713,7 @@ exploited if the plaintext space is small: suppose that Alice sends deterministi
 We introduce the LWE problem \cite{regev2005lattices} allowing to construct
 one-to-one or one-to-many functions. The main idea behind LWE is that, given a secret
 vector and a random lattice point with some 'small noises' added to the point,
-it is infeasible for an attacker to learn anything from the output, but it is
+it is infeasible for an attacker to conclude anything from the output, but it is
 easy for the data owner possessing the secret to revert back to the original source. The
 description of LWE follows.
 
@@ -759,7 +759,7 @@ Search-LWE and Decision-LWE problems.
 \subsection{Security of LWE}
 \label{sec:LWESecurity}
 An average-case to worst-case connection similar to Theorem
-(\ref{theo:AjtaiHardness}) for SIS problem can also be established for LWE
+(\ref{theo:AjtaiHardness}) for the SIS problem can also be established for LWE
 (\cite{regev2005lattices})
 \begin{theorem}
   If there is an algorithm $A$ that solves $DLWE_{q,m,n,\alpha}$ in poly-time,
@@ -774,8 +774,8 @@ An average-case to worst-case connection similar to Theorem
 \end{theorem}
 Theoretically there are strong reasons to believe that LWE is hard. The theorem
 even says that it links the security of LWE to the quantum security of the
-shortest vector problem. Using LWE as the basis for quantum resistant cryptographic technique  therefore deserves high confidence. In practice, the best known
-attack against LWE is to reduce the problem to the SIS problem: Given a LWE
+shortest vector problem. Using LWE as the basis for quantum resistant cryptographic techniques  therefore deserves high confidence. In practice, the best known
+attack against LWE amounts to reducing the problem to the SIS problem: Given a LWE
 instance $(A \in \mathbb{Z}_q^{m \times n},\vec{y} \in \mathbb{Z}_q^m)$:
 \begin{itemize}
 \item Find a short non-zero vector $\vec{v}$ in the SIS lattice $L_q^\bot(A^T)$
@@ -794,9 +794,9 @@ easier, which is expected).  The condition of $\alpha q > 2\sqrt{n}$ is
 also important, as when the noise becomes small enough, it turns out that there
 are efficient algebraic attacks against LWE.
 
-\subsection{Symmetric cryptosystem from LWE}
+\subsection{Symmetric cryptosystems from LWE}
 \label{sec:LWESymmetric}
-To randomized cryptosystem based on LWE:
+To randomize cryptosystem based on LWE:
 \begin{description}
 \item[Key Generation - KeyGen.] Fix integers $q, n$. Pick a secret key
   $\vec{s} \randomsample \mathbb{Z}_q^n$.
@@ -874,12 +874,12 @@ To randomized cryptosystem based on LWE:
     \end{definition}
 
   \item [Security Reduction from IND-CPA to DLWE.] Given the formal security
-    game, we need to prove that the defined cryptosystem satisfies such
+    game, we need to prove that the defined cryptosystem satisfies such a
     model. By applying the security reduction technique, we demonstrate that if
     an attacker could somehow break the cryptosystem, he could also solve
     DLWE, which was proved (Regev, 2005) to be a lattice-related hard problem:
 
-    Suppose there was an efficient IND-CPA attack algorithm $B$, breaking
+    Suppose there was an efficient IND-CPA attack algorithm $B$, breaking the
     $2^\lambda$ security of the LWE encryption scheme:
     \begin{itemize}
     \item $B$ runs in time $T_B$ and wins the IND-CPA game with probability 1/2 +
@@ -1008,7 +1008,7 @@ encryption.
   \[
     t << \frac{1}{2\alpha}.\sqrt{\frac{3}{B_r(B_r + 1)m}}
   \]
-bserv  Again, we observe that if a larger noise is used, a better level of security is attained,
+Again, we observe that if a larger noise is used, a better level of security is attained,
   but the message space becomes smaller. In the Public-key scheme, as compared with
   the symmetric-key system, another factor of $O(\sqrt{m}$ in $t$ is lost when carrying out randomization.
 \item [Security.] Similarly to the symmetric key system, the
@@ -1123,10 +1123,10 @@ bserv  Again, we observe that if a larger noise is used, a better level of secur
       be. The proof continues as follows:
     \item If the distribution P of
       $(A, \vec{y}, \vec{a^*} = \vec{r} . A, \vec{r}. \vec{y})$ was exactly
-      $U(\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{n+1})$, then similar to
+      $U(\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{n+1})$, then, similar to
       the symmetric key case, the ciphertext
       $(\vec{a}, c^* = \vec{r}\vec{y} + \lceil q/t \rfloor.m_b)$ is independent
-      of $b$ and the public key $\vec{y}$, that contains no information on $b$,
+      of $b$ and the public key $\vec{y}$, which contains no information on $b$,
       and hence $D$ returns 'Real' with probability 1/2.
     \item By LHL,
       $\Delta(P,U) \leq \frac{1}{2}.
@@ -1142,16 +1142,16 @@ bserv  Again, we observe that if a larger noise is used, a better level of secur
       \]
       Also, the run-time of $D$ is approximately the run-time of $B$, which is
       $O\left( 2^\lambda \right)$. This contradicts the $2^{\lambda + 1}$
-      security of DLWE.
+      security level of DLWE.
 
       \begin{theorem}
         If the LHL condition holds, the IND-CPA security of Regev's encryption scheme is
         at least as hard as $DLWE_{q,m,n,\alpha}$
         \label{theo:IndCPARegev}
       \end{theorem}
-    \item For future reference of parameter choices, we consider the following example of
+    \item For future reference on parameter choices, we consider the following example of
       parameter value choice for Regev's cryptosystem. We can rearrange the
-      requirements for the LHL condition hold, it tells us how large $m$ should
+      requirements for the LHL condition to hold, it tells us how large $m$ should
       be:
       \[
         (2B_r + 1 )^m \geq 2^{2(\lambda + 1)}.q^{n+1}
@@ -1195,7 +1195,7 @@ to improve all of these aspects below.
   $\vec{a^T} = \vec{r^T}. A \mod q$ part of the ciphertext is independent of the length of
   message $m$ and takes lots of space. Instead of using a new random nonce for
   each message $m$, the one already used can be re-instantiated with new secret keys
-  $\vec{s_i}$ to encrypt several integer messages, by encoding it in an integer
+  $\vec{s_i}$ to encrypt several integer messages, by encoding them in an integer
   vector. The modified scheme is presented as follows, with $l$ being the number
   of secret key vectors.
   \begin{itemize}
@@ -1207,12 +1207,12 @@ to improve all of these aspects below.
     $\vec{e_i} \randomsample \chi_{\alpha q}^m$.
   \item Encryption - Enc $(\vec{m} \in \mathbb{Z}_t^l)$: Return the ciphertext
     $C = (\vec{a}^T= \vec{r}^T.A \mod q, \vec{c}^T = \vec{r}^.P + \lceil q/t
-    \rfloor . \vec{m} \mod q)$. It appears that the ciphertext size increases from
+    \rfloor . \vec{m} \mod q)$. It appears that the ciphertext's size increases from
     $n\log q$ to $(n+l)\log q$, the message length also increases from one
     integer to $l$ integers. The expansion ratio $\frac{(n+l)\log q}{l \log t}$
     can therefore be reduced. However, the IND-CPA security still holds as the scheme
     does not reuse $\vec{p_i}$ during encryptions. Although $\vec{p_i}$ increases the size of
-    the public key, $A$'s size still dominate.
+    the public key, $A$'s size still dominates.
   \item Decryption - $Dec(C = (\vec{a}^T, \vec{c}^T))$: Compute
     $\vec{c'}^T = \vec{c}^T - \vec{a}^T.S \mod q$ and round to the neareast
     multiple of $\lceil q/t \rfloor \mod q$ to get $\vec{c''}$. Return plaintext
@@ -1234,7 +1234,7 @@ to improve all of these aspects below.
       a_{m,1}& a_{m,2}& \dots& a_{m,n}
     \end{bmatrix}
   \]
-  If, instead of choosing the elements independently from each-other, they are selected on the basis of but correlations between rows or columns, $n^2$ elements won't need to be further specified when describing $A$. In other words, they can be derived from existing
+  If, instead of choosing the elements independently from each-other, they are selected on the basis of correlations between rows or columns, $n^2$ elements won't need to be further specified when describing $A$. In other words, they can be derived from existing
   ones. The question is: how to do that securely? The most common approach was
   introduced by \cite{hoffstein1998ntru, micciancio2007generalized}, it is a
   special structured type of matrix called "negacyclic matrix", denoted by
@@ -1261,10 +1261,10 @@ to improve all of these aspects below.
     \end{bmatrix}
   \]
   Therefore, the storage space for the matrix $A$ reduces from $m \times n \log q$ to
-  $m \log q$ only the first column of the matrix needs to be stored.  Another
+  $m \log q$ as only the first column of the matrix needs to be stored.  Another
   distinguished property of this rotational structure is its correspondence with the ring
   multiplication operation of the ring $R_q = \mathbb{Z}_q[x]/(x^n+1)$. In other
-  words, the expensive operation of multiplying a matrix multiplied by a vector can be
+  words, the expensive operation of multiplying a matrix by a vector can be
   achieved by a single polynomial multiplication: For two n-dimensional vectors
   $\vec{a}, \vec{x}$ represented by two polynomials
   $a(x), s(x) \in \mathbb{Z}_q[x]$ of degree less than $n -1$, let
@@ -1296,7 +1296,7 @@ to improve all of these aspects below.
   \textbf{Reducing Computation with FFT.} There are several variants of Fourier
   Transform (FT). One of the classical usages of FT in engineering is to convert
   a time function of periodic signal into the frequency domain of that
-  function. The version of FT that we will use here is similar, but it works on
+  function. The version of FT we will use here is similar, but it works on
   discrete structures: the input to the FT is a n-dimensional vector (which can
   also be represented in terms of a polynomial), the output is another
   polynomial whose coefficients are the evaluations of the input polynomial at
@@ -1304,7 +1304,7 @@ to improve all of these aspects below.
   Number Theoretic Transform, short, NTT (the original FT usually works with complex
   numbers). It should be kept in mind that the NTT's roots of unity are $\zeta_i$ such that
   $\zeta_i^n = -1\mod q$, and that in order for $\zeta_i$ to exist, the condition on
-  $q$ is for $q -1$ to be divisible by $2n$.  Speeding up the polynomial multiplication of
+  $q$ is, for $q -1$, to be divisible by $2n$.  Speeding up the polynomial multiplication of
   $\mathbf{c(x) = a(x).s(x)} \mod x^n +1$, where $\mathbf{a(x),s(x)} \in \mathbb{Z}_q[x]$, can be obtained as follows:
   \begin{itemize}
   \item Choose $q$ such that $2n$ divides $q-1$, then $x^n + 1$ has $n$ zeros in
@@ -1328,7 +1328,7 @@ to improve all of these aspects below.
   the time to compute polynomial multiplication with NTT is $O(n \log n)$
   instead of $O(n^2)$ if a classical arithmetic method is enforced.
 
-  In summary, by using this structured rot matrix, not only can storage space of the key from $O(n^2)$ to $O(n)$ can be saved, but also the time of the most expensive
+  In summary, by using this structured rot matrix, not only storage space of the key from $O(n^2)$ to $O(n)$ can be saved, but also the time of the most expensive
   operation from $O(n^2)$ to $O(n\log n)$ can be lowered.
 \end{description}
 
@@ -1380,7 +1380,7 @@ This function is meant to improve the efficiency of $O(n\log n)$ for the key $A$
 the computation is $O(n\log^2 n)$. A practical implementation has been put forward
 \cite{lyubashevsky2008swifft} with some further optimizations for a specific set
 of parameters: $n = 64, m = 16, q = 257$. The hash compresses 1024-bit input to
-512-bit output with the key length being 8kbits. The performance is competitive to
+512-bit output with the key length being 8kbits. The performance is competitive with respect to
 other hash functions, which are about 60 CPU cycles/byte.
 
 \subsubsection{SecurityImpact}
@@ -1402,7 +1402,7 @@ same level of security can be reached . The definition of the problems follows.
   \item 'Random' Scenario: $\vec{y} \randomsample \mathbb{Z}_q^m$
   \end{itemize}
 \end{definition}
-There is a similar theoretical result to LWE regarding the average-case to
+The theoretical result is similar  to LWE regarding the average-case to
 worst-case lattice reduction for Ring-SIS/Ring-LWE.
 \cite{lyubashevsky2010ideal}. This work proved that, if an efficient
 algorithm breaking Ring-LWE for random instances over the ring can be found, then it can be used to break $\gamma-SVP$ on some structured sets of lattices, called "ideal
@@ -1486,8 +1486,8 @@ proposed:
 
   The main issue with the original NTRU was its security: it relied on a
   problem known as 'NTRU key-cracking' (which was not well understood at the time) and on
-  Ring-LWE. A variant of it, only relying on Ring-LWE has been brought up in 2011.
-  \cite{stehle2011making},
+  Ring-LWE. A variant of it, only relying on Ring-LWE has been brought up in 2011
+  \cite{stehle2011making}.
 \end{description}
 
     % \begin{description}
@@ -1510,13 +1510,13 @@ proposed:
 \label{sec:defHomo}
 
 \subsection{Homomorphic Encryption}
-Homomorphic Encryption (FHE) has been considered the ``Swiss Army Knife''
+Homomorphic Encryption (FHE) has been considered to be the ``Swiss Army Knife''
 of cryptography, as it provides a powerful tool (operation on encrypted data) to
 many cryptographic applications: Outsourcing storage and computation, Private
 Information Retrieval, Multiparties Computation, etc . The idea was introduced
 in the late 1970s \cite{rivest1978data} and has been actively researched lately
 (\cite{smart2014fully}, \cite{van2010fully} , \cite{stehle2010faster}
-\cite{gentry2013homomorphic}, etc), since the breakthrough work of Gentry
+\cite{gentry2013homomorphic}, etc.), since the breakthrough work of Gentry
 \cite{homenc}. This section introduces the concept and discusses some properties of it
 and its connections with secure computation protocols.
 
@@ -1574,9 +1574,9 @@ is based on the hardness of the Ring-Learning With Error (RLWE) problem
     first one, $(\mathbf{a_i},\mathbf{b_i})$ are uniformly sampled from
     $R_q^2$.  In the second distribution,
     $\mathbf{s} \randomsample R_q$, $\mathbf{e_i} \randomsample \chi$ are sampled first, then
-    generate $(\mathbf{a_i},\mathbf{b_i})$ by sampling
-    $\mathbf{a_i} \randomsample R_q$, and finally compute
-    $\mathbf{b_i} = \mathbf{a_i}.\mathbf{s} + \mathbf{e_i}$.
+    $(\mathbf{a_i},\mathbf{b_i})$ are generated by sampling
+    $\mathbf{a_i} \randomsample R_q$, and finally 
+    $\mathbf{b_i} = \mathbf{a_i}.\mathbf{s} + \mathbf{e_i}$ are computed.
   \end{definition}
 
 \item [SHE Scheme construction]
@@ -1606,7 +1606,7 @@ is based on the hardness of the Ring-Learning With Error (RLWE) problem
     $\enc{(P,e)}$ is used to represent it, $e$ being the noise.
   \item[Decryption.] Although the above encryption generates ciphertexts of 2
     elements only in $R_q$, the homomorphic operations (discussed next) will
-    make the ciphertext longer. The decryption for ciphertext appears as
+    make the ciphertext longer. The decryption of the ciphertext appears as
     $c=(\mathbf{c_0},\mathbf{c_1},\dots,\mathbf{c_L})$, with secret key
     $sk = (1, \mathbf{s}, \mathbf{s^2},\dots, \mathbf{s^L})$ as
     $ Dec(\mathbf{c},sk) = \left[\left[ \langle \mathbf{c}, \mathbf{sk} \rangle
@@ -1633,12 +1633,12 @@ is based on the hardness of the Ring-Learning With Error (RLWE) problem
 \label{sub:ciphertext_packing}
 Given a bit string plaintext $m \in \{0,1\}^*$, there are several ways to encode it as a polynomial, or a ring element \textbf{m} $\in$ R$_{t}$ before
 encryption. A recent popular approach for BV cryptosystems is called CRT packing
-method, and based on Chinese Remainder Theorem \cite{smart2014fully}. The
+method, and based on the Chinese Remainder Theorem \cite{smart2014fully}. The
 method allows Single Instruction, Multiple Data (SIMD) operations on encrypted
-data. However, we do not use this packing technique as there is not yet a known
+data. However, we do not use this packing technique, as there is not yet a known
 efficient method to compute HD based on it. We instead apply the method of
 \cite{yasuda2014practical}, which is an extension of \cite{naehrig2011can},
-the technique allowing HD computation in just one level of multiplication. The
+the technique allowing HD computation with just one level of multiplication. The
 definition follows.
 \begin{definition}
   For $\mathbf{T} = (t_0, \dots, t_{n-1})$ and
@@ -1651,7 +1651,7 @@ definition follows.
 \end{definition}
 If $x^n = -1$ in the ring $R_Q$, then, when $pm_1(\mathbf{T})$ is multiplied by
 $pm_2(\mathbf{Q})$, the constant term of the result equals the inner product $\langle \mathbf{T}, \mathbf{Q}\rangle$. Homomorphic multiplication of the ciphertexts produces the ciphertext of the
-inner product similarly. Furthermore, these result can be used to compute HD as
+inner product similarly. Furthermore, these results can be used to compute HD as
 follows, this operation costing one level of multiplication with 3 additions and 3
 multiplications on ciphertexts:
 
@@ -1670,17 +1670,17 @@ multiplications on ciphertexts:
 \label{sec:defZKP}
 \subsection{Definitions}
 \label{sec:zkpdefinitions}
-Zero Knowledge Proofs (ZKP), first introduced by \cite{goldwasser1989knowledge},
+The Zero Knowledge Proof (ZKP), first introduced by \cite{goldwasser1989knowledge},
 is a strong cryptographic tool, a beautiful concept that goes beyond the limits
 of traditional proofs: In a ZKP system, a $Prover$ P convinces a $Verifier$ P
-that some statement is true without leaking any information other than the validity of the
-assertion. This section review some standard definitions of ZKP and a specific
-system (Stern-ZKP) that serves as the basic tool in the later constructs of
+that some statement is true without disclosing any information other than the validity of the
+assertion. This section reviews some standard definitions of ZKP and a specific
+system (Stern-ZKP) serving as the basic tool in the later constructs of
 this thesis.
 
 Traditionally, proofs are static objects that can be expressed in written
 form so that they can be verified. However, in non-secure environments, when the
-validity of a proof statement is verified, information handled by the protocol having produced the proof can sometimes be gained by the verification agent. To prevent leakages of this kind, interactive proof systems work differently. The protocol involves message exchanges between a prover and a verifier and a final "Accept" bit output issued by the verifier, if convinced that the proof statement is true (otherwise he outputs ``Reject''). We here focus on a specific category of ZKP: \(\sum\)-protocol, where generally 3 messages are exchanged in every round of the protocol. The prover first
+validity of a proof statement is verified, information handled by the protocol having produced the proof can sometimes be gained by the verification agent. To prevent leakages of this kind, interactive proof systems work differently. The protocol involves message exchanges between a prover and a verifier and a final "Accept" bit output issued by the verifier, if convinced that the proof statement is true (otherwise, he outputs ``Reject''). We here focus on a specific category of ZKP: \(\sum\)-protocol, where generally 3 messages are exchanged in every round of the protocol. The prover first
 sends a ``commitment'' to the verifier, who will send back a random
 ``challenge''. The prover then computes and sends a ``response'', so that the
 verifier can check the validity of the statement using a function of the received
@@ -1695,7 +1695,7 @@ is defined as follows:
   [Interactive Proof System] An interactive proof system for a language
   \(L \subset \{0,1\}^{*}\) with soundness error \(s \in [0,1]\) is a two-party
   protocol \(\Angle{P,V}\), involving a PPT \(verifier \) V and a computationally
-  unbound \(prover \) P, which satisfies the following properties
+  unbound \(prover \) P, which satisfies the following properties:
   \begin{itemize}
   \item Completeness: \(\forall x \in L\): \(Pr[P(x) \leftrightarrow V(x) = 1] = 1\)
   \item Soundness: \(\forall x \notin L\): \(Pr[P(x) \leftrightarrow V(x) = 1] \leq s\)
@@ -1705,14 +1705,13 @@ Where \(P(x) \leftrightarrow V(X)\) denotes the output of V after interacting
 with P on input x.
 
 An interactive proof is said to be \(zero-knowledge \) if after reading the
-proof, the verifier cannot learn anything new from the messages except for the
+proof, the verifier cannot acquire any information from the messages, except for the
 fact that \(x \in L\). This intuition is formulated by the concept of
-\(simulator\). Given \(x \in L\), if there exists an efficient \(simulator\) that
-can produce the transcript (the view) of the communication between the prover
+\(simulator\). Given \(x \in L\), if there exists an efficient \(simulator\) capable of producing the transcript (the view) of the communication between the prover
 and the verifier, then it can be certified that the interaction does not provide any additional
 knowledge for the verifier. There are different definitions of \(zero-knowledge\)
 depending on the security model at hand. For instance, ZK can be defined with
-respect to an \textit{honest verifier model} or to an \textit{malicious verifier model},
+respect to an \textit{honest verifier model} or to a \textit{malicious verifier model},
 the ZK property can be either \textit{perfect, statistical or computational}. In
 this thesis, we are interested in \textit{statistical } ZK proofs.
 
@@ -1727,7 +1726,7 @@ this thesis, we are interested in \textit{statistical } ZK proofs.
   \end{itemize}
 \end{definition}
 Where \(View_{V}[P(x) \leftrightarrow V(x)]\) denotes the view of \(V\) on
-\(x\), or all the messages sent from \(P\) to \(V\) and \(S^{V(x)}\) denotes the
+\(x\), or all the messages sent from \(P\) to \(V\), and \(S^{V(x)}\) denotes the
 output distribution of \(S\) having black box access to \(V\) on input \(x\),
 conditioned on \(S(x) \neq \bot\).  We can also say that the simulator \(S\) is
 required to output a transcript that is statistically blind to the real
@@ -1736,7 +1735,7 @@ interaction with probability of at least 1/2.
 \subsection{ZKPoPK and ISIS problem}
 \label{sec:zkpIsisi}
 
-There are several types of ZKP, which are the building blocks in many
+There are several types of ZKP, which are the building blocks of many
 cryptographic protocols (anonymous credential systems, identification schemes,
 group signatures, etc). In this work, we focus on ZKP of knowledge (ZKPoK)
 (\cite{bellare1992defining}, \cite{goldwasser1989knowledge}), where P needs to
@@ -1755,15 +1754,15 @@ Inhomogeneous Small Integer Solution (ISIS) problem. The proof relation is
 The secret witness of \(P\) is \(\vec{x}\) and the public parameters for \(V\)
 are \((\mathbf{A},\vec{y})\).  One of the main research directions was initiated
 by Stern (\cite{stern1993new}), who proposed the solution for a simpler problem
-(Syndrome Decoding Problem).  Ling et. al. (\cite{ling2013improved}) developed a
+(Syndrome Decoding Problem).  Ling et al. (\cite{ling2013improved}) developed a
 scheme to fully support ISIS proofs. The proof is a 3-move interactive protocol
 : P starts the protocol by computing and sending three commitments to V; V then
 sends P a random challenge; P reveals two of the three commitments according
 to the challenge. The $Prover$'s witness is the secret vector $\vec{x}$, the
 public inputs are $\mathbf{A}$ and $\vec{y}$. The protocol is detailed in
 Appendix \ref{append:Stern}. We refer readers to \cite{ling2013improved} for
-correctness and statistical zero-knowledge proofs. We note that from their
-result, each round of communication costs $\log\beta\tilde{O}(n \log Q)$ bits
+correctness and statistical zero-knowledge proofs. As per their
+results, each round of communication costs $\log\beta\tilde{O}(n \log Q)$ bits,
 and we denote the whole run \textbf{SternExt(A,x,y)}.
 
 
@@ -1771,19 +1770,18 @@ and we denote the whole run \textbf{SternExt(A,x,y)}.
 \label{append:Stern}
 The protocol includes 2 phases
 \begin{description}
-\item[Setup.] Let COM be a statistical hiding and computational biding commitment scheme (\cite{kawachi2008concurrently}.
-  show that such scheme can be constructed based on the hardness of ISIS problem).  Before the interaction, P and V
+\item[Setup.] Let COM be a statistical hiding and computational biding commitment scheme (\cite{kawachi2008concurrently} show that such scheme can be constructed based on the hardness of ISIS problem).  Before the interaction, P and V
   create matrix $\mathbf{A'} \in \mathbb{Z}_Q^{n\times 3m}$ by extending $\mathbf{A}$ (padding $\mathbf{A}$ with $2m$
   zero-columns). P also executes some extra preparation steps:
   \begin{itemize}
   \item Decomposition: Represent vector $\vec{x} = (x_0, \dots, x_{m-1})$ by $k$ vectors
-    ${\vec{u'}}_j \in \{-1,0,1\}^m$. The algorithm first breaks each $x_i$ to its binary representation:
+    ${\vec{u'}}_j \in \{-1,0,1\}^m$. The algorithm first breaks each $x_i$ into its binary representation:
     $x_i = b_{i,0}2^0 + b_{i,1}2^1 + \dots + b_{i,k-1}2^{k-1}$, where $b_{i,j} \in \{-1, 0, 1\}$. Then ${\vec{u'}}_j$ is
     constructed by ${\vec{u'}}_j = (b_{0,j}, b_{1,j}, \dots, b_{m-1,j})$. Note that $\vec{x}$ can be reconstruct by
     $\vec{x} = \sum_{j = 0}^{k - 1}2^j{\vec{u'}}_j$.
   \item Extension: This step masks the number of -1s,1s and 0s in each ${\vec{u'}}_j$ by transforming each
-    ${\vec{u'}}_j \in \{-1,0,1\}^m$ to another $\vec{u}_j \in \{-1,0,1\}^{3m}$. The mask is built by padding to each
-    ${\vec{u}}_j$ a random vector $\vec{t} \in \{-1,0,1\}^{2m}$ such that after the masking is completed, the number of -1s,
+    ${\vec{u'}}_j \in \{-1,0,1\}^m$ into another $\vec{u}_j \in \{-1,0,1\}^{3m}$. The mask is built by padding each
+    ${\vec{u}}_j$ with a random vector $\vec{t} \in \{-1,0,1\}^{2m}$, such that after the masking is completed, the number of -1s,
     0s, and 1s in $\vec{u}_j$ is the same and equals m. We observe that
     \[
       \mathbf{A'}\sum_{j=0}^{k-1}2^j\vec{u}_j = \vec{y} \mod Q \iff \mathbf{A}\vec{x} = \vec{y} \mod Q
@@ -1853,10 +1851,10 @@ The protocol includes 2 phases
 \subsection{Garbled Circuit}
 \label{sec:garbledCircuitPre}
 
-The "garbled circuit" concept was originally proposed in \cite{yao1986generate} to
-allow two parties to evaluate securely any functions (represented by a logic
+The "garbled circuit" concept was originally proposed in \cite{yao1986generate}, to
+allow two parties to securely evaluate any functions (represented by a logic
 circuit). It is secure in the sense that the communicating parties do not acquire
-any information about the others' inputs, as they only have access to the output of the
+any information about each others' inputs, as they only have access to the output of the
 function. The idea is that, given a circuit (composed of gates connected by
 wires), the server ``garbles'' the circuit by randomly assigning two encryption
 keys \(\omega_{j,0}\) and \(\omega_{j,1}\) to each wire \(\omega_{j}\). The pair
@@ -1866,8 +1864,7 @@ gate using nested encryption. Figure \ref{fig:garbledCircuit} illustrates how
 this can be done: Computing the output key of a gate requires knowning two of
 its input's keys.
 
-After garbling the gates, the server sends the ciphertext tables to the client
-and also the keys corresponding to the server's input values. The client uses an
+After garbling the gates, the server sends the ciphertext tables and the keys corresponding to the server's input values to the client. The client uses an
 \textit{Oblivious Transfer } technique (discussed below) to obtain the keys
 corresponding to the client's input values. After having the keys for each wire,
 the client can, in turn, decrypt the gates until discovering the final output keys
@@ -1905,9 +1902,8 @@ The Matrix.
 \end{figure}
 
 What if, in such situation, there were a protocol to give privacy to
-\(Neo\): \(Morpheus\) should not learn about \(Neo\)'s selection. Moreover, the
-protocol can also provide privacy to \(Morpheus\): \(Neo\) should not learn
-anything about the unchosen pill. In cryptography, Oblivious Transfer (OT) is a
+\(Neo\): \(Morpheus\) should not be able to discover what option \(Neo\) has chosen. Moreover, the
+protocol can also provide privacy to \(Morpheus\): \(Neo\) be unable to get information about the unchosen pill. In cryptography, Oblivious Transfer (OT) is a
 protocol able to support such scenario. 
 In its most basic form, it is a
 two-parties protocol between a \textit{Sender} and a \textit{Receiver}, denoted
@@ -1919,7 +1915,7 @@ two private inputs \(x_{0}, x_{1}\) and the \(Receiver\) uses one input bit
 \)-OT\((x_{0},x_{1};s) = x_{s}\).
 
 The general idea is that, when the receiver requests an item, the sender sends all the available
-items to him, then he is unaware of which one has been requested
+items to him, he is unaware of which one has been requested
 requested. However, the response is encrypted in such a way that the receiver
 can only decrypt the one he requested. A concrete implementation example of
 \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT protocol based on
@@ -1956,8 +1952,8 @@ technique to be used with lattice-based cryptosystems.
 In summary, throughout this chapter we have reviewed basic definitions and
 constructions in lattice-based cryptography, as well as some notions of secure
 multi-parties protocols that are used in the thesis. In the next chapter, we
-formulate the definitions of the models and security of a generic biometric
-authentication scheme. We then present different variants according to the
+consider the definitions of the models and security of a generic biometric
+authentication scheme. We then present different variants of privacy preserving authentication protocol according to the
 models.
 
 \chapter{Security model}
