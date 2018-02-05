@@ -1587,7 +1587,7 @@ is based on the hardness of the Ring-Learning With Error (RLWE) problem
     the plaintext space $R_t = \frac{\mathbb{Z}_{t}[x]}{x^{n} + 1}$, and the
     error distribution, note that \(t << q\).
   \item[KeyGen.] The secret key $sk$ can be chosen by selecting a small element
-    $\mathbf{s} \in R_{q}$, $\mathbf{s} \randomsample \chi^{n}$ is performed. The
+    $\mathbf{s} \in R_{q}$, $\mathbf{s} \randomsample \chi^{n}$ can be done for this step. The
     public key $pk$ is a pair of ring elements $(\mathbf{p_0},\mathbf{p_1})$,
     where $\mathbf{p_1} \randomsample R_q$ and
     $\mathbf{p_0} = -(\mathbf{p_1}\mathbf{s} + t\mathbf{e})$ with
@@ -1947,22 +1947,35 @@ discrete log DH is illustrated in figure \ref{fig:DH21OT}. The receiver picks \(
   \label{fig:DH21OT}
 \end{figure}
 
-Efficient implementations of Oblivious Transfer can be found in \cite{naor2001efficient35}. The techniques found in \cite{ishai2003extending24} can reduce a large number of OT protocol executions to \(\lambda\), where \(\lambda\) is the security parameter. In this thesis, we propose a new OT technique to be used with lattice-based cryptosystems.
+Efficient implementations of Oblivious Transfer can be found in
+\cite{naor2001efficient35}. The techniques found in \cite{ishai2003extending24}
+can reduce a large number of OT protocol executions to \(\lambda\), where
+\(\lambda\) is the security parameter. In this thesis, we propose a new OT
+technique to be used with lattice-based cryptosystems.
+
+In summary, throughout this chapter we have reviewed basic definitions and
+constructions in lattice-based cryptography, as well as some notions of secure
+multi-parties protocols that are used in the thesis. In the next chapter, we
+formulate the definitions of the models and security of a generic biometric
+authentication scheme. We then present different variants according to the
+models.
+
+\chapter{Security model}
 
 \section{The Syntax and Security model}
 \label{sec:syntaxModel}
 We first describe the protocol and its security model generically.  We then go into details and further use it as a framework in our specific proposal.
 
-% \subsubsection{Desirable properties}
-% \label{sec:privacyProps}
-% According to \cite{jain201650}, a secure template solution to biometric authentication should satisfy the following
-% properties
-% \begin{description}
-% \item[Non-invertibility:] It is computationally hard to rebuild the original template from the encrypted one.
-% \item[Non-linkability (Revocability):] It should be possible to revoke and to re-issue new encrypted templates using a
-%   new key when the database is compromised.
-% \item[Discriminability:] The secure scheme should not degrade the accuracy of the biometric authentication system.
-% \end{description}
+\subsubsection{Desirable properties}
+\label{sec:privacyProps}
+According to \cite{jain201650}, a secure template solution to biometric authentication should satisfy the following
+properties
+\begin{description}
+\item[Non-invertibility:] It is computationally hard to rebuild the original template from the encrypted one.
+\item[Non-linkability (Revocability):] It should be possible to revoke and to re-issue new encrypted templates using a
+  new key when the database is compromised.
+\item[Discriminability:] The secure scheme should not degrade the accuracy of the biometric authentication system.
+\end{description}
 \subsubsection{The threats}
 \label{sec:privacyReqs}
 There are common security threats to many authentication systems such as Trojan horse, replay, man-in-the-middle (MITM)
