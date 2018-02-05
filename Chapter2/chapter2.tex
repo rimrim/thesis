@@ -2036,7 +2036,7 @@ we also reflect these two rates in our models.
     \begin{itemize}
     \item Input: Client: identity $k$, a registered template $X_k$; Server: Parameters of the cryptographic tools used.
     \item Output: A public-private key pair $(sk_k, pk_k)$ for the user $\user_k$. The server stores the protected
-      template of $T_k$ of $X_k$.
+      template of $T_k$ (which can be some encryption of $X_k$).
     \end{itemize}
   \item[Auth:] This procedure allows a user to authenticate to the system.
     \begin{itemize}
