@@ -1960,91 +1960,133 @@ models.
 
 \section{The Syntax and Security model}
 \label{sec:syntaxModel}
-We first describe the protocol and its security model generically.  We then go into details and further use it as a framework in our specific proposal.
+We first describe the protocol and its security model generically.  We then go
+into details and further use it as a framework in our specific proposal. To
+formulate precisely the definition of security, we will describe the protocols'
+security models in terms of \textbf{attack games} played bettwen two parties:
+the \textbf{challenger} and an \textbf{adversary}. Generally, the challenger
+\(\challenger\) follows a simple, fixed protocol and the adversary
+\(\attacker\) may follow an arbitrary and efficient protocol. The two players
+send messages back and forth to each other as specified in their protocols and
+at the end of the games, \(\attacker\) outputs some value. The attack games
+define a probability space based on this output value, and it defines the
+adversary's \textit{advantage}, which normally measures the difference between
+the probabilities of two events in this probability space: One is the event that
+the adversary win the \textit{real} game, the other one is the event that the
+adversary win the game with one (or some) of the system's components replaced by
+an idealized version of such component(s).
 
-\subsubsection{Desirable properties}
+\subsubsection{Desirabtele properties}
 \label{sec:privacyProps}
-According to \cite{jain201650}, a secure template solution to biometric authentication should satisfy the following
-properties
+According to \cite{jain201650}, a secure template solution to biometric
+authentication should satisfy the following properties
 \begin{description}
-\item[Non-invertibility:] It is computationally hard to rebuild the original template from the encrypted one.
-\item[Non-linkability (Revocability):] It should be possible to revoke and to re-issue new encrypted templates using a
-  new key when the database is compromised.
-\item[Discriminability:] The secure scheme should not degrade the accuracy of the biometric authentication system.
+\item[Non-invertibility:] It is computationally hard to rebuild the original
+  template from the encrypted one.
+\item[Non-linkability (Revocability):] It should be possible to revoke and to
+  re-issue new encrypted templates using a new key when the database is
+  compromised.
+\item[Discriminability:] The secure scheme should not degrade the accuracy of
+  the biometric authentication system.
 \end{description}
 \subsubsection{The threats}
 \label{sec:privacyReqs}
-There are common security threats to many authentication systems such as Trojan horse, replay, man-in-the-middle (MITM)
-attack, etc. Biometrics authentication systems are also vulnerable to such attacks. We can
-borrow ideas from secure password-based schemes to address such issues. However, there are two categories of
-vulnerabilities that are specific to biometric systems.  The first one is impersonation, or spoofing, the attack happens
-at the client's side as the adversary tries to cheat the system with counterfeit or invalid inputs.  The other issue is
-at the server's side and yields privacy concerns.
+There are common security threats to many authentication systems such as Trojan
+horse, replay, man-in-the-middle (MITM) attack, etc. Biometrics authentication
+systems are also vulnerable to such attacks. We can borrow ideas from secure
+password-based schemes to address such issues. However, there are two categories
+of vulnerabilities that are specific to biometric systems.  The first one is
+impersonation, or spoofing, the attack happens at the client's side as the
+adversary tries to cheat the system with counterfeit or invalid inputs.  The
+other issue is at the server's side and yields privacy concerns.
 
-We will discuss the formal models that capture all the known threats of biometric authentication:
+We will discuss the formal models that capture all the known threats of
+biometric authentication:
 \begin{itemize}
-\item Confidential data leakage due to attacks on the template database: Server breaches of biometric data always have
-  catastrophic consequences (\cite{OPMsays563:online}), as we cannot change our fingerprints as easily as changing our
-  passwords.
-\item Hill-Climbing attack from the server's side: This is a privacy threat where the server tries to compute good
-  inputs $X$ from the distance information between $X$ and $Y$ (\cite{uludag2004attacks}, \cite{higo2015privacy}). Note
-  that Hill-Climbing attack by the client is very limited due to the limitation of the number of false authentication
-  attempts in almost every biometric authentication system.
-\item Impersonation by a malicious client when the secret key of the user is known (replay attack): This happens when an
-  attacker has access to the user's device but not to his biometric data, as, for example, in stolen device
+\item Confidential data leakage due to attacks on the template database: Server
+  breaches of biometric data always have catastrophic consequences
+  (\cite{OPMsays563:online}), as we cannot change our fingerprints as easily as
+  changing our passwords.
+\item Hill-Climbing attack from the server's side: This is a privacy threat
+  where the server tries to compute good inputs $X$ from the distance
+  information between $X$ and $Y$ (\cite{uludag2004attacks},
+  \cite{higo2015privacy}). Note that Hill-Climbing attack by the client is very
+  limited due to the limitation of the number of false authentication attempts
+  in almost every biometric authentication system.
+\item Impersonation by a malicious client when the secret key of the user is
+  known (replay attack): This happens when an attacker has access to the user's
+  device but not to his biometric data, as, for example, in stolen device
   scenarios (\cite{zhang2015fingerprints}).
-\item Impersonation by a malicious client when the biometric template of the user is known (spoofing attack): This happens
-  when an attacker collects biometric data and tries to reconstruct the template for authentication, as, for example, by
-  rebuilding fingerprints from captured photos (\cite{zhang2015fingerprints},\cite{feng2011fingerprint}).
-\item Cross matching of biometric data among databases: This threat uses information of the same user from different
-  compromised databases to reconstruct the biometric template.
+\item Impersonation by a malicious client when the biometric template of the
+  user is known (spoofing attack): This happens when an attacker collects
+  biometric data and tries to reconstruct the template for authentication, as,
+  for example, by rebuilding fingerprints from captured photos
+  (\cite{zhang2015fingerprints},\cite{feng2011fingerprint}).
+\item Cross matching of biometric data among databases: This threat uses
+  information of the same user from different compromised databases to
+  reconstruct the biometric template.
 \end{itemize}
 
 \subsubsection{The Generic Two-party model}
 
 \begin{description}
-\item[Entities:] There can be 2 or 3 typical entities involved in a secure biometric authentication system. The user
-  $\mathcal{U}$, an authentication server $\mathcal{S}$, and a decryptor, who is a third party trusted by both the
-  user and the server. The decryptor appears in some systems (\cite{mandal2015comprehensive},
-  \cite{hirano2013cryptographically}, \cite{higo2015privacy}), with the assumption that there is no collusion between
-  this entity and $\user$ or $\server$. In our work, we avoid the assumption of a trusted decryptor party, so that
-  only two parties are left: $\user$ and $\server$.
-\item[Biometrics Features in non-private setting] In biometric authentication systems (e.g., fingerprint authentication
-  system), a user $\mathcal{U}$ first
-  registers his fingerprint template $X$ on the server $\mathcal{S}$. $\mathcal{U}$ later authenticates before
-  $\mathcal{S}$ using the same finger with a template $Y$, $\server$ uses an algorithm $Verify(X,Y)$ to obtain the
-  result of the authentication: \textbf{Accept} or \textbf{Reject}. Different fingerprint systems might use different
-  features of fingers such as minutia or fingercode to compute the distance $\Delta$ between $X$ and $Y$ within the
-  algorithm $Verify$. The distance $\Delta$ is compared to some predifined threshold value $\tau$ to determine the
-  result of the authentication. We refer the reader to \cite{jain2007handbook} for biometric feature extraction and
-  comparison techniques.\\
+\item[Entities:] There can be 2 or 3 typical entities involved in a secure
+  biometric authentication system. The user $\mathcal{U}$, an authentication
+  server $\mathcal{S}$, and a decryptor, who is a third party trusted by both
+  the user and the server. The decryptor appears in some systems
+  (\cite{mandal2015comprehensive}, \cite{hirano2013cryptographically},
+  \cite{higo2015privacy}), with the assumption that there is no collusion
+  between this entity and $\user$ or $\server$. In our work, we avoid the
+  assumption of a trusted decryptor party, so that only two parties are left:
+  $\user$ and $\server$.
+\item[Biometrics Features in non-private setting] In biometric authentication
+  systems (e.g., fingerprint authentication system), a user $\mathcal{U}$ first
+  registers his fingerprint template $X$ on the server
+  $\mathcal{S}$. $\mathcal{U}$ later authenticates before $\mathcal{S}$ using
+  the same finger with a template $Y$, $\server$ uses an algorithm $Verify(X,Y)$
+  to obtain the result of the authentication: \textbf{Accept} or
+  \textbf{Reject}. Different fingerprint systems might use different features of
+  fingers such as minutia or fingercode to compute the distance $\Delta$ between
+  $X$ and $Y$ within the algorithm $Verify$. The distance $\Delta$ is compared
+  to some predifined threshold value $\tau$ to determine the result of the
+  authentication. We refer the reader to \cite{jain2007handbook} for biometric
+  feature extraction and
+  comparison techniques.
 
-  Unlike password based systems, where $\user$ always uses one and the same query for many authentication trials, all biometric systems
-  have the concept of False Acceptance Rate (FAR) (for the system \textbf{Accept}ing an incorrect template), and False
-  Rejection Rate (FRR), (for the system \textbf{Reject}ing a genuine one).  As balancing these 2 rates while keeping good
-  performances is one of the main challenges that fingerprint verification algorithms \cite{FVConGoi2:online} need to face,
-we also reflect these two rates in our models.
+  Unlike password based systems, where $\user$ always uses one and the same
+  query for many authentication trials, all biometric systems have the concept
+  of False Acceptance Rate (FAR) (for the system \textbf{Accept}ing an incorrect
+  template), and False Rejection Rate (FRR), (for the system \textbf{Reject}ing
+  a genuine one).  As balancing these 2 rates while keeping good performances is
+  one of the main challenges that fingerprint verification algorithms
+  \cite{FVConGoi2:online} need to face, we also reflect these two rates in our
+  models.
 
-\item[Algorithms and Procedures in privacy-preserving settings:] We describe the high-level constructions of the protocol
-  as follows:
+\item[Algorithms and Procedures in privacy-preserving settings:] We describe the
+  high-level constructions of the protocol as follows:
   \begin{description}
   \item[Enroll:] This procedure inserts records into the server's database.
     \begin{itemize}
-    \item Input: Client: identity $k$, a registered template $X_k$; Server: Parameters of the cryptographic tools used.
-    \item Output: A public-private key pair $(sk_k, pk_k)$ for the user $\user_k$. The server stores the protected
-      template of $T_k$ (which can be some encryption of $X_k$).
+    \item Input: Client: identity $k$, a registered template $X_k$; Server:
+      Parameters of the cryptographic tools used.
+    \item Output: A public-private key pair $(sk_k, pk_k)$ for the user
+      $\user_k$. The server stores the protected template of $T_k$ (which can be
+      some encryption of $X_k$).
     \end{itemize}
   \item[Auth:] This procedure allows a user to authenticate to the system.
     \begin{itemize}
-    \item Input: Client: identity $k$, a query template $Y_k$ and the secret key $sk_k$; Server: record $(k, T_k, pk_k)$
-    \item Output: The server computes the authentication result $res=\{\textbf{Accept,Reject}\}$
+    \item Input: Client: identity $k$, a query template $Y_k$ and the secret key
+      $sk_k$; Server: record $(k, T_k, pk_k)$
+    \item Output: The server computes the authentication result
+      $res=\{\textbf{Accept,Reject}\}$
     \end{itemize}
 
-  \item[Correctness Requirement:] A genuine user $\user_k$ executes $(sk_k, T_k) \gets \mathbf{Enroll}(k, X_k)$ using a
-    $X_k \in Supp(D_k)$ and later uses his biometric template $Y_k \randomsample D_k$ to perform
+  \item[Correctness Requirement:] A genuine user $\user_k$ executes
+    $(sk_k, T_k) \gets \mathbf{Enroll}(k, X_k)$ using a $X_k \in Supp(D_k)$ and
+    later uses his biometric template $Y_k \randomsample D_k$ to perform
     $$res \gets \mathbf{Auth}( (k, Y_k, sk_k), (k, T_k, pk_k))$$
-    The privacy-preserving protocol works correctly if the FRR under this system is exactly equal to the FRR of the non-privacy
-    preserving system:
+    The privacy-preserving protocol works correctly if the FRR under this system
+    is exactly equal to the FRR of the non-privacy preserving system:
     \[
       Pr[res = verify(X_k,Y_k)] = 1
     \]
