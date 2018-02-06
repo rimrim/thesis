@@ -32,52 +32,39 @@ Consider a ciphertext product result in a BV cryptosystem (section
   mult(c,c') = (\mathbf{c_0}\mathbf{c_0'}, \mathbf{c_0}\mathbf{c_1'} +
   \mathbf{c_1}\mathbf{c_0'}, \mathbf{c_1}\mathbf{c_1'})
 \]
-The noise term of this result ciphertext correlates to both $\mathbf{s}$ and
-$\mathbf{m}$.  In many contexts, this leakage might be fine for a genuine user
-with a secret key because s/he is supposed to know the key and decrypt the
-message.  However, in many other contexts, especially in multi-factor
-authentication scenarios, this is not the case. For instance, in our system, we
-do not want the client to know the Hamming Distance value, so that an attacker
-with a stolen device and a secret key cannot derive information about the data
-stored in the server from ?. We propose to mask this leakage by homomorphically
-adding the ciphertext $Enc(HD)$ with $Enc(r)$ to refresh the noise terms,
-together with masking the Hamming Distance. The question is how much can we
-shift the original noise distribution to preserve correctness while providing
-the new security measure.
+The noise term of this result ciphertext correlates to both $\mathbf{s}$ and $\mathbf{m}$.
+In many contexts, this leakage might be fine for a genuine user with a secret key because s/he is supposed to know the key and decrypt the message.
+However, in many other contexts, especially in multi-factor authentication
+scenarios, this is not the case. For instance, in our system, we do not want the
+client to know the Hamming Distance value, so that an attacker with a stolen
+device and a secret key cannot derive information about the data stored in the
+server from the previous enrolment stage?. We propose to mask this data by homomorphically adding the ciphertext
+$Enc(HD)$ to $Enc(r)$ so as to refresh the noise terms while masking the Hamming Distance at the same time. The question is how far from the original noise distribution we can go without compromising correctness while providing
+this new security measure.
 
-Let $D_1$ and $D_2$ be the probability distributions of the original noise in
-the ciphertext $Enc(HD)$ and the new shifted noise of $Enc(HD+r)$. We observe
-that the 2 distributions are identical Gaussian distribution with the same
-standard deviation $\sigma$ and different means. Let $r_0$ be the shifted in
-means of $D_1$ and $D_2$.  Our goal is to set up parameter $r_0$ such that $D_1$
-and $D_2$ are computational indistinguishable while keeping other parameters of
-the cryptosystem within practical performance thresholds. Statistical Distance
-(SD) is normally used to measure the difference of distributions and is
-generally bounded by
+Let $D_1$ and $D_2$ be the probability distributions of the original noise in the ciphertext $Enc(HD)$ and the new shifted noise of $Enc(HD+r)$. We observe that the
+2 distributions are identical Gaussian distributions with the same standard deviation
+$\sigma$ and different means. Let $r_0$ be the shifted in means of $D_1$ and $D_2$.
+Our goal is to set up parameter $r_0$, such that $D_1$ and $D_2$ are computationally
+indistinguishable while keeping other parameters of the cryptosystem within practical
+performance
+thresholds. Statistical Distance (SD) is normally used to measure the difference of distributions and is generally bound by
 \[
 SD(D_1, D_2) = \frac{1}{2}\sum_{x\in X}|D_1(x) - D_2(x)| \leq K\times \frac{r_0}
 {\sigma}
 \]
-Where $K$ is a constant. We quickly see that in order for $SD$ to be
-indistinguishable ($SD < \epsilon \approx \frac{1}{2^\lambda}$, where $\lambda$
-is the security parameter), the standard deviation of the initial noise needs to
-be really large, which is $\sigma \geq Kr_02^\lambda$.
+Where $K$ is a constant. We quickly see that in order for $SD$ to be indistinguishable, ($SD < \epsilon \approx \frac{1}{2^\lambda}$, where $\lambda$ is
+the security parameter), the standard deviation of the initial noise needs to be really large, that is $\sigma \geq Kr_02^\lambda$.
 
-In the work of \cite{bai2015improved}, the authors proposed Renyi Divergence
-(RD) as an alternative to measure distributions closeness and its applications
-to security proofs. $R_a(D_1\|D_2)$ of order $a$ between $D_1$ and $D_2$ is
-defined as the expected value of $(D_1(x)/D_2(x))^{a-1}$ over the randomness of
-$x$ sampled from $D_1$.
+In the work of \cite{bai2015improved}, the authors proposed Renyi Divergence (RD) as
+an alternative to measure distributions' closeness and its applications to security proofs. $R_a(D_1\|D_2)$ of order $a$
+between $D_1$ and $D_2$ is defined as the expected value of $(D_1(x)/D_2(x))^{a-1}$ over the randomness of $x$ sampled from $D_1$.
 \[
 R_a(D_1\|D_2) = \left( \sum_{x \in D_1}\frac{D_1(x)^a}{D_2(x)^{a-1}} \right)^
 {\frac{1}{a-1}}
 \]
-Similar to SD, RD is useful in our context with its \textit{Probability
-  Preservation} property (we refer readers to \cite{bai2015improved} for
-detailed formal descriptions): Given $D_1$ and $D_2$ as described, for any event
-$E$, for instance, we want to look at $P(E)$ is the winning probability of the
-attacker in the distinguishing game, the probability of the event with respect
-to $D_2$ is bounded by
+Similar to SD, RD is useful in our context with its \textit{Probability Preservation} property (we refer readers to \cite{bai2015improved} for detailed formal
+descriptions): Given $D_1$ and $D_2$ as described, for any event $E$, for instance, we want to verify that $P(E)$ is the winning probability of the attacker in the distinguishing game, the probability of the event with respect to $D_2$ being bound by
 \begin{align}
 \label{eq:renyi}
 D_2(E) \geq D_1(E)^{\frac{a}{a-1}}/RD_a(D1\|D_2)
