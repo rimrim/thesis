@@ -533,7 +533,7 @@ reduced basis is produced as its output. The shortest vector in that reduced bas
 %   $\norm{\vec{b_1^*}}$ can only be at most \todo[inline]{finish proof}
 % \end{proof}
 
-In summary, the first vector of LLL output is bound by
+In summary, the first vector of LLL output is bounded by
 \[
   \norm{\vec{b_1^*}} \leq (1/(\delta-1/4))^{(n-1)/2}.\lambda(L)
 \]
@@ -1695,7 +1695,7 @@ is defined as follows:
   [Interactive Proof System] An interactive proof system for a language
   \(L \subset \{0,1\}^{*}\) with soundness error \(s \in [0,1]\) is a two-party
   protocol \(\Angle{P,V}\), involving a PPT \(verifier \) V and a computationally
-  unbound \(prover \) P, which satisfies the following properties:
+  unbouned \(prover \) P, which satisfies the following properties:
   \begin{itemize}
   \item Completeness: \(\forall x \in L\): \(Pr[P(x) \leftrightarrow V(x) = 1] = 1\)
   \item Soundness: \(\forall x \notin L\): \(Pr[P(x) \leftrightarrow V(x) = 1] \leq s\)
@@ -1961,7 +1961,7 @@ authentication protocol according to the models.
 \section{Introduction}
 \label{sec:syntaxModel}
 In this chapter, we describe the protocol and its security model generically.
-We then go into details and further use it as a framework in our specific
+We then go into details and further use it as a framework for our specific
 proposals in later chapters. To formulate precisely the definition of security,
 we will describe the protocols' security models in terms of \textbf{attack
   games} played bettwen two parties: the \textbf{challenger} and an
@@ -2471,7 +2471,7 @@ the security proofs.
     
     Similar to the previous impersonation attack game, We would want this
     advantage value not to be too large compared to the non-privacy-preserving
-    biometric impersonation model's advantage, which was bound by
+    biometric impersonation model's advantage, which was bounded by
     $q \times FAR$.
   \end{description}
 

@@ -546,7 +546,7 @@ Let $bad_0$ be the event in game 0 and $\exists j \leq q\ s.t\ (*_1)\ \textnorma
 modify \textit{game 0}, the probability of a successful forgery $S_1$ in \textit{game 1} is not much lower than before. Due to the modification, we observe that $ Pr[S_1] \geq Pr[S_0] - Pr[bad_0] $. For any $j$ in the $q$
 authentication attemps, by the $\varepsilon-soundness$ property of $\mathbf{ZKPValidEnc}$ as a proof of membership in
 (*), $Pr[(*_1)\ occurs\ for\ some \ j] \leq \varepsilon_{ZK1}$ holds. That is, the probability of $bad_0$ would be the union
-of these events, bound by $Pr[bad_0] \leq q\varepsilon_{ZK1}$. In other words, the advantage of $\attacker$ in
+of these events, bounded by $Pr[bad_0] \leq q\varepsilon_{ZK1}$. In other words, the advantage of $\attacker$ in
 \textit{game 1} is
 \[
   Pr[S_1] \geq Pr[S_0] - Pr[bad_0] \geq \varepsilon_{imp} - q\varepsilon_{ZK1}
