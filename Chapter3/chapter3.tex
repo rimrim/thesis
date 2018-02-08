@@ -534,8 +534,84 @@ the security proofs.
   larger than $c \times FAR$ of the non-private protocol.
 \end{definition}
 
-\section{Security Proofs}
+\section{Security Proof Technique}
+In the security proofs of the protocols in the next chapters, typically we will
+model the security games following the generic framework defined in this
+chapter, with the \textbf{Enroll} and \textbf{Auth} modules replaced by concrete
+lattice-based constructions (or combination of them). Each attack game is
+modelled as a probability space as both \textit{adversary} and
+\textit{challenger} are probabilistic process communicating with each other. The
+definition of security is tied to some particular event S as seen in previous
+sections (where security means that for all \textit{efficient} adversary, the
+probability that event S happens is \textit{close to} some target probability,
+normally \textit{negligibly} small, 1/2, or FAR in one of our context). In
+formal definitions, there is a security parameter related to the terms
+\textit{efficient} or \textit{negligible}. For example, \textit{efficient} means
+time bounded by a polynomial in the security parameter, \textit{close to} means
+the difference is smaller than inverse of any polynomial in the security
+parameter. For simplicity, we assume that all algorithms, adversaries,
+challengers, etc., take this parameter value as an implicit input.
 
+The approach used in the security proofs is called \textit{sequence-of-games},
+the process is as follows. In each proof, one constructs a sequence of games:
+Game 0, Game 1, \dots, Game $n$, where Game 0 is normally the original attack
+game with respect to a concrete protocol and a given adversary. Let $S_{0}$ be
+the event S. For i=1,\dots,n, the construction defines an event $S_{i}$ for each
+Game $i$, these events are normally related to S in a natural way. Then the
+proof shows that $\prob{S_{i}}$ is \textit{close to} $\prob{S_{i+1}}$ for all
+$i=0,\dots,n-1$. Finally, if $\prob{S_{n}}$ can be shown to be \textit{close to}
+the ``target probability'', provided that $n$ is a constant, we can infer that
+$\prob{S}$ is negligibly close to the ``target probability'', and security is
+proved. It is kept in mind that the changes from one game $i$ to the next game
+$i+1$ are kept to be small so that analyzing the changes is not too complicated.
+
+We generally use two types of changes in the proofs
+\begin{description}
+\item[Change based on indistinguishability] The change is made such that if it
+  is detected by the adversary, this would imply a method of distinguishing two
+  distributions that are statistically or computationally indistinguishable. For
+  instance, given $P_{1}$ and $P_{2}$ are two indistinguishable distributions,
+  to prove that $|\prob{S_{i}} - \prob{S_{i+1}}|$ is negligible, one can show
+  that there exists an algorithm $D$ so that when it is given as input an
+  element drawn from $P_{1}$, D outputs 1 with probability $\prob{S_{i}}$; and
+  when it is given as input an element drawn from $P_{2}$, it outputs 1 with
+  probability $\prob{S_{i+1}}$. It follows that
+  $|\prob{S_{i}} - \prob{S_{i+1}}|$ is negligible provided the
+  indistinguishability assumption of $P_{1}$ and $P_{2}$.
+\item[Change based on failure events] This type of change is based on the fact
+  that, given $A,B,F$ are events in some distribution, and suppose that
+  $A \wedge \neg F \iff B \wedge \neg F$, then
+  $|\prob{A} - \prob{B}| \leq \prob{F}$. We can say that two games proceed
+  identically unless F occurs means that $S_{i} \wedge \neg F$ and
+  $S_{i+1} \wedge \neg F$ are the same. So in order to prove $\prob{S_{i}}$ is
+  negligibly close to $\prob{S_{i+1}}$, it is enough to prove that $\prob{F}$ is
+  negligible. This can be done using security assumption or
+  information-theoretic argument, for instance, when F occurs, the adversary
+  could find a collision in a cryptographic hash function.
+\end{description}
+
+\subsection{Related work}
+\label{sec:proofRelatedWork}
+
+Sequence of transitions based on indistinguishability (only) have been used
+extensively in cryptography for many years. For example, in 1984,
+\cite{goldreich1984construct} illustrated the ``hybrid arguments'' technique on
+constructing pseudo-random functions. \cite{bellare1989new} was an early example
+of a proof that is structured as a sequence of games including transitions based
+on both failure events and indistinguishability. The first formal approach to
+sequences of games was initiated by Kilian and Rogaway's paper
+\cite{kilian1996protect}. The authors subsequently applied the technique in
+numerous works, detailed introduction to the methodology and references of usage
+can be found in \cite{bellare2004game}. In Bellare and Rogaway's approach, games
+are treated as syntactic objects subjects to formal manipulation, while
+\cite{shoup2004sequences} views games as probability spaces and random variables
+defined over them. This proof style is also illustrated nicely on some public
+key cryptography examples in an introductory manuscript
+\cite{pointcheval2005provable}. This technique has been used widely
+(\cite{abdalla2005password}, \cite{boneh2005improved}, \cite{bresson2002group},
+etc. ). While some of the proofs can be structured differently,
+sequence-of-games is the technique that can accomplish the task in a clear and
+convincing way.
 
 \section{Conclusion}
 This chapter layout the framework to be used as the security models as well as
