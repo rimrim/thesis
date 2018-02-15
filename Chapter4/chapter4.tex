@@ -213,19 +213,36 @@ to \emph{Vicky}. However, \emph{Vicky} could be as
 dishonest as to show the solution to others and claim that
 it was her who solved the problem. The Zero Knowledge Proof (ZKP) is a
 beautiful cryptographic concept allowing \emph{Paul} to produce the proof
-in such a way that \emph{Vicky} does not learn any information besides the fact that the problem has been solved. Since introduced
+in such a way that \emph{Vicky} does not learn any information besides the 
+fact that the problem has been solved. Since introduced
 in the 80s \cite{goldwasser1989knowledge}, ZKP has been extensively
 studied and is currently an important building block of many cryptographic
-protocols: identification schemes ( \cite{fiat1986prove}, \cite{feige1988zero},
-\cite{guillou1990paradoxical}, \cite{schnorr1991efficient},
-\cite{stern1993new}, \cite{kawachi2008concurrently},\dots), group signatures(
-\cite{camenisch1997efficient}, \cite{ateniese2000practical},
-\cite{boneh2004short}, \cite{boneh2004group}, \cite{groth2007fully}\dots),
+protocols: identification schemes ( \cite{fiat1986prove, feige1988zero, guillou1990paradoxical, schnorr1991efficient, stern1993new, kawachi2008concurrently},\dots), group signatures(
+\cite{camenisch1997efficient, ateniese2000practical, boneh2004short, boneh2004group, groth2007fully}\dots),
 anonymous credential systems ( \cite{camenisch2008efficient},
 \cite{camenisch2001efficient}, \cite{belenkiy2009randomizable},
 \cite{chase2013malleable},\dots), interactive encryption protocols(
 \cite{galil1985symmetric}, \cite{goldreich2009foundations},
-\cite{goldwasser2005proof}, \cite{katz2003efficient},\dots), and many more.
+\cite{goldwasser2005proof}, \cite{katz2003efficient},\dots), and many more. 
+
+In this chapter, we discuss zero-knowledge proofs of plaintext knowledge for 
+LWE-based cryptosystems. Given a system with a public key $\pk$, a proof of 
+plaintext knowledge (PoPK) allows a $Prover$ P to convince a $Verifier$ V that 
+it knows the plaintext $M$ of some ciphertext $c = Enc(\pk, M)$. The witness 
+used in the proof normally consists of the plaintext, the secret key, and the 
+randomness used during encrypting $c$. A PoPK system is zero-knowledge in the 
+sense that it does not let V learn any information about $M$. This research
+area has received attentions in recent years. A ZKPoPK for a variant of Ajtai-Dwork
+system \cite{ajtai1997public} was constructed by \cite{goldreich1999approximating} 
+by adapting the protocol from \cite{micciancio2003statistical}. Xagawa and Tanaka 
+\cite{xagawa2009zero} used Stern-KTX proof \cite{stern1993new, kawachi2008concurrently}
+to obtain PoPK for NTRU cryptosystem \cite{hoffstein1998ntru}. Many works targeted 
+Regev's LWE-based cryptosystem (\cite{bendlin2010threshold, bendlin2011semi, asharov2012multiparty},
+but they all derived from secure Multi-Party Computation protocol, specifically the IKOS
+transformation \cite{ishai2007zero} and therefore the communication cost is 
+relatively high of $\bigO{n^2}$. We present a ZKPoPK for the BV encryption scheme \cite{brakerski2011fully}, with communication cost $\bigO{n}$
+
+
 
 
 
@@ -253,8 +270,6 @@ anonymous credential systems ( \cite{camenisch2008efficient},
 % bounds on Renyi divergence between a discrete Gaussian and its offset in for Renyi divergence of order 2 to the case of
 % Renyi divergene of order infinity.
 
-\section{Stern-based variant ZKP}
-\label{sec:firstProcZKP}
 \subsection{Stern-based ZKP}
 \label{sec:Stern-basedZKP}
 Recall that we need to construct a proof for the ISIS relation:
