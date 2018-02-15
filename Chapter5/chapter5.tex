@@ -352,7 +352,6 @@ $$
 \subsection{Correctness Analysis}
 \label{sec:2correctness}
 
-\paragraph{correctness analysis}
 We start with the noise sampled during key generation:
 \[e_{0} \randomsample \chi_{\alpha q}\] where \(\chi\) is typically a Gaussian
 distribution with standard deviation \(\alpha q\). The noise bound of the first
@@ -401,6 +400,39 @@ Notation
 
 \section{Results}
 \label{sec:secProcResult}
+- In the previous chapter, the following parameters were used for the
+cryptosystem. blah blah: n, q, $\alpha q$, etc. This configuration does not
+cover circuit privacy as the error noise leaks information about the registered
+template. If the leakage is to be covered by the added noise with magnitude
+computed from Statistical Distance approach, we would need the noise added to be
+
+(blah, compute the noise)
+
+With that new noise added, the parameter $q$ of the system need to be adjusted
+to ensure correctness. According to blah , $q$ needs to be
+
+(blah, compute new q)
+
+With this new moduli, the overheads introduced to both computation and
+communication are significant. For example, in the ZKP protocol, the
+communication size of each round would be (blah) and could not be considered
+practical with the current infrastructure bandwidth.
+
+However, by applying the approach in this chapter, the new noise only needs to
+be (blah), with the proposed parameter, the new moduli is approximately blah
+bits and the communication overhead increase from 8MB to 16MB for the whole
+protocol. This is a lot smaller than SD approach and can be considered practical
+in some of the current deployed networks (such as 100 Mbps cable internet or
+NBN).
+
+In conclusion, by using Renyi Divergence as an alternative to measure the
+closeness of distributions in stead of Statistical Distance in security proofs
+of lattice-based cryptography, one can efficiently reduce the parameters'
+sizes. This chapter introduced how a specific order of RD (infinity order) can
+effect positively to the parameters' choices for the cryptosystem. In the next
+chapter, we start improving the security model by hiding the value of the
+distance from the server, all the results of this chapter will be kept during
+the circuit privacy covering steps as neccessary in any steps of the server side.
 
 
     

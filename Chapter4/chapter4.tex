@@ -11,9 +11,12 @@
 \section{Introduction}
 \label{sec:firstProcIntro}
 Many biometrics privacy preserving authentication protocols rely on a trusted
-third party to keep the client's secret key used to decrypt the authentication result
-\missref{}. Our first attempt to improve the security of such schemes has been to
-remove the role of such a party. As it proves inconvenient, due to privacy issues, to allow the server to keep the client's secret key, the distance plaintext decryption should be performed by the client, which, in turn, raises the following challenges:
+third party to keep the client's secret key used to decrypt the authentication
+result \missref{}. Our first attempt to improve the security of such schemes has
+been to remove the role of such a party. As it proves inconvenient, due to
+privacy issues, to allow a third party server to keep the client's secret key, the
+distance plaintext decryption should be performed by the client, which, in turn,
+raises the following challenges:
 \begin{description}
 \item[Multifactor security] A malicious client with a compromised secret key
   about the distance between the registred template and the extracted template while he decrypting the homomorphic ciphertext result sent by the server.
@@ -71,52 +74,121 @@ secure against a semi-honest client, many of them relying on one or more trusted
 
 
 
-\section{The BGV Cryptosystem and Yasuda Packing Method}
+\section{The BV Cryptosystem and Yasuda Packing Method}
 \label{sec:firstProcBGV}
+Although the idea of Fully Homomorphic Encryption (arbitrary number of
+operations) is feasible, its performance has not been considered practical
+enough. We discussed some generic LWE based cryptosystems and their properties
+(Section \ref{sub:LWE} ), in this chapter, we look specifically at BV
+cryptosystem, which is a Somewhat Homomorphic Encryption system that allows
+addition and some levels of multiplication (\cite{brakerski2011fully}). In later
+chapters of the thesis, an extension of this cryptosystem (namely, BGV
+\cite{brakerski2014leveled}) and its variant is also used frequently. We discuss
+the basic operation of the BV system in this chapter.  The BV cryptosystem works
+as follows.
+\begin{description}
+\item[Setup.] Initiate $(n,m,q,t, \chi)$ to define the ciphertext space $R_q$,
+  the plaintext space $R_t = \frac{\mathbb{Z}_{t}[x]}{x^{n} + 1}$, and the error
+  distribution, note that \(t << q\).
+\item[KeyGen.] The secret key $sk$ can be chosen by selecting a small element
+  $\mathbf{s} \in R_{q}$, $\mathbf{s} \randomsample \chi^{n}$ can be done for
+  this step. The public key $pk$ is a pair of ring elements
+  $(\mathbf{p_0},\mathbf{p_1})$, where $\mathbf{p_1} \randomsample R_q$ and
+  $\mathbf{p_0} = -(\mathbf{p_1}\mathbf{s} + t\mathbf{e})$ with
+  $\mathbf{e} \randomsample \chi^{n}$.
+\item[Encryption.] Given a plaintext $\mathbf{m} \in R_t$ and a public key
+  $pk=(\mathbf{p_0},\mathbf{p_1})$, the encryption first calculates
+  $\mathbf{u},\mathbf{f},\mathbf{g} \randomsample \chi$, then computes a fresh
+  ciphertext by
+    \[
+      Enc_{pk}(\mathbf{m}) = (\mathbf{c_0},\mathbf{c_1}) =
+      (\mathbf{p_0}\mathbf{u} + t\mathbf{g} + \mathbf{m},
+      \mathbf{p_1}\mathbf{u} + t\mathbf{f})
+    \]
+    By convention, $\enc{P}$ denotes the encryption of a plaintext $P$ under the
+    BV scheme with the public key, and randomness is not taken into
+    account. When the noise used in the encryption has to be specified,
+    $\enc{(P,e)}$ is used to represent it, $e$ being the noise.
+  \item[Decryption.] Although the above encryption generates ciphertexts of 2
+    elements only in $R_q$, the homomorphic operations (discussed next) will
+    make the ciphertext longer. The decryption of the ciphertext appears as
+    $c=(\mathbf{c_0},\mathbf{c_1},\dots,\mathbf{c_L})$, with secret key
+    $sk = (1, \mathbf{s}, \mathbf{s^2},\dots, \mathbf{s^L})$ as
+    $ Dec(\mathbf{c},sk) = \left[\left[ \langle \mathbf{c}, \mathbf{sk} \rangle
+      \right]_Q \right]_t $.
+  \item[Homomorphic Operations.] Given 2 ciphertexts
+    $c = (\mathbf{c_0},\mathbf{c_1},\dots,\mathbf{c_L})$ and
+    $c' = (\mathbf{c'_0},\mathbf{c'_1},\dots,\mathbf{c'_{K}})$, before any
+    operations are carried out, the ciphertexts are padded with zeros first if
+    necessary (to make $K = L$, assuming that, initially, $K < L$).  The
+    homomorphic addition $add(c,c')$ is computed by the component wise addition
+    $add(c,c') = (\mathbf{c_0} +\mathbf{c'_0}, \dots,
+    \mathbf{c_L}+\mathbf{c'_L})$. The homomorphic multiplication $mult(c,c')$ is
+    computed by
+    $mult(c,c') = (\mathbf{\hat{c_0}}, \mathbf{\hat{c_1}}, \dots,
+    \mathbf{\hat{c}_{2L-2}})$ with
+    $ \sum_{i=0}^{2L-2}\mathbf{\hat{c}_i}z^i = \sum_{i=0}^{L-1}\mathbf{c_i}z^i
+    \times \sum_{j=0}^{L-1}\mathbf{c'_j}z^j $, where $z$ denotes a symbolic
+    variable.
+\end{description}
 
-\subsection{Feature codes and HD Computation homomorphically}
-\label{sec:HDComp}
-Biometrics are used in authentication as the human features they record systematically differ from one person to another. There are
-many algorithms that extract the data used in the process (\cite{FVConGoi2:online})
-(we refer to this data as "biometric templates"). Many works (such as
-\cite{daugman2003importance} and \cite{FujitsuD7:online}) use Hamming Distance (HD)
-as the metrics to measure the similarity of the stored and query templates, and we equally do so to evaluate our hypothesis (\ref{protocol:step3}). In the work of
-\cite{yasuda2014practical}, the authors propose an innovative to compute
-the HD of two n-bits templates $X$ and $Y$ in the ciphertext domain. Specifically, the
+\subsection{Ciphertext packing}
+\label{sub:ciphertext_packing}
+Given a bit string plaintext $m \in \{0,1\}^*$, there are several ways to encode
+it as a polynomial, or a ring element \textbf{m} $\in$ R$_{t}$ before
+encryption. A recent popular approach for BV cryptosystems is called CRT packing
+method, and based on the Chinese Remainder Theorem \cite{smart2014fully}. The
+method allows Single Instruction, Multiple Data (SIMD) operations on encrypted
+data. However, we do not use this packing technique in this chapter, later in
+chapter \ref{chap:fourthProtocol} we propose another approach for such packing
+method. This chapter focus on the method of \cite{yasuda2014practical}, which is
+an extension of \cite{naehrig2011can}, the technique allowing HD computation
+with just one level of multiplication.
+
+Biometrics are used in authentication as the human features they record
+systematically differ from one person to another. There are many algorithms that
+extract the data used in the process (\cite{FVConGoi2:online}) (we refer to this
+data as "biometric templates"). Many works (such as \cite{daugman2003importance}
+and \cite{FujitsuD7:online}) use Hamming Distance (HD) as the metrics to measure
+the similarity of the stored and query templates, and we equally do so to
+evaluate our hypothesis (\ref{protocol:step3}). In the work of
+\cite{yasuda2014practical}, the authors propose an innovative to compute the HD
+of two n-bits templates $X$ and $Y$ in the ciphertext domain. Specifically, the
 method packs all the bits of a template into a single ciphertext, and a linear
 combination of homomorphic operations would purveys an HD result. We sketchily
 present their method below.
 \begin{definition}
-For $\mathbf{T} = (t_0, \dots,
-t_{n-1}$ and $\mathbf{Q} = (q_0, \dots, q_{n-1})$, we define two types of polynomials in the ring $R_q$ of the SHE schme:
-\[
-pm_1(\mathbf{T}) = \sum_{i=0}^{n-1}t_ix^i
-\ \textnormal{and} \ pm_2(\mathbf{Q}) =
-- \sum_{j=0}^{n-1}q_jx^{n-j}
-\]
-The two types of packed ciphertexts are defined as
-\[
-ct_{1}(\mathbf{T}) = Enc(pm_1(\mathbf{T}))
-\ \textnormal{and} \
-ct_{2}(\mathbf{Q}) = Enc(pm_2(\mathbf{Q}))
-\]
+  For $\mathbf{T} = (t_0, \dots, t_{n-1}$ and
+  $\mathbf{Q} = (q_0, \dots, q_{n-1})$, we define two types of polynomials in
+  the ring $R_q$ of the SHE schme:
+  \[
+    pm_1(\mathbf{T}) = \sum_{i=0}^{n-1}t_ix^i \ \textnormal{and} \
+    pm_2(\mathbf{Q}) = - \sum_{j=0}^{n-1}q_jx^{n-j}
+  \]
+  The two types of packed ciphertexts are defined as
+  \[
+    ct_{1}(\mathbf{T}) = Enc(pm_1(\mathbf{T})) \ \textnormal{and} \
+    ct_{2}(\mathbf{Q}) = Enc(pm_2(\mathbf{Q}))
+  \]
 \end{definition}
-The main idea of \cite{yasuda2014practical} is that, if in the ring $R_q$ 
-$x^n = -1$, then, when multiplying $pm_1(\mathbf{T})$ by
-$pm_2(\mathbf{Q})$, the constant term of the result will be the inner product
-$\langle \mathbf{T}, \mathbf{Q}\rangle$. If homomorphic
-multiplication is applied to the ciphertexts, the ciphertext of their inner product will
-similarly show as a result of it. Furthermore, this result can be used to compute HD as shown below, the operation costs being one level of multiplication with 3 additions and 3
-multiplications on ciphertexts.
+The main idea of \cite{yasuda2014practical} is that, if in the ring $R_q$ where
+$x^n = -1$, then, when multiplying $pm_1(\mathbf{T})$ by $pm_2(\mathbf{Q})$, the
+constant term of the result will be the inner product
+$\langle \mathbf{T}, \mathbf{Q}\rangle$. If homomorphic multiplication is
+applied to the ciphertexts, the ciphertext of their inner product will similarly
+show as a result of it. Furthermore, this result can be used to compute HD as
+shown below, the operation costs being one level of multiplication with 3
+additions and 3 multiplications on ciphertexts.
 
 \begin{theorem}
-Let $C_1 = - \sum_{i=0}^{n-1}x^{n-i}$ and
-$C_2 = 2 - C_1 = \sum_{i=0}^{n-1}x^i$. Let $Enc(HD)$ be a ciphertext given by
-\[
-ct_1(\mathbf{T})*Enc(C_1) + ct_2(\mathbf{Q})*
-Enc(C_2) - 2*ct_1(\mathbf{T})*ct_2(\mathbf{Q})
-\]
-Then, the constant term of $Dec(Enc(HD))$ gives the Hamming Distance of $\mathbf{T}$ and $\mathbf{Q}$.
+  Let $C_1 = - \sum_{i=0}^{n-1}x^{n-i}$ and
+  $C_2 = 2 - C_1 = \sum_{i=0}^{n-1}x^i$. Let $Enc(HD)$ be a ciphertext given by
+  \[
+    ct_1(\mathbf{T})*Enc(C_1) + ct_2(\mathbf{Q})* Enc(C_2) -
+    2*ct_1(\mathbf{T})*ct_2(\mathbf{Q})
+  \]
+  Then, the constant term of $Dec(Enc(HD))$ gives the Hamming Distance of
+  $\mathbf{T}$ and $\mathbf{Q}$.
 \end{theorem}
 
 \begin{algorithm}
@@ -131,8 +203,6 @@ Enc(C_2) - 2*ct_1(\mathbf{T})*ct_2(\mathbf{Q})$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-
-
 
 \section{Zero-knowledge proof system}
 \label{sec:introzkp}
