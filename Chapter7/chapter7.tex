@@ -80,14 +80,14 @@ communication cost due to a roundness error equaling \(2/3\).
 
 We have seen that a plaintext can be packed in a specific way to support
 homomorphic operations efficiently. The approach of \cite{yasuda2014practical}
-can cause the inner product operations to perform really fast; however, it does not
+can compute the inner product operations to perform really fast; however, it does not
 support the Single Instruction Multiple Data (SIMD) operation, which is required by
 our challenge-response protocol. This section discusses a different approach for
 plaintext packing and specifies the operations it supports: we are referring to the CRT packing method
 \cite{smart2014fully}. In this method, a message \(\mathbf{m} \in R_{t}\) is
 packed by representing it in the NTT domain. In NTT domains, a single operation
 (addition or multiplication) of a pair of ciphertexts implicitly compute
- the entire plaintext vectors component-wise. Besides SIMD support, we can also
+the entire plaintext vectors component-wise. Besides SIMD support, we can also
 \textit{rotate} or \textit{permute} the plaintext slots
 (\cite{gentry2012fully}), we only need a  \textit{rotate} operation to this end.
 
@@ -283,8 +283,7 @@ either the coefficient or the NTT representation of \(a(x)\).
   \(y_{j} = 1\) to add up all the bits and get the final value of Hamming
   Distance.
   
-  For ciphertexts that are the multiplications or additions of polynomials, mapping rotations can be achieved by performing each one of them and then performing
-  the original operation:
+  For ciphertexts that result from operations on polynomials, rotations can be mapped one by one and then added or multiplied:
 \begin{align*}
   a(x).b(x) \mapsto a(x^{j}).b(x^{j})\\
   a(x) + b(x) \mapsto a(x^{j}) + b(x^{j})
@@ -292,7 +291,7 @@ either the coefficient or the NTT representation of \(a(x)\).
 
 Therefore, a ciphertext of the form
 \(c = (\mathbf{as} + t \mathbf{e} + \mathbf{m}, -\mathbf{a})\) can be rotated by
-doing the mapping on each of the components \(\mathbf{a},\mathbf{s},\mathbf{e}\)
+ mapping each of its components \(\mathbf{a},\mathbf{s},\mathbf{e}\)
 and \(\mathbf{m}\) before adding up the results.
 \end{description}
 
@@ -309,11 +308,11 @@ and \(\mathbf{m}\) before adding up the results.
 \label{sec:6garbled}
 
 \subsection{Oblivious Transfer}
-In 1-out-of-2 Oblivious Transfer protocol (denoted by
+In the 1-out-of-2 Oblivious Transfer protocol (denoted by
 \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT), a \textit{sender} has
 two choices \(m_{0}, m_{1}\), and a \textit{receiver} has one bit \(b\) as its
-input. At the end of the protocol, the \(receiver\) learns \(m_{b}\) and the
-sender learns nothing about the \(receiver\)'s query.
+input. At the end of the protocol, the \(receiver\) discovers \(m_{b}\) while the
+sender gains no knowledge  about the \(receiver\)'s query.
 
 \subsection{Yao Garbled Circuit}
 \label{sec:yao-garbled-circuit}
@@ -325,13 +324,13 @@ sender learns nothing about the \(receiver\)'s query.
 
 The concept of garbled circuit was proposed in \missref{``yao generate exchange
   secret''}, it allows 2 parties to evaluate securely any function (represented
-as boolean circuits). We refer to the \(server\) as the one who prepares the
-circuit and the \(client\) is the one evaluating the circuit. The general idea
+as boolean circuits). We refer to the \(server\) as the one preparing the
+circuit and the \(client\) as the one evaluating the circuit. The general idea
 is that given a function composed of logic gates that are connected by wires,
 the server ``garbles'' the circuit by assigning two random cryptographic keys
 \(K_{j}^{0}\) and \(K_{j}^{1}\) to each wire \(j\). The keys represent 0 and 1
-values, which are the possible inputs to each wire, in related literature, keys
-are also referred to as \textit{labels.}  The server then encrypts a truth table
+values, which are the possible inputs to each wire (in related literature, keys
+are also referred to as \textit{labels}).  The server then encrypts a truth table
 for each gate of the circuit such that in order to compute the \textit{output
   label } of a gate, one must know the \textit{labels}, or keys of the input,
 this is achieved by double encryption using possible combinations of the input
@@ -342,21 +341,21 @@ The final output of the function is also represented as pair of keys, the server
 knows the value of the function output corresponding to each
 \textit{label}. After setting up the garbled circuit, the server sends it to the
 client and its input's keys. The client then uses OT technique discussed to
-obtain the keys corresponding to its inputs. During evaluating the circuit, the
-client decrypt one \textit{label} \(K_{j}^{i}\) for each output wire \(j\),
-where \(i \in \{0,1\}\) and use the decrypted result to continue evaluating the
-circuit until it get the final keys of the circuit. The client then sends the
+obtain the keys corresponding to its inputs. During evaluation of the circuit, the
+client decrypts one \textit{label} \(K_{j}^{i}\) for each output wire \(j\),
+where \(i \in \{0,1\}\) and uses the decrypted result to continue evaluating the
+circuit until it gets the final keys of it. The client then sends the
 final labels to the server to verify the function's output.
 
 Recent improvements reduce both computation time and communication overhead
 associated with circuit setup and evaluation. \missref{``vsedvenka 30''}
-described a technique that allow XOR gates to be evaluated \textit{for free}:
-there is no communication overhead with such gates and the evaluation does not
+described a technique allowing XOR gates to be evaluated \textit{for free}:
+there is no communication overhead for such gates and the evaluation does not
 involve cryptographic operations. \missref{``vsedvenka 38''} proposed a
 mechanism to reduce the communication size of binary gates by 25\%: each gate
 can be specified by encoding only three outcomes instead of all four. The
 research by \missref{``vsedvenka 29''} improved the complexity of basic
-operations (addition, multiplication, comparison, etc) by reducing the number of
+operations (addition, multiplication, comparison, etc.) by reducing the number of
 non-XOR gates.
 
 
@@ -429,8 +428,8 @@ non-XOR gates.
   \label{fig:fourthProtocol}
 \end{figure}
 
-\subsection{The Garble Circuit and Oblivious Transfer}
-We use standard substractor circuit for the operation \(HD = HD' - r\). Given 2
+\subsection{The Garbled Circuit and Oblivious Transfer}
+We use a standard substractor circuit for the operation \(HD = HD' - r\). Given a 2
 n-bit bitstring, the circuit is built from 1 half-substractor and \(n-1\)
 full-substractors as in Figure \ref{fig:substractor}
 
@@ -450,14 +449,12 @@ Where a half-substractor is built from 1 XOR gate and 1 AND gate, a full-substra
   \label{fig:fullSubstractor}
 \end{figure}
 
-For our context, let \(l\) to be the bit length of the HD' and r (\(l\) is
-typically 10-12 bits for 1024-2048 bits biometrics data), so we need about
-\(5l\) gates for the substractor logic gates. The comparision circuit needs not
-to output 3 result as standard ones (where they can output either A > B, A < B
-or A = B), we simply want to check whether \(HD' - r < \tau\), so we can simply
-have another l NAND gates plus \(l-1\) XOR gates for the comparsion circuit (An
-example is as in Figure \ref{fig:comparisionCircuit})
-
+In our context, let \(l\) be the bit length of the HD' and r (\(l\) is
+typically 10-12 bits for 1024-2048 bits biometrics data), which makes the number of substractor logic gates equal to
+\(5l\). The comparision circuit no longer needs 
+to output 3 results (as standard circuits would: either A > B, A < B
+or A = B). Our aim is just to check whether \(HD' - r < \tau\), so we simply need to
+have l NAND gates plus \(l-1\) XOR gates at hand for the comparsion circuit. Figure \ref{fig:comparisionCircuit} shows an example of such a configuration
 \begin{figure}[htbp!] 
   \centering    
   \includegraphics[width=1.0\textwidth]{Chapter7/Figs/Raster/comparisionCircuit}
@@ -465,44 +462,44 @@ example is as in Figure \ref{fig:comparisionCircuit})
   \label{fig:comparisionCircuit}
 \end{figure}
 
-\paragraph{Garble Circuit preparation}
+\paragraph{Garbled Circuit preparation}
 We denote \(GC\) to be the garbled circuit prepared by the server. The inputs to
 the circuit include the server's \(GC_{r}\) and the client's \(GC_{h}\), which
 are the cryptographic key \textit{labels} corresponding to the server's input
-\(r\) and client's input \(HD'\) to the function \textit{CompareHD}. The main
-function of the circuit is, it first substracts \(HD' - r = HD\) then compares
+\(r\) and to the client's input \(HD'\) to the function \textit{CompareHD}. The main
+function of the circuit is, first, to substract \(HD' - r = HD\) then compare
 \(HD \stackrel{?}{<} \tau\), where \(\tau\) is the constant value of the
-threshold to decide the authentication result, which can be built into the
-circuit itself. We note that either the server or the client can do the role of
-setting up the garbled circuit, in our work, we let the server take this role
-(Figure \ref{fig:fourthProtocol} - Step 5, 6, 7, 8) for the reason that we have
-been working on \textit{semi-honest} server modeal and \textit{malicious }
-client, this will save us one proof to prove that the circuit is generated
+threshold required to decide the authentication result, which can be built into the
+circuit itself. We note that either the server or the client can play the role of
+setting up the garbled circuit; in our work, we let the server take this role
+(Figure \ref{fig:fourthProtocol} - Step 5, 6, 7, 8): as we have
+been working on a \textit{semi-honest} server modeal and a \textit{malicious }
+client, this will save us one proof to assess that the circuit is generated
 correctly.
 
 As described before in Section \ref{sec:yao-garbled-circuit}, the server garbles
-the circuit \(GC\) and sends to the client together with its \textit{labels} of
+the circuit \(GC\) and sends the result to the client together with its \textit{labels} of
 \(r\), which are \(K_{r_{i}}^{j}\). Next, the client uses our OT technique
 (\missref{}) to select the correct \textit{labels} of \(HD'\): the first part of
 the OT will ensure that the client will get back the encryptions
 \(\enc{K_{h_{i}}^{j}}\). The second part of the OT makes sure that the protocol
 is secure against \textit{malicious} clients: it needs to prove that it
-decrypted and decompose \(\enc{\mathbf{HD'}}\) correctly (Figure
+decrypted and decomposed \(\enc{\mathbf{HD'}}\) correctly (Figure
 \ref{fig:fourthProtocol} - Step 12,13). In other words, the client wants to
-prove that the encryptions \(\enc{h_{i}}\) that he sent is actually the
-encryption of the bits of \(HD'_{i}\). Recall that the server still has
-\(\enc{\mathbf{HD'}}\), so the proof can be a homomorphically check of
-\(\enc{\mathbf{HD'}} - \sum{2^{i}\enc{h_{i}}} = \enc{0}\). This proof is part of
-the proof we did in the third variant of the protocol \missref{}. However, in
-order to do this proof to support the homomorphic operations, we need to use the
+prove that the encryptions \(\enc{h_{i}}\) it sent are actually the
+encryptions of the bits of \(HD'_{i}\). Recall that the server still has
+\(\enc{\mathbf{HD'}}\), so the proof can be a homomorphical check of
+\(\enc{\mathbf{HD'}} - \sum{2^{i}\enc{h_{i}}} = \enc{0}\). This is a part of
+the proof we carried out in the third variant of the protocol \missref{}. However, in
+order to allow this proof to support homomorphic operations, we need to use the
 same encryption scheme for the OT protocol, in other words, we need an OT
 protocol based on BGV.
 
 We note that inside the garbled circuit, AES is normally used to encrypt the
 \textit{labels}, this encryption is a part of the garbled circuit and not
-related to the OT protocol we just described and can still be used independently
+related to the OT protocol we just described, and can still be used independently
 to ensure the performance of circuit evaluations. Next, we discuss an approach
-to design an OT protocol that is compatible with BGV cryptosystem
+to design an OT protocol compatible with the BGV cryptosystem
 
 \paragraph{BGV-based OT}
 \todo{review PVW08, oblivious transfer LWE}
@@ -512,30 +509,30 @@ implement an OT protocol. The technique can be used together with the garbled
 circuit protocol discussed earlier. The problem can be stated as follows: Given
 a BGV ciphertext of a bit selection \(h_{i}\): \(\enc{h_{i}}\), the server
 computes and returns a BGV encryption of the corresponding key selected by the
-bit. We observe that the following homomorphic operations will obtain such
+bit. We observe that the following homomorphic operations will satisfy such a
 requirement:
 \[
 \enc{K_{i}^{j}} = \enc{h_{i}^{j}} \cdot \enc{K_{i}^{1}} + (1 - \enc{h_{i}^{j}}) \cdot \enc{K_{i}^{0}}
 \]
-Where \(K_{i}^{0}, K_{i}^{1}\) are the \textit{labels} corresponding to the wire
-inputs 0 or 1. The function include one level of homomorphic multiplication, two
+where \(K_{i}^{0}, K_{i}^{1}\) are the \textit{labels} corresponding to the wire
+inputs 0 or 1. The function includes one level of homomorphic multiplication, two
 additions and one multiplication with a constant. This approach is simple enough
-and it is secure against \textit{malicious client} model in our context because
-the client had to do the proof that he actually encrypted \(\enc{h_{i}}\)
+and it is secure against a \textit{malicious client} model in our context because
+the client needs to prove that he actually encrypted \(\enc{h_{i}}\)
 correctly already. Other applications of this OT should take into account that a
-malicious client can encrypt \(\enc{h_{i}}\) incorrectly to learn about
+malicious client can encrypt \(\enc{h_{i}}\) incorrectly to obtain information about
 \(K_{i}^{0}\) and/or \(K_{i}^{1}\).
 
 The other issue that we have to be careful about is \textit{Circuit Privacy}:
-for a multi-factor attacker that has access to the secret key but not the
-biometric template, it can learn about information of the randomness of the
+for a multi-factor attacker able to access the secret key but not the
+biometric template, it is possible to obtain information about the randomness of the
 operation. The randomness of the above operation is of the form
-\(K_{i}^{0} + (K_{i}^{1} - K_{i}^{0})r_{0}\), which is correlated to both of the
+\(K_{i}^{0} + (K_{i}^{1} - K_{i}^{0})r_{0}\), which is correlated to both
 keys. Again, we can mask the randomness of this leakage similarly to what we did
-in the second variant of the protocol. By similar analysis, we can still show
-that computing the HD cannot be done with significant probability (the privacy
-security requirement is relaxed from what the client sees is indistinguishable
-to the probability that he can compute the HD is not much more than random
+in the second variant of the protocol. By a similar analysis, we can still show
+that computing the HD cannot be achieved with a significant level of probability (the privacy
+security requirement related to what the client sees is indistinguishable
+from the probability he has to compute the HD, which is not much more than random
 guessing). This will be detailed in the security analysis \missref{}.
 
 
@@ -545,9 +542,9 @@ guessing). This will be detailed in the security analysis \missref{}.
 
 \subsection{HD Computation Homomorphically - BGV}
 Given two bistring \(\mathbf{a}\) and \(\mathbf{b}\) of length \(n\) (for \(n\)
-is a power of 2), the Hamming Distance \(HD_{(\mathbf{a,b})}\) can be computed
+being a power of 2), the Hamming Distance \(HD_{(\mathbf{a,b})}\) can be computed
 by adding up and rotating all the bits of \(\mathbf{a} \xor \mathbf{b}\)
-(Algorithm \ref{alg:hd-comp-homom}). Provided that the BGV cryptosystem used
+(Algorithm \ref{alg:hd-comp-homom}). Provided that the BGV cryptosystem in use
 supports SIMD operations, the algorithm can run with homomorphic addition and
 multiplication. ($\triangle$ denotes component-wise homomorphic multiplication)
 

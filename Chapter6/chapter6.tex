@@ -42,12 +42,11 @@ lattice-based cryptographic protocols. The contributions of this variant include
 \label{sec:MSBExtract}
 We observe that \(HD < \tau \iff MSB(2^{l} + \tau - HD) = 1\), where \(l\) is
 the bit-length of \(HD\) and MSB denotes the Most Significant Bit. This is our
-attempt to compare Hamming Distance homomorphically, the idea is letting the
-server computing homomorphically the ciphertext of \(MSB(2^{l} + \tau - HD)\),
-then having the client to decrypt and send back with a zero knowledge proof of
-the authentication result. This section discuss a variant of the technique from
+attempt to compare Hamming Distance homomorphically, the idea is to let the
+server compute homomorphically the ciphertext of \(MSB(2^{l} + \tau - HD)\),
+then having the client to decrypt it and to send back the authentication result with a zero knowledge proof. This section discusses a variant of the technique from
 \cite{ducas2015fhew} to compute the MSB of the plaintext $M$ given $Enc(M)$. The
-technique is use in \ref{protocol:step8}. The main idea comes from the way we
+technique is used in \ref{protocol:step8}. The main idea comes from the way we
 encode the message $M$ before the encryption.
 
 Given $M \in \mathbb{Z}_{2n}$, we observe that
@@ -59,7 +58,7 @@ Given $M \in \mathbb{Z}_{2n}$, we observe that
 \]
 
 Assume that we encrypt $M$ using the SHE scheme (section
-\ref{sec:BVScheme}). With the message space $R_t$ and assume that $2n < t < q$,
+\ref{sec:BVScheme}). With the message space $R_t$ and assuming that $2n < t < q$,
 we can encode $M$ as a ring element $m \in R_t$ as follows
 \[
   m(x) = 0x^0 + 0x^1 + \dots + 1x^M + \dots + 0x^{n-1}
@@ -74,8 +73,8 @@ The ciphertext $Enc(M)$ has this form
 $(\mathbf{c} = \mathbf{p_0}\mathbf{u} + t\mathbf{g} + \mathbf{m}, \mathbf{c'} =
 \mathbf{p_1}\mathbf{u} + t\mathbf{f})$, where $(\mathbf{p_0}, \mathbf{p_1})$ is
 the public key and $\mathbf{u}, \mathbf{f}, \mathbf{g} \randomsample \chi$.  We
-denote $ rot({\textbf{c}}) \in \mathbb{Z}_q^{n\times n}$ to be an anti-circulant
-square matrix, whose first column is $\mathbf{c}$ and the other columns are the
+denote $ rot({\textbf{c}}) \in \mathbb{Z}_q^{n\times n}$ as being an anti-circulant
+square matrix, whose first column is $\mathbf{c}$, the other columns being the
 cyclic rotations of $\mathbf{c}$ with the cycled entries negated
 \[
   rot({\mathbf{c}})=
@@ -90,7 +89,7 @@ It's easy to see that $rot(\mathbf{c}\mathbf{u}) = rot(\mathbf{c})
 \vec{u}$.
 
 \begin{lemma}\label{lemma:bitToBin}
-	Given $M \in Z_{2n}$ and $(\mathbf{c},\mathbf{c'}) = Enc(M)$ is the first level ciphertext of $M$ from the BV scheme. Let $\vec{1} = \{1,1,\dots,1\} \in \mathbb{Z}^n$. The transformed ciphertext $(l, l') \leftarrow (\vec{1}
+	Given $M \in Z_{2n}$ and $(\mathbf{c},\mathbf{c'}) = Enc(M)$ as the first level ciphertext of $M$ from the BV scheme, let $\vec{1} = \{1,1,\dots,1\} \in \mathbb{Z}^n$. The transformed ciphertext $(l, l') \leftarrow (\vec{1}
 	rot({\mathbf{c}})[0], \vec{1}
 	rot({\mathbf{c'}})) \in (\mathbb{Z}_Q
 	, \mathbb{Z}_Q^n)$ encrypts the MSB information of $M$.
@@ -114,7 +113,7 @@ It's easy to see that $rot(\mathbf{c}\mathbf{u}) = rot(\mathbf{c})
 \subsection{Proof of lemma \ref{lemma:bitToBin}}
 \label{append:proofHom}
  \begin{proof}
-	We have\\
+	The following is the case:\\
 	\begin{align*}
 	\vec{1}rot(\mathbf{c})[0] \in \zzq &= \vec{1}\overrightarrow{
 		\mathbf{p_0}\mathbf{u} + t\mathbf{g} + \mathbf{m}}\\
@@ -128,8 +127,8 @@ It's easy to see that $rot(\mathbf{c}\mathbf{u}) = rot(\mathbf{c})
 
 \subsection{Converting from binary-encoded to unary-encoded plaintext}
 \label{sec:binToUna}
-This section discuss a linear transformation to map a message $b \in \{0,1\}$
-to a message $x^{jb}$ for $j \geq 1$. Let $T: cx + d = y$ be the linear transformation. We want $T$ to map $0 \rightarrow x^{j0} $ and
+This section discusses a linear transformation to map a message $b \in \{0,1\}$
+onto a message $x^{jb}$ for $j \geq 1$. Let $T: cx + d = y$ be the linear transformation. We want $T$ to map $0 \rightarrow x^{j0} $ and
 $1 \rightarrow x^j$, or
 \[
   \begin{cases}
@@ -142,7 +141,7 @@ $1 \rightarrow x^j$, or
     d = 1
   \end{cases}
 \]
-Due to the homomorphism property of BV cryptosystem , we can apply
+Due to the homomorphism property of BV cryptosystems , we can apply
 $T$ in the ciphertext domain to obtain $Enc(x^{jb})$ given $Enc(b)$,
 for $b \in \{0,1\}$:
 \begin{align}
@@ -151,13 +150,13 @@ for $b \in \{0,1\}$:
               &= Enc(x^j - 1)Enc(b) + Enc(1)
 \end{align}
 From the implementation point of view, this operation can be done faster
-by doing $\mathbf{u}, \mathbf{f}, \mathbf{g} \gets 0$ instead of sampling those from
-$\chi$ during $Enc(x^j -1)$ and $Enc(1)$, which results $Enc(x^j -1) = (x^j - 1, 0)$ and $Enc(1) = (1,0)$. These are still valid encryptions and will not affect correctness of Eq. (\ref{eq:encBitConvert}).
+by ensuring $\mathbf{u}, \mathbf{f}, \mathbf{g} \gets 0$ instead of sampling them from
+$\chi$ during $Enc(x^j -1)$ and $Enc(1)$, which results in $Enc(x^j -1) = (x^j - 1, 0)$ and $Enc(1) = (1,0)$. These are still valid encryptions and will not affect the correctness of Eq. (\ref{eq:encBitConvert}).
 
 This submodule is used in our protocol at \ref{protocol:step7}. Recall that the server needs
-to compute $Enc^{(2)}(HD')$ which is the encryption of $HD'$ in the second mode
-of encoding (message is encoded in the exponent instead of the coefficient of the
-polynomial). Given $HD' = \sum_{i=0}^{l-1}b_i2^i$ and $Enc(b_i)$, the server can convert them to $Enc(x^{jb})$ and do
+to compute $Enc^{(2)}(HD')$, which is the encryption of $HD'$ in the second mode
+of encoding (the message is encoded in the exponent instead of in the coefficient of the
+polynomial). Given $HD' = \sum_{i=0}^{l-1}b_i2^i$ and $Enc(b_i)$, the server can convert them to $Enc(x^{jb})$ and perform
 \[
   Enc^{(2)}(x^{HD'}) = \prod_{i=0}^{l-1}Enc^{(2)}(x^{b_i2^i})
 \]
@@ -183,18 +182,18 @@ $l$ is the bit length of the Hamming Distance.
 \label{sec:zkptools}
 \subsection{ZKPoPK of Regev Cryptosystem}
 \label{sec:zkpRegev}
-In this section, we first review one application of \cite{ling2013improved} technique to do ZKPoPK for Regev Cryptosystem, then we elaborate to our variants to be used in the protocol.
-Given parameters $q, m, n, t, \chi$ of a typical LWE-based cryptosystem, we can describe a variant of Regev's system as follows.
+In this section, we first review an application of the \cite{ling2013improved} technique to apply ZKPoPK on Regev Cryptosystems, then we elaborate on the variants to be used in the protocol.
+Given parameters $q, m, n, t, \chi$ of a typical LWE-based cryptosystem, we can describe a variant of Regev's system as follows:
 \begin{description}
-\item [Kengen.] A secret key $\vec{s}$ can be chosen from $\chi^n$. The public key then is generated as
+\item [Kengen.] A secret key $\vec{s}$ can be chosen from $\chi^n$. The public key is then generated as
   $pk = (p_0, p_1) = (\mathbf{A}, \mathbf{A}\vec{s} + t\vec{e})$. Where $\mathbf{A} \randomsample \mathbb{Z}_q^{m \times n}$
   and $\vec{e} \randomsample \chi^n$
 \item [Encrypt.] Given a message $M \in \mathbb{Z}_q$, the ciphertext $C$ is computed by first sampling a random
-  vector $\vec{r} \in \chi^n$ and do
+  vector $\vec{r} \in \chi^n$ and setting
   $C = (c_0, c_1) = (p_0\vec{r}, p_1\vec{r} + M)$
-\item [Decrypt.] Given a ciphertext $C = (c_0, c_1)$, the message $M$ can be recovered by compute $M = c_1 - c_0\vec{s} \mod t$
+\item [Decrypt.] Given a ciphertext $C = (c_0, c_1)$, the message $M$ can be recovered by computing $M = c_1 - c_0\vec{s} \mod t$
 \end{description}
-In \cite{ling2013improved}, the ZKPoPK was done by proving the encryption relation
+In \cite{ling2013improved}, the ZKPoPK was attained by proving the encryption relation
 \begin{align*}
   R_{Regev}^{q,m,n,t,\chi} = \{ ((p_0,p_1),(c_0,c_1),\vec{r}||M) \in (\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{m})
   \times (\mathbb{Z}_q^n \times \mathbb{Z}_q) \times \mathbb{Z}_q^{n+1} : \\
@@ -213,16 +212,16 @@ let $\mathbf{x} = \begin{bmatrix}
   M
 \end{bmatrix}$
 be the $Prover$'s witness. We observe that $\mathbf{A'}\mathbf{x}= \mathbf{y} \mod q$, that is, $\mathbf{x}$ is a solution
-to the ISIS problem defined by $(\mathbf{A'},\mathbf{y})$ and we can use the \textbf{SternExt} protocol (section
-\ref{sec:zkpisis}) to obtain an efficent ZKPoPK. This works in the symmetric key setting, where the $Prover$ knows
-the random $\vec{r}$ to use as his witness. In our context, the client does not knows $\vec{r}$ as encryption was
-done by the server. Let's look at the decryption equation:
+to the ISIS problem defined by $(\mathbf{A'},\mathbf{y})$ and that we can use the \textbf{SternExt} protocol (section
+\ref{sec:zkpisis}) to obtain an efficent ZKPoPK. This works in a symmetric key setting, where the $Prover$ knows
+the random $\vec{r}$ to use as his witness. In our context, the client does not know that $\vec{r}$ as encryption was
+set by the server. Following the decryption equation:
 \begin{align*}
   c_1 - c_0\vec{s} &= p_1\vec{r} + M - p_0\vec{r}\vec{s} \\
                    &= \mathbf{A}\vec{s}\vec{r} + t\vec{e}\vec{r} + M - \mathbf{A}\vec{r}\vec{s}\\
-                   &= t\tilde{e} + M
+                   &= t\tilde{e} + M,
 \end{align*}
-Therefore, we can write the decryption relation as
+we can write out the decryption relation as
 \begin{align}
   \label{eq:RegevPub}
   R_{Regev,dec}^{q,m,n,t,\chi} = \{ ((p_0,p_1),(c_0,c_1),\vec{s},\vec{e},\tilde{e}, M) \in (\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{m})
@@ -236,25 +235,24 @@ $
 and $\mathbf{y} = \begin{bmatrix}
   c_1\\p_1
 \end{bmatrix}$
-to be the public parameters and let $\mathbf{x} = \begin{bmatrix}
+be the public parameters and let $\mathbf{x} = \begin{bmatrix}
   \vec{s}\\ \tilde{e}\\ \vec{e}\\ M
 \end{bmatrix}
-$ and apply the \textbf{SternExt} to obtain the ZKPoPK  . We note that the two separate rows of $\mathbf{A'}$ prove the two
+$, further applying the \textbf{SternExt} to obtain the ZKPoPK  . We note that the two separate rows of $\mathbf{A'}$ prove the two
 separate relations in (\ref{eq:RegevPub}): The $Prover$ needs to prove that he knows a secret $\vec{s}$ that can decrypt
-$(c_0,c_1)$ and he also needs to prove that the secret key $\vec{s}$ is also the one corresponding to the public key
+$(c_0,c_1)$; he also needs to prove that the secret key $\vec{s}$ is also the one corresponding to the public key
 $(p_0, p_1)$.
 
 
 \subsection{ZKPoPK of BV cryptosystem}
 \label{sec:ZKPBV}
-In this section, we discuss ZKPoPK for a ring variant of Regev scheme discussed above, which is the BV system that we use in
-our application context (section \ref{sec:BVScheme}), we will refer to this
+In this section, we discuss ZKPoPK for a ring variant of the Regev scheme discussed above, which is the BV system that we use in
+our application context (section \ref{sec:BVScheme}). We will refer to this
 proof as $\mathbf{ZKPValidEnc}$. Recall that our public key is a pair of ring elements $pk = (\mathbf{p_0},
-\mathbf{p_1})$ where $\mathbf{p_0}, \mathbf{p_1} \in \rrq$ and $\mathbf{p_1}\mathbf{s}+ t\mathbf{e} = -\mathbf{p_0} $. This
-is one of the relation that the client needs to prove later on. Next, given a ciphertext $c = (\mathbf{c_0}, \mathbf{c_1})$, the original
-plaintext $\mathbf{m} \in \rrq$ can be recovered by $\mathbf{m} = \mathbf{c_0} + \mathbf{c_1}\mathbf{s} \mod t$. We can
-write $\mathbf{c_1}\mathbf{s} + \mathbf{c_0} = \mathbf{m} + t\mathbf{e'}$, or $\mathbf{c_1}\mathbf{s} -t\mathbf{e'} -\mathbf{m} = -\mathbf{c_0}$.
-In summary, the relation that we need to do the ZKPoPK is:
+\mathbf{p_1})$, where $\mathbf{p_0}, \mathbf{p_1} \in \rrq$ and $\mathbf{p_1}\mathbf{s}+ t\mathbf{e} = -\mathbf{p_0} $. This
+is one of the relation that the client will need to prove later on. Next, given a ciphertext $c = (\mathbf{c_0}, \mathbf{c_1})$, the original
+plaintext $\mathbf{m} \in \rrq$ can be recovered by $\mathbf{m} = \mathbf{c_0} + \mathbf{c_1}\mathbf{s} \mod t$ (spelled out as $\mathbf{c_1}\mathbf{s} + \mathbf{c_0} = \mathbf{m} + t\mathbf{e'}$, or $\mathbf{c_1}\mathbf{s} -t\mathbf{e'} -\mathbf{m} = -\mathbf{c_0}$).
+In summary, the relation required for the ZKPoPK is:
 \begin{align}
   \label{eq:BVRel}
   R_{BV}^{Q,n,t,\chi} = \{((\mathbf{c_0}, \mathbf{c_1}),(\mathbf{p_0}, \mathbf{p_1}), \mathbf{s},\mathbf{e'}, \mathbf{e}, \mathbf{m} \in
@@ -262,17 +260,16 @@ In summary, the relation that we need to do the ZKPoPK is:
   (\mathbf{p_1}\mathbf{s} + t\mathbf{e} = -\mathbf{p_0} ) \land (\mathbf{c_1}\mathbf{s} - t\mathbf{e'} -\mathbf{m} = -\mathbf{c_0})
   \}
 \end{align}
-We can do similarly to what was done in section \ref{sec:zkpRegev}, where we tried to derive the ISIS relation ($\mathbf{A}\mathbf{x} = \mathbf{y} \mod q$)
+We can proceed in a way similar to what appears in section \ref{sec:zkpRegev}, where we tried to derive the ISIS relation ($\mathbf{A}\mathbf{x} = \mathbf{y} \mod q$)
 from the above relation and obtain the ZKP accordingly.
 The matrix $\mathbf{A}$ should be derived from $\mathbf{T}= \begin{bmatrix}
   \mathbf{c_1}, -t, 0, -1\\ \mathbf{p_1}, 0, t, 0
 \end{bmatrix}$ in order to obtain (\ref{eq:BVRel}). Note that with $\mathbf{c_1},\mathbf{p_1} \in \rrq$, we can construct $\mathbf{A}$ by
-replacing from $\mathbf{T}$: $\mathbf{c_1}$ and $\mathbf{p_1}$ are replaced by $rot(\mathbf{c_1})$ and $rot(\mathbf{p_1})$,
-;constants
-are replaced by the product of the constants with the identity matrix $\mathbf{I}$. Recall that $ rot({\textbf{c}}) \in
+replacing from $\mathbf{T}$: $\mathbf{c_1}$ and $\mathbf{p_1}$ are replaced by $rot(\mathbf{c_1})$ and $rot(\mathbf{p_1})$, constants
+are replaced by the product of the themselves by the identity matrix $\mathbf{I}$. Recall that $ rot({\textbf{c}}) \in
 \mathbb{Z}_q^{n\times n}$ is defined to be an anti-circulant
 square matrix, whose first
-column is $\mathbf{c}$ and the other columns are the cyclic rotations of
+column is $\mathbf{c}$, the other columns being the cyclic rotations of
 $\mathbf{c}$ with the cycled entries negated
 \[
   rot({\mathbf{c}})=
@@ -326,13 +323,13 @@ the $Prover$'s witness and $\mathbf{A}, \mathbf{y}$ being the public parameters 
 \subsection{ZKP of plaintext with zero coefficients}
 This section extends the previous proof with several submodules. Firstly, we
 need a proof to convince the server that our ciphertext encrypts the message of the form $\mathbf{m(x)} =
-0 + m_1x^1 + m_2x^2 + \dots + m_{n-1}x^{n-1}$. Next, we need another proof to convince about the encryption of
-$\mathbf{m(x)} = m_0 + 0x^1 + 0x^2 + \dots + 0x^{n-1}$. We also use some other proofs for message containing all 1s or 0s. In other words, we want the $Prover$ to convince the $Verifier$
-about the formats of the plaintext in addition to the knowledge of plaintext.
+0 + m_1x^1 + m_2x^2 + \dots + m_{n-1}x^{n-1}$. Next, we need another proof to convince about the knowledge of encryption of
+$\mathbf{m(x)} = m_0 + 0x^1 + 0x^2 + \dots + 0x^{n-1}$. We also use some other proofs for messages containing only 1s or 0s. In other words, we want the $Prover$ to convince the $Verifier$
+about the format correctness of the plaintext, in addition to asserting  knowledge of the plaintext itself.
 
 \begin{description}
 \item[Proving $\mathbf{m}=\sum_{i = 0}^l(m_ix^i) \land m_0 = 0$ \textbf{(ZKPExt1)}.]
-  If and only if the $Prover$ P has the message $\mathbf{m}$ of this form, he can do:
+  If and only if the $Prover$ P has the message $\mathbf{m}$ in this format, he can compute:
   \begin{align*}
     rot(\mathbf{c_0})\mathbf{s} -t\mathbf{Ie'} - \begin{bmatrix}
       1\\
@@ -347,9 +344,9 @@ about the formats of the plaintext in addition to the knowledge of plaintext.
       0
     \end{bmatrix} &= -\mathbf{c_0}
   \end{align*}
-  In order to do this proof, we can do similarly to what was done in section \ref{sec:ZKPBV},
-  only slight modification need to be made is in the matrix represented in (\ref{matrix:ZKP}):
-  We completely remove all the last $(n-1)$ columns of the last $n$ columns during constructing the matrix $\mathbf{A}$ (The new $\mathbf{A}$ has dimension $n \times (3n + 1)$ instead of
+  In order to set up this proof, we can proceed similarly to what was proposed in section \ref{sec:ZKPBV},
+  just a minor modification is needed in the matrix represented in (\ref{matrix:ZKP}):
+  We completely remove all the last $(n-1)$ columns of the last $n$ columns during the construction of the matrix $\mathbf{A}$ (the new $\mathbf{A}$ will thus have dimension $n \times (3n + 1)$ instead of
   $n \times 4n$). The specification is summarized in Algorithm (\ref{alg:ZKPExt1}).
 
   \begin{algorithm}
@@ -371,10 +368,10 @@ about the formats of the plaintext in addition to the knowledge of plaintext.
   \end{algorithm}
 
 \item[Proving $\mathbf{m}=\sum_{i = 0}^l(m_ix^i) \land m_j = 0\  for\  j = 1,2
-  \dots l-1$. \textbf{(ZKPExt2)}] This proof can be done similarly to $\mathbf{ZKPExt1}$ with
-  the same reasonings. Except that in this proof, in stead of removing $(n-1)$ columns, we
-  remove only the first one column of the last $n$ columns of $\mathbf{A}$. The result
-  is the matrix $\mathbf{A}$ with dimension $n \times (4n-1)$. The specification is summarized in Algorithm (\ref{alg:ZKPExt2}).
+  \dots l-1$. \textbf{(ZKPExt2)}] This proof can be engineered similarly to $\mathbf{ZKPExt1}$, following
+  the same method. Except that in this one, instead of removing $(n-1)$ columns, we
+  remove only the first column of the last $n$ columns of $\mathbf{A}$. The result
+  is the matrix $\mathbf{A}$, with dimension $n \times (4n-1)$. The specification is summarized in Algorithm (\ref{alg:ZKPExt2}).
   \begin{algorithm}
     \caption{ZKP for only constant coefficient}\label{alg:ZKPExt2}
     \begin{algorithmic}[1]
@@ -395,27 +392,26 @@ about the formats of the plaintext in addition to the knowledge of plaintext.
 
 
 \item[Proving $\mathbf{m}=\sum_{i = 0}^l(m_ix^i) \land m_j = 0 \lor m_j = 1\  for \  j = 0,1
-  \dots l-1$ \textbf{(ZKPExt3 and ZKPExt4)}. ] Following the previous extensions, proving a message that
-  contain all zero (or all ones) coefficients is trivial by modifying the matrix $\mathbf{A}$ and setting up the bound of
-  \textbf{SternExt}
-  accordingly.
+  \dots l-1$ \textbf{(ZKPExt3 and ZKPExt4)}. ] Following the previous extensions, proving that a message
+  contains only zero or one coefficients amounts to a trivial by modification of the matrix $\mathbf{A}$ and an according set up of the bound of
+  \textbf{SternExt}.
 \end{description}
 
 \subsection{ZKP of re-encryption correctness}
 \label{sec:ZKPReencrypt}
-This section first discusses the module \textbf{ZKPUnpack(c, c')}, that proves the
+This section first discusses the module \textbf{ZKPUnpack(c, c')}, which proves the
 correctness of the re-encryption of a single slot unpacked plaintext $\mathbf{m'} = Dec(\mathbf{c'})$ from the
 coefficients-packed ciphertext $\mathbf{m} = Dec(\mathbf{c})$.
-Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the correctness of re-encryption of a binary-encoded plaintext as a unary-encoded one.
+We then provide details about the $\mathbf{ZKPBinDecomp(c,c_i)}$ module, aimed at proving the correctness of re-encryption of a binary-encoded plaintext as a unary-encoded one.
 \begin{description}
-\item [{ZKPUnpack(c,c).}]The relation of the proof is
+\item [{ZKPUnpack(c,c).}]The relation of the proof is:
   \[
     R_{\mathbf{ZKPUnpack}} = \{ \mathbf{c, c'} \in R_q \times R_q :
     \mathbf{m} = Dec(\mathbf{c}) \land \mathbf{m'} = Dec(\mathbf{c'}) \land m_0
     = m_0' \land (m_i' = 0 \  \forall i \neq 0)\}
   \]
-  Given $m_0 = m_0'$, we observe $\mathbf{m(x) - m'(x)} = 0 + m''_1x + \dots + m''_{n-1}x^{n-1}$. Therefor, $\mathbf{ZKPUnpack}$
-  can be done as specified in Algorithm (\ref{alg:ZKPUnpack})
+  Given $m_0 = m_0'$, we observe $\mathbf{m(x) - m'(x)} = 0 + m''_1x + \dots + m''_{n-1}x^{n-1}$. Therefore, $\mathbf{ZKPUnpack}$
+  can be carried out as specified in Algorithm (\ref{alg:ZKPUnpack})
 
   \begin{algorithm}
     \caption{ZKP of coefficients transform}\label{alg:ZKPUnpack}
@@ -428,7 +424,7 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
     \end{algorithmic}
   \end{algorithm}
 
-\item [$\mathbf{ZKPBinDecomp(c,c_i).}$] The relation of the proof is
+\item [$\mathbf{ZKPBinDecomp(c,c_i).}$] The relation of the proof is:
   \[
     R_{\mathbf{ZKPBinDec}} = \{ \mathbf{c,c_i} \in R_q \times R_q^l:
     \mathbf{m} = Dec(\mathbf{c}) \land \mathbf{m_0} = \sum_{i=0}^{l-1}b_i2^i
@@ -436,7 +432,7 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
     \}
   \]
   The specification of the proof is detailed in Algorithm
-  (\ref{alg:ZKPBinDecomp})
+  (\ref{alg:ZKPBinDecomp}).
 
   \begin{algorithm}
     \caption{ZKP of encoding transform}\label{alg:ZKPBinDecomp}
@@ -451,10 +447,10 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
 \item [Applications in our protocol.] In \ref{protocol:step5}, after receiving
   the ciphertext $C_{HD'}$, which encrypts a plaintext
   of the form $(HD', g_1, \dots, g_{n-1})$, $\user_k$ removes the noise terms $g_1, \dots,
-  g_{n-1}$ and sends back to $\server$ the re-encryption $C_{HD_0'} = Enc(HD', 0, 0, \dots,
-  0)$. The client needs to prove that he performs this step correctly, this is done
+  g_{n-1}$ and sends the re-encryption $C_{HD_0'} = Enc(HD', 0, 0, \dots,
+  0)$ back to $\server$. The client needs to prove that he performs this step correctly, this is done
   by $\mathbf{ZKPUnpack(C_{HD},C_{HD_0'}})$. In this step, the server also receives $\mathbf{c_i} = Enc(b_i)$ to compute $Enc(x^{HD'})$, as discussed in section \ref{sec:binToUna}. Before doing this operation, the client needs to convince the server
-  about the bits sent are actually the ones decomposed from $HD'$. This proof is done
+  that the bits sent are actually the ones decomposed from $HD'$. This proof is done
   by $\mathbf{ZKPBinDecomp(C_{HD_0'},c_i)}$.
 
   Besides, In \ref{protocol:step1}, $\user_k$ uses $\mathbf{ZKPBV}$ to convince $\server$ that he is
@@ -504,7 +500,7 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
 \begin{proof}
   We prove the properties specified in Definition \ref{def:zkp-sum-protocol}.
   \begin{description}
-  \item[Completeness.] If the Prover $P$ sends a response, we have that:
+  \item[Completeness.] If the Prover $P$ sends a response, the following becomes the case:
     \begin{align*}
       -\mathbf{c_1s_s} + t\mathbf{s_e} + \mathbf{s_m} &= -\mathbf{c_1(r_s +
                                                         x^cs)} + t(\mathbf{r_e + x^ce}) + \mathbf{r_m + x^cm} \\
@@ -523,15 +519,15 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
     Regarding norms, we have $\norm{\mathbf{s_s}} = \norm{\mathbf{r_s +
         x^cs}} \leq
     \norm{\mathbf{r_s}} + \norm{\mathbf{s}} \leq 2\beta_0$, and
-    similarly for $\mathbf{\norm{s_e}, \norm{s_m}, \norm{s_{e_0}}}$.
+    the same for $\mathbf{\norm{s_e}, \norm{s_m}, \norm{s_{e_0}}}$.
   \item [Special Soundness.] Before proving this property, we describe the
     following technical lemma ( the detailed proof can be found in
     \cite{benhamouda2014better})
     \begin{lemma}
-      Let n be a power of 2 and let $0 <i,j< 2n-1$. Then $2(x^i -
+      Let n be a power of 2 and let $0 <i,j< 2n-1$. Then, $2(x^i -
       x^j)^{-1} \mod (x^n +1)$ only has coefficients in $\left\{ -1,
         0, 1
-      \right\}$
+      \right\}$.
       \label{lem:speicalBinomial}
     \end{lemma}
     Assume that a dishonest prover does not know 'small'
@@ -542,7 +538,7 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
       s''_m, s''_{e_0}}))$. From the binding property of the auxilary
     commitment scheme \cite{pedersen1991non}, we have $\mathbf{t'_c = t''_c := t_c}$
     and $\mathbf{t'_k = t''_k := t_k}$. As the transcripts pass the
-    checks by the verifier, we have:
+    checks by the verifier, it appears that:
     \begin{align*}
       &\begin{cases}
         \mathbf{x^{c'}c_0 + t_c} = -\mathbf{c_1s'_{s}} +
@@ -585,7 +581,7 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
     2\mathbf{(s'_e - s''_e)(x^{c'} - x^{c''})^{-1}}$,
     $2\hat{\mathbf{e_0}} = 2\mathbf{(s'_{e_0}-s''_{e_0})(x^{c'} -
       x^{c''})^-1}$ and $2\hat{\mathbf{m}}=2\mathbf{(s'_m -
-      s''_m)(x^{c'} - x^{c''})^{-1}}$ and applying the result from Lemma
+      s''_m)(x^{c'} - x^{c''})^{-1}}$. Applying the result from Lemma
     \ref{lem:speicalBinomial}, we see that $P$ knows the 'small' secrets
     $\norm{\hat{\mathbf{2s}}} < 2\beta_0$, $\norm{\hat{\mathbf{2e}}} <
     2\beta_0$, $\norm{\hat{\mathbf{2e_0}}} < 2\beta$ and
@@ -595,7 +591,7 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
     $\frac{1}{2n}$.
   \item [Honest Verifier Zero-Knowledge.] The verifier can use a
     simulator $S$ to reproduce the
-    protocol transcript as follows.
+    protocol transcript as follows:
     \begin{itemize}
     \item $V$ samples $c \randomsample \mathcal{C}$
     \item With probability 1/M, $S$ chooses $\mathbf{s_s, s_{e_0}}
@@ -610,36 +606,36 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
       d_{aux},(\mathbf{s_s,s_{e_0},s_e,s_m})))$
     \end{itemize}
     If no abort occurs, the distribution of $\mathbf{(s_s, s_{e_0}, s_e,
-      s_m)}$ does not depend on real secrets hence the simulated
-    transcript is insdistinguishable from the real one. If an abort
+      s_m)}$ does not depend on real secrets. Hence, the simulated
+    transcript becomes insdistinguishable from the real one. If an abort
     occurs, the indistinguishability comes from the hiding property of
     the commitment scheme?
 
   \end{description}
 \end{proof}
 
-\subsection*{Summary of previous works}
+\subsection*{Summary of previous work}
 \begin{description}
 \item Lyubashevsky's proof systems (\cite{lyubashevsky2008lattice},
-  \cite{lyubashevsky2009fiat}): This system is similar to classical Schnorr's
+  \cite{lyubashevsky2009fiat}): This system is similar to the classical Schnorr's
   ZKP system, the main advantage is its communication size efficiency. However,
-  this approach is not zero knowledge (it is only proved to be witness
-  indistinguishable). Moreover, there is a completeness error in each round, and
+  this approach is not zero-knowledge (it is only proved to be witness
+ -indistinguishable). Moreover, there is a completeness error in each round, and
   lastly, the extraction gap is $O(\sqrt{n})$.
 
-  A quick discussion on extraction gap: we refer to extraction gap as a security
-  parameter of ZKP systems for ISIS problem. Generally, we say a proof accepts
+  A quick discussion on extraction gaps: we refer to an extraction gap as a security
+  parameter of ZKP systems for ISIS problem. Generally, we say that a proof accepts
   an extraction gap $\gamma$ ($\gamma > 1$) if the knowledge extractor of the
   protocol can extract a vector $\vec{v}$ such that
   $\norminf{v} = \gamma \norminf{w}$, where $\norminf{w}$ is a valid witness
   from the \emph{Prover}. Ideally, when $\gamma = 1$, one can use the extractor
   to solve the underlying ISIS instance. In other words, ZKP with $\gamma = 1$
-  is strongly secure as breaking it is at least as hard as solving the
+  is strongly secure, as breaking it is at least as hard as solving the
   underlying problem. When $\gamma > 1$, the soundness of the proof has to rely
-  on stronger hardness assumption of certain potentially easier problem is hard
+  on a stronger hardness assumption of certain potentially easier problems is hard
   to solve.
 \item Micciancio-Vadhan proof system \cite{micciancio2003statistical}: This
-  protocol provide ZKP for GapCVP problem, it can be adapted to prove ISIS
+  protocol provides ZKP for the GapCVP problem, but it can be adapted to prove the ISIS
   relation: Let $\mathbf{B}$ be a basis of the perp lattice
   $\Lambda_q^\bot(\mathbf{A}) = \{\mathbf{x} \in \mathbb{Z}^m: \mathbf{A.x = 0}\
   \mod \ q\}$.  and $\mathbf{t} \in \mathbb{Z}^m: \mathbf{A.t = y}\ \mod \ q$
@@ -653,17 +649,17 @@ Then we details the module $\mathbf{ZKPBinDecomp(c,c_i)}$, that proves the corre
 \item Stern's protocol [\todo{citeStern}] and extension: The original Stern's
   proof worked on the SD relation \todo{SD relation}. This ZKP does not have any
   completeness error and there is no extraction gap, i.e., $\gamma =
-  1$. Extension from this work include KTX [137,85], which associated with the
+  1$. Extensions of this work include KTX [137,85], associated with the
   following relation \todo{ktxRelation}.
 
-  The work of \cite{ling2013improved} provide a proof for ISIS relation
+  The work of \cite{ling2013improved} provides a proof for the ISIS relation
   \todo{ISIS relation}.  Stern's based techniques inherently do not have
-  extraction gap nor completeness error, the communication efficiency is
+  extraction gaps nor completeness errors, their communication efficiency is:
   \todo{missing figure}. Our protocol will also be based on this technique, the
-  improvement is, ours can prove different bounds of different elements in the
+  enhancement being that it can prove different bounds of different elements in the
   $Prover$'s witness vector. Such improvement is important in ZKPoPK for
-  lattice-based cryptosystem, especially in contexts where public key settings
-  and homomorphic operations are used: The bounds of messages and errors can be
+  lattice-based cryptosystems, especially in contexts where public key settings
+  and homomorphic operations are used. The bounds of messages and errors can be
   largely different: for example, the original message can be binary while the
   noises' bounds increase according to the ladder of homomorphic operations.
 
@@ -676,11 +672,10 @@ A Zero-Knowledge Proof of Knowledge (ZKPoK) is a two party protocol between a
 Prover $P$ and a Verifier $V$. The protocol allows $P$ to convince $V$ that it
 knows some secret without revealing anything about the secret. We refer readers
 to \cite{bellare1992defining} for formal definition of the original ZKPoK. We
-discuss a definition of sigma protocol from \cite{benhamouda2014better} which
-can be adapted in the techniques we use in the project.
+discuss a definition of the sigma protocol from \cite{benhamouda2014better} which can be adapted to suit the techniques we use in our project.
 
-Notations: We denote a language $\mathcal{L} \subseteq \left\{ 0,1 \right\}^* $
-that has a witness relationship $R \subseteq \left\{ 0,1 \right\}^* \times \left\{
+Notation: We denote a language $\mathcal{L} \subseteq \left\{ 0,1 \right\}^* $
+having a witness relationship $R \subseteq \left\{ 0,1 \right\}^* \times \left\{
   0,1 \right\}^*$ if $x \in \mathcal{L} \iff \exists (x,w) \in R$, where
 $w$ is a witness for $x \in \mathcal{L}$.
 
@@ -708,14 +703,14 @@ $w$ is a witness for $x \in \mathcal{L}$.
     output $w'$ such that $(x,w') \in \mathcal{R'}$.
   \item Special honest-verifier zero-knowledge (HVZK): There exists a
     simulator $S$, which is a PPT
-    algorithm that takes $x\in \mathcal{L}$ and $c \in \mathcal{C}$ as
+    algorithm taking $x\in \mathcal{L}$ and $c \in \mathcal{C}$ as
     inputs and outputs $(t,s)$ so that the triple $(t,c,s)$ is
     indistinguishable from a valid protocol transcript.
   \end{itemize}
 \end{definition}
 
-The definition is different from the original sigma protocol in 2 ways.
-First, it allows a completeness error $\alpha$ in stead of perfect completeness
+This definition is different from the original sigma protocol in 2 ways.
+First, it allows a completeness error $\alpha$ instead of perfect completeness
 ($\alpha=0$ in the original protocol).
 Second, a second language $\mathcal{L}$ is introduced, with witness relation
 $\mathcal{R} \subseteq \mathcal{R'}$: A prover knows a witness in $\mathcal{R}$
@@ -726,7 +721,7 @@ gap is small enough, it implies security guarantee for higher level application
 
 
 We present an adaption of the ZKP protocol in \cite{benhamouda2014better} to
-prove the plaintext knowledge of BV cryptosystem. Recall that given
+prove the plaintext knowledge of BV cryptosystems. Recall that given
 $\mathbf{(sk,pk) = (s,(p_0,p_1))}$ where $\mathbf{s} \in \chi_{\beta_0}^n$,
 $\mathbf{p_0,p_1} \in R_q$ , a message $\mathbf{m} \in R_t$ is encrypted by
 $\enc{\mathbf{m}} := \mathbf{(c_0, c_1)} = (\mathbf{p_0u} + t\mathbf{f + m,
@@ -734,10 +729,10 @@ $\enc{\mathbf{m}} := \mathbf{(c_0, c_1)} = (\mathbf{p_0u} + t\mathbf{f + m,
 an AND composition of 2 ZKPs that prove 2 relations: the secret key $\mathbf{s}$
 corresponds to the public key $\mathbf{(p_0,p_1)}$, i.e.,
 $\mathbf{p_0 = -p_1s} - t\mathbf{e_0}$, and the ciphertext $\mathbf{(c_0,c_1)}$
-is well-formed and encrypt the message $\mathbf{m}$, that is,
+is well-formed and encrypts the message $\mathbf{m}$, that is,
 $\mathbf{c_0 + c_1s} = \mathbf{m} + t\mathbf{e}$, with
 $\norminf{\mathbf{e}} \leq \beta$. Note that the protocol guarantees with $V$
-that $P$ knows plaintext encrypted in $2\mathbf{c_0}$
+that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
 
 \begin{figure}[h]
   \centering
@@ -778,24 +773,24 @@ that $P$ knows plaintext encrypted in $2\mathbf{c_0}$
 
 \subsection{Combination of ZKP}
 \label{sec:combination-zkp}
-$\sum-$protocol can be composed together to construct more complex relations.
+A $\sum-$protocol can be composed together to construct more complex relations.
 There are several forms of decomposition such as AND, OR, NEQ, etc.  We describe
-some forms of composition of \(\sum-protocol\) that are used in our protocol:
+some forms of composition of the \(\sum-protocol\) that are used in our own protocol:
 AND-composition, OR-composition. We first describe the generic \(\sum-\)protocol
 and its combinations. The BV-ZKP (Figure \ref{fig:belhamoudaProtocol}) protocol
-is an instance of such protocol and the technique can be applied inherently.
+is an instance of such a protocol and the technique can be applied inherently.
 \begin{description}
-\item[$\sum-$protocol] The protocol is a generic 3-moves between 2 parties
-  \(Prover\) and \(Verifier\), it is used to prove (in zero knowledge) a
-  relation \(R(x,w)\), where \(x\) is the public parameters known by both
+\item[$\sum-$protocol] The protocol is a generic 3-moves transaction between 2 parties
+  \(Prover\) and \(Verifier\), it is used to prove (supporting zero-knowledge) a
+  relation \(R(x,w)\), where \(x\) is the public parameter known by both
   parties and \(w\) is a witness known by the \(Prover\) only. The protocol's
   view is a set of 3 messages (Figure \ref{fig:sigmaProtocol}): the commitment
   \(c\) is a function of a random factor \(\rho\), the challenge \(ch\) is
-  normally random and the response \(r\) is a function computed from
-  \(x, w, \rho, ch\). There are 2 extra algorithms for \(\sum-\)protocol: a
+  normally random, and the response \(r\) is a function computed from
+  \(x, w, \rho, ch\). There are 2 extra algorithms for the \(\sum-\)protocol: a
   \(verify(r,ch,c)\) algorithm used by the \(Verifier\) in the last step to
-  check the correctness of the proof result and a simulator \(sim\) that takes
-  \(x\) and a random parameter \(\rho'\) as input and outputs a view
+  check the correctness of the proof result, and a simulator \(sim\), taking
+  \(x\) and a random parameter \(\rho'\) as inputs, and and outputting a view
   \(\bar{c},\bar{ch},\bar{r}\) that is indistinguishable from the genuine view
   of the protocol.
   \begin{figure}[h!]
@@ -828,7 +823,7 @@ is an instance of such protocol and the technique can be applied inherently.
   $R_1 \wedge R_2 = \left\{ (v_1, v_2, w_1, w_2): (v_1;w_1) \in R_1, (v_2,w_2)
     \in R_2\right\}$ can be obtained by running a $\sum$-Protocol for $R_1$ and
   a $\sum$-Protocol for $R_2$ in parallel, using a \emph{common} challenge.
-  (Figure \ref{fig:belhamoudaProtocolAND} is a concrete example combining 2 ZKP for BV)
+  Figure \ref{fig:belhamoudaProtocolAND} is a concrete example combining 2 ZKP for BV.
   
   \begin{figure}[h!]
     \centering
@@ -870,15 +865,15 @@ is an instance of such protocol and the technique can be applied inherently.
     \label{fig:belhamoudaProtocolAND}
   \end{figure}
 
-\item[OR-Compostion] In this composition, given the $\sum-protocol$ for many relations 
+\item[OR-Compostion] In this composition, given the $\sum-protocol$ for many  
   relations $R_{1}$,$R_{2}$,\dots,\(R_{n}\) the goal is to construct a protocol for the
   relation
-  $R_{OR}(\vec{x}, w_{i}) $, where \(\exists i \leq n: R(x_{i},w_{i}) = 1\). The main idea to construct this composition is that the verifier
-  can let the prover using the simulator of the \(\sum-protocol\) for the
-  relations \(R_{j}\) that the prover does not know the witness.
+  $R_{OR}(\vec{x}, w_{i}) $, where \(\exists i \leq n: R(x_{i},w_{i}) = 1\). The main reason behind this composition is that the verifier
+  can let the prover use the simulator of the \(\sum-protocol\) for the
+  relations \(R_{j}\), for which the prover does not know the witness.
   The verifier provides a single challenge \(c\)
   such that the prover can split that into challenges \(c_{1}, c_{2}, \dots, c_{n}\)
-  provided that \(c_{i}\) satisfy a liner constraint in terms of \(c\),
+  provided that \(c_{i}\) satisfies a linear constraint in terms of \(c\),
   for example \(c = c_{1} \xor c_{2} \xor \dots \xor c_{n}\). The final OR-combination proof is
   obtained by composing one run of the \(\sum-protocol\) with other runs of the
   simulators for the \(\sum-protocol\). (Figure \ref{fig:OR-Combination})
@@ -911,20 +906,20 @@ is an instance of such protocol and the technique can be applied inherently.
 
 
 \section{Proposed Scheme}
-We propose a secure fingerprint authentication scheme that combines Somewhat
-Homomorphic Encryption (SHE) with Zero Knowledge Proof (ZKP) to provide privacy
+We propose a secure fingerprint authentication scheme that combines a Somewhat
+Homomorphic Encryption (SHE) with a Zero-Knowledge Proof (ZKP) to provide privacy
 features with low FAR overhead. The scheme is secure under a hybrid model that
-assumes active client,
+assumes an active client and an
 honest but curious (HBC) server. The server $\server$ is considered to be HBC
-with the assumption that it can be audited regularly. This scheme uses Hamming
+by assuming that it can be audited regularly. This scheme uses Hamming
 Distance (HD) as the main measure unit to determine the difference between two
-fingerprint template.
+fingerprint templates.
 
 \subsection{The protocol}
 \label{sec:theProtocol}
 \begin{description}
-	\item[Setup] The server and the user runs the setup process as
-	follows.
+	\item[Setup] The server and the user run the setup process as
+	follows:
 	\begin{itemize}
 
 
@@ -937,15 +932,15 @@ fingerprint template.
 
 		\item $\mathcal{S}$ invokes $params_{BV} \gets
 		SGen_{BV}(1^\lambda)$
-		\item We are currently using BV cryptosystem
+		\item We are currently using a BV cryptosystem
 		(\cite{brakerski2011fully}). We refer the reader to section
 		\ref{sec:BVScheme} for details of $params_{BV}$, the public
 		key $pk$, the private key $sk$, as well as the
 		operations of the
 		cryptosystem.
 		\item A user $\mathcal{U}_k$ invokes $(pk_k,sk_k) \gets
-		UGen_{BGV}(params_{BGV})$ and make $pk_k$ publicly
-		available to $\mathcal{S}$
+		UGen_{BGV}(params_{BGV})$ and makes $pk_k$ publicly
+		available to $\mathcal{S}$.
 
 
 
@@ -970,7 +965,7 @@ fingerprint template.
 	\item[Enrolment] The enrolment process runs as follows.
 	\begin{itemize}
 		\item $\mathcal{U}$ uses a specific sensor and algorithm to
-		extract his biometrics template $X$. $\mathcal{U}$
+		extract his biometric template $X$. $\mathcal{U}$
 		encrypts $X$ with his public key $pk_k$ to get
 		$T_k = Enc^{(1)}(X)$.
 		\item $\mathcal{U}$ sends $(k,T_k)$ to $\mathcal{S}$.
@@ -983,26 +978,26 @@ fingerprint template.
 	$\mathcal{U}_k$ is as follows.
 	\begin{enumerate}
 		\item $\user_k$ extracts his query template $Y$. He
-		encrypts $Y$ with his public key $pk_k$ to get
+		encrypts $Y$ with his public key $pk_k$ to obtain
 		$Q_k = Enc^{(1)}(Y)$.\label{protocol:step1}
 		\item $\user_k$ sends $(k,Q_k)$ to $\server$ and
-		run $\mathbf{ZKPValidEnc((Q_k,pk_k),(Y,sk_k))}$ to prove the
+		runs $\mathbf{ZKPValidEnc((Q_k,pk_k),(Y,sk_k))}$ to prove the
 		validity of $Y$.\label{protocol:step2}
 		\item $\server$ locates the record $(k,T_k)$ and computes
 		\                        the encrypted Hamming Distance $C_{HD} = Enc^{(1)}(
 		HD)$ of $X$ and
-		$Y$, using homomorphic operation discussed in
+		$Y$, using the homomorphic operation discussed in
 		Appendix \ref{sec:HDComp}
 		$$C_{HD} \gets
 		\textbf{EvalDistance}(T_k,Q_k).$$\label{protocol:step3}
 		\item $\server$ masks the $C_{HD}$ by sampling $r
 		\randomsample \mathcal{P}$
-		and does one homomorphic addition to get
+		and performs one homomorphic addition to get
 		$C_{HD'} = Enc^{(1)}(HD + r) \gets Enc^{(1)}(HD) + Enc^{(1)}(r)$.
 		The result ciphertext is sent to $\user_k$.\label{protocol:step4}
-		\item $\user_k$ uses his private key $sk_k$ to decrypts $C_{HD'}$
-		and sends back to $\server$
-		the re-encryption $C_{HD'_0} = Enc^{(1)}(HD',0,0,\dots,0)$.
+		\item $\user_k$ uses his private key $sk_k$ to decrypt $C_{HD'}$
+		and sends
+		the re-encryption $C_{HD'_0} = Enc^{(1)}(HD',0,0,\dots,0)$ back to $\server$.
 		$\user_k$ also decomposes the plaintext result
 		$HD' = HD+r$ into its binary representation:
 		\[
@@ -1011,7 +1006,7 @@ fingerprint template.
 		and sends $C_i = Enc^{(1)}(b_i)$ to $\server$
 		for $i = 0, \dots, l-1$.\label{protocol:step5}
 
-		\item $\user_k$ and $\server$ run $\mathbf{ZKPUnpack}(C_{HD},C_{HD_0'})$ and
+		\item $\user_k$ and $\server$ run the $\mathbf{ZKPUnpack}(C_{HD},C_{HD_0'})$ and
 		$\mathbf{ZKPBinDecomp}(C_{HD_0'},C_i)$
 		protocols to convince the server that
 		$\user_k$ did follow the protocol transcript correctly. This is detailed
@@ -1019,20 +1014,20 @@ fingerprint template.
 		\ref{sec:ZKPReencrypt}.
 		\label{protocol:step6}
 		\item $\server$ computes $C_{HD}'' = Enc^{(2)}(2^l + t - HD) \gets
-		Enc^{(2)}(2^l + t) - Enc^{(2)}(HD+r) + Enc^{(2)}(r)$. Where
+		Enc^{(2)}(2^l + t) - Enc^{(2)}(HD+r) + Enc^{(2)}(r)$, where
 		$Enc^{(2)}(HD + r)$ is computed by $\mathbf{ToUnary}(C_i)$. We note that
 		$Enc^{(2)}$ is the second mode of encryption with the message
 		encoded in the exponent of the polynomial, which allows the
 		Most significat bit (MSB)
-		extraction on ciphertext, this is detailed section \ref{sec:binToUna} \label{protocol:step7}
+		extraction on the ciphertext (this is detailed section \ref{sec:binToUna} \label{protocol:step7}).
 		\item $\server$ does $Enc^{(3)}(res) \gets
 		\mathbf{MSBExtract}(C_{HD}'')$, this is the ciphertext
 		of the authentication result, which is sent to $\user_k$. This
 		is described in section \ref{sec:MSBExtract}.
 		\label{protocol:step8}
-		\item $\user_k$ decrypts the result $res$ and sends to $\server$
-		(which is either \textbf{Accepted} or \textbf{Rejected}).
-		$\user_k$ also does another proof $\mathbf{ZKPCorrectDec}(res)$
+		\item $\user_k$ decrypts the result $res$ and sends it to $\server$
+		(it will be either \textbf{Accepted} or \textbf{Rejected} by $\server$).
+		$\user_k$ also runs another proof $\mathbf{ZKPCorrectDec}(res)$
 		to convince $\server$ that he
 		did follow the protocol honestly (Section \ref{sec:ZKPReencrypt}).\label{protocol:step9}
 
@@ -1093,14 +1088,14 @@ fingerprint template.
     \ref{append:Proofs}
 	\begin{theorem}
 		\label{theo:server}
-		Under the IND-CPA security of BV cryptosystem, and the zero-knowledge
-		property of the Stern protocol, the proposed scheme satisfies (Honest But Curious) Server Privacy Security.
+		Under the IND-CPA security of a BV cryptosystem, and the zero-knowledge
+		property of the Stern protocol, the proposed scheme satisfies an (Honest But Curious) Server Privacy's Security.
 	\end{theorem}
 	\begin{theorem}
 		\label{theo:client}
-		Under the IND-CPA security of BV cryptosystem and the soundness
-		property of the underlying Stern protocol, the proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has imperonsation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge error $\eps_{ZK1},\ldots,\eps_{ZK4}$ such that $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
-\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq c_1 \cdot \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition $\sigma/r_0 \geq 4 \pi k n q$ holds, with $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ an upper bound on the size of the noise in $C_{HD}$.
+		Under the IND-CPA security of a BV cryptosystem and the soundness
+		property of the underlying Stern protocol, the proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has imperonsation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge errors $\eps_{ZK1},\ldots,\eps_{ZK4}$ such that $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
+\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq c_1 \cdot \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition $\sigma/r_0 \geq 4 \pi k n q$ holds, with $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ being an upper bound on the size of the noise in $C_{HD}$.
 	\end{theorem}
 
 \end{description}
@@ -1108,12 +1103,12 @@ fingerprint template.
 \section{Security Proofs}
 \label{append:Proofs}
 \subsection{Security Proof for Theorem~\ref{theo:client}: Type I Impersionation attack}
-The proof of theorem \ref{theo:server} and  \ref{theo:client} can be done using a sequence of games between the challenger $\challenger$ and the adversary $\attacker$. We present
-a sequence of games as well as the relations among them to demonstrate type I security model proof.\\\\
+The proof of theorem \ref{theo:server} and  \ref{theo:client} can be provided using a sequence of games between the challenger $\challenger$ and the adversary $\attacker$. We present
+a sequence of games as well as the relations among them to demonstrate the type I security model proof.\\\\
 \textit{Game 0}. Game 0 is the original impersonation game for type I attack.
 \begin{description}
 	\item [Setup.] $\challenger$ intiates $D_k \randomsample D_{bio}$ and $X_k
-	\randomsample D_k$. $\challenger$ sets up $(sk_k, pk_k)$ and does
+	\randomsample D_k$. $\challenger$ sets up $(sk_k, pk_k)$ and executes
 	$Enrol(k, X_k)$ to get $(sk_k, T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$.
 	$\attacker$ submits the attack query type I and receives $sk_k$ from
 	$\challenger$.
@@ -1121,28 +1116,28 @@ a sequence of games as well as the relations among them to demonstrate type I se
 	= 1, \dots, q$,
 	$\attacker$ sends $(Q_k^{(j)} = Enc^{(1)}(Y^{(j)}))$. $\attacker$ and
 	$\challenger$ runs $\mathbf{ZKPValidEnc}(Q_k^{(j)},Y^{(j)})$. $\challenger$ evaluates
-	$C_{HD} = \mathbf{EvalDistance}_{pk_k}(C_k, Q_k^{(j)})$ then computes
+	$C_{HD} = \mathbf{EvalDistance}_{pk_k}(C_k, Q_k^{(j)})$, then computes
 	$C_{HD'} = (-1)C_{HD} + Enc_{pk_k}^{(1)}(r_{HD'},e_{HD'})$ for $r_{HD'}
 	\randomsample \mathcal{P}$ and $e_{HD'} \randomsample \chi_{HD}$. The
 	result ciphertext is sent to $\attacker$, $\attacker$ decrypts $C_{HD'}$
-	and decomposes it to bits and sends back the ciphertexts $C_0^{(j)}, \dots,
-	C_{l-1}^{(j)} (= Enc^{(1)}(b_i), i = 0,\dots, l-1)$ as well as the
-	re-encryption $C_{HD_0'}$. $\attacker$ and $\challenger$ does
+	and decomposes it into bits and further sends back the ciphertexts $C_0^{(j)}, \dots,
+	C_{l-1}^{(j)} (= Enc^{(1)}(b_i), i = 0,\dots, l-1)$, as well as the
+	re-encryption $C_{HD_0'}$. $\attacker$ and $\challenger$ engage
 	$\mathbf{ZKPUnpack}(C_{HD},C_{HD_0'})$ and $\mathbf{ZKPBinDecomp}(C_{HD_0'},
 	C_i^{(j)})$.
 	$\challenger$ evaluates $C_{HD}'' = Enc^{(2)}(2^l + t) +
 	\mathbf{ToUnary}(C_i^{(j)}) + Enc^{(2)}(-r) $ to get $Enc^{(2)}(2^l + t -
-	HD)$. $\challenger$ does $Enc^{(3)}(res) \gets
-	\mathbf{MSBExtract}(C_{HD}'')$ and sends to $\attacker$. $\attacker$
-	decrypts and sends the authentication result bit back. $\challenger$ and
-	$\attacker$ does $\mathbf{ZKPCorrectDec}(res)$ to convince the
+	HD)$. $\challenger$ computes $Enc^{(3)}(res) \gets
+	\mathbf{MSBExtract}(C_{HD}'')$ and sends the result to $\attacker$. $\attacker$
+	decrypts it and sends the authentication result bit back. $\challenger$ and
+	$\attacker$ then fire $\mathbf{ZKPCorrectDec}(res)$ to trigger the server's acceptance of the
 	authentication result. At the end, the server outputs \textbf{Accept} if
 	all the proofs pass and $res = \mathbf{Accept}$.
 \end{description}
-Next, we discuss following games, the plan is to proceed towards the final game where we
-can simulate everything that $\attacker$ receives that related to $X_k$
-(without any knowledge about $X_k$, the only thing that known about $X_k$ is
-the function $Verify(X_k, Y)$). Let $res_s = Verify(X_k, Y^{(j)})$ and $S_i$ be
+Next, we discuss the games that follow, the plan being to proceed towards the final game where 
+everything $\attacker$ receives relating to $X_k$ can be simulated
+without any knowledge about $X_k$, except that $X_k$ is
+the function $Verify(X_k, Y)$. Let $res_s = Verify(X_k, Y^{(j)})$ and $S_i$ be
 the event in the game $i$ such that $res_s = Accept$.\\
 \textit{Game 1}. In this game, we abort $\mathbf{ZKPValidEnc}$ if $Q_k^{(j)}$
 is not a valid encryption of the query, but the $Prover$ manages to pass the
@@ -1154,7 +1149,7 @@ proof. Let $(*)_1$ be this event.
 \end{cases}
 \]
 Let $bad_0$ be the event in game 0 : $\exists j \leq q\  s.t\  (*_1)\
-\textnormal{happens}$. We want to show that when we modify \textit{game 0}, the
+\textnormal{is thus the case}$. We want to show that when we modify \textit{game 0}, the
 probability of a successful forgery $S_1$ in this \textit{game 1} is not much
 lower than what it was. Due to the modification, we observe that
 $
@@ -1162,24 +1157,24 @@ Pr[S_1] \geq Pr[S_0] - Pr[bad_0]
 $
 .For any $j$ in the $q$ authentication attemps, by the $\varepsilon-soundness$ property of
 $\mathbf{ZKPValidEnc}$ as a proof of membership in (*), we have $Pr[(*_1)\
-occurs\ for\ some \ j] \leq \varepsilon_{ZK1}$. So the probability of $bad_0$
-would be the union of these events which is bounded by $Pr[bad_0] \leq
+occurring\ for\ some \ j] \leq \varepsilon_{ZK1}$. So, the probability of $bad_0$
+would be the union of these events, which is bounded by $Pr[bad_0] \leq
 q\varepsilon_{ZK1}$. In other words, the advantage of $\attacker$ in \textit{game
 	1} is
 \[
 Pr[S_1] \geq Pr[S_0] - Pr[bad_0] \geq \varepsilon_{imp} - q\varepsilon_{ZK1}
 \]
 \\
-\textit{Game 2}. In this game, we abort $\mathbf{ZKPUnpack}$ if in one of the
-$j^{th}$ runs, the $Verifier$ accepts but the ciphertext did not satisfy the
+\textit{Game 2}. In this game, we abort $\mathbf{ZKPUnpack}$ if, in one of the
+$j^{th}$ runs, the $Verifier$ accepts but the ciphertext does not satisfy the
 relation. Let $bad_1$ be this event, by the same type of argument, we can
 derive $Pr[bad_1] \leq q\varepsilon_{ZK2}$ and therefore
 $$Pr[S_2] \geq Pr[S_1]
 - Pr[bad_1] \geq \varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2})
 $$
 \textit{Game 3 and Game 4}. Similarly, we abort $\mathbf{ZKPBinDecomp}$ and
-$\mathbf{ZKPCorrectDec}$ if in any $j^{th}$ runs, the $Verifier$ accepts even
-when the correctness of the ZKP is broken. We have
+$\mathbf{ZKPCorrectDec}$ if, in any $j^{th}$ runs, the $Verifier$ accepts even
+when the correctness of the ZKP is not satisfied. We have
 $$Pr[S_3] \geq  \varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2}
 +\varepsilon_{ZK3})
 $$ and
@@ -1187,38 +1182,37 @@ $$Pr[S_4] \geq  \varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
 \varepsilon_{ZK3} + \varepsilon_{ZK4})
 $$
 By the end of \textit{Game 4}, if in any authentication attempt $j$, there is
-no abort in any of the 4 games, then by the correctness property of ZKP, the
+no abort while running any of the 4 games, then, by the correctness property of ZKP, the
 server output is equal to the output of $Verify(X_k, Y^{(j)})$. In other words,
 we have shown what we could get by just querying the oracle $Verify()$. Next,
-we want to simulate everything related to $X_k$ that the attacker can see using
+we want to simulate everything related to $X_k$ the attacker can see using
 just that oracle.\\
-\textit{Game 5.} At the end of \textit{Game 4}, $\challenger$ has the bit
+\textit{Game 5.} At the end of \textit{Game 4}, $\challenger$ possesses the bit
 $b = Verify(Y^{(i)},X_k)$. In this game, we can change $C_{res}^{(j)}$ from
 $\mathbf{MSBExtract}(C_{HD}'') = Enc(b;e_{res})$ to
 $Enc(verify(Y^{(i)},X_k);e_{res})$, given that the challenger can use the
-secret key to extract $e_{res}$. By doing this change, $\attacker$ still sees
-the same ciphertext, so the probability of winning of $\attacker$ in this game
+secret key to extract $e_{res}$. Despite this change,  
+the same ciphertext is still accessible to $\attacker$, so its probability of winning of 
 is the same as in \textit{Game 4}.\\
 \textit{Game 6.} In this game, we change the way $\challenger$ computes
-$C_{HD}''$: In the orignal game 0, $Enc(-r)$ was added to remove the mask, we
+$C_{HD}''$: In the orignal game 0, $Enc(-r)$ was added to remove the mask. We now
 want to remove this $r$ from being used anywhere in the game, so we replace
 this with $Enc(0)$. This change does not affect $\attacker$'s success
 probability: $r$ only affects the plaintext inside $C_{HD}''$, since we do not
-use this plaintext anymore (it was replaced in \textit{Game 5}), so this change
-does not affect what the attacker sees. Again, $Pr[S_6] = Pr[S_5] = Pr[S_4]$.\\
+use this plaintext anymore (as it has been replaced in \textit{Game 5}), so this change
+does not affect the information available to the attacker. Again, $Pr[S_6] = Pr[S_5] = Pr[S_4]$.\\
 \textit{Game 7.} We modify the way $C_{HD}'$ is computed in this game. Instead
-of doing $C_{HD}' \gets (-1)C_{HD} + Enc(r;e_{HD'})$, the challenger chooses a
-random $HD' \randomsample \mathbb{Z}_p$ and encrypt it with the noise was used
+of calculating $C_{HD}' \gets (-1)C_{HD} + Enc(r;e_{HD'})$, the challenger chooses a
+random $HD' \randomsample \mathbb{Z}_p$ and encrypts it with the noise used
 before: $C_{HD}' \gets Enc(HD'; -e_{HD} + e_{HD'})$. In this game, the
 plaintext has changed from being $r + HD$ to a uniform $HD' \in \mathbb{Z}_p$.
-Since $r$ is also uniform in $\mathbb{Z}_p$, the attacker sees a uniform
+Since $r$ is also uniform in $\mathbb{Z}_p$, the attacker is confronted with a uniform
 plaintext in both cases. Therefore, $Pr[S_7] = Pr[S_6]$.\\
 \textit{Game 8.} Finally, we set $C_{HD'} = Enc(HD', e_{HD'})$ for $e_{HD'}
 \randomsample \chi_{mask}$ instead of $-e_{HD} + e_{HD'}$. We replace the sum
-of the Gaussian noise with the random noise. In Section \ref{sec:Renyi}, we
+of the Gaussian noise with a random noise. In Section \ref{sec:Renyi}, we
 showed that $Pr[S_8] \geq \frac{1}{c(\delta)}(Pr[S_7]-q \cdot \delta)$, where $c(\delta) = RD(-e_{HD} + e_{HD'},
-e_{HD}) \leq 2 \cdot e^{1+2\delta}$ by Lemma~\ref{le:Renyi} and the assumption on the parameters. After we finish \textit{Game 8}, we can see that all the messages
-that the attacker sees, can be simulated with only the verified bit $b =
+e_{HD}) \leq 2 \cdot e^{1+2\delta}$ by Lemma~\ref{le:Renyi} and by our assumption on the parameter's values. After we finish \textit{Game 8}, we notice that all the messages available to the attacker can be simulated with only the verified bit $b =
 Verify(Y^{(i)}, X_k)$. We now have an attacker $A'$ against the biometric
 impersonation with advantage:
 \[
@@ -1232,23 +1226,23 @@ which gives the claimed bound $\varepsilon_{imp} \leq c(\delta) \cdot \varepsilo
 
 \subsection{Security Proof for Theorem~\ref{theo:client}: Type II Impersionation attack}
 \label{append:ProofsTypeII}
-The proof of Theorem \ref{theo:client} can be done using a sequence of games between the challenger $\challenger$ and the adversary $\attacker$. We present
-a sequence of games as well as the relations among them to demonstrate type II security model proof. The idea is that in this type of attack, $sk_k$ is not used to compute the view of $\attacker$. On the other hand, the soundess of the zero-knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ implies the existence of an efficient witness extractor algorithm, that can be used to extract the witness (i.e. the secret key $sk_k$) from a cheating prover that succeeds with probability non-negligibly higher than the knowledge error of the zero-knowledge proof, thus contradicting the IND-CPA security of the BV encryption scheme. \\\\
-\textit{Game 0}. Game 0 is the original impersonation game for type II attack, i.e. the same as Game 0 in the proof of security against Type I attacks, except that $(T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$ is given by $\challenger$ to $\attacker$ at the beginning of the game, rather than $sk_k$.
+The proof of Theorem \ref{theo:client} can be provided using a sequence of games between the challenger $\challenger$ and the adversary $\attacker$. We present
+a sequence of games as well as the relations among them to demonstrate the type II security model proof. The idea is that in this type of attack, $sk_k$ is not used to compute the view of $\attacker$. On the other hand, the soundess of the zero-knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ implies the existence of an efficient witness extractor algorithm, that can be used to extract the witness (i.e. the secret key $sk_k$) from a cheating prover succeeding with probability non-negligibly higher than the knowledge error of the zero-knowledge proof, thus contradicting the IND-CPA security of the BV encryption scheme. \\\\
+\textit{Game 0}. Game 0 is the original impersonation game for a type II attack, i.e., the same as Game 0 in the proof of security against Type I attacks, except that $(T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$ is given by $\challenger$ to $\attacker$ at the beginning of the game, rather than $sk_k$.
 For $j \in \{1,\ldots,q\}$, let $res^{j}$ denote the result of the $j$th authentication protocol run between $\attacker$ and $\challenger$, and $S_0$ be
-the event in the game $0$ such that $res^{j} = Accept$ for some $j=1,\ldots,q$. We have $\Pr[S_0] = \varepsilon_{imp,II}$, the type II success probability of $\attacker$. \\\\
-\textit{Game 1}. From the definition of event $S_0$ in Game 0, it follows that there exists some $j^* \in \{1,\ldots,q\}$ such that $\Pr[res^{j^*} = Accept] \geq \varepsilon_{imp,II}/q$. Furthermore, by an averaging argument, there must exist a set $G$ of $(D_k,X_k,pk_k)$ such that $\Pr[(D_k,X_k,pk_k) \in G] \geq \varepsilon_{imp,II}/(2 \cdot q)$, and for each $(D'_k,X'_k,pk'_k) \in G$, we have $\Pr[res^{j^*} = Accept |(D_k,X_k,pk_k)=(D'_k,X'_k,pk'_k)] \geq  \varepsilon_{imp,II}/(2 \cdot q)$. By $\varepsilon_{ZK1}$-soundness of the zero knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ (cite Golderich's `Foundations of Cryptography' book, volume 1, Prop. 4.7.5), there exists an witness extractor algorithm that runs in expected time $T'=O(\mathrm{poly}(n \log Q) \cdot T / (\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1}))$, where $T$ denotes the run-time of $\attacker$ and outputs a witness containing $sk_k$ for ${ZKPValidEnc}$. Therefore, we obtain a (secret key recovery) attack algorithm against the IND-CPA security of the BV encryption scheme with expected run-time $T'$ and advantage $\varepsilon' \geq \varepsilon_{imp,II}/(2 \cdot q)$. Hence,  if $\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1} > \varepsilon_{imp,II}/(4*q)$, or equivalently, if $\varepsilon_{imp,II} > 2 \cdot q \varepsilon_{ZK1}$, then we obtain a contradiction with the assumption the BV encryption scheme with parameters $Q,n,\sigma$ is IND-CPA against attacks with expected time $O(\mathrm{poly}(n \log Q) \cdot T / \varepsilon_{ZK1})$ and advantage $\geq \varepsilon_{ZK1}$. It follows under the latter assumption that $\varepsilon_{imp,II} \leq 2q \varepsilon_{ZK1} \leq 2 c_1  \cdot \varepsilon_{bio}$, under the assumption that  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
+the event in the game $0$ such that $res^{j} = Accept$ for some $j=1,\ldots,q$. We have $\Pr[S_0] = \varepsilon_{imp,II}$ as the type II success probability of $\attacker$. \\\\
+\textit{Game 1}. From the definition of event $S_0$ in Game 0, it follows that there exists some $j^* \in \{1,\ldots,q\}$ such that $\Pr[res^{j^*} = Accept] \geq \varepsilon_{imp,II}/q$. Furthermore, by an averaging argument, there must exist a set $G$ of $(D_k,X_k,pk_k)$ such that $\Pr[(D_k,X_k,pk_k) \in G] \geq \varepsilon_{imp,II}/(2 \cdot q)$, and for each $(D'_k,X'_k,pk'_k) \in G$, we have $\Pr[res^{j^*} = Accept |(D_k,X_k,pk_k)=(D'_k,X'_k,pk'_k)] \geq  \varepsilon_{imp,II}/(2 \cdot q)$. By $\varepsilon_{ZK1}$-soundness of the zero-knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ (cite Golderich's `Foundations of Cryptography' book, volume 1, Prop. 4.7.5), there exists a witness extractor algorithm that runs in expected time $T'=O(\mathrm{poly}(n \log Q) \cdot T / (\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1}))$, where $T$ denotes the run-time of $\attacker$ and outputs a witness containing $sk_k$ for ${ZKPValidEnc}$. Therefore, we obtain a (secret key recovery) attack algorithm against the IND-CPA security of the BV encryption scheme, with expected run-time $T'$ and advantage $\varepsilon' \geq \varepsilon_{imp,II}/(2 \cdot q)$. Hence,  if $\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1} > \varepsilon_{imp,II}/(4*q)$, or equivalently, if $\varepsilon_{imp,II} > 2 \cdot q \varepsilon_{ZK1}$, we obtain a contradiction with the assumption the BV encryption scheme with parameters $Q,n,\sigma$ is IND-CPA against attacks with expected time $O(\mathrm{poly}(n \log Q) \cdot T / \varepsilon_{ZK1})$ and advantage $\geq \varepsilon_{ZK1}$. It follows under the latter assumption that $\varepsilon_{imp,II} \leq 2q \varepsilon_{ZK1} \leq 2 c_1  \cdot \varepsilon_{bio}$, under the assumption that  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
 \varepsilon_{ZK3} + \varepsilon_{ZK4} + \delta) \leq c_1 \cdot \varepsilon_{subsection}$.
 
 
 \subsection{Security Proof for Theorem~\ref{theo:server}: Privacy against Server}
 \label{append:ProofsPrivacy}
 The proof of Theorem \ref{theo:client} can be done using a sequence of games between the challenger $\challenger$ and the adversary $\attacker$. We present a sequence of games. The idea is to proceed to remove $sk_k$ and $X_k$ from being used to compute the view of $\attacker$, except for $Verify(X_k,Y_k^{j})$ queries, as in the ideal game, relying on the correctness of the protocol and the IND-CPA security of the BV encryption scheme. \\\\
-\textit{Game 0}. Game 0 is the original real privacy game, in which $(T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$ is given by $\challenger$ to $\attacker$ at the beginning of the game. Then, for $j=1\ldots,q$, the attacker sends $Y_k^{(j)} \in \{0,1\}^n$ to $\challenger$, and the latter simulates a run of the authentication protocol between an honest client with input $(k,Y_k^{(j)}, sk_k)$ and an honest server with input $(k,T_k)$, returning to $\attacker$ the protocol view $V^{(j)}_S$ of the server. Finally, $\attacker$ outputs a bit $\beta$. In the following Game $i$, we let $S_i$ denote the event that $\beta=1$.\\\\
+\textit{Game 0}. Game 0 is the original real privacy game, in which $(T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$ is given by $\challenger$ to $\attacker$ at the beginning of the game. Then, for $j=1\ldots,q$, the attacker sends $Y_k^{(j)} \in \{0,1\}^n$ to $\challenger$, and the latter simulates a run of the authentication protocol between an honest client with input $(k,Y_k^{(j)}, sk_k)$ and an honest server with input $(k,T_k)$, returning to $\attacker$ the protocol view $V^{(j)}_S$ of the server. Finally, $\attacker$ outputs a bit $\beta$. In the following Game $i$, we let $S_i$ denote the event of $\beta=1$.\\\\
 \textit{Game 1}. We change the computation of the authentication result bit $res^{(j)}$ sent by client to server from the decryption of the ciphertext $\textbf{MSBExtract}(C''_{HD}$ (its value in Game 0) to the result returned by $Verify(X_k, Y^{(j)})$. By correctness of the protocol, this does not change the value of $res^{(j)}$, so $\Pr[S_1] = \Pr[S_0]$. \\\\
-\textit{Game 2}. We change the computation of the zero-knowledge protocol transcripts. Instead of computing those transcripts using the secret witnesses, we simulate them using the statistical zero-knowledge simulator algorithms for the zero-knowledge proofs. By the zero-knowledge property, this is a perfect simulation, and we have $\Pr[S_2]= \Pr[S_1]$.\\\\
-\textit{Game 3}. We change the computation of the ciphertexts $C^{(j)}_i$ for $i=0,\ldots,l-1$ and $Q^{(j)}_k$ for $j=1,\ldots,q$ and $C_k$ to encrypt zero messages, instead of encrypting the secret-related messages in the previous game. Since now $sk_k$ is not used anywhere in generating the view of $\attacker$, it follows by a hybrid argument that $|\Pr[S_3]-\Pr[S_2]| ((l+1) \cdot q + 1) \cdot \varepsilon_{BV}$, where $\varepsilon_{BV}$ denotes the maximal advantage of an attacker against IND-CPA of BV scheme against attacks with run-time $T + \mathrm{poly}(n, \log Q)$ where $T$ is the run-time of $\attacker$.
-In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^{j})$ queries, the challenger together with $\attacker$ constitute an efficient attacker against the ideal privacy game, which outputs 1 with probability different by at most $(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ than the probability of outputting 1 in the real privacy game, as required.
+\textit{Game 2}. We change the computation of the zero-knowledge protocol transcripts. Instead of computing those transcripts using the secret witnesses, we simulate them using the statistical zero-knowledge simulator algorithms for the zero-knowledge proofs. By the zero-knowledge property, this is a perfect simulation, yielding $\Pr[S_2]= \Pr[S_1]$.\\\\
+\textit{Game 3}. We change the computation of the ciphertexts $C^{(j)}_i$ for $i=0,\ldots,l-1$ and $Q^{(j)}_k$ for $j=1,\ldots,q$ and $C_k$ to encrypt zero messages, instead of encrypting the secret-related messages as in the previous game. Since now $sk_k$ is not used anywhere in generating the view of $\attacker$, it follows by a hybrid argument that $|\Pr[S_3]-\Pr[S_2]| ((l+1) \cdot q + 1) \cdot \varepsilon_{BV}$, where $\varepsilon_{BV}$ denotes the maximal advantage of an attacker against IND-CPA of BV scheme against attacks with run-time $T + \mathrm{poly}(n, \log Q)$, where $T$ is the run-time of $\attacker$.
+In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^{j})$ queries, the challenger together with $\attacker$ constitute an efficient attacker against the ideal privacy game, which outputs 1 with probability different by at most $(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ relatively to the probability of outputting 1 in the real privacy game, as required.
 
 
 
