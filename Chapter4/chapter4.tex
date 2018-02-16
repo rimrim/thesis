@@ -525,8 +525,8 @@ Enrol, and Authenticate.
     \> \sendmessageleft*{\mathbf{\enc{HD'}}} \> \\
     HD' + r_1 + \dots + r_{n-1} = Dec(\enc{\mathbf{HD'}}, \sk) \> \> \\
     \> \sendmessageright*{HD'} \>\\
-    \> \sendmessageright*{\mathbf{ZKPoPK2}} \>\\
-    \> \sendmessageleft*{\mathbf{Accept|Reject}}\>
+    \> \sendmessageright*{\mathbf{ZKPoPK2}} \> HD = HD' - r\\
+    \> \sendmessageleft*{\mathbf{Accept|Reject}}\> HD \stackrel{?}{<} \tau
   }
   \caption{The First Protocol}
   \label{fig:firstProtocol}
