@@ -193,6 +193,134 @@ group signatures and also in \cite{alkim2016post} to replace LWE noise
 distribution by an easier to sample distribution.
 
 
+
+\section{Our Protocol}
+\label{sec:our_protocol}
+We denote $\user$ to be the client and $\server$ to be the server. There are 3 main submodules in the protocol: Setup,
+Enrol, and Authenticate.
+\begin{description}
+\item[Setup.] $\user$ and $\server$ initialize the parameters, taking into account the following categories:
+  \begin{description}
+  \item[Biometric Authentication System Parameters.] These parameters are standard ones used by non privacy preserving
+    biometric authentication systems:
+    \begin{itemize}
+    \item False Acceptance Rate (FAR) and False Rejection Rate (FRR)
+    \item $a$: The maximum number of incorrect authentication attempts allowed by $\server$.
+    \item $\tau$: Threshold to compare the Hamming Distance to decide the authentication result.
+      % \item $B$: An integer defines the base of the HD in a
+      %   decomposition operation.
+    \item \(n'\): The bit-length of the encoded
+      biometric data.
+    \end{itemize}
+  \item[Ring-LWE based techniques parameters.] These parameters are used in the lattice-based cryptosystem which provides
+    client privacy against long term quantum attacks.
+    \begin{itemize}
+    \item $\lambda$: General security parameter of the cryptosystem (the adversary's winning chance in the CPA security game is \(1/2^{\lambda}\))
+    \item $n$: Integer $n$ defining the plaintext and ciphertext rings. This will be refered to as the degree of
+      the polynomial objects or dimension of the underlying lattice during correctness and security proofs.
+    \item $t$: Integer $t$ defining the plaintext space ring $R_t = \mathbb{Z}_t[x]/x^n+1$.
+    \item $q$: Integer $q$ defining the ciphertext space ring $R_q = \mathbb{Z}_q[x]/x^n+1$
+    \item $\chi_{\alpha q}$: A distribution used to sample noises for LWE-based techniques.  Typically, $\chi$
+      is a Gaussian distribution with standard deviation $\alpha q$.
+    \item \(\delta\): Renyi Divergence parameter for the security of noise masking.
+    \end{itemize}
+  \item[Keygen.] Keys are generated for $\user$:
+    \begin{itemize}
+    \item Secret key: $\mathbf{s} \randomsample \chi_{\alpha q}^n$, \(sk = (1, \mathbf{s, s^{2}, ...})\)
+    \item Public key: $pk = \mathbf{(p_0,p_1)}$, with $\mathbf{p_1} \randomsample R_q$ and
+      $\mathbf{p_0} = -\mathbf{p_1s} - t\mathbf{e}$, with $\mathbf{e} \randomsample \chi_{\alpha q}^n$.
+    \end{itemize}
+  \end{description}
+\item [Enrolment.] $\user$ extracts the biometric template $\mathbf{x}$, the bit string $\mathbf{x}$ being
+  represented as a ring element of ${R}_t$.  The encryption is done by $\enc{\mathbf{x}} = (\mathbf{c_0},\mathbf{c_1})$
+  and sent to $\server$.
+\item [Authentication.] The following steps are required:
+  \begin{enumerate}
+  \item $\user$ extracts his biometric features again $\mathbf{y}$ to use them as the query. $\user$ sends
+    $\enc{\mathbf{y}} = (\mathbf{c_0', c_1'})$ to $\server$.
+  \item ZKP for the first relation: $\user$ has to prove that $\enc{\mathbf{y}}$ is a valid encryption, that is, it
+    encrypts a bit string under the BV cryptosystem using the corresponding secret key. This is done by module
+    \textbf{SternBV(A, y, x)} described in Sect. \ref{sec:Stern-basedZKP}, where
+    $\mathbf{A} = \begin{bmatrix} c_{y0}, t, 0, 1\\p_{y0}, 0, t, 0
+    \end{bmatrix}$, \(\mathbf{X} = [\vec{s},\tilde{e_{y}},\vec{e_{0}},y]^T\) and \(\mathbf{Y
+    = [c_{y1},p_{y1}]}^{T}\).
+
+  \item HD Computation: $\server$ computes $\enc{HD_{\mathbf{x,y}}}$
+    using procedure \ref{sub:ciphertext_packing}. We note that the noise term $\mathbf{e_{HD}}$ of
+    $\enc{\mathbf{HD,e_{HD}}}$ can leak information
+    about $\mathbf{x}$ when $\mathbf{HD}$ is decrypted. Therefore,
+    an extra step is needed to secure the operation.
+    \begin{itemize}
+    \item Sample $\mathbf{e_{r}} \randomsample \chi_{r}^n$ such that $\norminf{\mathbf{e_r}}$ is big enough compared to
+      $\norminf{\mathbf{e_{HD}}}$.(Section \ref{sec:Renyi})
+    \item Compute $\enc{\mathbf{r,e_r}}$ and carry out an homomorphic addition operation to mask both the values of
+      $\mathbf{HD}$ and the noise $\mathbf{e_{HD}}$:
+      $\enc{\mathbf{HD', e'_{HD}}} = \enc{\mathbf{HD, e_{HD}}} + \enc{\mathbf{r,e_r}}$
+    \end{itemize}
+    The result $\enc{\mathbf{HD'}}$ is then sent to $\user$.
+  \item \(\user\) decrypts $\enc{\mathbf{HD'}}$ and derives the actual value ${HD'}$ from the first coefficient of the
+    plaintext: \( dec\enc{\mathbf{HD'}} = HD' + r_1 + r_2 + \dots + r_{n-1} \). \(\user\) sends \(HD'\) to \(\server\).
+  \item \(\user\) proves that it does the decryption honestly, this is done similarly to step 2.
+  \item \(\server\) unmasks \(HD'\) and outputs the authentication result \(HD \stackrel{?}{<} \tau\)
+  \end{enumerate}
+
+\end{description}
+
+\begin{figure}[htbp!] 
+  \centering \procedure{THE FIRST PROTOCOL}{
+    \textbf{Client} \> \> \textbf{Server}\pclb
+    \pcintertext[dotted]{Enrolment}\\
+    \text{Extract \& Encrypt \textbf{x}} \> \sendmessageright*{\enc{\mathbf{x}}}
+    \> \text{Persist $\enc{\mathbf{x}}$}\pclb
+    \pcintertext[dotted]{Authentication}\\
+    \text{Extract \& Encrypt \textbf{y}} \> \sendmessageright*{\enc{\mathbf{y}}}
+    \> \\
+  }
+  \caption{The First Protocol}
+  \label{fig:firstProtocol}
+\end{figure}
+
+
+\subsubsection{Correctness}
+\label{sec:correctness}
+In the enrolment step, as mentioned before, in order to encrypt $\mathbf{x}$, $\user$ samples
+$\mathbf{u,f,g} \randomsample \chi_{\alpha q}^n$ and does $\mathbf{c_0} = \mathbf{p_0u} + t\mathbf{f} + \mathbf{x}$ and
+$\mathbf{c_1} = \mathbf{p_1u} + t\mathbf{g}$. The condition for decryption correctness is
+$[\langle \mathbf{c_0 + c_1s} \rangle]_q < q/2$, or, $-t\mathbf{eu} + t\mathbf{f} + t\mathbf{gs} < q/2$.
+
+In the authentication step, \(\enc{HD}\) is decryptable if \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle} < q/2\), if
+we let \(U\) to be the upper bound of \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle}\), and considering that
+\(\norminf{a + b} \leq \norminf{a} + \norminf{b}\) and \(\norminf{a.b} \leq n.\norminf{a}.\norminf{b}\). From theorem
+~\ref{theo:HDComputation}, we can derive \(\norminf{\langle \enc{HD},\mathbf{s} \rangle} \leq 2nU + 2nU^{2}\). As in the
+work of \cite{naehrig2011can}, we can take \(U\) to be \(2t \sigma^{2} \sqrt{n}\), which is an experimental
+estimation. Therefore, the final correctness condition for authentication is \( 16n^{2}t^{2}\sigma^{4} < q\).
+\begin{lemma}[Condition for Correct Decryption of HD]
+  \label{le:hdcorrectness}
+ For the BV encrypted Hamming Distance \(\enc{HD}\), the decryption recovers the correct result if \(\langle \enc{HD},
+ \mathbf{s} \rangle\) does not wrap around mod q, namely, if \(16n^{2}t^{2}\sigma^{4} < q\).
+\end{lemma}
+
+\subsubsection{Security}
+\label{sec:security}
+The proposed scheme satisfies the security notions defined in Section \ref{sec:syntaxModel}, proofs are
+provided in Appendix \ref{append:Proofs}
+\begin{theorem}[Server side security]
+  \label{theo:server}
+  Under the IND-CPA security of BV cryptosystems, and the zero-knowledge property of the Stern protocol, the proposed
+  scheme satisfies (Honest But Curious) Server Privacy Security.
+\end{theorem}
+\begin{theorem}[Client side security]
+  \label{theo:client}
+  Under the IND-CPA security of BV cryptosystem and the soundness property of the underlying Stern protocol, the
+  proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against
+  impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has
+  impersonation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge error
+  $\eps_{ZK1},\eps_{ZK2}$ such that
+  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2}) + \delta \leq c_1 \cdot
+  \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition $\sigma/r_0 \geq 4 \pi k n q$ holds, with
+  $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ as an upper bound on the size of the noise in $C_{HD}$.
+\end{theorem}
+
 \section{Renyi Divergence Analysis technique}
 \label{sec:secProcRenyi}
 % \subsection{Renyi Divergence and its application in noise masking}

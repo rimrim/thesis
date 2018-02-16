@@ -492,26 +492,46 @@ Enrol, and Authenticate.
     \end{bmatrix}$, \(\mathbf{X} = [\vec{s},\tilde{e_{y}},\vec{e_{0}},y]^T\) and \(\mathbf{Y
     = [c_{y1},p_{y1}]}^{T}\).
 
-  \item HD Computation: $\server$ computes $\enc{HD_{\mathbf{x,y}}}$
-    using procedure \ref{sub:ciphertext_packing}. We note that the noise term $\mathbf{e_{HD}}$ of
-    $\enc{\mathbf{HD,e_{HD}}}$ can leak information
-    about $\mathbf{x}$ when $\mathbf{HD}$ is decrypted. Therefore,
-    an extra step is needed to secure the operation.
-    \begin{itemize}
-    \item Sample $\mathbf{e_{r}} \randomsample \chi_{r}^n$ such that $\norminf{\mathbf{e_r}}$ is big enough compared to
-      $\norminf{\mathbf{e_{HD}}}$.(Section \ref{sec:Renyi})
-    \item Compute $\enc{\mathbf{r,e_r}}$ and carry out an homomorphic addition operation to mask both the values of
-      $\mathbf{HD}$ and the noise $\mathbf{e_{HD}}$:
-      $\enc{\mathbf{HD', e'_{HD}}} = \enc{\mathbf{HD, e_{HD}}} + \enc{\mathbf{r,e_r}}$
-    \end{itemize}
-    The result $\enc{\mathbf{HD'}}$ is then sent to $\user$.
-  \item \(\user\) decrypts $\enc{\mathbf{HD'}}$ and derives the actual value ${HD'}$ from the first coefficient of the
-    plaintext: \( dec\enc{\mathbf{HD'}} = HD' + r_1 + r_2 + \dots + r_{n-1} \). \(\user\) sends \(HD'\) to \(\server\).
-  \item \(\user\) proves that it does the decryption honestly, this is done similarly to step 2.
-  \item \(\server\) unmasks \(HD'\) and outputs the authentication result \(HD \stackrel{?}{<} \tau\)
+\item HD Computation: $\server$ computes $\enc{HD_{\mathbf{x,y}}}$ using
+  procedure \ref{sub:ciphertext_packing} and mask $HD$ by adding some random
+  value $r$ homomorphically to $\enc{HD_{\mathbf{x,y}}}$. The result
+  $\enc{\mathbf{HD'}}$ is then sent to $\user$.
+\item \(\user\) decrypts $\enc{\mathbf{HD'}}$ and derives the actual value
+  ${HD'}$ from the first coefficient of the plaintext:
+  \( dec\enc{\mathbf{HD'}} = HD' + r_1 + r_2 + \dots + r_{n-1} \). \(\user\)
+  sends \(HD'\) to \(\server\).
+\item \(\user\) proves that it does the decryption honestly, this is done
+  similarly to step 2.
+\item \(\server\) unmasks \(HD'\) and outputs the authentication result
+  \(HD \stackrel{?}{<} \tau\)
   \end{enumerate}
 
 \end{description}
+
+\begin{figure}[htbp!] 
+  \centering \procedure{THE FIRST PROTOCOL}{
+    \textbf{Client} \> \> \textbf{Server}\pclb
+    \pcintertext[dotted]{Enrolment}\\
+    \text{Extract } \mathbf{x} \randomsample D_k \> \> \\
+    \mathbf{\enc{x}} = Enc(\mathbf{x},\pk) \> \sendmessageright*{\enc{\mathbf{x}}}
+    \> \text{Persist $\enc{\mathbf{x}}$}\pclb
+    \pcintertext[dotted]{Authentication}\\
+    \text{Extract } \mathbf{y} \randomsample D_k \> \> \\
+    \mathbf{\enc{y}} = Enc(\mathbf{y},\pk) \> \sendmessageright*{\enc{\mathbf{y}}}
+    \> \\
+    \> \sendmessageright*{\mathbf{ZKPoPK1}} \> \mathbf{\enc{HD}} = EvalDistance(\mathbf{\enc{x},\enc{y}}) \\
+    \> \> \mathbf{r} \randomsample \mathbb{Z}_{HD}\\
+    \> \> \mathbf{\enc{HD'}} = \mathbf{Add(\enc{HD}, \enc{r})}\\
+    \> \sendmessageleft*{\mathbf{\enc{HD'}}} \> \\
+    HD' + r_1 + \dots + r_{n-1} = Dec(\enc{\mathbf{HD'}}, \sk) \> \> \\
+    \> \sendmessageright*{HD'} \>\\
+    \> \sendmessageright*{\mathbf{ZKPoPK2}} \>\\
+    \> \sendmessageleft*{\mathbf{Accept|Reject}}\>
+  }
+  \caption{The First Protocol}
+  \label{fig:firstProtocol}
+\end{figure}
+
 
 \subsubsection{Correctness}
 \label{sec:correctness}
