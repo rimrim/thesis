@@ -443,8 +443,12 @@ present a solution for this problem.
 
 \section{Our Protocol}
 \label{sec:our_protocol}
-We denote $\user$ to be the client and $\server$ to be the server. There are 3 main submodules in the protocol: Setup,
-Enrol, and Authenticate.
+
+\subsection{The protocol specification}
+\label{sec:protocol1specs}
+
+We denote $\user$ to be the client and $\server$ to be the server. There are 3
+main submodules in the protocol: Setup, Enrol, and Authenticate. Figure \ref{fig:firstProtocol} illustrates the protocol transcript.
 \begin{description}
 \item[Setup.] $\user$ and $\server$ initialize the parameters, taking into account the following categories:
   \begin{description}
@@ -532,6 +536,8 @@ Enrol, and Authenticate.
   \label{fig:firstProtocol}
 \end{figure}
 
+\subsection{Correctness and Security}
+\label{sec:protocol1CorrectnessSecurity}
 
 \subsubsection{Correctness}
 \label{sec:correctness}
@@ -554,13 +560,170 @@ estimation. Therefore, the final correctness condition for authentication is \( 
 
 \subsubsection{Security}
 \label{sec:security}
-The proposed scheme satisfies the security notions defined in Section \ref{sec:syntaxModel}, proofs are
-provided in Appendix \ref{append:Proofs}
+The proposed scheme satisfies the security notions defined in Section \ref{sec:syntaxModel}
 \begin{theorem}[Server side security]
   \label{theo:server}
   Under the IND-CPA security of BV cryptosystems, and the zero-knowledge property of the Stern protocol, the proposed
   scheme satisfies (Honest But Curious) Server Privacy Security.
 \end{theorem}
+
+
+The proof of Theorem \ref{theo:server} can be gained using a sequence of games
+between a challenger $\challenger$ and an adversary $\attacker$. We present a
+sequence of games below. The idea is to remove $sk_k$ and $X_k$ from being used
+to compute the view of $\attacker$, except for $Verify(X_k,Y_k^{j})$ queries, as
+in the ideal game, relying on the correctness of the protocol and the IND-CPA
+security of the BV encryption scheme and the zero-knowledge property of the ZKP
+simulator.
+
+\textit{Game 0} (Figure \ref{fig:game0protocol1server}). Game 0 is the original real privacy game, in which
+$\enc{\mathbf{X}_{k}} = Enc(\mathbf{X}_{k},\pk)$ is given by $\challenger$ to
+$\attacker$ at the beginning of the game. Then, for $j=1\ldots,q$, the attacker
+sends $Y_i \in \{0,1\}^n$ to $\challenger$, and the latter simulates a run
+of the authentication protocol between an honest client with input
+$(k,Y_i, sk_k)$ and an honest server with input $(k,\enc{\mathbf{X}_{k}})$, returning to
+$\attacker$ the protocol's view $V^{(i)}_S$ of the server. Finally, $\attacker$
+outputs a bit $\beta$. In the following Game $j$, we let $S_j$ denote the event
+that $\beta=1$.
+
+\begin{figure}[htbp!] 
+  \centering
+  \fbox{
+   \begin{gameproof}[nr=-1]
+  \gameprocedure[linenumbering, mode=text]{
+    $D_{k} \randomsample D_{bio}$\\
+    $(\sk, \pk) \gets KeyGen$\\
+    $\mathbf{X}_{k} \randomsample D_{k}$\\
+    $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+    For $i=1,\dots,q$:\\
+    $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+    $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+    $verifierView1 \gets \mathbf{ZKPoPK1}((\sk,\mathbf{Y}_{i});(\pk,\enc{\mathbf{Y}_{i}}))$\\
+    $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+    $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+    $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+    $verifierView2 \gets \mathbf{ZKPoPK2}((\sk,\mathbf{HD'}_{i});(\pk,\enc{\mathbf{HD'}_{i}}))$\\
+    $HD_{i} \gets HD'_{i} - r_{i}$\\
+    $res_{i} \gets compare(HD_{i}, \tau)$\\
+    $\beta \gets \adv(verifierView1, verifierView2, \enc{\mathbf{X}_{k}}, \enc{\mathbf{Y}_{i}}, res_{i}, r_{i}, HD_{i},
+    \enc{\mathbf{HD'}_{i}}, \enc{\mathbf{HD}_{i}})$ }
+\end{gameproof}
+  }
+  \caption{Game 0 - Server privacy game}
+  \label{fig:game0protocol1server}
+\end{figure}
+\textit{Game 1} (Figure \ref{fig:game1protocol1server}). The computation of the
+authentication result bit $res_{i}$ sent by the server to the client from the
+decryption of the ciphertext \(\enc{\mathbf{HD'}_{i}}\)(its value in Game 0) is
+changed into the result returned by $Verify(X_k, Y_{i})$, the change is
+highlighted belows. By the correctness constraint of the protocol, this does not
+change the value of $res_{i}$, so $\Pr[S_1] = \Pr[S_0]$.
+
+\begin{figure}[htbp!] 
+  \centering
+  \fbox{
+    \begin{gameproof}[nr=0]
+  \gameprocedure[linenumbering, mode=text]{%
+    $D_{k} \randomsample D_{bio}$\\
+    $(\sk, \pk) \gets KeyGen$\\
+    $\mathbf{X}_{k} \randomsample D_{k}$\\
+    $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+    For $i=1,\dots,q$:\\
+    $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+    $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+    $verifierView1 \gets \mathbf{ZKPoPK1}((\sk,\mathbf{Y}_{i});(\pk,\enc{\mathbf{Y}_{i}}))$\\
+    $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+    $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+    $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+    $verifierView2 \gets \mathbf{ZKPoPK2}((\sk,\mathbf{HD'}_{i});(\pk,\enc{\mathbf{HD'}_{i}}))$\\
+    $HD_{i} \gets HD'_{i} - r_{i}$\\
+    \gamechange{$res_{i} \gets Verify(X_{k},Y_{i})$}\\
+    $\beta \gets \adv(verifierView1, verifierView2, \enc{\mathbf{X}_{k}}, \enc{\mathbf{Y}_{i}}, res_{i}, r_{i}, HD_{i},
+    \enc{\mathbf{HD'}_{i}}, \enc{\mathbf{HD}_{i}})$ }
+\end{gameproof}
+  }
+  \caption{Game 1 - Server privacy game}
+  \label{fig:game1protocol1server}
+\end{figure}
+
+\textit{Game 2} (Figure \ref{fig:game2protocol1server}). The computation of the
+zero-knowledge protocol transcripts is modified: Instead of computing the
+transcripts using the secret witnesses, we simulate them using the statistical
+zero-knowledge simulator algorithms for the zero-knowledge proofs. By the
+zero-knowledge property, this is a perfect simulation, the result of it being
+$\Pr[S_2]= \Pr[S_1]$.
+
+\begin{figure}[htbp!] 
+  \centering    
+  \fbox{
+\begin{gameproof}[nr=1]
+  \gameprocedure[linenumbering, mode=text]{%
+    $D_{k} \randomsample D_{bio}$\\
+    $(\sk, \pk) \gets KeyGen$\\
+    $\mathbf{X}_{k} \randomsample D_{k}$\\
+    $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+    For $i=1,\dots,q$:\\
+    $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+    $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+    \gamechange{$verifierView1 \gets \mathbf{ZKPSimulator}$}\\
+    $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+    $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+    $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+    \gamechange{$verifierView2 \gets \mathbf{ZKPSimulator}$}\\
+    $HD_{i} \gets HD'_{i} - r_{i}$\\
+    $res_{i} \gets Verify(X_{k},Y_{i})$\\
+    $\beta \gets \adv(verifierView1, verifierView2, \enc{\mathbf{X}_{k}}, \enc{\mathbf{Y}_{i}}, res_{i}, r_{i}, HD_{i},
+    \enc{\mathbf{HD'}_{i}}, \enc{\mathbf{HD}_{i}})$ }
+\end{gameproof}
+}
+  \caption{Game 2 - Server privacy game}
+  \label{fig:game2protocol1server}
+\end{figure}
+\textit{Game 3} (Figure \ref{fig:game3protocol1server}). We change the
+computation of the ciphertexts $\enc{\mathbf{X}_{k}}$ to encrypt zero messages,
+instead of encrypting the secret-related messages resulting from the previous
+game. We also change the computation of $HD_{i}$ to the direct operation
+$HammingDistance(\mathbf{X}_{k}, \mathbf{Y}_{i})$. Since $sk_k$ is thus not used
+any longer for generating the view of $\attacker$, it follows by a hybrid
+argument that
+$|\Pr[S_3]-\Pr[S_2] \cdot ((l+1) \cdot q + 1) \cdot
+\varepsilon_{BV}$, where $\varepsilon_{BV}$ denotes the maximal advantage of an
+attacker against IND-CPA of the BV scheme against attacks with run-time
+$T + \mathrm{poly}(n, \log Q)$, where $T$ is the run-time of $\attacker$.  In
+this game, since the only information on $X_k$ comes via the
+$Verify(X_k,Y_k^{j})$ and $HammingDistance$ queries, the challenger together
+with $\attacker$ constitute an efficient attacker against the ideal privacy
+game, which outputs 1 with a degree of probability different by at most
+$(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ from the probability of outputting 1
+in the real privacy game, as required.
+
+\begin{figure}[htbp!] 
+  \centering
+  \fbox{
+    \begin{gameproof}[nr=2]
+  \gameprocedure[linenumbering, mode=text]{%
+    $D_{k} \randomsample D_{bio}$\\
+    $(\sk, \pk) \gets KeyGen$\\
+    $\mathbf{X}_{k} \randomsample D_{k}$\\
+    \gamechange{$\enc{\mathbf{X_{k}}} \gets Enc(0,\pk)$}\\
+    For $i=1,\dots,q$:\\
+    $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+    $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+    $verifierView1 \gets \mathbf{ZKPSimulator}$\\
+    $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+    $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+    $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+    $verifierView2 \gets \mathbf{ZKPSimulator}$\\
+    \gamechange{$HD_{i} \gets HammingDistance(\mathbf{X}_{k}, \mathbf{Y}_{i})$}\\
+    $res_{i} \gets Verify(X_{k},Y_{i})$\\
+    $\beta \gets \adv(verifierView1, verifierView2, \enc{\mathbf{X}_{k}}, \enc{\mathbf{Y}_{i}}, res_{i}, r_{i}, HD_{i},
+    \enc{\mathbf{HD'}_{i}}, \enc{\mathbf{HD}_{i}})$ }
+\end{gameproof}
+  }
+  \caption{Game 3 - Server privacy game}
+  \label{fig:game3protocol1server}
+\end{figure}
+
 \begin{theorem}[Client side security]
   \label{theo:client}
   Under the IND-CPA security of BV cryptosystem and the soundness property of the underlying Stern protocol, the
@@ -573,166 +736,226 @@ provided in Appendix \ref{append:Proofs}
   $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ as an upper bound on the size of the noise in $C_{HD}$.
 \end{theorem}
 
-\section{Security Proofs}
-\label{append:Proofs}
-\subsection{Security Proof for Theorem~\ref{theo:server}: Privacy against HBC Server}
-\label{append:ProofsPrivacy }
+The proof of theorem \ref{theo:client} can be obtained using a sequence of games
+between the challenger $\challenger$ and the adversary $\attacker$. We here
+present such a sequence, as well as the relations among them, to demonstrate
+first the type I security model proof.
 
-The proof of Theorem \ref{theo:client} can be gained using a sequence of games between a challenger $\challenger$ and
-an adversary $\attacker$. We present a sequence of games below. The idea is to remove $sk_k$ and $X_k$ from being
-used to compute the view of $\attacker$, except for $Verify(X_k,Y_k^{j})$ queries, as in the ideal game, relying on the
-correctness of the protocol and the IND-CPA security of the BV encryption scheme.
-
-\textit{Game 0}. Game 0 is the original real privacy game, in which $(T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$ is
-given by $\challenger$ to $\attacker$ at the beginning of the game. Then, for $j=1\ldots,q$, the attacker sends
-$Y_k^{(j)} \in \{0,1\}^n$ to $\challenger$, and the latter simulates a run of the authentication protocol between an
-honest client with input $(k,Y_k^{(j)}, sk_k)$ and an honest server with input $(k,T_k)$, returning to $\attacker$ the
-protocol's view $V^{(j)}_S$ of the server. Finally, $\attacker$ outputs a bit $\beta$. In the following Game $i$, we let
-$S_i$ denote the event that $\beta=1$.
-
-\textit{Game 1}. The computation of the authentication result bit $res^{(j)}$ sent by the server to the client
-from the decryption of the ciphertext \(\enc{HD'}\)(its value in Game 0) is changed into the result returned by $Verify(X_k,
-Y^{(j)})$. By the correctness constraint of the protocol, this does not change the value of $res^{(j)}$, so $\Pr[S_1] = \Pr[S_0]$.
-
-\textit{Game 2}. The computation of the zero-knowledge protocol transcripts is modified: Instead of computing the
-transcripts using the secret witnesses, we simulate them using the statistical zero-knowledge simulator algorithms for
-the zero-knowledge proofs. By the zero-knowledge property, this is a perfect simulation, the result of it being $\Pr[S_2]=
-\Pr[S_1]$.
-
-\textit{Game 3}. We change the computation of the ciphertexts $C^{(j)}_i$ for $i=0,\ldots,l-1$ and $Q^{(j)}_k$ for
-$j=1,\ldots,q$ and $C_k$ to encrypt zero messages, instead of encrypting the secret-related messages resulting from the previous
-game. Since $sk_k$ is thus not used any longer for generating the view of $\attacker$, it follows by a hybrid argument that
-$|\Pr[S_3]-\Pr[S_2]| ((l+1) \cdot q + 1) \cdot \varepsilon_{BV}$. $\varepsilon_{BV}$ denotes the maximal advantage
-of an attacker against IND-CPA of the BV scheme against attacks with run-time $T + \mathrm{poly}(n, \log Q)$, where $T$ is
-the run-time of $\attacker$.  In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^{j})$
-queries, the challenger together with $\attacker$ constitute an efficient attacker against the ideal privacy game, which
-outputs 1 with a degree of probability, different by at most $(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ from the probability of
-outputting 1 in the real privacy game, as required.
-
-\subsection{Security Proof for Theorem~\ref{theo:client}: Type I Impersonation attack}
-The proof of theorem \ref{theo:server} and \ref{theo:client} can be obtained using a sequence of games between the
-challenger $\challenger$ and the adversary $\attacker$. We here present such a sequence, as well as the relations among
-them, to demonstrate the type I security model proof.
-
-\textit{Game 0}. Game 0 is the original impersonation game for type I attack.
+\textit{Game 0} (Figure \ref{fig:game0protocol1client}). Game 0 is the original
+impersonation game for type I attack.
 \begin{description}
-\item [Setup.] $\challenger$ intiates $D_k \randomsample D_{bio}$ and $X_k \randomsample D_k$. $\challenger$ sets up
-  $(sk_k, pk_k)$ and launches $Enrol(k, X_k)$ to get $(sk_k, T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$.  $\attacker$
-  submits a type 1 attack query and receives $sk_k$ from $\challenger$.
-\item [Query.] $\attacker$ runs $q$ authentication sessions. In each session $j = 1, \dots, q$, $\attacker$ sends
-  $(Q_k^{(j)} = Enc^{(1)}(Y^{(j)}))$. $\attacker$ and $\challenger$ run
-  $\mathbf{ZKPValidEnc}(Q_k^{(j)},Y^{(j)})$. $\challenger$ evaluates
-  $C_{HD} = \mathbf{EvalDistance}_{pk_k}(C_k, Q_k^{(j)})$ then computes
-  $C_{HD'} = (-1)C_{HD} + Enc_{pk_k}^{(1)}(r_{HD'},e_{HD'})$ for $r_{HD'} \randomsample \mathcal{P}$ and
-  $e_{HD'} \randomsample \chi_{HD}$. The resulting ciphertext is sent to $\attacker$, $\attacker$ decrypts $C_{HD'}$, 
-  decomposes into bits and sends back the ciphertexts
-  $C_0^{(j)}, \dots, C_{l-1}^{(j)} (= Enc^{(1)}(b_i), i = 0,\dots, l-1)$ as well as the re-encryption
-  $C_{HD_0'}$. $\attacker$ and $\challenger$ run $\mathbf{ZKPUnpack}(C_{HD},C_{HD_0'})$ and
-  $\mathbf{ZKPBinDecomp}(C_{HD_0'}, C_i^{(j)})$.  $\challenger$ evaluates
-  $C_{HD}'' = Enc^{(2)}(2^l + t) + \mathbf{ToUnary}(C_i^{(j)}) + Enc^{(2)}(-r) $ to get $Enc^{(2)}(2^l + t -
-  HD)$. $\challenger$ calculates $Enc^{(3)}(res) \gets \mathbf{MSBExtract}(C_{HD}'')$ and sends the result to $\attacker$. $\attacker$
-  decrypts it and sends the authentication result bit back. $\challenger$ and $\attacker$ perform
-  $\mathbf{ZKPCorrectDec}(res)$ to assess the authentication result. At the end, the server outputs \textbf{Accept} if
-  all the proofs pass and $res = \mathbf{Accept}$.
+\item [Setup.] $\challenger$ intiates $D_k \randomsample D_{bio}$ and
+  $X_k \randomsample D_k$. $\challenger$ sets up $(sk_k, pk_k)$ and launches
+  $Enrol(k, X_k)$ to get $(sk_k, \enc{\mathbf{X}_{k}} =(pk_k, \mathbf{X}_{k}))$.
+  $\attacker$ submits a type 1 attack query and receives $sk_k$ from
+  $\challenger$.
+\item [Query.] $\attacker$ runs $q$ authentication sessions. In each session
+  $j = 1, \dots, q$, $\attacker$ can choose $\mathbf{Y}_{i} \gets \{0,1\}^{n}$
+  and sends $\enc{\mathbf{Y}_{i}}$. $\attacker$ and $\challenger$ run
+  $\mathbf{ZKPoPK1}$. $\challenger$ evaluates $\enc{\mathbf{HD}_{k}}$ then
+  computes $\enc{\mathbf{HD'}_{k}}$. The resulting ciphertext is sent to
+  $\attacker$, $\attacker$ decrypts $\enc{\mathbf{HD'}_{k}}$ and sends back the
+  plaintext value of $HD'_{i}$. $\attacker$ and $\challenger$ run
+  $\mathbf{ZKPoPK2}()$. $\challenger$ computes $HD = HD' - r$, compares the result with $\tau$ sends back to $\attacker$ the authentication result $\mathbf{Accept}$ or \textbf{Reject}.
+\item [Guess.] At the end of the game, $\adv$ outputs $\mathbf{Y'}$.
 \end{description}
-Next, we discuss following games, the plan being to proceed towards the final game, where everything related to $X_k$
-$\attacker$ receives can be simulated without any knowledge about $X_k$ (the only known information about $X_k$ is
-the function $Verify(X_k, Y)$). Let $res_s = Verify(X_k, Y^{(j)})$ and $S_i$ be
-the event in the game $i$ such that $res_s = Accept$.\\
-\textit{Game 1}. In this game, we abort $\mathbf{ZKPValidEnc}$ if $Q_k^{(j)}$ is not a valid encryption of the query,
-but the $Prover$ manages to pass the proof. Let $(*)_1$ be this event.
+
+\begin{figure}[htbp!] 
+  \centering
+  \fbox{
+   \begin{gameproof}[nr=-1]
+     \gameprocedure[linenumbering, mode=text]{
+       $D_{k} \randomsample D_{bio}$\\
+       $(\sk, \pk) \gets KeyGen$\\
+       $\mathbf{X}_{k} \randomsample D_{k}$\\
+       $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+       For $i=1,\dots,q$:\\
+       $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+       $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+       $proverView1 \gets \mathbf{ZKPoPK1}((\sk,\mathbf{Y}_{i});(\pk,\enc{\mathbf{Y}_{i}}))$\\
+       $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+       $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+       $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+       $proverView2 \gets \mathbf{ZKPoPK2}((\sk,\mathbf{HD'}_{i});(\pk,\enc{\mathbf{HD'}_{i}}))$\\
+       $HD_{i} \gets HD'_{i} - r_{i}$\\
+       $res_{i} \gets compare(HD_{i}, \tau)$\\
+       $\beta \gets \adv(proverView1, proverView2, sk, \mathbf{Y}_{i},
+       \enc{\mathbf{Y}_{i}}, res_{i}, HD'_{i}, \enc{\mathbf{HD'}_{i}})$
+     }
+\end{gameproof}
+  }
+  \caption{Game 0 - Client Impersonation game}
+  \label{fig:game0protocol1client}
+\end{figure}
+
+Next, we discuss following games, the plan being to proceed towards the final
+game, where everything related to $X_k$ that $\attacker$ receives can be simulated
+without any knowledge about $X_k$ (the only known information about $X_k$ is the
+function $Verify(X_k, Y)$). Let $res_i = Verify(X_k, Y_{i})$ and $S_j$ be
+the event in the game $j$ such that $res_j = Accept$.\\
+\textit{Game 1}. In this game, we abort $\mathbf{ZKPoPK1}$ if $\enc{\mathbf{Y_{i}}}$ is
+not a valid encryption of the query, but the $Prover$ manages to pass the
+proof. Let $(*)_1$ be this event.
 \[
-  (*_1)res_s = \begin{cases}
-    \text{Reject if } \mathbf{ZKPValidEnc} \text{ fails}\\
+  (*_1)res_i = \begin{cases}
+    \text{Reject if } \mathbf{ZKPoPK1} \text{ fails}\\
     \text{res else}
   \end{cases}
 \]
-Let $bad_0$ be the event in game 0 and $\exists j \leq q\ s.t\ (*_1)\ \textnormal{be the case}$. We want to show that when we
-modify \textit{game 0}, the probability of a successful forgery $S_1$ in \textit{game 1} is not much lower than before. Due to the modification, we observe that $ Pr[S_1] \geq Pr[S_0] - Pr[bad_0] $. For any $j$ in the $q$
-authentication attemps, by the $\varepsilon-soundness$ property of $\mathbf{ZKPValidEnc}$ as a proof of membership in
-(*), $Pr[(*_1)\ occurs\ for\ some \ j] \leq \varepsilon_{ZK1}$ holds. That is, the probability of $bad_0$ would be the union
-of these events, bounded by $Pr[bad_0] \leq q\varepsilon_{ZK1}$. In other words, the advantage of $\attacker$ in
-\textit{game 1} is
+Let $bad_0$ be the event in game 0 and
+$\exists j \leq q\ s.t\ (*_1)\ \textnormal{be the case}$. We want to show that
+when we modify \textit{game 0}, the probability of a successful forgery $S_1$ in
+\textit{game 1} is not much lower than before. Due to the modification, we
+observe that $ Pr[S_1] \geq Pr[S_0] - Pr[bad_0] $. For any $j$ in the $q$
+authentication attemps, by the $\varepsilon-soundness$ property of
+$\mathbf{ZKPoPK1}$ as a proof of membership in (*),
+$Pr[(*_1)\ occurs\ for\ some \ j] \leq \varepsilon_{ZK1}$ holds. That is, the
+probability of $bad_0$ would be the union of these events, bounded by
+$Pr[bad_0] \leq q\varepsilon_{ZK1}$. In other words, the advantage of
+$\attacker$ in \textit{game 1} is
 \[
   Pr[S_1] \geq Pr[S_0] - Pr[bad_0] \geq \varepsilon_{imp} - q\varepsilon_{ZK1}
 \]
 \\
-\textit{Game 2}. In this game, we abort $\mathbf{ZKPUnpack}$ if in one of the $j^{th}$ runs, the $Verifier$ accepts but
-the ciphertext does not satisfy the relation. Let $bad_1$ be this event. By the same type of argument, we can derive
-$Pr[bad_1] \leq q\varepsilon_{ZK2}$ and, therefore,
+\textit{Game 2}. In this game, we abort $\mathbf{ZKPoPK2}$ if in one of the
+$i^{th}$ runs, the $Verifier$ accepts but the ciphertext $\enc{\mathbf{HD'}}$
+does not satisfy the relation. Let $bad_1$ be this event. By the same type of
+argument, we can derive $Pr[bad_1] \leq q\varepsilon_{ZK2}$ and, therefore,
 $$Pr[S_2] \geq Pr[S_1]
 - Pr[bad_1] \geq \varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2})
 $$
-\textit{Game 3 and Game 4}. Similarly, we abort $\mathbf{ZKPBinDecomp}$ and $\mathbf{ZKPCorrectDec}$ if in any $j^{th}$
-runs, the $Verifier$ accepts results even when the correctness constraint of the ZKP is not fulfilled. We thus obtain
-$$Pr[S_3] \geq  \varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2}
-+\varepsilon_{ZK3})
-$$ and
-$$Pr[S_4] \geq  \varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
-\varepsilon_{ZK3} + \varepsilon_{ZK4})
-$$
-By the end of \textit{Game 4}, if in any authentication attempt $j$, none of the 4 games have been aborted, then, by
-the correctness property of ZKP, the server's output is equal to the output of $Verify(X_k, Y^{(j)})$. In other words, we
-have shown what we could get by just querying the oracle $Verify()$. Next, we want to simulate everything related to
-$X_k$ the attacker can see using
-just that oracle.\\
-\textit{Game 5.} At the end of \textit{Game 4}, $\challenger$ has the bit $b = Verify(Y^{(i)},X_k)$. In this game, we
-can change $C_{res}^{(j)}$ from $\mathbf{MSBExtract}(C_{HD}'') = Enc(b;e_{res})$ to $Enc(verify(Y^{(i)},X_k);e_{res})$,
-given that the challenger can use the secret key to extract $e_{res}$. By doing this change, $\attacker$ still sees the
-same ciphertext, so the probability of winning of $\attacker$ in this game
-is the same as in \textit{Game 4}.\\
-\textit{Game 6.} In this game, we change the way $\challenger$ computes $C_{HD}''$: In the orignal game 0, $Enc(-r)$ was
-added to remove the mask. We want to prevent this $r$ from being used anywhere in the game, so we replace $Enc(-r)$ by
-$Enc(0)$. This change does not affect $\attacker$'s success probability: $r$ only affects the plaintext inside
-$C_{HD}''$, since we do not use this plaintext anymore (it has been replaced in \textit{Game 5}), this change therefore
-does not affect what the attacker sees. Again, $Pr[S_6] = Pr[S_5] = Pr[S_4]$.\\
-\textit{Game 7.} We modify the way $C_{HD}'$ is computed in this game. Instead of calculating
-$C_{HD}' \gets (-1)C_{HD} + Enc(r;e_{HD'})$, the challenger chooses a random $HD' \randomsample \mathbb{Z}_p$ and
-encrypts it with the noise used before: $C_{HD}' \gets Enc(HD'; -e_{HD} + e_{HD'})$. In this game, the plaintext has
-changed from being $r + HD$ to a uniform $HD' \in \mathbb{Z}_p$.  Since $r$ is also uniform in $\mathbb{Z}_p$, the
-attacker sees a uniform
-plaintext in both cases. Therefore, $Pr[S_7] = Pr[S_6]$.\\
-\textit{Game 8.} Finally, we set $C_{HD'} = Enc(HD', e_{HD'})$ to $e_{HD'} \randomsample \chi_{mask}$ instead of
-$-e_{HD} + e_{HD'}$. We replace the sum of the Gaussian noise with random noise. In Section \ref{sec:Renyi}, we
-showed that $Pr[S_8] \geq \frac{1}{c(\delta)}(Pr[S_7]-q \cdot \delta)$, where
-$c(\delta) = RD(-e_{HD} + e_{HD'}, e_{HD}) \leq 2 \cdot e^{1+2\delta}$ by Lemma~\ref{le:Renyi} and by our assumption about the value of the
-parameters. After we finish \textit{Game 8}, we can see that all the messages the attacker sees, can be simulated
-using only the verified bit $b = Verify(Y^{(i)}, X_k)$. We now have an attacker $A'$ against the biometric impersonation
-with advantage:
+By the end of \textit{Game 2}, if in any authentication attempt $i$, none of the
+2 games have been aborted, then, by the correctness property of ZKP, the
+server's output is equal to the output of $Verify(X_k, Y_{i})$. In other words,
+we have shown what we could get by just querying the oracle $Verify()$. Next, we
+want to simulate everything related to $X_k$ the attacker
+can see using just that oracle.\\
+
+\begin{figure}[htbp!] 
+  \centering
+  \fbox{
+   \begin{gameproof}[nr=1]
+     \gameprocedure[linenumbering, mode=text]{
+       $D_{k} \randomsample D_{bio}$\\
+       $(\sk, \pk) \gets KeyGen$\\
+       $\mathbf{X}_{k} \randomsample D_{k}$\\
+       $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+       For $i=1,\dots,q$:\\
+       $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+       $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+       \gamechange{$proverView1 \gets \mathbf{ZKPSimulator}()$}\\
+       $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+       $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+       $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+       \gamechange{$proverView2 \gets \mathbf{ZKPSimulator}()$}\\
+       $HD_{i} \gets HD'_{i} - r_{i}$\\
+       $res_{i} \gets compare(HD_{i}, \tau)$\\
+       $\beta \gets \adv(proverView1, proverView2, sk, \mathbf{Y}_{i},
+       \enc{\mathbf{Y}_{i}}, res_{i}, HD'_{i}, \enc{\mathbf{HD'}_{i}})$
+     }
+\end{gameproof}
+  }
+  \caption{Game 1 \& 2 - Client Impersonation game}
+  \label{fig:game2protocol1client}
+\end{figure}
+
+\textit{Game 3.} At the end of \textit{Game 2}, $\challenger$ has the bit
+$b = Verify(Y^{(i)},X_k)$. In this game, we can change $res_{i}$ from
+$compare(HD_{i},\tau)$ to $Verify(X_{k},Y_{i})$. By doing this change,
+$\attacker$ still sees the same result, so the probability of winning of
+$\attacker$ in this game is the same as in \textit{Game 2}: $\prob{S_{3}} = \prob{S_{2}}$
+\\
+\begin{figure}[htbp!] 
+  \centering
+  \fbox{
+   \begin{gameproof}[nr=2]
+     \gameprocedure[linenumbering, mode=text]{
+       $D_{k} \randomsample D_{bio}$\\
+       $(\sk, \pk) \gets KeyGen$\\
+       $\mathbf{X}_{k} \randomsample D_{k}$\\
+       $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+       For $i=1,\dots,q$:\\
+       $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+       $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+       {$proverView1 \gets \mathbf{ZKPSimulator}()$}\\
+       $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+       $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+       $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+       {$proverView2 \gets \mathbf{ZKPSimulator}()$}\\
+       $HD_{i} \gets HD'_{i} - r_{i}$\\
+       \gamechange{$res_{i} \gets Verify(X_{k},Y_{i})$}\\
+       $\beta \gets \adv(proverView1, proverView2, sk, \mathbf{Y}_{i},
+       \enc{\mathbf{Y}_{i}}, res_{i}, HD'_{i}, \enc{\mathbf{HD'}_{i}})$
+     }
+\end{gameproof}
+  }
+  \caption{Game 3 - Client Impersonation game}
+  \label{fig:game3protocol1client}
+\end{figure}
+
+\textit{Game 4.} In this game, we change the way $\challenger$ computes
+$\enc{\mathbf{HD'}_{i}}$: In the orignal game 0, $r$ was added to mask the value
+of $HD$. We want to prevent this $r$ from being used anywhere in the game, so we
+replace $\enc{r}$ by $\enc{0}$. This change does not affect $\attacker$'s
+success probability: $r$ only affects the plaintext inside $\enc{\mathbf{HD'}}$,
+since we do not use this plaintext anymore (it has been replaced in \textit{Game
+  3}), this
+change therefore does not affect what the attacker sees. Again, $Pr[S_4] = Pr[S_3] = Pr[S_2]$.\\
+
+\begin{figure}[htbp!] 
+  \centering
+  \fbox{
+   \begin{gameproof}[nr=3]
+     \gameprocedure[linenumbering, mode=text]{
+       $D_{k} \randomsample D_{bio}$\\
+       $(\sk, \pk) \gets KeyGen$\\
+       $\mathbf{X}_{k} \randomsample D_{k}$\\
+       $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+       For $i=1,\dots,q$:\\
+       $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+       $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+       {$proverView1 \gets \mathbf{ZKPSimulator}()$}\\
+       $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+       \gamechange{$r_{i} \gets enc$ ,$\0{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$}\\
+       $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+       {$proverView2 \gets \mathbf{ZKPSimulator}()$}\\
+       $HD_{i} \gets HD'_{i} - r_{i}$\\
+       {$res_{i} \gets Verify(X_{k},Y_{i})$}\\
+       $\beta \gets \adv(proverView1, proverView2, sk, \mathbf{Y}_{i},
+       \enc{\mathbf{Y}_{i}}, res_{i}, HD'_{i}, \enc{\mathbf{HD'}_{i}})$
+     }
+\end{gameproof}
+  }
+  \caption{Game 4 - Client Impersonation game}
+  \label{fig:game3protocol1client}
+\end{figure}
+After we finish \textit{Game 4}, we can see that all the messages the attacker
+sees, can be simulated using only the verified bit $b = Verify(Y^{(i)},
+X_k)$. We now have an attacker $A'$ against the biometric impersonation with
+advantage:
 \[
-\varepsilon_{bio} = Adv(A') = Pr[S_8] \geq \frac{1}{c(\delta)}(\varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
-\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta),
+\varepsilon_{bio} = Adv(A') = Pr[S_4] \geq (\varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2})) ,
 \]
-which results in the claimed bound $\varepsilon_{imp} \leq c(\delta) \cdot \varepsilon_{bio} + q \cdot (\varepsilon_{ZK1}+\varepsilon_{ZK2} +
-\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq (c(\delta)+c_1) \cdot \varepsilon_{bio}$ if $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
-\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq c_1 \cdot \varepsilon_{bio}$.
-
-
-\subsection{Security Proof for Theorem~\ref{theo:client}: Type II Impersonation attack}
-\label{append:ProofsTypeII}
-The proof of Theorem \ref{theo:client} can be met using a sequence of games involving the challenger $\challenger$ and the adversary $\attacker$. We hereafter present
-a sequence of games as well as the relations among them to demonstrate the type II security model proof. The idea is that in this type of attack, $sk_k$ is not used to compute the view of $\attacker$. On the other hand, the soundness of the zero-knowledge proof $\mathbf{ZKPValidEnc}$ implies the existence of an efficient witness extractor algorithm, capable of extracting the witness (i.e. the secret key $sk_k$) from a cheating prover able to succed with a significantly higher probability than the knowledge error of the zero-knowledge proof, which contradicts the IND-CPA security of the BV encryption scheme. \\\\
-\textit{Game 0}. Game 0 is the original impersonation game for type II attack, i.e. the same as Game 0 in the proof of security against Type I attacks, except that $(T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$ is given by $\challenger$ to $\attacker$ at the beginning of the game, rather than $sk_k$.
-For $j \in \{1,\ldots,q\}$, let $res^{j}$ denote the result of the $j$th authentication protocol run between $\attacker$ and $\challenger$, and $S_0$ be
-the event in the game $0$ such that $res^{j} = Accept$ for some $j=1,\ldots,q$. We have $\Pr[S_0] = \varepsilon_{imp,II}$, the type II success probability of $\attacker$. \\\\
-\textit{Game 1}. From the definition of event $S_0$ in Game 0, it follows that there exists some $j^* \in \{1,\ldots,q\}$ such that $\Pr[res^{j^*} = Accept] \geq \varepsilon_{imp,II}/q$. Furthermore, by an averaging argument, there must exist a set $G$ of $(D_k,X_k,pk_k)$ such that $\Pr[(D_k,X_k,pk_k) \in G] \geq \varepsilon_{imp,II}/(2 \cdot q)$, and for each $(D'_k,X'_k,pk'_k) \in G$, we have $\Pr[res^{j^*} = Accept |(D_k,X_k,pk_k)=(D'_k,X'_k,pk'_k)] \geq  \varepsilon_{imp,II}/(2 \cdot q)$. By $\varepsilon_{ZK1}$-soundness of the zero knowledge proof $\mathbf{ZKPValidEnc}$ (cite Golderich's `Foundations of Cryptography' book, volume 1, Prop. 4.7.5), there exists a witness extractor algorithm that runs in expected time $T'=O(\mathrm{poly}(n \log Q) \cdot T / (\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1}))$, where $T$ denotes the run-time of $\attacker$ and outputs a witness containing $sk_k$ for ${ZKPValidEnc}$. Therefore, we obtain a (secret key recovery) attack algorithm against the IND-CPA security of the BV encryption scheme with the expected run-time $T'$ and advantage $\varepsilon' \geq \varepsilon_{imp,II}/(2 \cdot q)$. Hence,  if $\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1} > \varepsilon_{imp,II}/(4*q)$, or equivalently, if $\varepsilon_{imp,II} > 2 \cdot q \varepsilon_{ZK1}$, then we obtain a contradiction with the assumption of the BV encryption scheme with parameters $Q,n,\sigma$ is IND-CPA against attacks with expected time $O(\mathrm{poly}(n \log Q) \cdot T / \varepsilon_{ZK1})$ and advantage $\geq \varepsilon_{ZK1}$. It follows under the latter assumption that $\varepsilon_{imp,II} \leq 2q \varepsilon_{ZK1} \leq 2 c_1  \cdot \varepsilon_{bio}$, under the assumption that  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
-\varepsilon_{ZK3} + \varepsilon_{ZK4} + \delta) \leq c_1 \cdot \varepsilon_{bio}$.
+which results in the claimed bound.
 
 
 \section{Result Evaluation}
 
 \subsection{Parameters}
 \label{sec:parameters}
-We now consider how to set concrete parameters. From Lemma \ref{le:hdcorrectness} and \ref{le:Renyi} and
-\cite{naehrig2011can}, we can take \(\sigma = 50\) to make the protocol secure against the lattice attacks
-(\cite{micciancio2008lattice}) and
-also satisfy the circuit privacy requirement. We can take \(t = 2048\) to define the plaintext space ring \(R_{t}\),
-this is enough to cover Hamming Distance of bit strings up to 2048 bits. We need \(n \geq 2048\) for the packing
-ciphertext. With these parameters, we need \(q\) to be approximately 70 bits to satisfy \(16n^{2}t^{2}\sigma^{4} < q\).
-The proposed scheme works with only 1 level of homomorphic multiplication for the proposed set of parameters
-$(n = 2048, q \approx 2^{70}, t = 2048, \sigma = 50)$, proof of concept implementation can be found in github
-\cite{rimrimrq38:online}, communication size for ZKP is approximately 8MB to provide security against a malicious client
-model.
+We now consider how to set concrete parameters. From Lemma
+\ref{le:hdcorrectness} and \ref{le:Renyi} and \cite{naehrig2011can}, we can take
+\(\sigma = 50\) to make the protocol secure against the lattice attacks
+(\cite{micciancio2008lattice}) and also satisfy the circuit privacy
+requirement. We can take \(t = 2048\) to define the plaintext space ring
+\(R_{t}\), this is enough to cover Hamming Distance of bit strings up to 2048
+bits. We need \(n \geq 2048\) for the packing ciphertext. With these parameters,
+we need \(q\) to be approximately 70 bits to satisfy
+\(16n^{2}t^{2}\sigma^{4} < q\).  The proposed scheme works with only 1 level of
+homomorphic multiplication for the proposed set of parameters
+$(n = 2048, q \approx 2^{70}, t = 2048, \sigma = 50)$, proof of concept
+implementation can be found in \cite{rimrimrq38:online}, communication size for
+ZKP is approximately 8MB to provide security against a malicious client model.
 
 \subsection{Limitations and open problems}
 \label{sec:limitations}
@@ -749,14 +972,6 @@ parties. Defending privacy against a malicious server is left as an open problem
 
 Finally, the communication size of the Stern-based ZKP protocol is large, due to the round soundness error \(2/3\) (many
 communication rounds will be needed for security). We leave the problem of how to reduce such overhead for future works.
-
-
-
-\section{Conclusion}
-\label{sec:firstProcResults}
-
-
-
 
 %%% Local Variables:
 %%% mode: latex
