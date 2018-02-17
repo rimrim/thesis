@@ -78,21 +78,20 @@ secure against a semi-honest client, many of them relying on one or more trusted
 \label{sec:firstProcBGV}
 Although the idea of Fully Homomorphic Encryption (arbitrary number of
 operations) is feasible, its performance has not been considered practical
-enough. We discussed some generic LWE based cryptosystems and their properties
-(Section \ref{sub:LWE} ), in this chapter, we look specifically at BV
-cryptosystem, which is a Somewhat Homomorphic Encryption system that allows
+enough. We discussed some generic LWE based cryptosystems and their properties in
+Section \ref{sub:LWE} of this Chapter. In this Section, we look specifically at BV
+cryptosystems, which belong to the Somewhat Homomorphic Encryption type,  and allow
 addition and some levels of multiplication (\cite{brakerski2011fully}). In later
 chapters of the thesis, an extension of this cryptosystem (namely, BGV
-\cite{brakerski2014leveled}) and its variant is also used frequently. We discuss
-the basic operation of the BV system in this chapter.  The BV cryptosystem works
-as follows.
+\cite{brakerski2014leveled}) and its variants is used frequently. We here discuss
+the basic operations within a BV system, which works
+as follows:
 \begin{description}
 \item[Setup.] Initiate $(n,m,q,t, \chi)$ to define the ciphertext space $R_q$,
   the plaintext space $R_t = \frac{\mathbb{Z}_{t}[x]}{x^{n} + 1}$, and the error
-  distribution, note that \(t << q\).
-\item[KeyGen.] The secret key $sk$ can be chosen by selecting a small element
-  $\mathbf{s} \in R_{q}$, $\mathbf{s} \randomsample \chi^{n}$ can be done for
-  this step. The public key $pk$ is a pair of ring elements
+  distribution, for \(t << q\).
+\item[KeyGen.] In this step, the secret key $sk$ is chosen by selecting a small element
+  $\mathbf{s} \in R_{q}$, $\mathbf{s} \randomsample \chi^{n}$. The public key $pk$ is a pair of ring elements
   $(\mathbf{p_0},\mathbf{p_1})$, where $\mathbf{p_1} \randomsample R_q$ and
   $\mathbf{p_0} = -(\mathbf{p_1}\mathbf{s} + t\mathbf{e})$ with
   $\mathbf{e} \randomsample \chi^{n}$.
@@ -121,7 +120,7 @@ as follows.
     $c' = (\mathbf{c'_0},\mathbf{c'_1},\dots,\mathbf{c'_{K}})$, before any
     operations are carried out, the ciphertexts are padded with zeros first if
     necessary (to make $K = L$, assuming that, initially, $K < L$).  The
-    homomorphic addition $add(c,c')$ is computed by the component wise addition
+    homomorphic addition $add(c,c')$ is computed by the component-wise addition
     $add(c,c') = (\mathbf{c_0} +\mathbf{c'_0}, \dots,
     \mathbf{c_L}+\mathbf{c'_L})$. The homomorphic multiplication $mult(c,c')$ is
     computed by
@@ -136,12 +135,11 @@ as follows.
 \label{sub:ciphertext_packing}
 Given a bit string plaintext $m \in \{0,1\}^*$, there are several ways to encode
 it as a polynomial, or a ring element \textbf{m} $\in$ R$_{t}$ before
-encryption. A recent popular approach for BV cryptosystems is called CRT packing
-method, and based on the Chinese Remainder Theorem \cite{smart2014fully}. The
+encryption. A recent popular approach for BV cryptosystems is the so-called CRT packing
+method, based on the Chinese Remainder Theorem \cite{smart2014fully}. The
 method allows Single Instruction, Multiple Data (SIMD) operations on encrypted
-data. However, we do not use this packing technique in this chapter, later in
-chapter \ref{chap:fourthProtocol} we propose another approach for such packing
-method. This chapter focus on the method of \cite{yasuda2014practical}, which is
+data. However, we do not use this packing technique in this chapter (later, in
+chapter \ref{chap:fourthProtocol}, we propose a different approach to packing methods). This chapter focuses on the method of \cite{yasuda2014practical}, which is
 an extension of \cite{naehrig2011can}, the technique allowing HD computation
 with just one level of multiplication.
 
@@ -230,17 +228,16 @@ LWE-based cryptosystems. Given a system with a public key $\pk$, a proof of
 plaintext knowledge (PoPK) allows a $Prover$ P to convince a $Verifier$ V that 
 it knows the plaintext $M$ of some ciphertext $c = Enc(\pk, M)$. The witness 
 used in the proof normally consists of the plaintext, the secret key, and the 
-randomness used during encrypting $c$. A PoPK system is zero-knowledge in the 
-sense that it does not let V learn any information about $M$. This research
-area has received attentions in recent years. A ZKPoPK for a variant of Ajtai-Dwork
-system \cite{ajtai1997public} was constructed by \cite{goldreich1999approximating} 
-by adapting the protocol from \cite{micciancio2003statistical}. Xagawa and Tanaka 
-\cite{xagawa2009zero} used Stern-KTX proof \cite{stern1993new, kawachi2008concurrently}
-to obtain PoPK for NTRU cryptosystem \cite{hoffstein1998ntru}. Many works targeted 
+randomness factor implemented during encrypting $c$. A PoPK system is zero-knowledge in the 
+sense that it does not allow V to acquire any information about $M$. This research
+area has received attention in recent years. A ZKPoPK for a variant of the Ajtai-Dwork
+system \cite{ajtai1997public} was engineered by \cite{goldreich1999approximating}, who 
+adapted the protocol from \cite{micciancio2003statistical}. Xagawa and Tanaka 
+\cite{xagawa2009zero} used the Stern-KTX proof \cite{stern1993new, kawachi2008concurrently}
+to obtain PoPK for NTRU cryptosystems \cite{hoffstein1998ntru}. Many projects targeted 
 Regev's LWE-based cryptosystem (\cite{bendlin2010threshold, bendlin2011semi, asharov2012multiparty},
-but they all derived from secure Multi-Party Computation protocol, specifically the IKOS
-transformation \cite{ishai2007zero} and therefore the communication cost is 
-relatively high of $\bigO{n^2}$. We present a ZKPoPK for the BV encryption scheme \cite{brakerski2011fully}, with communication cost $\bigO{n}$
+but they all derived from a secure Multi-Party Computation protocol, specifically the IKOS
+transformation \cite{ishai2007zero}, and therefore had a relatively high communication cost, equalling $\bigO{n^2}$ . We present a ZKPoPK for the BV encryption scheme \cite{brakerski2011fully}, with communication cost $\bigO{n}$.
 
 
 
