@@ -576,16 +576,16 @@ final correctness condition for authentication is
 \end{lemma}
 
 \subsubsection{Security}
-\label{sec:security}
+\label{sec:securityPro1}
 The proposed scheme satisfies the security notions defined in Section \ref{sec:syntaxModel}
 \begin{theorem}[Server side security]
-  \label{theo:server}
+  \label{theo:serverPro1}
   Under the IND-CPA security of BV cryptosystems, and the zero-knowledge property of the Stern protocol, the proposed
   scheme satisfies (Honest But Curious) Server Privacy Security.
 \end{theorem}
 
 
-The proof of Theorem \ref{theo:server} can be obtained using a sequence of games
+The proof of Theorem \ref{theo:serverPro1} can be obtained using a sequence of games
 between a challenger $\challenger$ and an adversary $\attacker$. We present a
 sequence of games below. The idea is to remove $sk_k$ and $X_k$ from being used
 to compute the view of $\attacker$, except for $Verify(X_k,Y_k^{j})$ queries, as
@@ -742,18 +742,13 @@ in the real privacy game, as required.
 \end{figure}
 
 \begin{theorem}[Client side security]
-  \label{theo:client}
-  Under the IND-CPA security of BV cryptosystem and the soundness property of the underlying Stern protocol, the
-  proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against
-  impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has
-  impersonation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge error
-  $\eps_{ZK1},\eps_{ZK2}$ such that
-  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2}) + \delta \leq c_1 \cdot
-  \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition $\sigma/r_0 \geq 4 \pi k n q$ holds, for
-  $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ as an upper bound on the size of the noise in $C_{HD}$.
+  \label{theo:clientPro1}
+  Under the IND-CPA security of BV cryptosystem and the soundness property of
+  the underlying Stern protocol, the proposed scheme satisfies Impersonation and
+  Multifactor Security.
 \end{theorem}
 
-The proof of theorem \ref{theo:client} can be obtained using a sequence of games
+The proof of theorem \ref{theo:clientPro1} can be obtained using a sequence of games
 between the challenger $\challenger$ and the adversary $\attacker$. We here
 present such a sequence, as well as the relations among the games, in order to
 demonstrate first the type I security model proof. We will present the type II

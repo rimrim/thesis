@@ -34,9 +34,9 @@ The noise term of this result ciphertext correlates to both $\mathbf{s}$ and $\m
 In many contexts, a leakage of this kind might be inconsequential for a genuine user with a secret key, because s/he is supposed to know the key and decrypt the message.
 However, in many other contexts, especially in multi-factor authentication
 scenarios, this is not the case. For instance, in our system, we do not want the
-client to know the Hamming Distance value, so that an attacker with a stolen
+client to know the unmasked Hamming Distance value, so that an attacker with a stolen
 device and a secret key cannot derive information about the data stored in the
-server from the enrolment stage?. We propose to mask this data by homomorphically adding the ciphertext
+server from the enrolment stage. We propose to mask this data by homomorphically adding the ciphertext
 $Enc(HD)$ to $Enc(r)$ so as to refresh the noise terms while masking the Hamming Distance at the same time. The question is how far from the original noise distribution we can move away without compromising correctness, if this new security measure is applied.
 
 Let $D_1$ and $D_2$ be the probability distributions of the original noise in the ciphertext $Enc(HD)$ and the new shifted noise of $Enc(HD+r)$. We observe that the
@@ -200,18 +200,19 @@ distribution by an easier to sample distribution.
 % \label{sec:Renyi_original}
 
 For the following analysis, let $D_1$ be a discrete Gaussian on $\mZ$ with
-deviation parameter $\sigma$ shifted by the constant $r_0 \in \mZ$, while $D_2$
-is a discrete Gaussian on $\mZ$ with dev. par. $\sigma$ centered on zero,
+standard deviation parameter $\sigma$ shifted by the constant $r_0 \in \mZ$, while $D_2$
+is a discrete Gaussian on $\mZ$ with deviation parameter $\sigma$ centered on zero,
 i.e. $D_1 = D_{\mZ,\sigma} + r_0$ and $D_2 = D_{\mZ,\sigma}$, where
-$D_{\mZ,\sigma}(x) = e^{-\pi \cdot x^2/\sigma^2}/\sum_{z \in \mZ} e^{-\pi \cdot
-  z^2/\sigma^2}$ for $x \in \mZ$. To allow us to use $RD_{\infty}$ we put
+$$D_{\mZ,\sigma}(x) = \frac{e^{-\pi \cdot x^2/\sigma^2}}{\sum_{z \in \mZ} e^{-\pi \cdot
+    z^2/\sigma^2}}$$ For $x \in \mZ$. To allow us to use $RD_{\infty}$ we put
 tail-cut variants $D_1^{(cut)}$ and $D_2^{(cut)}$ of $D_1$ and $D_2$ into play,
 respectively with parameter $k$. The parameter $k$ defines where $D_1$ and $D_2$
-are cut, for example, we can set $k=3$ to cut the distributions at 3
-deviation parameters from the mean. So, we let $D_{\mZ,\sigma}^{(cut)}$ denote
+are cut, for example, we can set $k=3$ to cut the distributions at 3 deviation
+parameters from the mean. So, we let $D_{\mZ,\sigma}^{(cut)}$ denote
 distribution $D_{\mZ,\sigma}$ tail-cut to the interval
-$[-k \cdot \sigma, k \cdot \sigma]$ by rejection sampling. We let
-$D_1^{(cut)} = D_{\mZ,\sigma}^{(cut)} + r_0$ and
+$[-k \cdot \sigma, k \cdot \sigma]$ by rejection sampling.
+
+We let $D_1^{(cut)} = D_{\mZ,\sigma}^{(cut)} + r_0$ and
 $D_2^{(cut)} = D_{\mZ,\sigma}^{(cut)}$. Notice that the supports of
 $D_1^{(cut)}$ and $D_2^{(cut)}$ are different, namely
 $Supp(D_1^{(cut)}) = [-k\sigma+r_0,k\sigma+r_0]$ while
@@ -233,9 +234,9 @@ $D_2^{(cut)}(E)$. Details follow.
   \textbf{First SD Step.} Since $Supp(D_1^{(cut)})$ is transformed into
   $\overline{D}_1^{(cut)}$ by rejection and resampling if a sample of
   $Supp(D_1^{(cut)})$ falls in $(k\sigma,k\sigma+r_0]$, we have
-  $SD(D_1^{(cut)}, \overline{D}_1^{(cut)}) \leq
+  $$SD(D_1^{(cut)}, \overline{D}_1^{(cut)}) \leq
   D_1^{(cut)}((k\sigma,k\sigma+r_0]) = D_2^{(cut)}((k\sigma-r_0,k\sigma]) =
-  D_{\mZ,\sigma}((k\sigma-r_0,k\sigma])/C_2$, where
+  D_{\mZ,\sigma}((k\sigma-r_0,k\sigma])/C_2$$, where
   $C_2 = D_{\mZ,\sigma}([-k\sigma,k\sigma])$. Consequently,
 $$
 \Delta \defeq \frac{D_{\mZ,\sigma}((k\sigma-r_0,k\sigma])}{C_2} = \frac{\sum_{z
@@ -243,15 +244,24 @@ $$
     [-k\sigma,k\sigma])} \e^{-\pi z^2/\sigma^2}}.
 $$
 For the numerator, the upper bound
-$\sum_{z \in (k\sigma-r_0,k\sigma])} \e^{-\pi z^2/\sigma^2} \leq
-\int^{\infty}_{k\sigma-r_0} \e^{-\pi z^2/\sigma^2} dz \leq \sigma \cdot \e^{-\pi
-  (k\sigma-r_0)^2/\sigma^2}$ is obtained by using the standard normal distribution upper bound
-$\int^{\infty}_{\gamma} \frac{1}{\sqrt{2\pi} \sigma} \cdot \e^{- z^2/\sigma^2}
-dz \leq \e^{-\gamma^2/(2\sigma^2)}$ for $\gamma \geq 0$. For the denominator, the lower bound is
-$\sum_{z \in [-k\sigma,k\sigma]} \e^{-\pi z^2/\sigma^2} \geq 2 \cdot \sum_{z \in
-  [0,k\sigma])} \e^{-\pi z^2/\sigma^2} \geq 2 \cdot (\int^{\infty}_{0} \e^{-\pi
-  z^2/\sigma^2} dz - \int^{\infty}_{k\sigma} \e^{-\pi z^2/\sigma^2} dz) \geq
-\sigma \cdot (1 - 2 \cdot \e^{-\pi (k\sigma-r_0)^2/\sigma^2})$. Therefore,
+\begin{align*}
+  \sum_{z \in (k\sigma-r_0,k\sigma])} \e^{-\pi z^2/\sigma^2}
+  &\leq \int^{\infty}_{k\sigma-r_0} \e^{-\pi z^2/\sigma^2} dz\\
+  &\leq \sigma \cdot \e^{-\pi
+    (k\sigma-r_0)^2/\sigma^2}
+\end{align*}
+This bound is obtained by using the standard normal distribution upper bound
+$$\int^{\infty}_{\gamma} \frac{1}{\sqrt{2\pi} \sigma} \cdot \e^{- z^2/\sigma^2}
+dz \leq \e^{-\gamma^2/(2\sigma^2)}, \text{for }\gamma \geq 0 $$
+For the denominator, the lower bound is
+\begin{align*}
+  \sum_{z \in [-k\sigma,k\sigma]} \e^{-\pi z^2/\sigma^2}
+  &\geq 2 \cdot \sum_{z \in [0,k\sigma])} \e^{-\pi z^2/\sigma^2}\\
+  &\geq 2 \cdot (\int^{\infty}_{0} \e^{-\pi
+    z^2/\sigma^2} dz - \int^{\infty}_{k\sigma} \e^{-\pi z^2/\sigma^2} dz)\\
+  &\geq \sigma \cdot (1 - 2 \cdot \e^{-\pi (k\sigma-r_0)^2/\sigma^2})
+\end{align*}
+Therefore,
 $SD(D_1^{(cut)}, \overline{D}_1^{(cut)}) \leq \Delta \leq \delta' / (1-2\delta')
 \leq 2\delta'$ if $\delta' \leq 1/4$, where
 $\delta' = \e^{-\pi (k\sigma-r_0)^2/\sigma^2}$. Defining $\delta = 2\delta'$, makes $\Delta \leq \delta$ if $\delta \leq 1/8$ and the conditions
@@ -270,9 +280,12 @@ $\overline{D}_1^{(cut)}(E) \geq D_1^{(cut)}(E) - \delta$ is the case.
 Observe that, for each $x \in [-k\sigma+r_0,k\sigma]$, we have
 $\overline{D}_1^{(cut)}(x) = C \cdot D_1^{(cut)}(x)$, where the normalization
 constant
-$C = \frac{1}{1-D_1^{(cut)}((k\sigma,k\sigma+r_0])} =
-\frac{1}{1-D_2^{(cut)}((-k\sigma+r_0,k\sigma])} = \frac{1}{1-\Delta}$, where
-$\Delta$ is defined and upper bounded by $\delta$ above, under the assumed
+\begin{align*}
+  C &= \frac{1}{1-D_1^{(cut)}((k\sigma,k\sigma+r_0])}\\
+    &= \frac{1}{1-D_2^{(cut)}((-k\sigma+r_0,k\sigma])}\\
+    &= \frac{1}{1-\Delta}
+\end{align*}
+Where $\Delta$ is defined and upper bounded by $\delta$ above, under the assumed
 conditions on $k$ and $\delta$. Since the $D_1^{(cut)}(x)$ and $D_2^{(cut)}(x)$
 are shifts of each other, they have the same rejection sampling normalization
 constant with respect to $D_1$ (resp. $D_2$). Therefore,
@@ -296,15 +309,18 @@ R_\infty(\overline{D}_1^{(cut)}\|D_2^{(cut)}) = e^{1/(1-\delta)} \cdot e^{\pi
 $$
 Since $0<\delta \leq 1/8$, the first factor above is
 $\leq 1+2\delta \leq e^{2\delta}$. Also, a simple computation shows that the
-second factor is $\leq e$ if the condition $\sigma/r_0 \geq 4 \pi \cdot k$ is
+second factor is less than $e$ if the condition $\sigma/r_0 \geq 4 \pi \cdot k$ is
 satisfied using $k \geq 1$. We conclude, under the assumed parameter conditions,
 that
 $R_\infty(\overline{D}_1^{(cut)}\|D_2^{(cut)})) \leq e^{1+2\delta} = c'(\delta)$
 is constant for a constant $\delta>0$, so that, by the RD probability preservation
 property,
-$D_2^{(cut)}(E) \geq \frac{1}{c(\delta)} \cdot \overline{D}_1^{(cut)}(E) \geq
-\frac{1}{c(\delta)} \cdot (D_1^{(cut)}(E) - \delta)$. Note that if
-$D_1^{(cut)}(E)=\varepsilon$, then, by choosing $\delta = \varepsilon/2$, we get
+\begin{align*}
+  D_2^{(cut)}(E) &\geq \frac{1}{c(\delta)} \cdot \overline{D}_1^{(cut)}(E)\\
+                 &\geq \frac{1}{c(\delta)} \cdot (D_1^{(cut)}(E) - \delta)
+\end{align*}
+Note that if $D_1^{(cut)}(E)=\varepsilon$, then, by choosing
+$\delta = \varepsilon/2$, we get
 $D_2^{(cut)}(E) \geq \frac{1}{2c(\delta)} \cdot \varepsilon$, and we only need
 $k \geq 1 + \sqrt{1/\pi \cdot \ln(2/\delta)}$ and $\sigma/r_0$ logarithmic in
 $1/\delta$, much smaller than $\sigma/r_0$ linear in $1/\delta$, which we would
@@ -443,13 +459,35 @@ The application to our protocol mainly happens in the step of masking the value 
 
 \end{description}
 
-\subsection{Security Proof}
+\subsection{Security Analysis}
 \label{sec:protocol2SecurityProof}
+\begin{theorem}[Server side security]
+  \label{theo:serverprotocol2}
+  Under the IND-CPA security of BV cryptosystems, and the zero-knowledge property of the Stern protocol, the proposed
+  scheme satisfies (Honest But Curious) Server Privacy Security.
+\end{theorem}
+\begin{theorem}[Client side security]
+  \label{theo:clientprotocol2}
+  Under the IND-CPA security of BV cryptosystem and the soundness property of
+  the underlying Stern protocol, the proposed scheme satisfies Impersonation and
+  Multifactor Security. Concretely, for $\delta>0$, the protocol is
+  $(q,c)$-secure against impersonation with $c \leq c(\delta) + 3 \cdot c_1$,
+  assuming the underlying non-private biometric protocol has impersonation
+  probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have
+  knowledge error $\eps_{ZK1},\eps_{ZK2}$ such that
+  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2}) + \delta \leq c_1 \cdot
+  \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition
+  $\sigma/r_0 \geq 4 \pi k n q$ holds, for
+  $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ as an upper bound on the size
+  of the noise in $\enc{\mathbf{HD}}$.
+\end{theorem}
 
-The proof for the server privacy security can be done similarly to Section
-\ref{sec:security}. There is a minor game change in the client impersonation
-model after game 4. We quickly recall the game sequence so that readers can
-follow easily, the detailed diagrams of changes in consecutive games can be found in Section \ref{sec:security}.
+The proof for Theorem \ref{theo:serverprotocol2} can be done similarly to
+Section \ref{sec:securityPro1}. For Theorem \ref{theo:clientprotocol2}, there is
+a minor game change in the client impersonation model after game 4. We quickly
+recall the game sequence so that readers can follow easily, the detailed
+diagrams of changes in consecutive games can be found in Section
+\ref{sec:securityPro1}.
 
 \textit{Game 0} (Figure \ref{fig:game0protocol1client}). Game 0 is the original
 impersonation game for type I attack.
@@ -510,19 +548,20 @@ change therefore does not affect what the attacker sees. Again, $Pr[S_4] = Pr[S_
 % \]
 % which results in the claimed bound.
 
-\textit{Game 5.} We modify the way $C_{HD}'$ is computed in this game. Instead
+\textit{Game 5.} We modify the way $\enc{\mathbf{HD}}$ is computed in this game. Instead
 of calculating
 $\enc{\mathbf{HD'}_{i}} = \enc{\mathbf{HD}_{i}} + \enc{\mathbf{r}_{i}}$, the
 challenger chooses a random $HD' \randomsample \mathbb{Z}_p$ and encrypts it
 with the noise used before. In this game, the plaintext has changed from being
 $r + HD$ to a uniform $HD' \in \mathbb{Z}_p$.  Since $r$ is also uniform in
 $\mathbb{Z}_p$, the attacker is confronted with a uniform
-plaintext in both cases. Therefore, $Pr[S_5] = Pr[S_4]$.\\
+plaintext in both cases. Therefore, $Pr[S_5] = Pr[S_4]$.
+\\\\
 \textit{Game 6.} Finally, we set $\enc{\mathbf{HD'}_{i}} = Enc(HD'_{i}, e_{HD'_{i}})$ for
 $e_{HD'} \randomsample \chi_{mask}$ instead of $e_{HD} + e_{r}$. We replace
 the sum of the Gaussian noise with a random noise. In Section \ref{sec:secProcRenyi},
 we showed that $Pr[S_6] \geq \frac{1}{c(\delta)}(Pr[S_5]-q \cdot \delta)$, where
-$c(\delta) = RD(-e_{HD} + e_{r}, e_{HD}) \leq 2 \cdot e^{1+2\delta}$ by
+$c(\delta) = RD(e_{HD} + e_{r}, e_{HD}) \leq 2 \cdot e^{1+2\delta}$ by
 Lemma~\ref{le:Renyi} and by our assumption on the parameter's values. After we
 finish \textit{Game 6}, we notice that all the messages available to the
 attacker can be simulated with only the verified bit $b = Verify(Y^{(i)},
@@ -536,8 +575,16 @@ which gives the claimed bound $\varepsilon_{imp} \leq c(\delta) \cdot \varepsilo
 \subsection{Security Proof for Type II Impersionation attack}
 \label{append:ProofsTypeII}
 This proof can also be provided using a sequence of games between the challenger
-$\challenger$ and the adversary $\attacker$. We present
-a sequence of games as well as the relations among them to demonstrate the type II security model proof. The idea is that in this type of attack, $sk_k$ is not used to compute the view of $\attacker$. On the other hand, the soundess of the zero-knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ implies the existence of an efficient witness extractor algorithm, that can be used to extract the witness (i.e. the secret key $sk_k$) from a cheating prover succeeding with probability non-negligibly higher than the knowledge error of the zero-knowledge proof, thus contradicting the IND-CPA security of the BV encryption scheme. \\\\
+$\challenger$ and the adversary $\attacker$. We present a sequence of games as
+well as the relations among them to demonstrate the type II security model
+proof. The idea is that in this type of attack, $sk_k$ is not used to compute
+the view of $\attacker$.  On the other hand, the soundess of the zero-knowledge
+proof of knowledge $\mathbf{ZKPoPK}$ implies the existence of an efficient
+witness extractor algorithm, that can be used to extract the witness (i.e. the
+secret key $sk_k$) from a cheating prover succeeding with probability
+non-negligibly higher than the knowledge error of the zero-knowledge proof, thus
+contradicting the IND-CPA security of the BV encryption scheme.
+\\\\
 \textit{Game 0}. Game 0 is the original impersonation game for a type II attack,
 i.e., the same as Game 0 in the proof of security against Type I attacks, except
 that $\enc{\mathbf{X_{k}}}$ is given by $\challenger$ to $\attacker$ at the
