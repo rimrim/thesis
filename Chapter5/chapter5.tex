@@ -533,6 +533,44 @@ advantage:
 \]
 which gives the claimed bound $\varepsilon_{imp} \leq c(\delta) \cdot \varepsilon_{bio} + q \cdot (\varepsilon_{ZK1}+\varepsilon_{ZK2}) + \delta \leq (c(\delta)+c_1) \cdot \varepsilon_{bio}$ if $q(\varepsilon_{ZK1}+\varepsilon_{ZK2}) + \delta \leq c_1 \cdot \varepsilon_{bio}$.
 
+\subsection{Security Proof for Type II Impersionation attack}
+\label{append:ProofsTypeII}
+This proof can also be provided using a sequence of games between the challenger
+$\challenger$ and the adversary $\attacker$. We present
+a sequence of games as well as the relations among them to demonstrate the type II security model proof. The idea is that in this type of attack, $sk_k$ is not used to compute the view of $\attacker$. On the other hand, the soundess of the zero-knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ implies the existence of an efficient witness extractor algorithm, that can be used to extract the witness (i.e. the secret key $sk_k$) from a cheating prover succeeding with probability non-negligibly higher than the knowledge error of the zero-knowledge proof, thus contradicting the IND-CPA security of the BV encryption scheme. \\\\
+\textit{Game 0}. Game 0 is the original impersonation game for a type II attack,
+i.e., the same as Game 0 in the proof of security against Type I attacks, except
+that $\enc{\mathbf{X_{k}}}$ is given by $\challenger$ to $\attacker$ at the
+beginning of the game, rather than $sk_k$.  For $j \in \{1,\ldots,q\}$, let
+$res^{j}$ denote the result of the $j$th authentication protocol run between
+$\attacker$ and $\challenger$, and $S_0$ be
+the event in the game $0$ such that $res^{j} = Accept$ for some $j=1,\ldots,q$. We have $\Pr[S_0] = \varepsilon_{imp,II}$ as the type II success probability of $\attacker$. \\\\
+\textit{Game 1}. From the definition of event $S_0$ in Game 0, it follows that
+there exists some $j^* \in \{1,\ldots,q\}$ such that
+$\Pr[res^{j^*} = Accept] \geq \varepsilon_{imp,II}/q$. Furthermore, by an
+averaging argument, there must exist a set $G$ of $(D_k,X_k,pk_k)$ such that
+$\Pr[(D_k,X_k,pk_k) \in G] \geq \varepsilon_{imp,II}/(2 \cdot q)$, and for each
+$(D'_k,X'_k,pk'_k) \in G$, we have
+$\Pr[res^{j^*} = Accept |(D_k,X_k,pk_k)=(D'_k,X'_k,pk'_k)] \geq
+\varepsilon_{imp,II}/(2 \cdot q)$. By $\varepsilon_{ZK1}$-soundness of the
+zero-knowledge proof of knowledge $\mathbf{ZKPoPK1}$
+\cite{goldreich2009foundations}, there exists a witness extractor algorithm that
+runs in expected time
+$T'=O(\mathrm{poly}(n \log Q) \cdot T / (\varepsilon_{imp,II}/(2*q) -
+\varepsilon_{ZK1}))$, where $T$ denotes the run-time of $\attacker$ and outputs
+a witness containing $sk_k$ for \textbf{ZKPoPK1}. Therefore, we obtain a (secret
+key recovery) attack algorithm against the IND-CPA security of the BV encryption
+scheme, with expected run-time $T'$ and advantage
+$\varepsilon' \geq \varepsilon_{imp,II}/(2 \cdot q)$. Hence, if
+$\varepsilon_{imp,II}/(2*q) - \varepsilon_{ZK1} > \varepsilon_{imp,II}/(4*q)$,
+or equivalently, if $\varepsilon_{imp,II} > 2 \cdot q \varepsilon_{ZK1}$, we
+obtain a contradiction with the assumption the BV encryption scheme with
+parameters $Q,n,\sigma$ is IND-CPA against attacks with expected time
+$O(\mathrm{poly}(n \log Q) \cdot T / \varepsilon_{ZK1})$ and advantage
+$\geq \varepsilon_{ZK1}$. It follows under the latter assumption that
+$\varepsilon_{imp,II} \leq 2q \varepsilon_{ZK1} \leq 2 c_1 \cdot
+\varepsilon_{bio}$, under the assumption that
+$q(\varepsilon_{ZK1}+\varepsilon_{ZK2} + \delta) \leq c_1 \cdot \varepsilon$.
 
 \section{Results}
 \label{sec:secProcResult}
