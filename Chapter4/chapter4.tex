@@ -12,7 +12,7 @@
 \label{sec:firstProcIntro}
 Many biometrics privacy preserving authentication protocols rely on a trusted
 third party to keep the client's secret key used to decrypt the authentication
-result \missref{}. Our first attempt to improve the security of such schemes has
+result \cite{mandal2015comprehensive, hirano2013cryptographically, upmanyu2010blind}. Our first attempt to improve the security of such schemes has
 been to remove the role of such a party. As it proves inconvenient, due to
 privacy issues, to allow a third party server to keep the client's secret key, the
 distance plaintext decryption should be performed by the client, which, in turn,
@@ -414,9 +414,22 @@ present a solution for this problem.
 
 \item [Result.] Our protocol has the following properties:
   \begin{itemize}
-  \item The knowledge extractor produces different $x_i$ with $\norminf{x_i} \leq \beta_i$. Inheriting from the original
-    Stern protocol, the extraction gap is $\gamma = 1$.
-  \item The communication cost is $2(n\log q){\sum{l_i}} + commitmentSize$ for each round.
+  \item The knowledge extractor produces different $x_i$ with
+    $\norminf{x_i} \leq \beta_i$. Inheriting from the original Stern protocol,
+    the extraction gap is $\gamma = 1$. In other words, if the prover $P$ has a
+    valid witness for the relation and it follows the protocol, then it is
+    always accepted by the verifier $V$, the proof system has perfect
+    completeness
+  \item The communication cost is $2(n\log q){\sum{l_i}} + commitmentSize$ for
+    each round.
+  \item The Statistical Zero-Knowledge property can be proved by adapting the
+    technique from \cite{stern1993new, kawachi2008concurrently} to construct a
+    simulator $S$ which has black-box access to a cheating verifier $\hat{V}$:
+    on inputs $\mathbf{A_{stern},y_{stern}}$, outputs an accepted transcript
+    with probability $2/3$. Additionally, the $view$ of $\hat{V}$ in the
+    simulation should be statistically close to the view of the verifier in the
+    real situation.
+
   \end{itemize}
 
 \end{description}
@@ -538,17 +551,24 @@ main submodules in the protocol: Setup, Enrol, and Authenticate. Figure \ref{fig
 
 \subsubsection{Correctness}
 \label{sec:correctness}
-In the enrolment step, as mentioned before, in order to encrypt $\mathbf{x}$, $\user$ samples
-$\mathbf{u,f,g} \randomsample \chi_{\alpha q}^n$ and does $\mathbf{c_0} = \mathbf{p_0u} + t\mathbf{f} + \mathbf{x}$ and
-$\mathbf{c_1} = \mathbf{p_1u} + t\mathbf{g}$. The condition for decryption correctness is
-$[\langle \mathbf{c_0 + c_1s} \rangle]_q < q/2$, or, $-t\mathbf{eu} + t\mathbf{f} + t\mathbf{gs} < q/2$.
+In the enrolment step, as mentioned before, in order to encrypt $\mathbf{x}$,
+$\user$ samples $\mathbf{u,f,g} \randomsample \chi_{\alpha q}^n$ and does
+$\mathbf{c_0} = \mathbf{p_0u} + t\mathbf{f} + \mathbf{x}$ and
+$\mathbf{c_1} = \mathbf{p_1u} + t\mathbf{g}$. The condition for decryption
+correctness is $[\langle \mathbf{c_0 + c_1s} \rangle]_q < q/2$, or,
+$-t\mathbf{eu} + t\mathbf{f} + t\mathbf{gs} < q/2$.
 
-In the authentication step, \(\enc{HD}\) is decryptable if \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle} < q/2\), if
-we let \(U\) to be the upper bound of \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle}\), and considering that
-\(\norminf{a + b} \leq \norminf{a} + \norminf{b}\) and \(\norminf{a.b} \leq n.\norminf{a}.\norminf{b}\). From theorem
-~\ref{theo:HDComputation}, we can derive \(\norminf{\langle \enc{HD},\mathbf{s} \rangle} \leq 2nU + 2nU^{2}\). As in the
-work of \cite{naehrig2011can}, we can take \(U\) to be \(2t \sigma^{2} \sqrt{n}\), which is an experimental
-estimation. Therefore, the final correctness condition for authentication is \( 16n^{2}t^{2}\sigma^{4} < q\).
+In the authentication step, \(\enc{HD}\) is decryptable if
+\(\norminf{\langle \enc{HD}, \mathbf{s} \rangle} < q/2\), if we let \(U\) to be
+the upper bound of \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle}\), and
+considering that \(\norminf{a + b} \leq \norminf{a} + \norminf{b}\) and
+\(\norminf{a.b} \leq n.\norminf{a}.\norminf{b}\). From theorem
+~\ref{theo:HDComputation}, we can derive
+\(\norminf{\langle \enc{HD},\mathbf{s} \rangle} \leq 2nU + 2nU^{2}\). As in the
+work of \cite{naehrig2011can}, we can take \(U\) to be
+\(2t \sigma^{2} \sqrt{n}\), which is an experimental estimation. Therefore, the
+final correctness condition for authentication is
+\( 16n^{2}t^{2}\sigma^{4} < q\).
 \begin{lemma}[Condition for Correct Decryption of HD]
   \label{le:hdcorrectness}
  For the BV encrypted Hamming Distance \(\enc{HD}\), the decryption recovers the correct result if \(\langle \enc{HD},
@@ -736,7 +756,7 @@ in the real privacy game, as required.
 The proof of theorem \ref{theo:client} can be obtained using a sequence of games
 between the challenger $\challenger$ and the adversary $\attacker$. We here
 present such a sequence, as well as the relations among them, to demonstrate
-first the type I security model proof.
+first the type I security model proof (We will present the type II security proof in the next chapter, which can be applied similarly to this chapter).
 
 \textit{Game 0} (Figure \ref{fig:game0protocol1client}). Game 0 is the original
 impersonation game for type I attack.
@@ -911,17 +931,16 @@ change therefore does not affect what the attacker sees. Again, $Pr[S_4] = Pr[S_
        For $i=1,\dots,q$:\\
        $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
        $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
-       {$proverView1 \gets \mathbf{ZKPSimulator}()$}\\
+       $proverView1 \gets \mathbf{ZKPSimulator}()$\\
        $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
-       \gamechange{$r_{i} \gets enc$ ,$\0{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$}\\
+       \gamechange{$r_{i} \gets 0, enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$}\\
        $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
-       {$proverView2 \gets \mathbf{ZKPSimulator}()$}\\
+       $proverView2 \gets \mathbf{ZKPSimulator}()$\\
        $HD_{i} \gets HD'_{i} - r_{i}$\\
-       {$res_{i} \gets Verify(X_{k},Y_{i})$}\\
+       $res_{i} \gets Verify(X_{k},Y_{i})$\\
        $\beta \gets \adv(proverView1, proverView2, sk, \mathbf{Y}_{i},
-       \enc{\mathbf{Y}_{i}}, res_{i}, HD'_{i}, \enc{\mathbf{HD'}_{i}})$
-     }
-\end{gameproof}
+       \enc{\mathbf{Y}_{i}}, res_{i}, HD'_{i}, \enc{\mathbf{HD'}_{i}})$ }
+  \end{gameproof}
   }
   \caption{Game 4 - Client Impersonation game}
   \label{fig:game3protocol1client}
@@ -941,16 +960,16 @@ which results in the claimed bound.
 \subsection{Parameters}
 \label{sec:parameters}
 We now consider how to set concrete parameters. From Lemma
-\ref{le:hdcorrectness} and \ref{le:Renyi} and \cite{naehrig2011can}, we can take
-\(\sigma = 50\) to make the protocol secure against the lattice attacks
-(\cite{micciancio2008lattice}) and also satisfy the circuit privacy
-requirement. We can take \(t = 2048\) to define the plaintext space ring
-\(R_{t}\), this is enough to cover Hamming Distance of bit strings up to 2048
-bits. We need \(n \geq 2048\) for the packing ciphertext. With these parameters,
-we need \(q\) to be approximately 70 bits to satisfy
-\(16n^{2}t^{2}\sigma^{4} < q\).  The proposed scheme works with only 1 level of
-homomorphic multiplication for the proposed set of parameters
-$(n = 2048, q \approx 2^{70}, t = 2048, \sigma = 50)$, proof of concept
+\ref{le:hdcorrectness} and the analysis from \cite{naehrig2011can}, we can take
+\(\sigma = 8\) to make the protocol secure against the lattice attacks
+(\cite{micciancio2008lattice}), note that this setting does not cover circuit
+privacy, which will be discussed in the next chapter. We can take \(t = 2048\)
+to define the plaintext space ring \(R_{t}\), this is enough to cover Hamming
+Distance of bit strings up to 2048 bits. We need \(n \geq 2048\) for the packing
+ciphertext. With these parameters, we need \(q\) to be approximately 60 bits to
+satisfy \(16n^{2}t^{2}\sigma^{4} < q\).  The proposed scheme works with only 1
+level of homomorphic multiplication for the proposed set of parameters
+$(n = 2048, q \approx 2^{60}, t = 2048, \sigma = 8)$, proof of concept
 implementation can be found in \cite{rimrimrq38:online}, communication size for
 ZKP is approximately 8MB to provide security against a malicious client model.
 

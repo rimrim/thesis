@@ -194,133 +194,6 @@ distribution by an easier to sample distribution.
 
 
 
-\section{Our Protocol}
-\label{sec:our_protocol}
-We denote $\user$ to be the client and $\server$ to be the server. There are 3 main submodules in the protocol: Setup,
-Enrol, and Authenticate.
-\begin{description}
-\item[Setup.] $\user$ and $\server$ initialize the parameters, taking into account the following categories:
-  \begin{description}
-  \item[Biometric Authentication System Parameters.] These parameters are standard ones used by non privacy preserving
-    biometric authentication systems:
-    \begin{itemize}
-    \item False Acceptance Rate (FAR) and False Rejection Rate (FRR)
-    \item $a$: The maximum number of incorrect authentication attempts allowed by $\server$.
-    \item $\tau$: Threshold to compare the Hamming Distance to decide the authentication result.
-      % \item $B$: An integer defines the base of the HD in a
-      %   decomposition operation.
-    \item \(n'\): The bit-length of the encoded
-      biometric data.
-    \end{itemize}
-  \item[Ring-LWE based techniques parameters.] These parameters are used in the lattice-based cryptosystem which provides
-    client privacy against long term quantum attacks.
-    \begin{itemize}
-    \item $\lambda$: General security parameter of the cryptosystem (the adversary's winning chance in the CPA security game is \(1/2^{\lambda}\))
-    \item $n$: Integer $n$ defining the plaintext and ciphertext rings. This will be refered to as the degree of
-      the polynomial objects or dimension of the underlying lattice during correctness and security proofs.
-    \item $t$: Integer $t$ defining the plaintext space ring $R_t = \mathbb{Z}_t[x]/x^n+1$.
-    \item $q$: Integer $q$ defining the ciphertext space ring $R_q = \mathbb{Z}_q[x]/x^n+1$
-    \item $\chi_{\alpha q}$: A distribution used to sample noises for LWE-based techniques.  Typically, $\chi$
-      is a Gaussian distribution with standard deviation $\alpha q$.
-    \item \(\delta\): Renyi Divergence parameter for the security of noise masking.
-    \end{itemize}
-  \item[Keygen.] Keys are generated for $\user$:
-    \begin{itemize}
-    \item Secret key: $\mathbf{s} \randomsample \chi_{\alpha q}^n$, \(sk = (1, \mathbf{s, s^{2}, ...})\)
-    \item Public key: $pk = \mathbf{(p_0,p_1)}$, with $\mathbf{p_1} \randomsample R_q$ and
-      $\mathbf{p_0} = -\mathbf{p_1s} - t\mathbf{e}$, with $\mathbf{e} \randomsample \chi_{\alpha q}^n$.
-    \end{itemize}
-  \end{description}
-\item [Enrolment.] $\user$ extracts the biometric template $\mathbf{x}$, the bit string $\mathbf{x}$ being
-  represented as a ring element of ${R}_t$.  The encryption is done by $\enc{\mathbf{x}} = (\mathbf{c_0},\mathbf{c_1})$
-  and sent to $\server$.
-\item [Authentication.] The following steps are required:
-  \begin{enumerate}
-  \item $\user$ extracts his biometric features again $\mathbf{y}$ to use them as the query. $\user$ sends
-    $\enc{\mathbf{y}} = (\mathbf{c_0', c_1'})$ to $\server$.
-  \item ZKP for the first relation: $\user$ has to prove that $\enc{\mathbf{y}}$ is a valid encryption, that is, it
-    encrypts a bit string under the BV cryptosystem using the corresponding secret key. This is done by module
-    \textbf{SternBV(A, y, x)} described in Sect. \ref{sec:Stern-basedZKP}, where
-    $\mathbf{A} = \begin{bmatrix} c_{y0}, t, 0, 1\\p_{y0}, 0, t, 0
-    \end{bmatrix}$, \(\mathbf{X} = [\vec{s},\tilde{e_{y}},\vec{e_{0}},y]^T\) and \(\mathbf{Y
-    = [c_{y1},p_{y1}]}^{T}\).
-
-  \item HD Computation: $\server$ computes $\enc{HD_{\mathbf{x,y}}}$
-    using procedure \ref{sub:ciphertext_packing}. We note that the noise term $\mathbf{e_{HD}}$ of
-    $\enc{\mathbf{HD,e_{HD}}}$ can leak information
-    about $\mathbf{x}$ when $\mathbf{HD}$ is decrypted. Therefore,
-    an extra step is needed to secure the operation.
-    \begin{itemize}
-    \item Sample $\mathbf{e_{r}} \randomsample \chi_{r}^n$ such that $\norminf{\mathbf{e_r}}$ is big enough compared to
-      $\norminf{\mathbf{e_{HD}}}$.(Section \ref{sec:Renyi})
-    \item Compute $\enc{\mathbf{r,e_r}}$ and carry out an homomorphic addition operation to mask both the values of
-      $\mathbf{HD}$ and the noise $\mathbf{e_{HD}}$:
-      $\enc{\mathbf{HD', e'_{HD}}} = \enc{\mathbf{HD, e_{HD}}} + \enc{\mathbf{r,e_r}}$
-    \end{itemize}
-    The result $\enc{\mathbf{HD'}}$ is then sent to $\user$.
-  \item \(\user\) decrypts $\enc{\mathbf{HD'}}$ and derives the actual value ${HD'}$ from the first coefficient of the
-    plaintext: \( dec\enc{\mathbf{HD'}} = HD' + r_1 + r_2 + \dots + r_{n-1} \). \(\user\) sends \(HD'\) to \(\server\).
-  \item \(\user\) proves that it does the decryption honestly, this is done similarly to step 2.
-  \item \(\server\) unmasks \(HD'\) and outputs the authentication result \(HD \stackrel{?}{<} \tau\)
-  \end{enumerate}
-
-\end{description}
-
-\begin{figure}[htbp!] 
-  \centering \procedure{THE FIRST PROTOCOL}{
-    \textbf{Client} \> \> \textbf{Server}\pclb
-    \pcintertext[dotted]{Enrolment}\\
-    \text{Extract \& Encrypt \textbf{x}} \> \sendmessageright*{\enc{\mathbf{x}}}
-    \> \text{Persist $\enc{\mathbf{x}}$}\pclb
-    \pcintertext[dotted]{Authentication}\\
-    \text{Extract \& Encrypt \textbf{y}} \> \sendmessageright*{\enc{\mathbf{y}}}
-    \> \\
-  }
-  \caption{The First Protocol}
-  \label{fig:firstProtocol}
-\end{figure}
-
-
-\subsubsection{Correctness}
-\label{sec:correctness}
-In the enrolment step, as mentioned before, in order to encrypt $\mathbf{x}$, $\user$ samples
-$\mathbf{u,f,g} \randomsample \chi_{\alpha q}^n$ and does $\mathbf{c_0} = \mathbf{p_0u} + t\mathbf{f} + \mathbf{x}$ and
-$\mathbf{c_1} = \mathbf{p_1u} + t\mathbf{g}$. The condition for decryption correctness is
-$[\langle \mathbf{c_0 + c_1s} \rangle]_q < q/2$, or, $-t\mathbf{eu} + t\mathbf{f} + t\mathbf{gs} < q/2$.
-
-In the authentication step, \(\enc{HD}\) is decryptable if \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle} < q/2\), if
-we let \(U\) to be the upper bound of \(\norminf{\langle \enc{HD}, \mathbf{s} \rangle}\), and considering that
-\(\norminf{a + b} \leq \norminf{a} + \norminf{b}\) and \(\norminf{a.b} \leq n.\norminf{a}.\norminf{b}\). From theorem
-~\ref{theo:HDComputation}, we can derive \(\norminf{\langle \enc{HD},\mathbf{s} \rangle} \leq 2nU + 2nU^{2}\). As in the
-work of \cite{naehrig2011can}, we can take \(U\) to be \(2t \sigma^{2} \sqrt{n}\), which is an experimental
-estimation. Therefore, the final correctness condition for authentication is \( 16n^{2}t^{2}\sigma^{4} < q\).
-\begin{lemma}[Condition for Correct Decryption of HD]
-  \label{le:hdcorrectness}
- For the BV encrypted Hamming Distance \(\enc{HD}\), the decryption recovers the correct result if \(\langle \enc{HD},
- \mathbf{s} \rangle\) does not wrap around mod q, namely, if \(16n^{2}t^{2}\sigma^{4} < q\).
-\end{lemma}
-
-\subsubsection{Security}
-\label{sec:security}
-The proposed scheme satisfies the security notions defined in Section \ref{sec:syntaxModel}, proofs are
-provided in Appendix \ref{append:Proofs}
-\begin{theorem}[Server side security]
-  \label{theo:server}
-  Under the IND-CPA security of BV cryptosystems, and the zero-knowledge property of the Stern protocol, the proposed
-  scheme satisfies (Honest But Curious) Server Privacy Security.
-\end{theorem}
-\begin{theorem}[Client side security]
-  \label{theo:client}
-  Under the IND-CPA security of BV cryptosystem and the soundness property of the underlying Stern protocol, the
-  proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against
-  impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has
-  impersonation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge error
-  $\eps_{ZK1},\eps_{ZK2}$ such that
-  $q(\varepsilon_{ZK1}+\varepsilon_{ZK2}) + \delta \leq c_1 \cdot
-  \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition $\sigma/r_0 \geq 4 \pi k n q$ holds, with
-  $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ as an upper bound on the size of the noise in $C_{HD}$.
-\end{theorem}
-
 \section{Renyi Divergence Analysis technique}
 \label{sec:secProcRenyi}
 % \subsection{Renyi Divergence and its application in noise masking}
@@ -477,79 +350,215 @@ D_2^{(cut)}(E) \geq \frac{1}{2e^{1+2\delta}} \cdot \left(D_1^{(cut)}(E) - \delta
 $$
 \end{lemma}
 
-\subsection{Correctness Analysis}
-\label{sec:2correctness}
+\section{The authentication protocol}
+\label{sec:our_protocol}
+The application to our protocol mainly happens in the step of masking the value of $HD$. In addition to masking $HD$ with some value $r$, we also need to mask the correlated noise used in the encryption process. The rest of the protocol steps (and proof) are identical to Section \ref{sec:protocol1specs}.
+\begin{description}
+\item[Setup.] $\user$ and $\server$ initialize the parameters, taking into account the following categories:
+  \begin{description}
+  \item[Biometric Authentication System Parameters.] These parameters are
+    standard ones used by non privacy preserving biometric authentication
+    systems:
+    \begin{itemize}
+    \item False Acceptance Rate (FAR) and False Rejection Rate (FRR)
+    \item $a$: The maximum number of incorrect authentication attempts allowed
+      by $\server$.
+    \item $\tau$: Threshold to compare the Hamming Distance to decide the
+      authentication result.
+      % \item $B$: An integer defines the base of the HD in a
+      %   decomposition operation.
+    \item \(n'\): The bit-length of the encoded biometric data.
+    \end{itemize}
+  \item[Ring-LWE based techniques parameters.] These parameters are used in the
+    lattice-based cryptosystem which provides client privacy against long term
+    quantum attacks.
+    \begin{itemize}
+    \item $\lambda$: General security parameter of the cryptosystem (the
+      adversary's winning chance in the CPA security game is \(1/2^{\lambda}\))
+    \item $n$: Integer $n$ defining the plaintext and ciphertext rings. This
+      will be refered to as the degree of the polynomial objects or dimension of
+      the underlying lattice during correctness and security proofs.
+    \item $t$: Integer $t$ defining the plaintext space ring
+      $R_t = \mathbb{Z}_t[x]/x^n+1$.
+    \item $q$: Integer $q$ defining the ciphertext space ring
+      $R_q = \mathbb{Z}_q[x]/x^n+1$
+    \item $\chi_{\alpha q}$: A distribution used to sample noises for LWE-based
+      techniques.  Typically, $\chi$ is a Gaussian distribution with standard
+      deviation $\alpha q$.
+    \item \(\delta\): Renyi Divergence parameter for the security of noise
+      masking.
+    \end{itemize}
+  \item[Keygen.] Keys are generated for $\user$:
+    \begin{itemize}
+    \item Secret key: $\mathbf{s} \randomsample \chi_{\alpha q}^n$,
+      \(sk = (1, \mathbf{s, s^{2}, ...})\)
+    \item Public key: $pk = \mathbf{(p_0,p_1)}$, with
+      $\mathbf{p_1} \randomsample R_q$ and
+      $\mathbf{p_0} = -\mathbf{p_1s} - t\mathbf{e}$, with
+      $\mathbf{e} \randomsample \chi_{\alpha q}^n$.
+    \end{itemize}
+  \end{description}
+\item [Enrolment.] $\user$ extracts the biometric template $\mathbf{x}$, the bit
+  string $\mathbf{x}$ being represented as a ring element of ${R}_t$.  The
+  encryption is done by $\enc{\mathbf{x}} = (\mathbf{c_0},\mathbf{c_1})$ and
+  sent to $\server$.
+\item [Authentication.] The following steps are required:
+  \begin{enumerate}
+  \item $\user$ extracts his biometric features again $\mathbf{y}$ to use them
+    as the query. $\user$ sends $\enc{\mathbf{y}} = (\mathbf{c_0', c_1'})$ to
+    $\server$.
+  \item ZKP for the first relation: $\user$ has to prove that $\enc{\mathbf{y}}$
+    is a valid encryption, that is, it encrypts a bit string under the BV
+    cryptosystem using the corresponding secret key. This is done by module
+    \textbf{SternBV(A, y, x)} described in Sect. \ref{sec:Stern-basedZKP}, where
+    $\mathbf{A} = \begin{bmatrix} c_{y0}, t, 0, 1\\p_{y0}, 0, t, 0
+    \end{bmatrix}$, \(\mathbf{X} = [\vec{s},\tilde{e_{y}},\vec{e_{0}},y]^T\) and \(\mathbf{Y
+    = [c_{y1},p_{y1}]}^{T}\).
 
-We start with the noise sampled during key generation:
-\[e_{0} \randomsample \chi_{\alpha q}\] where \(\chi\) is typically a Gaussian
-distribution with standard deviation \(\alpha q\). The noise bound of the first
-level ciphertext \(c = (\mathbf{c_{0}, c_{1}})\) would be
-\(B_{0} = \norminf{[<\mathbf{c,s}>]_{q}}\). Thus,
+\item HD Computation: $\server$ computes $\enc{HD_{\mathbf{x,y}}}$ using
+  procedure \ref{sub:ciphertext_packing}. We note that the noise term
+  $\mathbf{e_{HD}}$ of $\enc{\mathbf{HD,e_{HD}}}$ can leak information about
+  $\mathbf{x}$ when $\mathbf{HD}$ is decrypted. Therefore, an extra step is
+  needed to secure the operation.
+  \begin{itemize}
+  \item Sample $\mathbf{e_{r}} \randomsample \chi_{r}^n$ such that
+    $\norminf{\mathbf{e_r}}$ is big enough compared to
+    $\norminf{\mathbf{e_{HD}}}$.(Section \ref{sec:secProcRenyi})
+  \item Compute $\enc{\mathbf{r,e_r}}$ and carry out an homomorphic addition
+    operation to mask both the values of $\mathbf{HD}$ and the noise
+    $\mathbf{e_{HD}}$:
+    $\enc{\mathbf{HD', e'_{HD}}} = \enc{\mathbf{HD, e_{HD}}} +
+    \enc{\mathbf{r,e_r}}$
+    \end{itemize}
+    The result $\enc{\mathbf{HD'}}$ is then sent to $\user$.
+  \item \(\user\) decrypts $\enc{\mathbf{HD'}}$ and derives the actual value
+    ${HD'}$ from the first coefficient of the plaintext:
+    \( dec\enc{\mathbf{HD'}} = HD' + r_1 + r_2 + \dots + r_{n-1} \). \(\user\)
+    sends \(HD'\) to \(\server\).
+  \item \(\user\) proves that it does the decryption honestly, this is done
+    similarly to step 2.
+  \item \(\server\) unmasks \(HD'\) and outputs the authentication result
+    \(HD \stackrel{?}{<} \tau\)
+  \end{enumerate}
 
-\begin{align*}
-  \left[ \langle \mathbf{c, s} \rangle \right]_{q} &= \mathbf{p_{0}u} + t \mathbf{g} + \mathbf{m} + \mathbf{p_{1}us} + t \mathbf{fs}\\
-                                                   &= m + t(\mathbf{g + fs -e_{0}u})
-\end{align*}
+\end{description}
 
-So we can approximately bound \(B_{0} \leq t \norminf{e_{0}}^{2}\). The noise of
-the HD ciphertext (unmasked) \(\norminf{e_{HD}}\) can be bound by
-\(2nB_{0} + n B_{0}^{2}\), as
+\subsection{Security Proof}
+\label{sec:protocol2SecurityProof}
+
+The proof for the server privacy security can be done similarly to Section
+\ref{sec:security}. There is a minor game change in the client impersonation
+model after game 4. We quickly recall the game sequence so that readers can
+follow easily, the detailed diagrams of changes in consecutive games can be found in Section \ref{sec:security}.
+
+\textit{Game 0} (Figure \ref{fig:game0protocol1client}). Game 0 is the original
+impersonation game for type I attack.
+\begin{description}
+\item [Setup.] $\challenger$ intiates $D_k \randomsample D_{bio}$ and
+  $X_k \randomsample D_k$. $\challenger$ sets up $(sk_k, pk_k)$ and launches
+  $Enrol(k, X_k)$ to get $(sk_k, \enc{\mathbf{X}_{k}} =(pk_k, \mathbf{X}_{k}))$.
+  $\attacker$ submits a type 1 attack query and receives $sk_k$ from
+  $\challenger$.
+\item [Query.] $\attacker$ runs $q$ authentication sessions. In each session
+  $j = 1, \dots, q$, $\attacker$ can choose $\mathbf{Y}_{i} \gets \{0,1\}^{n}$
+  and sends $\enc{\mathbf{Y}_{i}}$. $\attacker$ and $\challenger$ run
+  $\mathbf{ZKPoPK1}$. $\challenger$ evaluates $\enc{\mathbf{HD}_{k}}$ then
+  computes $\enc{\mathbf{HD'}_{k}}$. The resulting ciphertext is sent to
+  $\attacker$, $\attacker$ decrypts $\enc{\mathbf{HD'}_{k}}$ and sends back the
+  plaintext value of $HD'_{i}$. $\attacker$ and $\challenger$ run
+  $\mathbf{ZKPoPK2}()$. $\challenger$ computes $HD = HD' - r$, compares the result with $\tau$ sends back to $\attacker$ the authentication result $\mathbf{Accept}$ or \textbf{Reject}.
+\item [Guess.] At the end of the game, $\adv$ outputs $\mathbf{Y'}$.
+\end{description}
+
+Next, we discuss following games, the plan being to proceed towards the final
+game, where everything related to $X_k$ that $\attacker$ receives can be simulated
+without any knowledge about $X_k$ (the only known information about $X_k$ is the
+function $Verify(X_k, Y)$). Let $res_i = Verify(X_k, Y_{i})$ and $S_j$ be
+the event in the game $j$ such that $res_j = Accept$.\\
+
+In the \textit{Game 1} and \textit{Game 2}, the real ZKPs are replaced by the
+\textbf{ZKPSimulator}, by the end of \textit{Game 2}, if in any authentication
+attempt $i$, none of the 2 games have been aborted, then, by the correctness
+property of ZKP, the server's output is equal to the output of
+$Verify(X_k, Y_{i})$. In other words, we have shown what we could get by just
+querying the oracle $Verify()$. Next, we want to simulate everything related to
+$X_k$ the attacker
+can see using just that oracle.\\
+
+\textit{Game 3.} At the end of \textit{Game 2}, $\challenger$ has the bit
+$b = Verify(Y^{(i)},X_k)$. In this game, we can change $res_{i}$ from
+$compare(HD_{i},\tau)$ to $Verify(X_{k},Y_{i})$. By doing this change,
+$\attacker$ still sees the same result, so the probability of winning of
+$\attacker$ in this game is the same as in \textit{Game 2}: $\prob{S_{3}} = \prob{S_{2}}$
+\\
+
+\textit{Game 4.} In this game, we change the way $\challenger$ computes
+$\enc{\mathbf{HD'}_{i}}$: In the orignal game 0, $r$ was added to mask the value
+of $HD$. We want to prevent this $r$ from being used anywhere in the game, so we
+replace $\enc{r}$ by $\enc{0}$. This change does not affect $\attacker$'s
+success probability: $r$ only affects the plaintext inside $\enc{\mathbf{HD'}}$,
+since we do not use this plaintext anymore (it has been replaced in \textit{Game
+  3}), this
+change therefore does not affect what the attacker sees. Again, $Pr[S_4] = Pr[S_3] = Pr[S_2]$.\\
+
+% After we finish \textit{Game 4}, we can see that all the messages the attacker
+% sees, can be simulated using only the verified bit $b = Verify(Y^{(i)},
+% X_k)$. We now have an attacker $A'$ against the biometric impersonation with
+% advantage:
+% \[
+% \varepsilon_{bio} = Adv(A') = Pr[S_4] \geq (\varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2})) ,
+% \]
+% which results in the claimed bound.
+
+\textit{Game 5.} We modify the way $C_{HD}'$ is computed in this game. Instead
+of calculating
+$\enc{\mathbf{HD'}_{i}} = \enc{\mathbf{HD}_{i}} + \enc{\mathbf{r}_{i}}$, the
+challenger chooses a random $HD' \randomsample \mathbb{Z}_p$ and encrypts it
+with the noise used before. In this game, the plaintext has changed from being
+$r + HD$ to a uniform $HD' \in \mathbb{Z}_p$.  Since $r$ is also uniform in
+$\mathbb{Z}_p$, the attacker is confronted with a uniform
+plaintext in both cases. Therefore, $Pr[S_5] = Pr[S_4]$.\\
+\textit{Game 6.} Finally, we set $\enc{\mathbf{HD'}_{i}} = Enc(HD'_{i}, e_{HD'_{i}})$ for
+$e_{HD'} \randomsample \chi_{mask}$ instead of $e_{HD} + e_{r}$. We replace
+the sum of the Gaussian noise with a random noise. In Section \ref{sec:secProcRenyi},
+we showed that $Pr[S_6] \geq \frac{1}{c(\delta)}(Pr[S_5]-q \cdot \delta)$, where
+$c(\delta) = RD(-e_{HD} + e_{r}, e_{HD}) \leq 2 \cdot e^{1+2\delta}$ by
+Lemma~\ref{le:Renyi} and by our assumption on the parameter's values. After we
+finish \textit{Game 6}, we notice that all the messages available to the
+attacker can be simulated with only the verified bit $b = Verify(Y^{(i)},
+X_k)$. We now have an attacker $A'$ against the biometric impersonation with
+advantage:
 \[
-  enc(HD) = enc_{1}(\mathbf{T})C_{1} + enc_{2}(\mathbf{Q})C_{2} - 2
-  enc_{1}(\mathbf{T})enc_{2}(\mathbf{Q})
+\varepsilon_{bio} = Adv(A') = Pr[S_6] \geq \frac{1}{c(\delta)}(\varepsilon_{imp} - q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +) + \delta),
 \]
-The final masked ciphertext will have noise
-\[
-\norminf{e_{HDM}} \leq (4\pi kn + 1)n(B_{0}^{2} + 2B_{0})
-\]
-Where \(k = 1 + \sqrt{\frac{1}{\pi \log{4n FAR^{-1}}}}\). We can derive the
-final correctness condition:
-\[
-q > 4 \pi n^{2} t (B_{0}^{2} + 2B_{0})
-\]
-
-Notation
-\begin{itemize}
-\item \(\alpha q\) standard deviation of the original noise distribution, assume
-  Gaussian Distribution \(\chi\)
-\item \(e_{0}\) original noise used in key generation and original encryption
-  ($(\mathbf{p_0},\mathbf{p_1})$ where $\mathbf{p_1} \randomsample R_Q$ and
-  $\mathbf{p_0} = -(\mathbf{p_1}\mathbf{s} + t\mathbf{e})$ with
-  $\mathbf{e} \randomsample \chi$)
-\item \(B_{0}\) noise of the first level ciphertext
-  \[
-    Enc_{pk}(\mathbf{m}) = (\mathbf{c_0},\mathbf{c_1}) = (\mathbf{p_0}\mathbf{u}
-    + t\mathbf{g} + \mathbf{m}, \mathbf{p_1}\mathbf{u} + t\mathbf{f})
-  \]
-\end{itemize}
-  
- 
+which gives the claimed bound $\varepsilon_{imp} \leq c(\delta) \cdot \varepsilon_{bio} + q \cdot (\varepsilon_{ZK1}+\varepsilon_{ZK2}) + \delta \leq (c(\delta)+c_1) \cdot \varepsilon_{bio}$ if $q(\varepsilon_{ZK1}+\varepsilon_{ZK2}) + \delta \leq c_1 \cdot \varepsilon_{bio}$.
 
 
 \section{Results}
 \label{sec:secProcResult}
-- In the previous chapter, the following parameters were used for the
-cryptosystem. blah blah: n, q, $\alpha q$, etc. This configuration does not
-cover circuit privacy as the error noise leaks information about the registered
-template. If the leakage is to be covered by the added noise with magnitude
-computed from Statistical Distance approach, we would need the noise added to be
-
-(blah, compute the noise)
-
-With that new noise added, the parameter $q$ of the system need to be adjusted
-to ensure correctness. According to blah , $q$ needs to be
-
-(blah, compute new q)
+In the previous chapter, the following parameters were used for the cryptosystem
+$(n = 2048, q \approx 2^{70}, t = 2048, \sigma = 8)$. This configuration does
+not cover circuit privacy as the error noise leaks information about the
+registered template. If the leakage is to be covered by the added noise with
+magnitude computed from Statistical Distance approach, we would need the noise
+added to be as large as $\bigO{2^{\lambda}}$, which results the increase of
+$\sigma$ to $K.2^{\lambda}$. With that new noise added, the parameter $q$ of the
+system need to be adjusted to ensure correctness. According to the correctness
+requirement (lemma \ref{le:hdcorrectness}) , $q$ needs to be approximately 280
+bits.
 
 With this new moduli, the overheads introduced to both computation and
 communication are significant. For example, in the ZKP protocol, the
-communication size of each round would be (blah) and could not be considered
-practical with the current infrastructure bandwidth.
+communication size of each round would be about 3MB and could not be considered
+practical with the current infrastructure bandwidth, as we need to repeat each
+proof at least 17 rounds to achieve security level corresponding to FAR $\approx 10^{-3}$ (and we have 2 proofs in our protocol, which will
+result a total communication of approximately 100MB)
 
-However, by applying the approach in this chapter, the new noise only needs to
-be (blah), with the proposed parameter, the new moduli is approximately blah
-bits and the communication overhead increase from 8MB to 16MB for the whole
-protocol. This is a lot smaller than SD approach and can be considered practical
+However, by applying the approach in this chapter and adding the noise according
+to Lemma \ref{le:Renyi}, the new noise only needs to be $\sigma = 50$, with the
+proposed parameter, the new moduli is approximately 70 bits and the
+communication overhead increase from 8MB to 16MB for the whole protocol. This is
+a lot smaller than Statistical Distance approach and can be considered practical
 in some of the current deployed networks (such as 100 Mbps cable internet or
 NBN).
 
@@ -559,8 +568,9 @@ of lattice-based cryptography, one can efficiently reduce the parameters'
 sizes. This chapter introduced how a specific order of RD (infinity order) can
 effect positively to the parameters' choices for the cryptosystem. In the next
 chapter, we start improving the security model by hiding the value of the
-distance from the server, all the results of this chapter will be kept during
-the circuit privacy covering steps as neccessary in any steps of the server side.
+distance from the server, all the results of this chapter will be kept for the
+purpose of covering circuit privacy as neccessary in any steps of the server
+side to provide security against malicious client model.
 
 
     
