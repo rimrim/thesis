@@ -13,13 +13,16 @@
 \section{User Authentication and Biometrics}
 \label{sec:biometricIntro}
 User authentication is the process of verifying the claimed identity of a user,
-and is therefore a crucial component within the big picture of information and network
-security. Generally speaking, there are three types of identifying modes ("factors"):
-Something You Know (SYK), such as password; Something You Have (SYH), such as
-smartcard, and Something You Are (SYA), such as an iris or a fingerprint idiosyncracy. The last
-factor, also known as biometrics, can be considered to be the most convenient one, as it
-exempts system-users from carrying or remembering something for authentication purposes.
-Stimulated by the reduced cost of the hardware it consumes and by its unsurpassed usability level, biometric authentication has lately been deployed profusely on numerous platform types.
+and is therefore a crucial component within the big picture of information and
+network security. Generally speaking, there are three types of identifying modes
+("factors"): Something You Know (SYK), such as password; Something You Have
+(SYH), such as smartcard, and Something You Are (SYA), such as an iris or a
+fingerprint idiosyncracies. The last factor, also known as biometrics, can be
+considered to be the most convenient one, as it exempts system-users from
+carrying or remembering something for authentication purposes.  Stimulated by
+the reduced cost of the hardware it consumes and by its unsurpassed usability
+level, biometric authentication has lately been deployed profusely on numerous
+platform types.
 
 Various body features have been proposed and used for recognition and
 verification of a person's identity, the three most popular ones being fingerprints, face and
@@ -37,7 +40,7 @@ registered and the query templates, and compare the result to some threshold
 values, in order to decide on the authentication results. Unlike SYK and SYH, the SYA
 factor has two parameters, namely, False Acceptance Rate (FAR) and False
 Rejection Rate (FRR): FAR is the rate at which the system wrongly accepts an
-impersonating user, FRR is the rate at which rejects a genuine
+impersonating user as genuine, FRR is the rate at which the system rejects a genuine
 user. Different biometrics authentication systems use different extraction
 methods and distance measures to reduce FAR and FRR (this is also an active
 research area). In this thesis, we do not focus on template extraction techniques
