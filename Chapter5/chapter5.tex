@@ -482,11 +482,11 @@ The application to our protocol mainly happens in the step of masking the value 
   of the noise in $\enc{\mathbf{HD}}$.
 \end{theorem}
 
-The proof for Theorem \ref{theo:serverprotocol2} can be done similarly to
+The proof for Theorem \ref{theo:serverprotocol2} can be obtained as described in
 Section \ref{sec:securityPro1}. For Theorem \ref{theo:clientprotocol2}, there is
-a minor game change in the client impersonation model after game 4. We quickly
-recall the game sequence so that readers can follow easily, the detailed
-diagrams of changes in consecutive games can be found in Section
+a minor game change in the client impersonation model after game 4. We briefly
+recall the game sequence; the detailed
+diagrams of the changes in consecutive games can be found in Section
 \ref{sec:securityPro1}.
 
 \textit{Game 0} (Figure \ref{fig:game0protocol1client}). Game 0 is the original
@@ -504,7 +504,7 @@ impersonation game for type I attack.
   computes $\enc{\mathbf{HD'}_{k}}$. The resulting ciphertext is sent to
   $\attacker$, $\attacker$ decrypts $\enc{\mathbf{HD'}_{k}}$ and sends back the
   plaintext value of $HD'_{i}$. $\attacker$ and $\challenger$ run
-  $\mathbf{ZKPoPK2}()$. $\challenger$ computes $HD = HD' - r$, compares the result with $\tau$ sends back to $\attacker$ the authentication result $\mathbf{Accept}$ or \textbf{Reject}.
+  $\mathbf{ZKPoPK2}()$. $\challenger$ computes $HD = HD' - r$, compares the result to $\tau$, and sends back the authentication result $\mathbf{Accept}$ or \textbf{Reject} to $\attacker$ .
 \item [Guess.] At the end of the game, $\adv$ outputs $\mathbf{Y'}$.
 \end{description}
 
@@ -580,10 +580,10 @@ well as the relations among them to demonstrate the type II security model
 proof. The idea is that in this type of attack, $sk_k$ is not used to compute
 the view of $\attacker$.  On the other hand, the soundess of the zero-knowledge
 proof of knowledge $\mathbf{ZKPoPK}$ implies the existence of an efficient
-witness extractor algorithm, that can be used to extract the witness (i.e. the
-secret key $sk_k$) from a cheating prover succeeding with probability
-non-negligibly higher than the knowledge error of the zero-knowledge proof, thus
-contradicting the IND-CPA security of the BV encryption scheme.
+witness extractor algorithm, capable of extracting the witness (i.e. the
+secret key $sk_k$) from a cheating prover which succeds with probability
+non-negligibly higher than the knowledge error of the zero-knowledge proof, and thus
+contradicts the IND-CPA security of the BV encryption scheme.
 \\\\
 \textit{Game 0}. Game 0 is the original impersonation game for a type II attack,
 i.e., the same as Game 0 in the proof of security against Type I attacks, except
@@ -621,41 +621,41 @@ $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} + \delta) \leq c_1 \cdot \varepsilon$.
 
 \section{Results}
 \label{sec:secProcResult}
-In the previous chapter, the following parameters were used for the cryptosystem
-$(n = 2048, q \approx 2^{70}, t = 2048, \sigma = 8)$. This configuration does
+In the previous chapter, the following parameters were used for the cryptosystem:
+$n = 2048, q \approx 2^{70}, t = 2048, \sigma = 8$. This configuration does
 not cover circuit privacy as the error noise leaks information about the
-registered template. If the leakage is to be covered by the added noise with
-magnitude computed from Statistical Distance approach, we would need the noise
-added to be as large as $\bigO{2^{\lambda}}$, which results the increase of
+registered template. If the leakage is to be covered by the added noise with a
+magnitude computed from the Statistical Distance approach, we would need the noise
+added to be as large as $\bigO{2^{\lambda}}$, which results in increasing
 $\sigma$ to $K.2^{\lambda}$. With that new noise added, the parameter $q$ of the
-system need to be adjusted to ensure correctness. According to the correctness
+system needs to be adjusted to ensure correctness. According to the correctness
 requirement (lemma \ref{le:hdcorrectness}) , $q$ needs to be approximately 280
 bits.
 
 With this new moduli, the overheads introduced to both computation and
 communication are significant. For example, in the ZKP protocol, the
 communication size of each round would be about 3MB and could not be considered
-practical with the current infrastructure bandwidth, as we need to repeat each
-proof at least 17 rounds to achieve security level corresponding to FAR $\approx 10^{-3}$ (and we have 2 proofs in our protocol, which will
-result a total communication of approximately 100MB)
+practical for the current infrastructure bandwidth, as we need to repeat each
+proof at least 17 rounds to achieve a security level corresponding to FAR $\approx 10^{-3}$ (and we have 2 proofs in our protocol, which will
+result in a total communication weight of approximately 100MB)
 
 However, by applying the approach in this chapter and adding the noise according
-to Lemma \ref{le:Renyi}, the new noise only needs to be $\sigma = 50$, with the
-proposed parameter, the new moduli is approximately 70 bits and the
-communication overhead increase from 8MB to 16MB for the whole protocol. This is
-a lot smaller than Statistical Distance approach and can be considered practical
+to Lemma \ref{le:Renyi}, the new noise becomes $\sigma = 50$; with the
+proposed parameter values, the new moduli is approximately 70 bits and the
+communication overhead increases from 8MB to 16MB for the whole protocol. This is
+by far lower than the consumption of the Statistical Distance approach and can be considered practical
 in some of the current deployed networks (such as 100 Mbps cable internet or
 NBN).
 
 In conclusion, by using Renyi Divergence as an alternative to measure the
-closeness of distributions in stead of Statistical Distance in security proofs
+closeness of distributions instead of Statistical Distance in security proofs
 of lattice-based cryptography, one can efficiently reduce the parameters'
 sizes. This chapter introduced how a specific order of RD (infinity order) can
-effect positively to the parameters' choices for the cryptosystem. In the next
+positively affect the parameters' choices for the cryptosystem. In the next
 chapter, we start improving the security model by hiding the value of the
-distance from the server, all the results of this chapter will be kept for the
-purpose of covering circuit privacy as neccessary in any steps of the server
-side to provide security against malicious client model.
+distance from the server. All the results of this chapter will be kept for the
+purpose of covering circuit privacy as necessary in any steps concerning the server's
+side, to provide security against a malicious client model.
 
 
     

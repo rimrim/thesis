@@ -751,10 +751,10 @@ in the real privacy game, as required.
 The proof of theorem \ref{theo:clientPro1} can be obtained using a sequence of games
 between the challenger $\challenger$ and the adversary $\attacker$. We here
 present such a sequence, as well as the relations among the games, in order to
-demonstrate first the type I security model proof. We will present the type II
-security proof, where the biometrics data is compromised instead of the key, in
-the next chapter. The steps of the proofs can be applied similarly in the first
-and second variant of the protocols.
+demonstrate the type I security model proof. In
+the next chapter, we will present the type II
+security proof, where the ciphertext of the biometric data instead of the key is compromised. The steps of the proofs can be applied in both the first
+and the second variants of the protocols.
 
 \textit{Game 0} (Figure \ref{fig:game0protocol1client}). Game 0 is the original
 impersonation game for type I attack.
@@ -843,8 +843,7 @@ By the end of \textit{Game 2}, if in any authentication attempt $i$, none of the
 2 games have been aborted, then, by the correctness property of ZKP, the
 server's output is equal to the output of $Verify(X_k, Y_{i})$. In other words,
 we have shown what we could get by just querying the oracle $Verify()$. Next, we
-want to simulate everything related to $X_k$ the attacker
-can see using just that oracle.\\
+want to simulate everything related to $X_k$ available to an attacker using that oracle.\\
 
 \begin{figure}[htbp!] 
   \centering
@@ -943,8 +942,7 @@ change therefore does not affect what the attacker sees. Again, $Pr[S_4] = Pr[S_
   \caption{Game 4 - Client Impersonation game}
   \label{fig:game3protocol1client}
 \end{figure}
-After we finish \textit{Game 4}, we can see that all the messages the attacker
-sees, can be simulated using only the verified bit $b = Verify(Y^{(i)},
+After \textit{Game 4} is finished, we can see that all the messages available to the attacker can be simulated using only the verified bit $b = Verify(Y^{(i)},
 X_k)$. We now have an attacker $A'$ against the biometric impersonation with
 advantage:
 \[
@@ -967,25 +965,25 @@ Distance of bit strings up to 2048 bits. We need \(n \geq 2048\) for the packing
 ciphertext. With these parameters, we need \(q\) to be approximately 60 bits to
 satisfy \(16n^{2}t^{2}\sigma^{4} < q\).  The proposed scheme works with only 1
 level of homomorphic multiplication for the proposed set of parameters
-$(n = 2048, q \approx 2^{60}, t = 2048, \sigma = 8)$, proof of concept
-implementation can be found in \cite{rimrimrq38:online}, communication size for
+$(n = 2048, q \approx 2^{60}, t = 2048, \sigma = 8)$, the proof of concept
+implementation can be found in \cite{rimrimrq38:online}, the communication size for
 ZKP is approximately 8MB to provide security against a malicious client model.
 
 \subsection{Limitations and open problems}
 \label{sec:limitations}
 We expose the HD to the server in the last step of the protocol and let the server do the threshold comparison
-operation in the plaintext domain. We believe that, given such a value, the server should not be able to learn any
+operation in the plaintext domain. We believe that, given such a value, the server should not be able to acquire any
 information about the original bit strings template (assuming the provable CPA-secure ciphertexts of the underlying
-cryptosystem, and the HD noise is likely independent of templates). Doing the comparision of HD with threshold
-homomorphhically proves much less efficient, and removing this assumption is left as an open problem.
+Comparing the HD with threshold
+homomorphhically proves much less efficient, and removing this assumption is thus left as an open problem.
 
 Also, we assume an honest but curious server, which is reasonable against passive exposure attacks. Active attacks are
-harder to carry out undetected and slower, provided the server can be audited regularly. We emphasize that previous quantum
-resistant protocols also made this assumption, and were not even able to defend against passive honest but curious trusted
+harder to carry out undetected and also slower, provided the server can be audited regularly. We emphasize that previous quantum
+resistant protocols also made this assumption, and were not even able to resist passive honest but curious trusted
 parties. Defending privacy against a malicious server is left as an open problem.
 
 Finally, the communication size of the Stern-based ZKP protocol is large, due to the round soundness error \(2/3\) (many
-communication rounds will be needed for security). We leave the problem of how to reduce such overhead for future works.
+communication rounds will be needed for security). We leave the problem of how to reduce such overhead for future work.
 
 %%% Local Variables:
 %%% mode: latex

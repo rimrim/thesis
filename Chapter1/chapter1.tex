@@ -44,17 +44,17 @@ impersonating user as genuine, FRR is the rate at which the system rejects a gen
 user. Different biometrics authentication systems use different extraction
 methods and distance measures to reduce FAR and FRR (this is also an active
 research area). In this thesis, we do not focus on template extraction techniques
-or on improving FAR and FRR; instead, we are interested on means providing extra
+or on improving FAR and FRR; instead, we are interested in means providing extra
 privacy and security features to any methods based on Hamming Distance
 of biometrics represented by bitstrings.
 
 \section{Privacy-preserving Biometric Authentication}
 \label{sec:privacyLiteratures}
-Many biometrics authentication systems lack of protection for the data
+Many biometrics authentication systems lack protection for the data
 stored on a server. A server breach incident can thus result in catastrophic
 consequences: in 2015, nearly 6 millions plaintext fingerprint data tokens of US
 government employees were leaked due to a security attack
-\cite{OPMsays563:online}. When biometric data is revealed or stolen, the victims become vulnerable to impersonation attacks for the rest of their lives, as, unlike password or smartcards, one’s fingerprints or iris are nearly impossible to change. Biometric privacy poorly protected against server exposure can therefore be considered as the main drawback of SYA authentication. SYA proving nonetheless the most convenient authentication method from the usability point of view, a strong
+\cite{OPMsays563:online}. When biometric data is revealed or stolen, the victims become vulnerable to impersonation attacks for the rest of their lives, unlike password or smartcards, one’s fingerprints or iris are nearly impossible to change. Biometric privacy poorly protected against server exposure can therefore be considered as the main drawback of SYA authentication. SYA proving nonetheless the most convenient authentication method from the usability point of view, a strong
 motivation arose to enhance it with an adequate privacy protection of
 biometric data. There are four main approaches to privacy-preserving biometrics
 authentication at present (details avalable in surveys of \cite{jain201650} and
@@ -71,7 +71,7 @@ authentication at present (details avalable in surveys of \cite{jain201650} and
   registered biometric template stored on the server by encrypting it with a
   secret key stored at the client's side. With this second authentication
   factor, verification will require the secret key, which prevents brute-force
-  attacks. Generally speaking, two-factor security can still protect the system when either the secret key is exposed (e.g., the client's device is
+  attacks on the biometrics data. Generally speaking, two-factor security can still protect the system when either the secret key is exposed (e.g., the client's device is
   stolen), or the encrypted biometric data stored on the server is leaked (e.g.,
   server breach). All other approaches we consider below are based on this
   two-factor method.
@@ -79,7 +79,7 @@ authentication at present (details avalable in surveys of \cite{jain201650} and
 
 \item Transforming biometric data using a keyed `distance-preserving' encryption scheme:  Here, the distance between the biometric query template and the biometric registered one is measured by the server using encrypted versions of them.  Typical techniques in this category include
             cancelable biometrics and biohashing (\cite{teoh2008cancellable}, \cite{jin2004biohashing}, 2P-MCC (\cite{cappelli2010minutia}). %The security of this approach is unclear that was not based on standard cryptographic assumptions.
-However, the security of such encryption schemes is unclear, as they are based on heuristic and non-standard cryptographic assumptions, several of them being reputedly insecure (e.g.~\cite{lee2009inverse,lacharme2013preimage}).
+However, the security of such encryption schemes is unclear, as they are based on heuristic and non-standard cryptographic assumptions, several of them being reputedly insecure (~\cite{lee2009inverse,lacharme2013preimage}).
 
 %\item
 %            depends on the security of the key, this is the main
@@ -87,13 +87,13 @@ However, the security of such encryption schemes is unclear, as they are based o
 %        the user's privacy is not assured
 %    as the server decrypts and read the biometrics data when doing
 %authentication, or a malicious server can even brute-force the key and/or the biometrics itself (Hill-climbing attack).
-\item Biometric cryptosystems / Fuzzy hashing: This approach is based on techniques using error-correcting codes (\cite{uludag2004biometric}, \cite{nagar2010hybrid}) to extract a noiseless cryptographic key from noisy biometric data. However, depending on parameter settings, these techniques may leak significant information, and the trade-off between biometric accuracy (False Acceptance Rate and False Rejection Rate) and security remains controversial or not well understood. In practice, the implemented techniques require strong restrictions on accuracy: in particular, the underlying error-correcting codes are only capable of handling a specific range of the threshold, depending on the defined usability parameters.
+\item Biometric cryptosystems / Fuzzy hashing: This approach is based on techniques using error-correcting codes (\cite{uludag2004biometric, nagar2010hybrid}) to extract a noiseless cryptographic key from noisy biometric data. However, depending on parameter settings, these techniques may leak significant information, and the trade-off between biometric accuracy (False Acceptance Rate and False Rejection Rate) and security remains controversial or not well understood. In practice, the implemented techniques require strong restrictions on accuracy: in particular, the underlying error-correcting codes are only capable of handling a specific range of the threshold, depending on the defined usability parameters.
 
 \item Secure Computation / Homomorphic encryption techniques
     (\cite{yasuda2014practical}, \cite{shahandashti2012private},
     \cite{higo2015privacy}): In this approach, the biometric data is encrypted
     on the server using a homomorphic encryption scheme. The operations on
-    encrypted data are meant to measure the similarity between the requested and the
+    encrypted data are meant to measure the similarity between the query and the
     stored templates. This approach has the potential to overcome the heuristic
     security issues of the above approaches (by using an encryption scheme based
     on standard cryptographic assumptions), as well as the biometric accuracy
@@ -126,7 +126,7 @@ However, the security of such encryption schemes is unclear, as they are based o
   usability requirements according to the current trends. These requirements include:
 \begin{description}
 \item [Privacy against server exposure.] The biometric data should be securely
-  encrypted prior to uploading it to the server, using a key stored only by the
+  encrypted prior to uploading it to the server, using a key known only by the
   biometric data owner. Ideally, the server storing the encrypted biometric information should
   not be able to comprehend the data. In other words, it should not possess the
   encryption key.
@@ -154,7 +154,7 @@ Previous protocols in the literature do not meet one or more of our
 requirements. In particular, many previous protocols
 (\cite{bringer2007application}, \cite{erkin2009privacy},
 \cite{osadchy2010scifi}) assume honest-but-curious clients and are insecure in
-an authentication context involving malicious clients. The few protocols
+an authentication context involving malicious clients. Some protocols
 involving malicious clients (\cite{shahandashti2012private},
 \cite{vsedvenka2015secure}) are not quantum-resistant. Previous practical
 quantum-resistant protocols (\cite{yasuda2014practical},
@@ -167,15 +167,14 @@ client's privacy.
 We propose different protocols to support the above stated requirements. Our
 technique combines state-of-the-art cryptographic tools, such as Homomorphic
 Encryption (HE) and Zero-Knowledge-Proof (ZKP), aimed at balancing the security and the usability
-of the system. The techniques we put forward are all lattice-based, which is currently the best
+of the system. The techniques we put forward are all lattice-based, which appears to be one of the best
 framework for preserving long term security against quantum attacks. Our protocol also
 achieves privacy protection against server exposure, by avoiding to rely on a trusted third
 party. Our contributions include:
 \begin{itemize}
 \item Quantum-resistant and provable-secure biometric authentication protocols
-  that do not rely on trusted third-parties. (Section
-  \ref{sub:the_new_protocol}). The server stores the encrypted data and performs
-  homomorphic operations to compute the distance (HD) allowing to decide on the
+  that do not rely on trusted third-parties. The server stores the encrypted data and performs
+  homomorphic operations to compute the distance (Hamming Distance) allowing to decide on the
   authentication result. It does not need a third party to decrypt the encrypted
   HD but, instead, sends it to the client for decryption. The client uses ZKP to
   convince the server that the ciphertext was correctly decrypted.
@@ -193,7 +192,7 @@ party. Our contributions include:
   propose an approach to cover such leakages without significantly reducing the
   efficiency of the protocol: the approach is a new application of Renyi
   Divergence (RD)-based analysis to uncover the security of the protocol with a
-  small 'imperfect' one-time pad. (Section \ref{sec:Renyi}). The correlation of
+  small 'imperfect' one-time pad. The correlation of
   Homomorphic Encryption noise with the original plaintext before homomorphic
   evaluation, has been considered to be a problem of "circuit privacy" in theoretical HE
   literature (\cite{sander1999non}, \cite{ishai2007evaluating}), but the
@@ -204,12 +203,12 @@ party. Our contributions include:
   imperfect masks, which leads to an increased efficiency of the process. To our knowledge, this is the first application of
   Renyi divergence techniques to circuit privacy of HE.
 \item We propose a new Oblivious Transfer (OT) approach to obtain inputs to
-  Garbled Circuits. Unlike traditional OT approaches, where the receiver obtains
+  Garbled Circuits under the malicious client model (the inputs' correctness need to be proved that they match the Homomorphic Encryption plaintext format). Unlike traditional OT approaches, where the receiver obtains
   keys as inputs to a garbled circuit, our one is compatible with the
   underlying homomorphic cryptosystem and smoothly integrates the encryptions of the
   keys to the circuit. The approach proves effective with just one level of
   homomorphic multiplication operations and can be deployed on various application
-  scenarios requiring secure multy-party computations.
+  scenarios requiring secure multi-party computations.
 \end{itemize}
 
 \section{Organization of the thesis}
@@ -227,10 +226,10 @@ The thesis is organized as follows:
   cryptosystems within practical thresholds.
 \item In Chapter \ref{chap:thirdProtocol}, we construct the third variant of the
   protocol for both computing and comparing the Hamming Distance
-  homomorphically (The previous protocols only compute HD on ciphertexts).
+  homomorphically (Improving the privacy of the previous protocols which only compute HD on ciphertexts).
 \item In Chapter \ref{chap:fourthProtocol}, we present the last variant of the
   protocol, which removes the computation and communication overheads (and the
-  extra cost they imply) during the initialization stage (one-time only cost).
+  extra cost they imply) during the initialization stage at the cost of an extra one-time precomputation and storage.
 \item In the last Chapter, we conclude the thesis and state the open problems for
   future research.
 \end{description}

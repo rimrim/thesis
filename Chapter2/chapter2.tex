@@ -55,15 +55,14 @@ We use the following notation throughout the thesis:
   \(i\) component of a vector is denoted interchangeably as \(b_{i}\) or
   \(b[i]\).
 \item[Groups and Rings] Sets of numbers are denoted as standard (e.g.,
-  \(\mathbb{R}\) for the set of rational numbers, \(\mathbb{Z}\) for integers), we
-  denote \(\mathbb{Z}_{q}\) to be the set of integers modulo \(q\) (in the range
+  \(\mathbb{R}\) for the field of real numbers, \(\mathbb{Z}\) for integers), we
+  denote \(\mathbb{Z}_{q}\) to be the ring of integers modulo \(q\) (in the range
   \((-q/2,q/2]\)).\(\mathbb{Z}[n]\) denotes polynomials of order \(n\) with
   elements in \(\mathbb{Z}\), \(R_{q}\) denotes the ring of polynomial modulo
   \(x^{n} + 1\): \(R_{q} = \frac{\mathbb{Z}_{q}[x]}{x^{n} + 1}\). We use bold
   lower-case to denote an element of the ring \(R_{q}\) (e.g.,
   \(\mathbf{a} \in R_q\)).
-\item[Others] We use notation \(x \randomsample D\) when \(x\) is sampled
-  uniformly random from the distribution \(D\). If \(x\) is the output of an
+\item[Others] We use notation \(x \randomsample D\) when \(x\) is sampled from the distribution \(D\). If \(x\) is the output of an
   algorithm \(D\), we write \(x \gets D\). Algorithms are \(efficient\) if they
   run in probabilistic polynomial time (PPT). A function is said \(negligible\)
   in \(n\) if it vanishes faster than the inverse of any polynomial.
@@ -78,23 +77,23 @@ We choose lattice-based cryptography as the main technique used in the
 thesis for several reasons:
 \begin{description}
 \item[Provable Security.] Lattice-based cryptosystems' security can be related
-  to known computationally hard problems such as the Shortest Vector Problem (SVP)
+  to known worst-case computationally hard problems such as the Shortest Vector Problem (SVP)
   or the Closest Vector Problem (CVP) and therefore allow to demonstrate the security
   property in terms of mathematical proofs. For classical systems such as RSA,
   there is no proof showing that breaking RSA is as hard as factoring an integer,
   even though in many cases the best attack we are aware of is to carry out an operation of this type.
 \item[Quantum Resistance.] In 1994, Shor \cite{shor1994algorithms} showed that
   we can write a program for quantum computers to factor a large integer
-  into prime factors. The latest D-Wave systems initial deployments show that the
-  idea is feasible in near future. If this happens, it will have significant
+  into prime factors. The latest D-Wave systems \cite{korenkevych2016benchmarking} initial deployments suggest that the
+  idea may be feasible in near future. If this happens, it will have significant
   implications for the currently used public key cryptosystems such as RSA, which
   will be broken. Lattice based cryptography is currently one of the best
   candidates to resist even quantum attacks.
 \item[Homomorphic Operations.] Finally, lattice-based cryptography allows us to
-  perform operations unfeasible before, namely, computing on encrypted data. This
+  perform operations infeasible before, namely, flexble computing on encrypted data. This
   special type of processing is able to protect privacy in online
   communication.
-\item[Research Progress.] Research on Lattice-based systems has been promoted actively
+\item[Research Progress.] Research on Lattice-based systems has been pursued actively
   in the last decade and has reached a stage allowing for
   implementation in a near future.
 \item[Performance.] Lattice-based cryptography has the potential to achieve very
@@ -102,8 +101,8 @@ thesis for several reasons:
   cryptographic applications.
 \end{description}
 We will recall some of the mathematics behind lattices (lattices are actually
-mathematical objects). We will look into the definitions and take some of the core
-problems underpinning security into consideration, focusing on how to use lattices to build
+mathematical objects). We will look into the definitions and introduce some of the core
+problems underpinning security into consideration, focusing on how to use lattices to build our
 cryptographic schemes.
 
 
@@ -144,8 +143,8 @@ cryptographic schemes.
 
 \subsection{Lattice Preliminaries}
 \label{ssub:The mathematics}
-This is an area of mathematics combining both matrices, vector algebra
-and integer variables. The definitions include:
+Euclidean Lattice is an area of mathematics combining both matrices, vector algebra
+and integer variables. The definitions of lattices follow:
 
 \begin{definition}[Lattice]
   An n-dimensional (full-rank) \emph{lattice} $L(B)$ is the set of all integer
@@ -155,12 +154,12 @@ and integer variables. The definitions include:
     L(B) = \left\{ c_1 \vec{b_1} + c_2 \vec{b_2} + \dots + c_n \vec{b_n} : c_i
       \in \mZ, i = 1, \dots, n \right\}
   \]
-  The $ n \times n$ matrix $B = (\vec{b_1},\dots, \vec{b_n})$ is called a basis
-  for $L(B)$. There are infinitely many different bases for a lattice.
 \end{definition}
+The $ n \times n$ matrix $B = (\vec{b_1},\dots, \vec{b_n})$ is called a basis
+  for $L(B)$. There are infinitely many different bases for a lattice.
 
 \textbf{Example.} Consider a 2-dimensional lattice generated by the basis
-$(\vec{b1}, \vec{b2}) = \left( \begin{bmatrix} 1 \\ 2
+$(\vec{b_1}, \vec{b_2}) = \left( \begin{bmatrix} 1 \\ 2
   \end{bmatrix} \begin{bmatrix} 0 \\ 3
   \end{bmatrix}\right)$
 \begin{figure}[h]
@@ -170,13 +169,12 @@ $(\vec{b1}, \vec{b2}) = \left( \begin{bmatrix} 1 \\ 2
 \end{figure}
 To generate a lattice from a basis, we compute all the integer multiples of
 each vector of the basis, then we add them together to generate new vectors. The
-result is an infinite grid of vectors, this grid is a lattice. We can illustrate
-two or three dimensional lattices easily, for higher dimensions, it is not
+result is an infinite grid of vectors, this grid is a lattice. We can illustrate graphically
+two or three dimensional lattices easily. For higher dimensions, it is not
 possible to draw them, but the intuition stands and all 
 algebraic operations can be performed easily on the coordinates of the vectors. Lattice-based cryptography works with high dimensional lattices ($n > 100$) for
-security reasons. In fact, we can also say that a lattice is an infinite
-group (a group is a mathematical structure, a set with a single operation on it),
-the main one being addition.
+security reasons. A lattice is also an infinite
+group under vector addition (a group is a mathematical structure, a set with a single operation on it).
 
 \begin{definition}[Fundamental Paralellepiped]
   For an n-dimensional lattice basis
@@ -191,18 +189,13 @@ the main one being addition.
   \end{figure}
 \end{definition}
 In order to determine if a set of vectors is a basis of a lattice, there are
-geometric and algebraic approaches.
+geometric and algebraic approaches \cite{micciancio2009lattice}.
 \begin{lemma}
   There is exactly one \emph{L} point contained in P(B') (the $\vec{0}$ vector)
   if and only if B' is a basis of L.
   \label{lem:parallelopiped}
 \end{lemma}
-\begin{lemma}
-  B' is a basis of L(B) if and only if B'=B.U, for some $n \times n$ integer
-  matrix U with $det(U) = \pm 1$, such U is called unimodular matrix.
-  \label{lem:detBasis}
-\end{lemma}
-$det(U)$ denotes the determinant of the matrix $U$.  Geometrically, the
+We let $det(U)$ denotes the determinant of the matrix $U$.  Geometrically, the
 determinant computes the area (or volume) of the paralellogram of a lattice. We
 can associate each point of a lattice with a paralellogram; consequently, for a
 large n-dimensional ball $S$, the number of lattice points in $S$ is
@@ -212,6 +205,13 @@ $\approx vol(S) / det(L)$.
   For an n-dimensional latice $L(B)$, the determinant of $L(B)$, denoted
   $det(L(B))$ is the n-dimensional volume of the FP P(B).
 \end{definition}
+
+\begin{lemma}
+  B' is a basis of L(B) if and only if $B'=B \cdot U$, for some $n \times n$ integer
+  matrix U with $det(U) = \pm 1$, such U is called unimodular matrix.
+  \label{lem:detBasis}
+\end{lemma}
+
 \begin{lemma}
   For an n-dimensional lattice $L(B)$, $det(L(B)) = |det(B)|$.
   \label{lem:determinant2}
@@ -222,7 +222,7 @@ Vector Problem (SVP) and the Closest Vector Problem (CVP).
   For an n-dimensional lattice $L$, its \emph{minimum} $\lambda(L)$ is the
   length of the shortest non-zero vector of $L$:
   \[
-    \lambda(L) = min(\norm{\vec{b}}: \vec{b} \in L \ 0
+    \lambda(L) = min(\norm{\vec{b}}: \vec{b} \in L)
   \]
   \label{def:minLattice}
 \end{definition}
@@ -231,9 +231,8 @@ Vector Problem (SVP) and the Closest Vector Problem (CVP).
   $\lambda(L) \leq \sqrt(n).det(L)^{1/n}$.
   \label{the:minkowski1}
 \end{theorem}
-As mentioned, the problem of finding SVP of a lattice becomes harder as the dimensions
-grow: in theoretical computer science, this problem is categorized as
-NP-hard. In cryptography, SVP is not used as it is; instead, a variant of the
+As mentioned, the SVP problem of finding the shortest vector of a lattice becomes harder as the dimensions
+grows: in theoretical computer science, this problem has been shown to be NP-hard under randomized. In cryptography, SVP is not used as it is; instead, a variant of the
 problem, the definition of approximate SVP problem $\gamma-SVP$, defined below is brought into play.
 \begin{definition}
   [$\gamma$-SVP problem] Given a basis $B$ for an n-dimensional lattice $L$,
