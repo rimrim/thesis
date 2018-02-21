@@ -283,9 +283,9 @@ $\gamma-SVP$ problem for these lattices, the same algorithm can be used to break
 $\gamma-SVP$ for any lattice. This is the \emph{worst-case to average-case}
 security reduction and allows for confidence in concluding that the problem is hard on average.
 \begin{definition}[Small Integer Solution (SIS) problem]
-  $SIS_{q,m,n,\gamma}$ Given n and matrix $A$ sampled uniformly in
-  $\mathbb{Z_q^{n \times m}}$, find $\vec{z} \in \mathbb{Z}^{m \times n}$ such
-  that $A\vec{v} = \vec{0}$ and $\norminf{v} \leq \beta$.
+  $SIS_{q,m,n,\gamma}$ Given n and matrix $\mathbf{A}$ sampled uniformly in
+  $\mathbb{Z}_q^{n \times m}$, find $\vec{z} \in \mathbb{Z}^{m \times n}$ such
+  that $A\vec{v} = \vec{0}$ and $\norminf{\vec{v}} \leq \beta$.
   \label{def:SISProblem}
 \end{definition}
 Informally, SIS is just the name given to the $\gamma-SVP$ problem for
@@ -300,6 +300,15 @@ $\gamma-SVP$ follow:
 \item  $\gamma$ of SVP can be related to $\beta$ of SIS:
   $\gamma \approx \beta/\sqrt{m}q^{n/m}$.
 \end{itemize}
+
+The SIS problem can also be interpreted as the problem of finding a small
+non-trivial solution of a random homogeneous system of modular linear
+equations. This is formalized in \cite{gentry2008trapdoors} as
+\textit{inhomogeneous} variant of SIS, also known as ISIS
+
+\begin{definition}[$ISIS^{p}(n, m, q, \beta)$]
+  The Inhomogeneous Small Integer Solution problem (ISIS) in the $l_{p}$ norm with parameters $n, m, q, \beta$ denoted by $ISIS^{p}(n, m, q, \beta)$ is as follows: Given a uniformly random matrix $\mathbf{A} \in \mathbb{Z}^{n \times m}_{q}$, and a uniformly random vector $\mathbf{y} \in \mathbb{Z}_{q}^{n}$, find a vector $\mathbf{x} \in \mathbb{Z}_{q}^{m}$ such that $\norm{\mathbf{x}}_{p} \leq \beta$ and $\mathbf{A} \cdot \mathbf{x} = \mathbf{y} \mod q$
+\end{definition}
 
 \subsection{A cryptographic example}
 \label{sec:ajtaiHash}
@@ -363,153 +372,13 @@ triggered other modern techniques. The next important questions are:
 
 \subsection{Security of lattice-based cryptography}
 \label{sec:latticeSecurity}
+
 Lenstra–Lenstra–Lovász (LLL) and its various improvements are the main ways to
 access the security of lattice-based systems (by assessing the security of
 underlying problems, such as SVP or $\gamma-SVP$). They enable an appropriate choice of the size of the parameters for the problem at hand (such as dimensions), in order
-to guarantee security against the best known attack.
+to guarantee security against the best known attack. We refer the reader to \cite{nguyen2009lll} for a detailed discussion of the algorithm.
 
-We first recall an important concept related to lattices, used in LLL:
-Gram-Schmidt Orthogonization (GSO)
-\begin{definition}
-  [GSO] For a lattice basis
-  $B = \left( \vec{b_1}, \vec{b_2}, \dots, \vec{b_n} \right)$, its GSO is the
-  matrix of vectors
-  $B^* = \left( \vec{b}_1^*, \vec{b}_2^*, \dots, \vec{b_n^*} \right)$ defined by
-  $\vec{b_1^*} = \vec{b_1}$ and for $i \geq 2$,
-  $\vec{b_i^*} = \vec{b_i} - \sum_{j=1}^{i-1}{\mu_{i,j}.\vec{b_j^*}}$, where
-  $\mu_{i,j} = \frac{\langle \vec{b_i}, \vec{b_j^*} \rangle}{\langle
-    \vec{b_j^*},\vec{b_j^*} \rangle}$.
-  \label{def:GSO}
-\end{definition}
-GSO is basically a way to convert a given non-orthogonal basis into a set of orthogonal vectors. Figure \ref{fig:gso} shows an
-example of a 2-dimensional GSO. 
-\begin{figure}[h]
-  \centering \includegraphics[scale=0.3]{gso}
-  \caption{Example of GSO in 2-dimensions}
-  \label{fig:gso}
-\end{figure}
-GSO is used as part of the LLL algorithm to find a short vector in a lattice.
-It should be noted that the $GSO(B)$ is not another basis for the original lattice, it is just
-a related matrix, it has the same determinant as the original one.
-
-% Once we have done the transformation from $B$ to $B^* = GSO(B)$, we can also
-% write the relation between the two of them algebraically as in Figure \ref{}
-% \begin{figure}[h]
-%   \centering \includegraphics[scale=0.3]{gsoMatrix}
-%   \caption{GSO algebraic relation}
-%   \label{fig:GSOAlgebra}
-% \end{figure}
-% We can intepret the second relation as a rotated coordinates system. Another
-% nice observation we can have from this matrix representation is the 0s in the
-% matrix implies the determinant of the lattice:
-% \[
-%   det \ L(B) = |det(B)| = |det(B^*)| = \prod_{i=1}^{n}\norm{\vec{b_i^*}}
-% \]
-
-% Back to our LLL discussion, this is the main algorithm to find short vectors in
-% lattices, and therefore the main type of attack against lattice-based
-% cryptosystems in practice, the other approach is exhaustive search. The best
-% algorithm is the combination of the 2 approaches to trade off the runtime verse
-% the approximation factor. We will discuss this algorithm (BKZ) in a later
-% section.
-
-\subsubsection{LLL algorithm}
-\label{sec:LLLalgorithm}
-The Lenstra–Lenstra–Lovász (LLL) algorithm not only finds short vectors but also
-converts the basis of a lattice into another basis of the same lattice. Given
-some long basis as an input to LLL, LLL makes sequential
-modifications to it, every modification still keeping it as the basis of the
-lattice but slightly improving it. As the improvements repeat, the sizes
-of the vectors of the basis are reduced, until a matrix that
-cannot be further improved is obtained. That is the output of LLL: a basis of the lattice
-more satisfactory than the original input, in the sense that it has much
-shorter vectors.
-
-In more detail, LLL looks at the property of the GSO of the basis to make its vectors 'approximately' orthogonal. The size of the GSO basis defines the
-length of the projections of one vector along the earlier vectors. The larger
-these are, the less orthogonal the basis vectors are, because they have larger
-components compared with the earlier vectors. LLL tries to reduce those coefficients
-(projection coefficients), to make them more orthogonal, which will also make
-them shorter. There are 2 tests that LLL performs to define how orthogonal the basis
-vectors are:
-
-\begin{description}
-\item [LLL property 1.] Takes the current basis of the lattice and computes the
-  GS coefficients $\mu_{i,j}$. It computes $|\mu_{i,j}| \leq 1/2$, checking that the
-  length of the projections on the previous vectors are at most half of the
-  actual full vector. If this condition is not satisfied, LLL modifies the basis
-  until the condition obtains.
-\item [LLL property 2.] The algorithm looks at the large remaining component
-  $\norm{\vec{b_{i+1}^*}}$ of $\vec{b_{i+1}}$ after removing components along
-  $\vec{b_j^*}$'s ($j < i + 1$) and checks
-  \[
-    \norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2 \geq \delta
-    . \norm{\vec{b_i^*}}^2
-  \]
-  for all $i=1,\dots,n-1$ and for some constant
-  $\delta$($1/4 \leq \delta \leq 1$).
-
-  Informally, the second check is a bit more complex: LLL looks at the last 2
-  components of each vector, such as $\vec{b_i}$, and decomposes it
-  into all the projections along the previous $\vec{b_j^*}$. It then checks the 
-  sum of the current orthogonal component against the the sum of the previous orthogonal component (for example, if
-  we look at $\vec{b_{i+1}}$, we check
-  $\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2$). If this quantity is large
-  enough, it points at the fact that a lot is left over after removing the
-  components along the previous vector. The larger this length, the more
-  orthogonal the basis becomes. The algorithm tries to increase it as much as possible. The
-  parameter $\delta$ of the algorithm defines this magnitude (the larger
-  $\delta$ is, the better the result returned by the algorithm).
-
-  This check is carried out for all the vectors of the basis. If it is not
-  satisfied, LLL does some new changes to cause the test to pass.
-\end{description}
-
-When the algorithm runs, the 2 checks keep competing with each
-other. The algorithm is designed to run until reaching the stage where both of the checks satisfy
-simultaneously and to output the new basis after that.(Algorithm
-\ref{alg:LLL})
-\begin{definition}
-  A basis $B$ for lattice $L$ is $\delta-LLL$ reduced if both LLL properties 1
-  and 2 are satisfied.
-  \label{def:LLL}
-\end{definition}
-
-\begin{algorithm}
-  \caption{LLL algorithm}
-  \label{alg:LLL}
-  \begin{algorithmic}[1]
-    \Procedure{LLL}{$B$} \State Compute GSO $B*$ for B.  \For {$(i=2,\dots,n)$}
-    \For {j = i - 1 to 1} \State
-    $c_{i,j} \gets \lceil{\frac{\langle \vec{b_i}, \vec{b_j^*} \rangle}{\langle
-        \vec{b_j^*},\vec{b_j^*}\rangle}}\rfloor$ \State
-    $\vec{b_i} \gets \vec{b_i} - c_{i,j}\vec{b_j}$ \EndFor \EndFor \If
-    {$\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2 \geq \delta
-      . \norm{\vec{b_i^*}}^2$} \State Swap $\vec{b_i}$ and $\vec{b_{i+1}}$.
-    \State Go back to step 2.  \Else \State Return B \EndIf \EndProcedure
-  \end{algorithmic}
-\end{algorithm}
-Selecting a rounded multiple of $\vec{b_j}$ in the algorithm causes it to maintain the vectors as the basis of the lattice. As the lattice consists of only integer multiples of all the basis
-vectors, when adding an integer multiple of $\vec{b_j}$ to $\vec{b_i}$, the result is still another lattice vector. It equally appears that the new matrix is also
-a basis of the lattice. In other words, if, instead of an integer, a fraction of $\vec{b_j}$ was added, the resulting point would not be a lattice point anymore. Also, due to this rounding error, instead of having precisely orthogonal vectors in the result matrix, only an approximate
-orthogonal matrix is obtained. For an intuitive comprehension of the algorithm, we refer the reader to
-\cite{lenstra1982factoring}. Last but not least, the loop of the algorithm consistently succeeds in terminating in polynomial time.
-\begin{theorem}
-  [LLL run time] The number of iterations of LLL on an input basis B before
-  termination is at most
-  \[
-    n^2.\log{(\max{\norm{\vec{b_i}}})} / \log{(1/\sqrt{\delta})}.
-  \]
-  For any constant $1/4 < \delta < 1$, this is polynomial in bit length of the
-  algorithm input. Moreover, the run-time for each iteration is also polynomial
-  in the input bit length. Overall, run-time is polynomial in input length, which indicates that
-  LLL is efficient.
-  \label{theo:LLLRunTime}
-\end{theorem}
-
-\subsubsection{LLL solution to $\gamma-SVP$}
-\label{sec:LLLsolution}
-The question is how short the vectors of LLL's output are, or what kind of
+We are generally interested in what kind of
 approximate SVP LLL is able to solve: If LLL is run on some basis, a
 reduced basis is produced as its output. The shortest vector in that reduced basis is then taken into consideration, in order to evaluate the difference between its length and the length of the shortest vector of the lattice.
 \begin{theorem}
@@ -517,6 +386,183 @@ reduced basis is produced as its output. The shortest vector in that reduced bas
   $\gamma-SVP$ for $n-dim$ lattices, with $\gamma < 2^{(n-1)/2}$.
   \label{theo:LLLShortVector}
 \end{theorem}
+
+In summary, the first vector of LLL output is bounded by
+\[
+  \norm{\vec{b_1^*}} \leq (1/(\delta-1/4))^{(n-1)/2}.\lambda(L)
+\]
+% The $\delta$ parameter of the algorithm therefore also contribute to
+% the output.
+It follows that the approximation factor is exponential in the dimension $n$ of
+the lattice. Another way to measure the length of the output vector of LLL is
+the Hermite Factor (HF), which is the ratio of the algorithm's output to the
+$n^{th}$ root of the determinant of the lattice. Sometimes it proves convenient
+to use this measure because the determinant of the lattice is easy to compute,
+whereas the length of the shortest vector of the lattice is usually not. In
+practice, HF is often used as a main measure. Again, LLL produces an HF that is
+exponential in the dimension $n$. The conclusion is that, although LLL runs in
+polynomial time, the approximation factor increases exponentially with respect
+to the dimension of the lattice. When this dimension is large, the approximation
+factor will grow in such a proportion that LLL will fail to break the security
+of underlying cryptosystems.
+\begin{theorem}
+  The LLL algorithm solves in polynomial time $\gamma-SVP$ for $n-dim$ lattices,
+  with $\gamma \leq 2^{(n-1)/2}$. It can also be shown also be shown that Hermite Factor
+  $\gamma_{HF} = \frac{\norm{\vec{b_1}}}{det(L)^{1/n}} \leq 2^{(n-1)/4}$
+  \label{theo:LLLHF}
+\end{theorem}
+
+
+
+% We first recall an important concept related to lattices, used in LLL:
+% Gram-Schmidt Orthogonization (GSO)
+% \begin{definition}
+%   [GSO] For a lattice basis
+%   $B = \left( \vec{b_1}, \vec{b_2}, \dots, \vec{b_n} \right)$, its GSO is the
+%   matrix of vectors
+%   $B^* = \left( \vec{b}_1^*, \vec{b}_2^*, \dots, \vec{b_n^*} \right)$ defined by
+%   $\vec{b_1^*} = \vec{b_1}$ and for $i \geq 2$,
+%   $\vec{b_i^*} = \vec{b_i} - \sum_{j=1}^{i-1}{\mu_{i,j}.\vec{b_j^*}}$, where
+%   $\mu_{i,j} = \frac{\langle \vec{b_i}, \vec{b_j^*} \rangle}{\langle
+%     \vec{b_j^*},\vec{b_j^*} \rangle}$.
+%   \label{def:GSO}
+% \end{definition}
+% GSO is basically a way to convert a given non-orthogonal basis into a set of orthogonal vectors. Figure \ref{fig:gso} shows an
+% example of a 2-dimensional GSO. 
+% \begin{figure}[h]
+%   \centering \includegraphics[scale=0.3]{gso}
+%   \caption{Example of GSO in 2-dimensions}
+%   \label{fig:gso}
+% \end{figure}
+% GSO is used as part of the LLL algorithm to find a short vector in a lattice.
+% It should be noted that the $GSO(B)$ is not another basis for the original lattice, it is just
+% a related matrix, it has the same determinant as the original one.
+
+% % Once we have done the transformation from $B$ to $B^* = GSO(B)$, we can also
+% % write the relation between the two of them algebraically as in Figure \ref{}
+% % \begin{figure}[h]
+% %   \centering \includegraphics[scale=0.3]{gsoMatrix}
+% %   \caption{GSO algebraic relation}
+% %   \label{fig:GSOAlgebra}
+% % \end{figure}
+% % We can intepret the second relation as a rotated coordinates system. Another
+% % nice observation we can have from this matrix representation is the 0s in the
+% % matrix implies the determinant of the lattice:
+% % \[
+% %   det \ L(B) = |det(B)| = |det(B^*)| = \prod_{i=1}^{n}\norm{\vec{b_i^*}}
+% % \]
+
+% % Back to our LLL discussion, this is the main algorithm to find short vectors in
+% % lattices, and therefore the main type of attack against lattice-based
+% % cryptosystems in practice, the other approach is exhaustive search. The best
+% % algorithm is the combination of the 2 approaches to trade off the runtime verse
+% % the approximation factor. We will discuss this algorithm (BKZ) in a later
+% % section.
+
+% \subsubsection{LLL algorithm}
+% \label{sec:LLLalgorithm}
+% The Lenstra–Lenstra–Lovász (LLL) algorithm not only finds short vectors but also
+% converts the basis of a lattice into another basis of the same lattice. Given
+% some long basis as an input to LLL, LLL makes sequential
+% modifications to it, every modification still keeping it as the basis of the
+% lattice but slightly improving it. As the improvements repeat, the sizes
+% of the vectors of the basis are reduced, until a matrix that
+% cannot be further improved is obtained. That is the output of LLL: a basis of the lattice
+% more satisfactory than the original input, in the sense that it has much
+% shorter vectors.
+
+% In more detail, LLL looks at the property of the GSO of the basis to make its vectors 'approximately' orthogonal. The size of the GSO basis defines the
+% length of the projections of one vector along the earlier vectors. The larger
+% these are, the less orthogonal the basis vectors are, because they have larger
+% components compared with the earlier vectors. LLL tries to reduce those coefficients
+% (projection coefficients), to make them more orthogonal, which will also make
+% them shorter. There are 2 tests that LLL performs to define how orthogonal the basis
+% vectors are:
+
+% \begin{description}
+% \item [LLL property 1.] Takes the current basis of the lattice and computes the
+%   GS coefficients $\mu_{i,j}$. It computes $|\mu_{i,j}| \leq 1/2$, checking that the
+%   length of the projections on the previous vectors are at most half of the
+%   actual full vector. If this condition is not satisfied, LLL modifies the basis
+%   until the condition obtains.
+% \item [LLL property 2.] The algorithm looks at the large remaining component
+%   $\norm{\vec{b_{i+1}^*}}$ of $\vec{b_{i+1}}$ after removing components along
+%   $\vec{b_j^*}$'s ($j < i + 1$) and checks
+%   \[
+%     \norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2 \geq \delta
+%     . \norm{\vec{b_i^*}}^2
+%   \]
+%   for all $i=1,\dots,n-1$ and for some constant
+%   $\delta$($1/4 \leq \delta \leq 1$).
+
+%   Informally, the second check is a bit more complex: LLL looks at the last 2
+%   components of each vector, such as $\vec{b_i}$, and decomposes it
+%   into all the projections along the previous $\vec{b_j^*}$. It then checks the 
+%   sum of the current orthogonal component against the the sum of the previous orthogonal component (for example, if
+%   we look at $\vec{b_{i+1}}$, we check
+%   $\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2$). If this quantity is large
+%   enough, it points at the fact that a lot is left over after removing the
+%   components along the previous vector. The larger this length, the more
+%   orthogonal the basis becomes. The algorithm tries to increase it as much as possible. The
+%   parameter $\delta$ of the algorithm defines this magnitude (the larger
+%   $\delta$ is, the better the result returned by the algorithm).
+
+%   This check is carried out for all the vectors of the basis. If it is not
+%   satisfied, LLL does some new changes to cause the test to pass.
+% \end{description}
+
+% When the algorithm runs, the 2 checks keep competing with each
+% other. The algorithm is designed to run until reaching the stage where both of the checks satisfy
+% simultaneously and to output the new basis after that.(Algorithm
+% \ref{alg:LLL})
+% \begin{definition}
+%   A basis $B$ for lattice $L$ is $\delta-LLL$ reduced if both LLL properties 1
+%   and 2 are satisfied.
+%   \label{def:LLL}
+% \end{definition}
+
+% \begin{algorithm}
+%   \caption{LLL algorithm}
+%   \label{alg:LLL}
+%   \begin{algorithmic}[1]
+%     \Procedure{LLL}{$B$} \State Compute GSO $B*$ for B.  \For {$(i=2,\dots,n)$}
+%     \For {j = i - 1 to 1} \State
+%     $c_{i,j} \gets \lceil{\frac{\langle \vec{b_i}, \vec{b_j^*} \rangle}{\langle
+%         \vec{b_j^*},\vec{b_j^*}\rangle}}\rfloor$ \State
+%     $\vec{b_i} \gets \vec{b_i} - c_{i,j}\vec{b_j}$ \EndFor \EndFor \If
+%     {$\norm{\vec{b_{i+1}^*}+\mu_{i+1}\vec{b_i^*}}^2 \geq \delta
+%       . \norm{\vec{b_i^*}}^2$} \State Swap $\vec{b_i}$ and $\vec{b_{i+1}}$.
+%     \State Go back to step 2.  \Else \State Return B \EndIf \EndProcedure
+%   \end{algorithmic}
+% \end{algorithm}
+% Selecting a rounded multiple of $\vec{b_j}$ in the algorithm causes it to maintain the vectors as the basis of the lattice. As the lattice consists of only integer multiples of all the basis
+% vectors, when adding an integer multiple of $\vec{b_j}$ to $\vec{b_i}$, the result is still another lattice vector. It equally appears that the new matrix is also
+% a basis of the lattice. In other words, if, instead of an integer, a fraction of $\vec{b_j}$ was added, the resulting point would not be a lattice point anymore. Also, due to this rounding error, instead of having precisely orthogonal vectors in the result matrix, only an approximate
+% orthogonal matrix is obtained. For an intuitive comprehension of the algorithm, we refer the reader to
+% \cite{lenstra1982factoring}. Last but not least, the loop of the algorithm consistently succeeds in terminating in polynomial time.
+% \begin{theorem}
+%   [LLL run time] The number of iterations of LLL on an input basis B before
+%   termination is at most
+%   \[
+%     n^2.\log{(\max{\norm{\vec{b_i}}})} / \log{(1/\sqrt{\delta})}.
+%   \]
+%   For any constant $1/4 < \delta < 1$, this is polynomial in bit length of the
+%   algorithm input. Moreover, the run-time for each iteration is also polynomial
+%   in the input bit length. Overall, run-time is polynomial in input length, which indicates that
+%   LLL is efficient.
+%   \label{theo:LLLRunTime}
+% \end{theorem}
+
+% \subsubsection{LLL solution to $\gamma-SVP$}
+% \label{sec:LLLsolution}
+% The question is how short the vectors of LLL's output are, or what kind of
+% approximate SVP LLL is able to solve: If LLL is run on some basis, a
+% reduced basis is produced as its output. The shortest vector in that reduced basis is then taken into consideration, in order to evaluate the difference between its length and the length of the shortest vector of the lattice.
+% \begin{theorem}
+%   [Short vector from LLL]. The LLL algorithm solves in polynomial time
+%   $\gamma-SVP$ for $n-dim$ lattices, with $\gamma < 2^{(n-1)/2}$.
+%   \label{theo:LLLShortVector}
+% \end{theorem}
 
 % \begin{proof}
 %   The idea is to combine both of the relations in LLL to show that if we take
@@ -531,45 +577,46 @@ reduced basis is produced as its output. The shortest vector in that reduced bas
 %   $\norm{\vec{b_1^*}}$ can only be at most \todo[inline]{finish proof}
 % \end{proof}
 
-In summary, the first vector of LLL output is bounded by
-\[
-  \norm{\vec{b_1^*}} \leq (1/(\delta-1/4))^{(n-1)/2}.\lambda(L)
-\]
-% The $\delta$ parameter of the algorithm therefore also contribute to
-% the output.
-It follows that the approximation factor is exponential in the dimension $n$ of
-the lattice. Another way to measure the length of the output vector of LLL is the Hermite
-Factor (HF), which is the ratio of the algorithm's output to the $n^{th}$ root
-of the determinant of the lattice. Sometimes it proves convenient to use this
-measure because the determinant of the lattice is easy to compute,
-whereas the length of the shortest vector of the lattice is usually not. In
-practice, HF is often used as a main measure. Again, LLL produces an HF that is
-exponential in the dimension $n$. The conclusion is that, although LLL runs in
-polynomial time, the approximation factor increases exponentially with respect to
-the dimension of the lattice. When this dimension is large, the approximation factor will grow
-in such a proportion that LLL will fail to break the security of underlying
-cryptosystems.
-\begin{theorem}
-  The LLL algorithm solves in polynomial time $\gamma-SVP$ for $n-dim$ lattices,
-  with $\gamma \leq 2^{(n-1)/2}$. It can also be shown also be shown that Hermite Factor
-  $\gamma_{HF} = \frac{\norm{\vec{b_1}}}{det(L)^{1/n}} \leq 2^{(n-1)/4}$
-  \label{theo:LLLHF}
-\end{theorem}
+% In summary, the first vector of LLL output is bounded by
+% \[
+%   \norm{\vec{b_1^*}} \leq (1/(\delta-1/4))^{(n-1)/2}.\lambda(L)
+% \]
+% % The $\delta$ parameter of the algorithm therefore also contribute to
+% % the output.
+% It follows that the approximation factor is exponential in the dimension $n$ of
+% the lattice. Another way to measure the length of the output vector of LLL is the Hermite
+% Factor (HF), which is the ratio of the algorithm's output to the $n^{th}$ root
+% of the determinant of the lattice. Sometimes it proves convenient to use this
+% measure because the determinant of the lattice is easy to compute,
+% whereas the length of the shortest vector of the lattice is usually not. In
+% practice, HF is often used as a main measure. Again, LLL produces an HF that is
+% exponential in the dimension $n$. The conclusion is that, although LLL runs in
+% polynomial time, the approximation factor increases exponentially with respect to
+% the dimension of the lattice. When this dimension is large, the approximation factor will grow
+% in such a proportion that LLL will fail to break the security of underlying
+% cryptosystems.
+% \begin{theorem}
+%   The LLL algorithm solves in polynomial time $\gamma-SVP$ for $n-dim$ lattices,
+%   with $\gamma \leq 2^{(n-1)/2}$. It can also be shown also be shown that Hermite Factor
+%   $\gamma_{HF} = \frac{\norm{\vec{b_1}}}{det(L)^{1/n}} \leq 2^{(n-1)/4}$
+%   \label{theo:LLLHF}
+% \end{theorem}
 
-\subsubsection{LLL in practice}
-\label{sec:LLLinPractice}
-This section discusses the trade-off between the running time and the length of
-the output of the attack. This relation helps to select the appropriate parameter values for
-state-of-the-art lattice attacks.
+% \subsubsection{LLL in practice}
+% \label{sec:LLLinPractice}
+% This section discusses the trade-off between the running time and the length of
+% the output of the attack. This relation helps to select the appropriate parameter values for
+% state-of-the-art lattice attacks.
 
-When running LLL experimentally (\cite{nguyen2006lll}) on a random lattice, it will become apparent that it performs much better than the bound showed in Theorem \ref{theo:LLLHF}. Specifically, $HF$
-is close to $1.02^{n-1}$. Although this factor is still exponential in dimension
-$n$, slow growth allows LLL to be used on large dimension lattices. In
-order to reduce $HF$ further, LLL can be modified. There are several
-ways to do that. The basic idea is to combine LLL with an exhaustive search
-(enumeration algorithm). The best lattice exhaustive search algorithm
-(Fincke-Phost/Kannan) does it in time $2^{O(n\log(n))}$; actually, it performs even worse than
-exponential time growth. 
+When running LLL experimentally (\cite{nguyen2006lll}) on a random lattice, it
+was shown that the algorithm performs much better than the bound showed in
+Theorem \ref{theo:LLLHF}. Specifically, $HF$ is close to $1.02^{n-1}$. Although
+this factor is still exponential in dimension $n$, slow growth allows LLL to be
+used on large dimension lattices. In order to reduce $HF$ further, LLL can be
+modified. There are several ways to do that. The basic idea is to combine LLL
+with an exhaustive search (enumeration algorithm). The best lattice exhaustive
+search algorithm (Fincke-Phost/Kannan) does it in time $2^{O(n\log(n))}$;
+actually, it performs even worse than exponential time growth.
 
 There are variants of such a method, but they all take at least
 exponential time with respect of the dimension $n$ (with the expense of using $2^{O(n)}$
@@ -682,7 +729,7 @@ cryptography. We present Ajtai's average-case to worst-case connection Theorem
 Although the theorem does not directly yield concrete information to choose
 parameter values securing a cryptosystem of the type discussed previously, it does provide qualitative confidence in the security level of the problem.
 
-\section{Learning With Error}
+\section{Learning With Errors}
 \label{sub:LWE}
 In the last section, we discussed how to use lattice-based cryptography to
 construct a hash functions. This section looks into another main tool in
@@ -772,9 +819,11 @@ An average-case to worst-case connection similar to Theorem
 \end{theorem}
 Theoretically there are strong reasons to believe that LWE is hard. The theorem
 even says that it links the security of LWE to the quantum security of the
-shortest vector problem. Using LWE as the basis for quantum resistant cryptographic techniques  therefore deserves high confidence. In practice, the best known
-attack against LWE amounts to reducing the problem to the SIS problem: Given a LWE
-instance $(A \in \mathbb{Z}_q^{m \times n},\vec{y} \in \mathbb{Z}_q^m)$:
+shortest vector problem. Using LWE as the basis for quantum resistant
+cryptographic techniques therefore deserves high confidence. In practice, one of the
+best known attack against LWE amounts to reducing the problem to the SIS
+problem \cite{micciancio2009lattice}: Given a LWE instance
+$(A \in \mathbb{Z}_q^{m \times n},\vec{y} \in \mathbb{Z}_q^m)$:
 \begin{itemize}
 \item Find a short non-zero vector $\vec{v}$ in the SIS lattice $L_q^\bot(A^T)$
   with $\norm{v} \leq \beta$. That is, $A^T.\vec{v} = \vec{0} \mod q$.
@@ -790,11 +839,14 @@ $SIS_{q,m,n,\beta=1/\alpha}$. Because of this, to secure the system based on DLW
 noise we choose for DLWE, the larger the $\beta$ becomes, or $\gamma-SVP$ is
 easier, which is expected).  The condition of $\alpha q > 2\sqrt{n}$ is
 also important, as when the noise becomes small enough, it turns out that there
-are efficient algebraic attacks against LWE.
+are efficient algebraic attacks against LWE \cite{albrecht2014algebraic}.
 
-\subsection{Symmetric cryptosystems from LWE}
+\subsection{Cryptosystems from LWE}
 \label{sec:LWESymmetric}
-To randomize cryptosystem based on LWE:
+Although we mostly use public key systems in our work, we first present a
+typical basic symmetric cryptosystem to demonstrate the frequent used techniques
+of the operations, correctness and security analysis. A randomize cryptosystem
+based on LWE:
 \begin{description}
 \item[Key Generation - KeyGen.] Fix integers $q, n$. Pick a secret key
   $\vec{s} \randomsample \mathbb{Z}_q^n$.
@@ -838,10 +890,13 @@ To randomize cryptosystem based on LWE:
   goes up when noise increases.  Generally, in lattice-based cryptosystems, there
   is this trade-off between security and the size of the messages to encrypt.
 
-\item [Security.] This section discusses how to analyze the security of
-  lattice-based cryptosystems. Our goal is to show that if an adversary can
-  break the encryption scheme's security, then he can also solve the DLWE problem,
-  which is one of the lattice problems known as being hard (SIS or $\gamma-SVP$). The standard security model we use in our analysis would be indistinguishability security against Chosen
+\item [Security.] The security of LWE cryptosystems are based on the hardness of LWE related problems. The idea is to prove that, if an adversary can break the encryption scheme's security, then he can also solve the DLWE problem.
+
+% \item [Security.] This section discusses how to analyze the security of
+%   lattice-based cryptosystems. Our goal is to show that if an adversary can
+%   break the encryption scheme's security, then he can also solve the DLWE problem,
+%   which is one of the lattice problems known as being hard (SIS or $\gamma-SVP$).
+  The standard security model we use in our analysis would be indistinguishability security against Chosen
   Plaintext Attacks (IND-CPA). The formal 'security game' is defined between a
   challenger $Ch$ and the attacker $B$ targeting the encryption scheme.
 
@@ -870,80 +925,81 @@ To randomize cryptosystem based on LWE:
       using brute force search.)
       \label{def:IND-CPA Security}
     \end{definition}
+    \end{description}
 
-  \item [Security Reduction from IND-CPA to DLWE.] Given the formal security
-    game, we need to prove that the defined cryptosystem satisfies such a
-    model. By applying the security reduction technique, we demonstrate that if
-    an attacker could somehow break the cryptosystem, he could also solve
-    DLWE, which was proved (Regev, 2005) to be a lattice-related hard problem:
+%   \item [Security Reduction from IND-CPA to DLWE.] Given the formal security
+%     game, we need to prove that the defined cryptosystem satisfies such a
+%     model. By applying the security reduction technique, we demonstrate that if
+%     an attacker could somehow break the cryptosystem, he could also solve
+%     DLWE, which was proved (Regev, 2005) to be a lattice-related hard problem:
 
-    Suppose there was an efficient IND-CPA attack algorithm $B$, breaking the
-    $2^\lambda$ security of the LWE encryption scheme:
-    \begin{itemize}
-    \item $B$ runs in time $T_B$ and wins the IND-CPA game with probability 1/2 +
-      $\varepsilon_b$ (with $T_B < 2^\lambda$ and
-      $\varepsilon_B > 1/2^\lambda$).
-    \item $B$ makes $Q$ encryption queries overall, including the challenge
-      ciphertext.
-    \end{itemize}
-    Then, given a DLWE instance $(q,n,A,\vec{y})$, a distinguisher
-    algorithm $D$ can be built, running as follows:
-    \begin{itemize}
-    \item D runs attacker $B$ against the encryption scheme, $D$ acts as the
-      challenger. When $B$ makes its $i^{th}$ encryption oracle query
-      $\vec{m_i}$, $D$ uses the $i^{th}$ block
-      $A_i \in \mathbb{Z}_q^{l \times n}$ of $l$ consecutive rows of $A$ and
-      corresponding $i^{th}$ block $\vec{y_i}\in \mathbb{Z}_q^l$ of $l$
-      consecutive rows of $\vec{y}$ to answer the oracle query with
-      $(A_i, \vec{c_i}$, where:
-      \[
-        \vec{c_i} = \vec{y_i} + \lceil q/t \rfloor .  \vec{m_i} \mod q.
-      \]
-    \item Similarly, when $B$ makes its challenge query
-      $(\vec{m_0^*},\vec{m_1^*})$, D chooses a random bit $b$ and uses the next
-      (not yet used) blocks $A_{i^*}, \vec{y}_{i^*}$ of $A$ and $\vec{y}$ to
-      respond with
-      $(A^* = A_{i^*}, \vec{c^*} = \vec{y}_{i^*} + \lceil q/t \rfloor .
-      \vec{m_b^*} \mod q)$.
-    \item The rest of encryption oracle queries of $B$ are answered as above.
-    \item When $B$ returns a guess $b'$ for $b$, $D$ returns 'Real' if $b' = b$,
-      and 'Random' if $b' \neq b$.
-    \end{itemize}
-    The distinguisher $D$ works because:
-    \begin{itemize}
-    \item If $\vec{y}$ comes from the real scenario, then each of
-      the blocks $\vec{y_i} = A_i\vec{s} + \vec{e_i}$, for $i = 1,\dots,q$ can be rewritten. When
-      replacing this onto $\vec{c_i}$, $D$ behaves exactly the same
-      as in the encryption algorithm:
-      $\vec{c_i} = A_i\vec{s} + \lceil q/t \rfloor \vec{m_i} + \vec{e_i}$, in
-      which the attacker $B$ wins the game with probability
-      $1/2 + \varepsilon_B$ (high). Hence D also returns 'Real' with the same degree of probability
-      $1/2 + \varepsilon_B$.
-    \item If $\vec{y}$ comes from the 'Random' scenario, $\vec{y}$ is
-      independent and uniformly random in $\mathbb{Z}_q^{l.Q}$, therefore, in the
-      challenge ciphertext, $\vec{c_i}$ is uniformly random in $\mathbb{Z}_q^l$,
-      independently of bit $b$ - Hence, $B$ gets no information on $b$ and wins
-      the game with probability equaling exactly $1/2$. So, $D$ returns 'Real' with
-      probability $1/2$.
-    \end{itemize}
-    In conclusion, the distinguishing advantage of $D$ is
-    $\varepsilon_B > 1/2^\lambda$. Also, the run-time of $D$ is approximately
-    the run-time of $B$, which is $2^\lambda$.
-    \begin{theorem}
-      IND-CPA security of an LWE cryptosystem with Q queries to the encryption
-      oracle is at least as hard as DLWE.
-      \label{theo:reductionCPADLWE}
-    \end{theorem}
+%     Suppose there was an efficient IND-CPA attack algorithm $B$, breaking the
+%     $2^\lambda$ security of the LWE encryption scheme:
+%     \begin{itemize}
+%     \item $B$ runs in time $T_B$ and wins the IND-CPA game with probability 1/2 +
+%       $\varepsilon_b$ (with $T_B < 2^\lambda$ and
+%       $\varepsilon_B > 1/2^\lambda$).
+%     \item $B$ makes $Q$ encryption queries overall, including the challenge
+%       ciphertext.
+%     \end{itemize}
+%     Then, given a DLWE instance $(q,n,A,\vec{y})$, a distinguisher
+%     algorithm $D$ can be built, running as follows:
+%     \begin{itemize}
+%     \item D runs attacker $B$ against the encryption scheme, $D$ acts as the
+%       challenger. When $B$ makes its $i^{th}$ encryption oracle query
+%       $\vec{m_i}$, $D$ uses the $i^{th}$ block
+%       $A_i \in \mathbb{Z}_q^{l \times n}$ of $l$ consecutive rows of $A$ and
+%       corresponding $i^{th}$ block $\vec{y_i}\in \mathbb{Z}_q^l$ of $l$
+%       consecutive rows of $\vec{y}$ to answer the oracle query with
+%       $(A_i, \vec{c_i}$, where:
+%       \[
+%         \vec{c_i} = \vec{y_i} + \lceil q/t \rfloor .  \vec{m_i} \mod q.
+%       \]
+%     \item Similarly, when $B$ makes its challenge query
+%       $(\vec{m_0^*},\vec{m_1^*})$, D chooses a random bit $b$ and uses the next
+%       (not yet used) blocks $A_{i^*}, \vec{y}_{i^*}$ of $A$ and $\vec{y}$ to
+%       respond with
+%       $(A^* = A_{i^*}, \vec{c^*} = \vec{y}_{i^*} + \lceil q/t \rfloor .
+%       \vec{m_b^*} \mod q)$.
+%     \item The rest of encryption oracle queries of $B$ are answered as above.
+%     \item When $B$ returns a guess $b'$ for $b$, $D$ returns 'Real' if $b' = b$,
+%       and 'Random' if $b' \neq b$.
+%     \end{itemize}
+%     The distinguisher $D$ works because:
+%     \begin{itemize}
+%     \item If $\vec{y}$ comes from the real scenario, then each of
+%       the blocks $\vec{y_i} = A_i\vec{s} + \vec{e_i}$, for $i = 1,\dots,q$ can be rewritten. When
+%       replacing this onto $\vec{c_i}$, $D$ behaves exactly the same
+%       as in the encryption algorithm:
+%       $\vec{c_i} = A_i\vec{s} + \lceil q/t \rfloor \vec{m_i} + \vec{e_i}$, in
+%       which the attacker $B$ wins the game with probability
+%       $1/2 + \varepsilon_B$ (high). Hence D also returns 'Real' with the same degree of probability
+%       $1/2 + \varepsilon_B$.
+%     \item If $\vec{y}$ comes from the 'Random' scenario, $\vec{y}$ is
+%       independent and uniformly random in $\mathbb{Z}_q^{l.Q}$, therefore, in the
+%       challenge ciphertext, $\vec{c_i}$ is uniformly random in $\mathbb{Z}_q^l$,
+%       independently of bit $b$ - Hence, $B$ gets no information on $b$ and wins
+%       the game with probability equaling exactly $1/2$. So, $D$ returns 'Real' with
+%       probability $1/2$.
+%     \end{itemize}
+%     In conclusion, the distinguishing advantage of $D$ is
+%     $\varepsilon_B > 1/2^\lambda$. Also, the run-time of $D$ is approximately
+%     the run-time of $B$, which is $2^\lambda$.
+%     \begin{theorem}
+%       IND-CPA security of an LWE cryptosystem with Q queries to the encryption
+%       oracle is at least as hard as DLWE.
+%       \label{theo:reductionCPADLWE}
+%     \end{theorem}
 
 
-  \end{description}
+%   \end{description}
 
 
 \end{description}
 
-\subsection{Assymmetric Cryptosystem from LWE}
-\label{sec:asymLWE}
-This section discusses a technique to modify Symmetric-Key to Public-key
+% \subsection{Assymmetric Cryptosystem from LWE}
+% \label{sec:asymLWE}
+We discuss a technique to modify Symmetric-Key to Public-key
 Encryption (Regev's cryptosystem, 2005). This cryptosystem is the basis for a
 lot of other lattice-based cryptographic techniques, including the ones used
 later in our project. Supposing a symmetric key sytem is used to
@@ -1062,106 +1118,106 @@ Again, we observe that if a larger noise is used, a better level of security is 
   distinguisher) is within a negligible statistical
   distance to what the attacker witnesses during a real attack.
 
-  \begin{description}
-  \item[Security Reduction from DLWE.] Suppose there was an efficient IND-CPA
-    attack algorithm $B$ able to break $2^\lambda$ security of Regev's public key
-    system. ($B$ runs in time $T_B$ and wins the IND-CPA game with probability
-    $1/2 + \varepsilon_B$ with $T_B < 2^\lambda$ and
-    $\varepsilon_B > 1/2^\lambda$).
+  % \begin{description}
+  % \item[Security Reduction from DLWE.] Suppose there was an efficient IND-CPA
+  %   attack algorithm $B$ able to break $2^\lambda$ security of Regev's public key
+  %   system. ($B$ runs in time $T_B$ and wins the IND-CPA game with probability
+  %   $1/2 + \varepsilon_B$ with $T_B < 2^\lambda$ and
+  %   $\varepsilon_B > 1/2^\lambda$).
 
-    Then, given a DLWE instance $(q,n,A,\vec{y})$, a DLWE algorithm $D$ works as
-    follows:
-    \begin{itemize}
-    \item $D$ runs attacker $B$ on input public key $(A, \vec{p} = \vec{y})$.
-    \item When $B$ makes its challenge query $(\vec{m_0^*}, \vec{m_1^*})$, $D$
-      behaves like the real challenger: it chooses a random bit $b$ and selects
-      coefficient vector
-      $\vec{r} \randomsample \left\{ -B_r, \dots, B_r \right\}^m$, computes and
-      sends back:
-      \[
-        (\vec{a^*}, \vec{c^*}) = (\vec{r}.A, \vec{r}.\vec{y} + \lceil q/t
-        \rfloor .  m_b) \mod q
-      \]
-    \item When $B$ returns a guess $b'$ for $b$, $D$ returns 'Real' if $b'=b$
-      and 'Random' if $b' \neq b$.
-    \end{itemize}
+  %   Then, given a DLWE instance $(q,n,A,\vec{y})$, a DLWE algorithm $D$ works as
+  %   follows:
+  %   \begin{itemize}
+  %   \item $D$ runs attacker $B$ on input public key $(A, \vec{p} = \vec{y})$.
+  %   \item When $B$ makes its challenge query $(\vec{m_0^*}, \vec{m_1^*})$, $D$
+  %     behaves like the real challenger: it chooses a random bit $b$ and selects
+  %     coefficient vector
+  %     $\vec{r} \randomsample \left\{ -B_r, \dots, B_r \right\}^m$, computes and
+  %     sends back:
+  %     \[
+  %       (\vec{a^*}, \vec{c^*}) = (\vec{r}.A, \vec{r}.\vec{y} + \lceil q/t
+  %       \rfloor .  m_b) \mod q
+  %     \]
+  %   \item When $B$ returns a guess $b'$ for $b$, $D$ returns 'Real' if $b'=b$
+  %     and 'Random' if $b' \neq b$.
+  %   \end{itemize}
 
-  \item [Why does $D$ work.] Consider two $LWE$ scenarios for $\vec{y}$:
-    \begin{itemize}
-    \item 'Real' LWE scenario, $\vec{y} = A.\vec{s} + \vec{e}$. The public key
-      and challenge ciphertext returned by $D$ to $B$ are computed exactly as in
-      the real IND-CPA game, so $B$ wins the game with probability
-      $1/2 + \varepsilon_B$ (high), hence $D$ returns 'Real' with probability
-      $1/2 + \varepsilon_B$.
-    \item 'Random' LWE scenario, $\vec{p} = \vec{y}$ is independent and
-      uniformly random in $\mathbb{Z}_q^m$. To generate the fresh
-      encryptions of 0 from the public key, the 'Leftover Hash
-      Lemma'(LHL) property is used: The new matrix $A' = \vec{r}A$ is
-      within negligible statistical distance with respect to the uniform distribution when the vector $\vec{r}$ is big enough.
-      \begin{lemma}
-        [Leftover Hash Lemma (LHL).]  Let
-        $C \randomsample \mathbb{Z}_q^{m \times (n+1)}$ and
-        $\vec{r} \in \left\{ -B_r, \dots, B_r \right\}^m$. If the following
-        condition holds:
-        \[
-          (2B_r + 1)^m >> q^{n+1}
-        \]
-        then the probability distribution $P$ of the pair
-        $(C, \vec{r}.C \mod q)$ is statistically indistinguishable from the
-        uniform distribution
-        $\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{n+1}$. More precisely,
-        the statistical distance $\Delta(P,U)$ between the probability
-        distributions $P,U$ is at most
-        \[
-          \frac{1}{2} . \sqrt{\frac{q^{n+1}}{(2B_r + 1)^m}}
-        \]
-        \label{lem:LHL}
-      \end{lemma}
-      The lemma also provides an indication about how large the parameters should
-      be. The proof continues as follows:
-    \item If the distribution P of
-      $(A, \vec{y}, \vec{a^*} = \vec{r} . A, \vec{r}. \vec{y})$ was exactly
-      $U(\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{n+1})$, then, similar to
-      the symmetric key case, the ciphertext
-      $(\vec{a}, c^* = \vec{r}\vec{y} + \lceil q/t \rfloor.m_b)$ is independent
-      of $b$ and the public key $\vec{y}$, which contains no information on $b$,
-      and hence $D$ returns 'Real' with probability 1/2.
-    \item By LHL,
-      $\Delta(P,U) \leq \frac{1}{2}.
-      \sqrt{\frac{q^{n+1}}{(2B_r+1)^m}}=\delta$. and
-      $\delta \leq \frac{1}{2^{\lambda+1}}$ is negligible. From the property of
-      statistical distance, $D$ returns 'Real' with probability
-      $\leq 1/2 + \delta \leq 1/2 + 1/2^{\lambda+1}$. The distinguishing
-      advantage of $D$ is
-      \[
-        Adv(D) \geq \varepsilon_B - \frac{1}{2^{\lambda+1}} \geq
-        \frac{1}{2^\lambda} - \frac{1}{2^{\lambda+1}} \geq
-        \frac{1}{2^{\lambda+1}}.
-      \]
-      Also, the run-time of $D$ is approximately the run-time of $B$, which is
-      $O\left( 2^\lambda \right)$. This contradicts the $2^{\lambda + 1}$
-      security level of DLWE.
+  % \item [Why does $D$ work.] Consider two $LWE$ scenarios for $\vec{y}$:
+  %   \begin{itemize}
+  %   \item 'Real' LWE scenario, $\vec{y} = A.\vec{s} + \vec{e}$. The public key
+  %     and challenge ciphertext returned by $D$ to $B$ are computed exactly as in
+  %     the real IND-CPA game, so $B$ wins the game with probability
+  %     $1/2 + \varepsilon_B$ (high), hence $D$ returns 'Real' with probability
+  %     $1/2 + \varepsilon_B$.
+  %   \item 'Random' LWE scenario, $\vec{p} = \vec{y}$ is independent and
+  %     uniformly random in $\mathbb{Z}_q^m$. To generate the fresh
+  %     encryptions of 0 from the public key, the 'Leftover Hash
+  %     Lemma'(LHL) property is used: The new matrix $A' = \vec{r}A$ is
+  %     within negligible statistical distance with respect to the uniform distribution when the vector $\vec{r}$ is big enough.
+  %     \begin{lemma}
+  %       [Leftover Hash Lemma (LHL).]  Let
+  %       $C \randomsample \mathbb{Z}_q^{m \times (n+1)}$ and
+  %       $\vec{r} \in \left\{ -B_r, \dots, B_r \right\}^m$. If the following
+  %       condition holds:
+  %       \[
+  %         (2B_r + 1)^m >> q^{n+1}
+  %       \]
+  %       then the probability distribution $P$ of the pair
+  %       $(C, \vec{r}.C \mod q)$ is statistically indistinguishable from the
+  %       uniform distribution
+  %       $\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{n+1}$. More precisely,
+  %       the statistical distance $\Delta(P,U)$ between the probability
+  %       distributions $P,U$ is at most
+  %       \[
+  %         \frac{1}{2} . \sqrt{\frac{q^{n+1}}{(2B_r + 1)^m}}
+  %       \]
+  %       \label{lem:LHL}
+  %     \end{lemma}
+  %     The lemma also provides an indication about how large the parameters should
+  %     be. The proof continues as follows:
+  %   \item If the distribution P of
+  %     $(A, \vec{y}, \vec{a^*} = \vec{r} . A, \vec{r}. \vec{y})$ was exactly
+  %     $U(\mathbb{Z}_q^{m \times n} \times \mathbb{Z}_q^{n+1})$, then, similar to
+  %     the symmetric key case, the ciphertext
+  %     $(\vec{a}, c^* = \vec{r}\vec{y} + \lceil q/t \rfloor.m_b)$ is independent
+  %     of $b$ and the public key $\vec{y}$, which contains no information on $b$,
+  %     and hence $D$ returns 'Real' with probability 1/2.
+  %   \item By LHL,
+  %     $\Delta(P,U) \leq \frac{1}{2}.
+  %     \sqrt{\frac{q^{n+1}}{(2B_r+1)^m}}=\delta$. and
+  %     $\delta \leq \frac{1}{2^{\lambda+1}}$ is negligible. From the property of
+  %     statistical distance, $D$ returns 'Real' with probability
+  %     $\leq 1/2 + \delta \leq 1/2 + 1/2^{\lambda+1}$. The distinguishing
+  %     advantage of $D$ is
+  %     \[
+  %       Adv(D) \geq \varepsilon_B - \frac{1}{2^{\lambda+1}} \geq
+  %       \frac{1}{2^\lambda} - \frac{1}{2^{\lambda+1}} \geq
+  %       \frac{1}{2^{\lambda+1}}.
+  %     \]
+  %     Also, the run-time of $D$ is approximately the run-time of $B$, which is
+  %     $O\left( 2^\lambda \right)$. This contradicts the $2^{\lambda + 1}$
+  %     security level of DLWE.
 
-      \begin{theorem}
-        If the LHL condition holds, the IND-CPA security of Regev's encryption scheme is
-        at least as hard as $DLWE_{q,m,n,\alpha}$
-        \label{theo:IndCPARegev}
-      \end{theorem}
-    \item For future reference on parameter choices, we consider the following example of
-      parameter value choice for Regev's cryptosystem. We can rearrange the
-      requirements for the LHL condition to hold, it tells us how large $m$ should
-      be:
-      \[
-        (2B_r + 1 )^m \geq 2^{2(\lambda + 1)}.q^{n+1}
-      \]
-      or
-      \[
-        m \geq \frac{(n+1).\log q + 2.(\lambda+1)}{\log{2B_r + 1}}
-      \]
+  %     \begin{theorem}
+  %       If the LHL condition holds, the IND-CPA security of Regev's encryption scheme is
+  %       at least as hard as $DLWE_{q,m,n,\alpha}$
+  %       \label{theo:IndCPARegev}
+  %     \end{theorem}
+  %   \item For future reference on parameter choices, we consider the following example of
+  %     parameter value choice for Regev's cryptosystem. We can rearrange the
+  %     requirements for the LHL condition to hold, it tells us how large $m$ should
+  %     be:
+  %     \[
+  %       (2B_r + 1 )^m \geq 2^{2(\lambda + 1)}.q^{n+1}
+  %     \]
+  %     or
+  %     \[
+  %       m \geq \frac{(n+1).\log q + 2.(\lambda+1)}{\log{2B_r + 1}}
+  %     \]
 
-    \end{itemize}
+  %   \end{itemize}
 
-  \end{description}
+  % \end{description}
 
 \end{description}
 
@@ -1414,95 +1470,95 @@ connection to hold. The choice of polynomial rings is very important for
 security: in former attempts, the choice $\frac{\mathbb{Z}[x]}{x^n - 1}$
 proved to be insecure in some systems, such as the original NTRU.
 
-\subsubsection{Further Optimizations}
-\label{sec:furtherOptimizations}
-Lately, there has been some work to improve the Ring-Regev encryption scheme
-further. In these solutions, the public key size of the scheme is still a vector of
-polynomials: $(A,\mathbf{p}) \in R_{q}^{m' \times 2}$. The security requirement
-specifies the lower limit of $m'$. Also, the ciphertext includes two ring
-element $(\mathbf{a,c})$. The first problem solved was how to reduce these
-factors even further, to just 2 or even 1 ring element. Two solutions have been
-proposed:
-\begin{description}
-\item[ElGamal analogue of Ring-Regev \cite{lyubashevsky2010ideal}] This scheme
-  is similar to the discrete-log based scheme of ElGamal's system, and could reduce the
-  public key and ciphertext to 2 elements of the ring $R_q$. Recall the
-  Diffie-Hellman/ElGamal encryption scheme in a group $G$ of order $q$ with a
-  generator $g$:
-  \begin{description}
-  \item[Public Key.] $(g, p_b = g^b) \in G^2$, \textbf{Secret key:}
-    $b \randomsample G$.
-  \item [Encryption.] Given $m \in G$, sample $a \randomsample G$ and compute
-    the ciphertext $(p_a = g^a \in G, c = p_b^a.m = g^{ab}.m \in G)$.
-  \item [Decryption.] Given $(p_a, c) \in G^2$, compute $c/p_a^b = c/g^{ab} = m$
-  \end{description}
-  The Ring-based ElGamal system in $R_q$ immitates the classical scheme as
-  follows.
-  \begin{description}
-  \item[Public key.] $(\mathbf{g} \randomsample R_q, \mathbf{p_b = g.b + e_b})$
-    where $\mathbf{b,e_b} \randomsample \chi_{\alpha q}$.
-  \item [Secret key.] $\mathbf{b} \randomsample R_q$
-  \item [Encryption.] For $\mathbf{m} \in R_t$, sample
-    $\mathbf{a,e_a,e_c} \randomsample \chi_{\alpha q}$ and
-    compute
-    $$(\mathbf{p_a = g.a + e_a}, \mathbf{c = p_b.a + e_c + \lceil q/t \rfloor
-      . m}) \in R_q^2$$
-  \item [Decryption.] Given a ciphertext $(\mathbf{p_a,c}) \in G^2$:
-    \[
-      \mathbf{c - p_a.b = c - (g.a.b + e_a.b)} = \lceil q/t \rfloor .\mathbf{m}
-      + \mathbf{e_c.a} + \mathbf{e_a.b} \approx \lceil q/t \rfloor.\mathbf{m}
-    \]
-  \end{description}
-\item[NTRUEEncrypt \cite{hoffstein1998ntru}] Both the public-key and the
-  ciphertext could be shrunk to just a single ring element in $R_q$, which is as
-  small as we can ideally hope for. We here discuss some variants of this
-  technique and their properties. As one of the issues of the Elgamal analogue
-  scheme discussed above relates to the small secrets generated during the
-  encryption process, the natural question to ask is how changing from something
-  completely random to something small can affect the security level of the
-  encryption. It turns out that this variant of the Ring-LWE with secrets
-  sampled from error distribution (SSRing-LWE) is as hard as the original
-  Ring-LWE problem \cite{lyubashevsky2008lattice}. It helps gaining efficiency
-  without compromising security.
+% \subsubsection{Further Optimizations}
+% \label{sec:furtherOptimizations}
+% Lately, there has been some work to improve the Ring-Regev encryption scheme
+% further. In these solutions, the public key size of the scheme is still a vector of
+% polynomials: $(A,\mathbf{p}) \in R_{q}^{m' \times 2}$. The security requirement
+% specifies the lower limit of $m'$. Also, the ciphertext includes two ring
+% element $(\mathbf{a,c})$. The first problem solved was how to reduce these
+% factors even further, to just 2 or even 1 ring element. Two solutions have been
+% proposed:
+% \begin{description}
+% \item[ElGamal analogue of Ring-Regev \cite{lyubashevsky2010ideal}] This scheme
+%   is similar to the discrete-log based scheme of ElGamal's system, and could reduce the
+%   public key and ciphertext to 2 elements of the ring $R_q$. Recall the
+%   Diffie-Hellman/ElGamal encryption scheme in a group $G$ of order $q$ with a
+%   generator $g$:
+%   \begin{description}
+%   \item[Public Key.] $(g, p_b = g^b) \in G^2$, \textbf{Secret key:}
+%     $b \randomsample G$.
+%   \item [Encryption.] Given $m \in G$, sample $a \randomsample G$ and compute
+%     the ciphertext $(p_a = g^a \in G, c = p_b^a.m = g^{ab}.m \in G)$.
+%   \item [Decryption.] Given $(p_a, c) \in G^2$, compute $c/p_a^b = c/g^{ab} = m$
+%   \end{description}
+%   The Ring-based ElGamal system in $R_q$ immitates the classical scheme as
+%   follows.
+%   \begin{description}
+%   \item[Public key.] $(\mathbf{g} \randomsample R_q, \mathbf{p_b = g.b + e_b})$
+%     where $\mathbf{b,e_b} \randomsample \chi_{\alpha q}$.
+%   \item [Secret key.] $\mathbf{b} \randomsample R_q$
+%   \item [Encryption.] For $\mathbf{m} \in R_t$, sample
+%     $\mathbf{a,e_a,e_c} \randomsample \chi_{\alpha q}$ and
+%     compute
+%     $$(\mathbf{p_a = g.a + e_a}, \mathbf{c = p_b.a + e_c + \lceil q/t \rfloor
+%       . m}) \in R_q^2$$
+%   \item [Decryption.] Given a ciphertext $(\mathbf{p_a,c}) \in G^2$:
+%     \[
+%       \mathbf{c - p_a.b = c - (g.a.b + e_a.b)} = \lceil q/t \rfloor .\mathbf{m}
+%       + \mathbf{e_c.a} + \mathbf{e_a.b} \approx \lceil q/t \rfloor.\mathbf{m}
+%     \]
+%   \end{description}
+% \item[NTRUEEncrypt \cite{hoffstein1998ntru}] Both the public-key and the
+%   ciphertext could be shrunk to just a single ring element in $R_q$, which is as
+%   small as we can ideally hope for. We here discuss some variants of this
+%   technique and their properties. As one of the issues of the Elgamal analogue
+%   scheme discussed above relates to the small secrets generated during the
+%   encryption process, the natural question to ask is how changing from something
+%   completely random to something small can affect the security level of the
+%   encryption. It turns out that this variant of the Ring-LWE with secrets
+%   sampled from error distribution (SSRing-LWE) is as hard as the original
+%   Ring-LWE problem \cite{lyubashevsky2008lattice}. It helps gaining efficiency
+%   without compromising security.
 
-  \begin{lemma}[SSRing-LWE]
-    \label{lem:SSRing-LWE}
-    Ring-LWE with parameters \(m', n, \alpha, q\) and secrets sampled from the
-    error distribution is as hard as standard Ring-LWE with parameter
-    \(m' + 1, n, \alpha, q\)
-  \end{lemma}
+%   \begin{lemma}[SSRing-LWE]
+%     \label{lem:SSRing-LWE}
+%     Ring-LWE with parameters \(m', n, \alpha, q\) and secrets sampled from the
+%     error distribution is as hard as standard Ring-LWE with parameter
+%     \(m' + 1, n, \alpha, q\)
+%   \end{lemma}
 
-  % The original NTRU scheme was first introduced in 1996, working with the ring
-  % \(R^{-} = \mathbb{Z}[x]/(x^{n} -1 \) ) instead of modulo $x^n + 1$. We briefly describe the scheme
-  % as follows.
-  % \begin{description}
-  % \item[Setup] Ring parameters: a prime \(n\), \(q \approx n\) a power of 2, a
-  %   small \(p\), and the ring \(R^{-}\mathbb{Z}[x]/(x^{n} -1 )\)
-  % \item[KeyGen] Secret key \(sk f, g\randomsample R^{-} \) sampled independently
-  %   from a distribution \(\chi_{\sigma}\) with \(f\)
-  % \end{description}
+%   % The original NTRU scheme was first introduced in 1996, working with the ring
+%   % \(R^{-} = \mathbb{Z}[x]/(x^{n} -1 \) ) instead of modulo $x^n + 1$. We briefly describe the scheme
+%   % as follows.
+%   % \begin{description}
+%   % \item[Setup] Ring parameters: a prime \(n\), \(q \approx n\) a power of 2, a
+%   %   small \(p\), and the ring \(R^{-}\mathbb{Z}[x]/(x^{n} -1 )\)
+%   % \item[KeyGen] Secret key \(sk f, g\randomsample R^{-} \) sampled independently
+%   %   from a distribution \(\chi_{\sigma}\) with \(f\)
+%   % \end{description}
 
-  The main issue with the original NTRU was its security: it relied on a
-  problem known as 'NTRU key-cracking' (which was not well understood at the time) and on
-  Ring-LWE. A variant of it, only relying on Ring-LWE has been brought up in 2011
-  \cite{stehle2011making}.
-\end{description}
+%   The main issue with the original NTRU was its security: it relied on a
+%   problem known as 'NTRU key-cracking' (which was not well understood at the time) and on
+%   Ring-LWE. A variant of it, only relying on Ring-LWE has been brought up in 2011
+%   \cite{stehle2011making}.
+% \end{description}
 
-    % \begin{description}
-    %     \item[To Appendix: Normal Distribution] Probability distribution
-    %         function, mean (or expected value) of the random variables,
-    %         standard deviation measure how wide the distribution is
-    %         relative to the mean (the width of the Gaussian graph). Statistic
-    %         shows that the probability that we can sample something within 3
-    %         standard deviation is high (95 \%). In our context, the noise
-    %         integers sampled from the Gaussian distribution are 95\% to be
-    %         within 3 standard deviation $\alpha q$.
-    % \end{description}
+%     % \begin{description}
+%     %     \item[To Appendix: Normal Distribution] Probability distribution
+%     %         function, mean (or expected value) of the random variables,
+%     %         standard deviation measure how wide the distribution is
+%     %         relative to the mean (the width of the Gaussian graph). Statistic
+%     %         shows that the probability that we can sample something within 3
+%     %         standard deviation is high (95 \%). In our context, the noise
+%     %         integers sampled from the Gaussian distribution are 95\% to be
+%     %         within 3 standard deviation $\alpha q$.
+%     % \end{description}
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../thesis"
-%%% End:
+% %%% Local Variables:
+% %%% mode: latex
+% %%% TeX-master: "../thesis"
+% %%% End:
 
 \section{Homomorphic Cryptosystems}
 \label{sec:defHomo}
@@ -1563,19 +1619,19 @@ privacy preserving authentication contexts. The security of these cryptosystems
 is based on the hardness of the Ring-Learning With Error (RLWE) problem
 \cite{lyubashevsky2010ideal}. This section briefly discusses such systems.
 \begin{description}
-\item[The Ring Learning With Errors Problem.]
-  \begin{definition}
-    [RWLE] Given parameters $q,n$ defining the ring
-    \(R_{q} = \frac{\mathbb{Z}_{q}[x]}{x^{n} + 1} \) and 
-    \(\chi_{\alpha q}\) defining a small noise distribution, the
-    $RWLE_{q,n,\chi}$ problem aims at distinguishing two distributions. In the
-    first one, $(\mathbf{a_i},\mathbf{b_i})$ are uniformly sampled from
-    $R_q^2$.  In the second distribution,
-    $\mathbf{s} \randomsample R_q$, $\mathbf{e_i} \randomsample \chi$ are sampled first, then
-    $(\mathbf{a_i},\mathbf{b_i})$ are generated by sampling
-    $\mathbf{a_i} \randomsample R_q$, and finally 
-    $\mathbf{b_i} = \mathbf{a_i}.\mathbf{s} + \mathbf{e_i}$ are computed.
-  \end{definition}
+% \item[The Ring Learning With Errors Problem.]
+%   \begin{definition}
+%     [RWLE] Given parameters $q,n$ defining the ring
+%     \(R_{q} = \frac{\mathbb{Z}_{q}[x]}{x^{n} + 1} \) and 
+%     \(\chi_{\alpha q}\) defining a small noise distribution, the
+%     $RWLE_{q,n,\chi}$ problem aims at distinguishing two distributions. In the
+%     first one, $(\mathbf{a_i},\mathbf{b_i})$ are uniformly sampled from
+%     $R_q^2$.  In the second distribution,
+%     $\mathbf{s} \randomsample R_q$, $\mathbf{e_i} \randomsample \chi$ are sampled first, then
+%     $(\mathbf{a_i},\mathbf{b_i})$ are generated by sampling
+%     $\mathbf{a_i} \randomsample R_q$, and finally 
+%     $\mathbf{b_i} = \mathbf{a_i}.\mathbf{s} + \mathbf{e_i}$ are computed.
+%   \end{definition}
 
 \item [SHE Scheme construction]
   \label{sec:BVScheme}
@@ -1724,11 +1780,43 @@ this thesis, we are interested in \textit{statistical } ZK proofs.
   \end{itemize}
 \end{definition}
 Where \(View_{V}[P(x) \leftrightarrow V(x)]\) denotes the view of \(V\) on
-\(x\), or all the messages sent from \(P\) to \(V\), and \(S^{V(x)}\) denotes the
-output distribution of \(S\) having black box access to \(V\) on input \(x\),
-conditioned on \(S(x) \neq \bot\).  We can also say that the simulator \(S\) is
-required to output a transcript that is statistically blind to the real
+\(x\), or all the messages sent from \(P\) to \(V\), and \(S^{V(x)}\) denotes
+the output distribution of \(S\) having black box access to \(V\) on input
+\(x\), conditioned on \(S(x) \neq \bot\).  We can also say that the simulator
+\(S\) is required to output a transcript that is statistically blind to the real
 interaction with probability of at least 1/2.
+
+\textbf{Proof of Knowledge.} In interactive proof systems defined above, if the
+statement is false then no prover can get accepted. However, if the statement is
+true, it is not clear that if \textit{anyone} can give accepted proof. It is
+therefore desirable to have a proof such that allows a \textit{Prover} to
+convince the \textit{Verifier} that it indeed knows why a statement is
+true. Such proof systems are called \textit{Proof of Knowledge}
+\cite{goldwasser1989knowledge, bellare1992defining}. To define this notion, we
+first recall the definition of NP-relations.
+\begin{definition}[NP-relation]
+  An NP-relation $R \subseteq \{0,1\}^{*} \times \{0,1\}^{*} $ is given by a
+  deterministic algorithm $W(\cdot, \cdot)$ that runs in time polynomial of its
+  first input. The relation is $R= \{(x,w): W(x, w) \text{ accepts}\}$. The
+  associated NP-language $L_{R}$ is
+  $L_{R} = \{x: \exists w \text{ s.t. } W(x,w) \text{ accepts}\}$. The witness set
+  for an $x \in \{0,1\}^{*}$ is defined as $R(x) = \{w: W(x,w) = 1\}$.
+\end{definition}
+
+In order to formulate the intuition of the $Prover$ knowning a satisfying witness, the concept of \textit{knowledge extractor} is introduced: if there exists a prover $\hat{P}$ who can convince the verifier with some probability on a statement $x \in L_{R}$, then it is possible to extract from $\hat{P}$ a valid witness for $x$ with a related probability
+
+\begin{definition}[Proof Of Knowledge]
+  An interactive proof system $\Angle{P,V}$ is a proof of knowledge for a
+  NP-relation with knowledge error $k \in [0,1]$ if there exists a PPT knowledge
+  extractor $K$, such that for any $x \in L_{R}$, and for any (even unbounded)
+  $\hat{P}$, for which $p = \prob{out_{V}[\hat{P}\leftrightarrow V(x)] = 1} > k$,
+  then we have
+  \[
+\prob{K^{\hat{P}} \in R_{x}} \geq \poly[p - k]
+  \]
+\end{definition}
+
+Informally, we can say he probability that $K$ ouputs a valid witness for $x$ using the accesss to $\hat{P}$ is at least polynomially related to the probability that $\hat{P}$ convincing the verifier on $x$ (less some knowledge error).
 
 \subsection{ZKPoPK and ISIS problem}
 \label{sec:zkpIsisi}
@@ -1751,26 +1839,49 @@ Inhomogeneous Small Integer Solution (ISIS) problem. The proof relation is
 \]
 The secret witness of \(P\) is \(\vec{x}\) and the public parameters for \(V\)
 are \((\mathbf{A},\vec{y})\).  One of the main research directions was initiated
-by Stern (\cite{stern1993new}), who proposed the solution for a simpler problem
+by Stern (\cite{stern1993new}), who proposed a ZKPoPK for a simpler problem
 (Syndrome Decoding Problem).  Ling et al. (\cite{ling2013improved}) developed a
-scheme to fully support ISIS proofs. The proof is a 3-move interactive protocol
-: P starts the protocol by computing and sending three commitments to V; V then
-sends P a random challenge; P reveals two of the three commitments according
-to the challenge. The $Prover$'s witness is the secret vector $\vec{x}$, the
-public inputs are $\mathbf{A}$ and $\vec{y}$. The protocol is detailed in
-Appendix \ref{append:Stern}. We refer readers to \cite{ling2013improved} for
-correctness and statistical zero-knowledge proofs. As per their
-results, each round of communication costs $\log\beta\tilde{O}(n \log Q)$ bits,
-and we denote the whole run \textbf{SternExt(A,x,y)}.
-
+protocol to fully support ISIS proofs, i.e., the $R_{ISIS}$ relation. The proof
+is a 3-move interactive protocol : P starts the protocol by computing and
+sending three commitments to V; V then sends P a random challenge; P reveals two
+of the three commitments according to the challenge. The $Prover$'s witness is
+the secret vector $\vec{x}$, the public inputs are $\mathbf{A}$ and
+$\vec{y}$. We refer readers to \cite{ling2013improved} for correctness and
+statistical zero-knowledge proofs. As per their results, each round of
+communication costs $\log\beta\tilde{O}(n \log Q)$ bits, and we denote the whole
+run \textbf{SternExt(A,x,y)}, which is discussed as follows.
 
 \subsection{SternExt Protocol}
 \label{append:Stern}
-The protocol includes 2 phases
+We first recall some related concepts of commitment scheme, which is used widely
+in zero knowledge proofs. Commitment scheme is a primitive that allows a sender
+to commit to some information in advance, a verifier then specifies a choice of
+what it wants to learn, the sender can choose to reveal the value corresponding
+to the verifier's choice. A Commitment scheme works in two phases: committing
+and revealing phase. In the first phase, the sender that wants to commit a value
+$s$, computes $\mathbf{c} = COM(s, \rho)$, where $\rho$ is some random factor,
+$\mathbf{c}$ is sent to the receiver. In the second phase, the sender reveals
+$s$ and the random $\rho$, the verifier can compute $COM(s,\rho)$ to compare
+with $\mathbf{c}$ to check the validity of $\mathbf{c}$. Generally, secure commitment scheme should satisfy two requirements: statistical hiding and computational binding.
+
+\begin{definition}
+  A statistical hiding and computational binding string commitment scheme is a PPT algorithm $COM(s,\rho)$ satisfying:
+  \begin{itemize}
+  \item $\forall s_{o}, s_{1} \in \{0,1\}^{*}: COM(s_{0};\cdot) \approx_{s} COM(s_{1};\cdot)$
+  \item For any PPT algorithm A returning $(s_{0}, \rho_{0});(s_{1},\rho_{1})$
+    given $s_{0} \neq s_{1}$, we have
+    $$\prob{COM(s_{0},\rho{0}) = COM(s_{1}, \rho_{1})} = \negl$$
+  \end{itemize}
+\end{definition}
+
+In other words, a commitment scheme is statistical hiding if any computationally unbounded cheating verifier cannot distinguish the commitments of two different strings. The scheme is computationally binding if any PPT cheating sender cannot change the committed string after the first phase. There are some constructions built from collision resistant hash functions \cite{damgaard1993existence, halevi1996practical}. The \textbf{SternExt(A,x,y)} protocol includes 2 phases
 \begin{description}
-\item[Setup.] Let COM be a statistical hiding and computational biding commitment scheme (\cite{kawachi2008concurrently} show that such scheme can be constructed based on the hardness of ISIS problem).  Before the interaction, P and V
-  create matrix $\mathbf{A'} \in \mathbb{Z}_Q^{n\times 3m}$ by extending $\mathbf{A}$ (padding $\mathbf{A}$ with $2m$
-  zero-columns). P also executes some extra preparation steps:
+\item[Setup.] Let COM be a statistical hiding and computational biding
+  commitment scheme (\cite{kawachi2008concurrently} show that such scheme can be
+  constructed based on the hardness of ISIS problem).  Before the interaction, P
+  and V create matrix $\mathbf{A'} \in \mathbb{Z}_Q^{n\times 3m}$ by extending
+  $\mathbf{A}$ (padding $\mathbf{A}$ with $2m$ zero-columns). P also executes
+  some extra preparation steps:
   \begin{itemize}
   \item Decomposition: Represent vector $\vec{x} = (x_0, \dots, x_{m-1})$ by $k$ vectors
     ${\vec{u'}}_j \in \{-1,0,1\}^m$. The algorithm first breaks each $x_i$ into its binary representation:
@@ -1788,8 +1899,11 @@ The protocol includes 2 phases
 \item[The interactive proof system.]  The $Prover$ P ad the $Verifier$ V interact as follows
   \begin{enumerate}
   \item \textbf{Commitment.} P samples
-    $\vec{r_0}, \vec{r_1}, \dots, \vec{r_{k-1}} \randomsample \mathbb{Z}_Q^{3m}$,
-    $\pi_{0}, \dots, \pi_{k-1} \randomsample \mathcal{S}_{3m}$ and sends the commitments to V:
+    $\vec{r_0}, \vec{r_1}, \dots, \vec{r_{k-1}} \randomsample
+    \mathbb{Z}_Q^{3m}$,
+    $\pi_{0}, \dots, \pi_{k-1} \randomsample \mathcal{S}_{3m}$, where
+    $\mathcal{S}_{k}$ denotes the symmetric group of all permutations of $k$
+    elements. P sends the commitments to V:
     \[
       \begin{cases}
         \mathbf{c_1} = COM(\pi_0,\dots,\pi_{k-1},
@@ -1837,11 +1951,26 @@ The protocol includes 2 phases
         \end{cases}
       \]
     \end{itemize}
-    In each case, V outputs $Accept$ if and only if all the conditions hold. Otherwise, V outputs $Reject$. Also note
-    that all the computations are done in $\mathbb{Z}_Q$.
+    In each case, V outputs $Accept$ if and only if all the conditions
+    hold. Otherwise, V outputs $Reject$. Also note that all the computations are
+    done in $\mathbb{Z}_Q$.
 
   \end{enumerate}
 \end{description}
+
+\begin{theorem}
+  [\cite{ling2013improved}] The \textbf{SternExt} proof system is a statistical ZKPoK for the relation $R_{ISIS}$, with perfect completeness and knowledge error 2/3.
+\end{theorem}
+
+It was proved in \cite{ling2013improved} that:
+\begin{itemize}
+\item If the honest prover follows the protocol, it is always accepted.
+\item If COM is statistical hiding, then a simulator (with black box access to a
+  cheating verifier) can be constructed that produces a protocol transcript with
+  accept probability 2/3 and is statistically close to the transcript produced
+  by the real communication.
+\item If COM is computationaly binding, and if there exists a cheating prover that can pass the proof with probability higher than 2/3 then one can use it to construct a knowledge extractor that outputs $\mathbf{x'}$ such that $(\mathbf{(A,y),x'}) \in R_{ISIS}$
+\end{itemize}
 
 \section{Garbled Circuit and Oblivious Transfer}
 \label{sec:defMPP}
@@ -1912,12 +2041,18 @@ two private inputs \(x_{0}, x_{1}\) and the \(Receiver\) uses one input bit
 \(s\): \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix}
 \)-OT\((x_{0},x_{1};s) = x_{s}\).
 
-The general idea is that, when the receiver requests an item, the sender sends all the available
-items to him, he is unaware of which one has been requested
+The general idea is that, when the receiver requests an item, the sender sends
+all the available items to him, he is unaware of which one has been requested
 requested. However, the response is encrypted in such a way that the receiver
 can only decrypt the one he requested. A concrete implementation example of
 \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT protocol based on
-discrete log DH is illustrated in figure \ref{fig:DH21OT}. The receiver picks \(h_{0},h_{1}\) such that \(h_{0}h_{1} = h\), he cannot access both \(\log_{g}h_{0}\) and \(\log_{g}h_{1}\). Given \(h_{0}, h_{1}\), the sender returns ElGamal encryptions of bits \(x_{0}, x_{1}\) using \(h_{0},h_{1}\) as public keys. The receiver then decrypts one of the encryptions to recover either \(x_{0} or x_{1}\)
+discrete log DH is illustrated in figure \ref{fig:DH21OT} (This protocol is
+secure against \textit{honest but curious} attacks). The receiver picks
+\(h_{0},h_{1}\) such that \(h_{0}h_{1} = h\), he cannot access both
+\(\log_{g}h_{0}\) and \(\log_{g}h_{1}\). Given \(h_{0}, h_{1}\), the sender
+returns ElGamal encryptions of bits \(x_{0}, x_{1}\) using \(h_{0},h_{1}\) as
+public keys. The receiver then decrypts one of the encryptions to recover either
+\(x_{0} \text{ or } x_{1}\)
 
 \begin{figure}[h!]
   \centering
