@@ -633,11 +633,10 @@ fingerprint templates.
 		\item $\user_k$ sends $(k,Q_k)$ to $\server$ and
 		runs $\mathbf{ZKPValidEnc((Q_k,pk_k),(Y,sk_k))}$ to prove the
 		validity of $Y$.\label{protocol:step2}
-		\item $\server$ locates the record $(k,T_k)$ and computes
-		\                        the encrypted Hamming Distance $C_{HD} = Enc^{(1)}(
-		HD)$ of $X$ and
-		$Y$, using the homomorphic operation discussed in
-		Appendix \ref{sec:HDComp}
+              \item $\server$ locates the record $(k,T_k)$ and computes \ the
+                encrypted Hamming Distance $C_{HD} = Enc^{(1)}( HD)$ of $X$ and
+                $Y$, using the homomorphic operation discussed in Appendix
+                \ref{sec:HDComp}
 		$$C_{HD} \gets
 		\textbf{EvalDistance}(T_k,Q_k).$$\label{protocol:step3}
 		\item $\server$ masks the $C_{HD}$ by sampling $r
@@ -734,8 +733,7 @@ fingerprint templates.
 		%\missref{}.
 
 	\end{enumerate}
-	The proposed scheme satisfies the security notions defined in Sect. \ref{sec:syntaxModel}, proofs are provided in Appendix
-    \ref{append:Proofs}
+	The proposed scheme satisfies the security notions defined in Sect. \ref{sec:syntaxModel}.
 	\begin{theorem}
 		\label{theo:server}
 		Under the IND-CPA security of a BV cryptosystem, and the zero-knowledge
@@ -750,12 +748,65 @@ fingerprint templates.
 
 \end{description}
 
+\begin{figure}[htbp!] 
+  \centering \procedure{THE THIRD PROTOCOL}{
+    \textbf{Client} \> \> \textbf{Server}\pclb
+    \pcintertext[dotted]{Enrolment}\\
+    \text{Extract } \mathbf{x} \randomsample D_k \> \> \\
+    T_k = Enc^{(1)}(\mathbf{x},\pk) \> \sendmessageright*{(k, T_k)}
+    \> \text{Persist $(k,T_{k})$}\pclb
+    \pcintertext[dotted]{Authentication}\\
+    \text{Extract } \mathbf{y} \randomsample D_k \> \> \\
+    Q_k = Enc^{(1)}(\mathbf{y},\pk) \> \sendmessageright*{(k, Q_k)}
+    \> \\
+    \> \sendmessageright*{\mathbf{ZKPValidEnc}} \> C_{HD} \gets \mathbf{EvalDistance}(T_k, Q_k)\\
+    \> \sendmessageleft*{C_{HD'}} \> C_{HD'} \gets Enc^{(1)}(HD,e_0) + Enc^{(1)}(r,e_r)\\
+    HD' \gets Dec(C_{HD'},\sk) \> \> \\
+    C_{HD'_0} \gets Enc^{(1)}(HD', 0, \dots, 0) \> \sendmessageright*{C_{HD'_0}} \> \\
+    HD' = b_0 + b_1 2 + \dots + b_l 2^{l-1} \> \> \\
+    C_i \gets Enc^{(1)}(b_i) \> \sendmessageright*{C_i} \> \\
+    \> \sendmessageright*{\mathbf{ZKPUnpack}(C_{HD}, C_{HD'_0})} \> \\
+    \> \sendmessageright*{\mathbf{ZKPBinDecomp}(C_{i}, C_{HD'_0})} \> C''_{HD} \gets Enc^{(2)}(2^t + \tau - HD)\\
+    \> \sendmessageleft*{C_{res}} \> C_{res} = Enc^{(3)}(res) \gets \mathbf{MSBExtract}(C''_{HD})\\
+    res = Dec(C_{res}) \> \sendmessageright*{\mathbf{ZKPCorrectDec}(res)} \>
+    }
+  \caption{The Third Protocol}
+  \label{fig:thirdProtocol}
+\end{figure}
+
 \section{Security Proofs}
 \label{append:Proofs}
 \subsection{Security Proof for Theorem~\ref{theo:client}: Type I Impersionation attack}
-The proof of theorem \ref{theo:server} and  \ref{theo:client} can be provided using a sequence of games between the challenger $\challenger$ and the adversary $\attacker$. We present
-a sequence of games as well as the relations among them to demonstrate the type I security model proof.\\\\
-\textit{Game 0}. Game 0 is the original impersonation game for type I attack.
+The proof of theorem \ref{theo:server} and \ref{theo:client} can be provided
+using a sequence of games between the challenger $\challenger$ and the adversary
+$\attacker$. We present a sequence of games as well as the relations among them to demonstrate the type I security model proof.\\
+\begin{figure}[htbp!] 
+  \centering
+  \fbox{
+   \begin{gameproof}[nr=-1]
+  \gameprocedure[linenumbering, mode=text]{
+    $D_{k} \randomsample D_{bio}$\\
+    $(\sk, \pk) \gets KeyGen(params)$\\
+    $\mathbf{X}_{k} \randomsample D_{k}$\\
+    $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+    For $i=1,\dots,q$:\\
+    $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+    $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+    $verifierView1 \gets \mathbf{ZKPoPK1}((\sk,\mathbf{Y}_{i});(\pk,\enc{\mathbf{Y}_{i}}))$\\
+    $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+    $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+    $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+    $verifierView2 \gets \mathbf{ZKPoPK2}((\sk,\mathbf{HD'}_{i});(\pk,\enc{\mathbf{HD'}_{i}}))$\\
+    $HD_{i} \gets HD'_{i} - r_{i}$\\
+    $res_{i} \gets compare(HD_{i}, \tau)$\\
+    $\beta \gets \adv(verifierView1, verifierView2, \enc{\mathbf{X}_{k}}, \enc{\mathbf{Y}_{i}}, res_{i}, r_{i}, HD_{i},
+    \enc{\mathbf{HD'}_{i}}, \enc{\mathbf{HD}_{i}})$ }
+\end{gameproof}
+  }
+  \caption{Game 0 - Malicious Client game}
+  \label{fig:game0protocol3client}
+\end{figure}
+\textit{Game 0} (Figure \ref{fig:game0protocol3client}). Game 0 is the original impersonation game for type I attack.
 \begin{description}
 	\item [Setup.] $\challenger$ intiates $D_k \randomsample D_{bio}$ and $X_k
 	\randomsample D_k$. $\challenger$ sets up $(sk_k, pk_k)$ and executes
