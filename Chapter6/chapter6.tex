@@ -37,6 +37,227 @@ lattice-based cryptographic protocols. The contributions of this variant include
   trade-offs when used with lattice-based cryptosystems.
 \end{itemize}
 
+
+\section{Proposed Scheme}
+We first propose a secure fingerprint authentication scheme that combines a
+Somewhat Homomorphic Encryption (SHE) with a Zero-Knowledge Proof (ZKP) to
+provide privacy features with low FAR overhead. The scheme is secure under a
+hybrid model that assumes an active client and an honest but curious (HBC)
+server. The server $\server$ is considered to be HBC by assuming that it can be
+audited regularly. This scheme uses Hamming Distance (HD) as the main measure
+unit to determine the difference between two fingerprint templates. The detailed
+descriptions of each protocol step are discussed in later sections of the
+chapter.
+
+\subsection{The protocol}
+\label{sec:theProtocol}
+\begin{description}
+	\item[Setup] The server and the user run the setup process as
+	follows:
+	\begin{itemize}
+
+
+
+		% * <trung.dinh@monash.edu> 2016-10-21T13:17:43.354Z:
+		%
+		% replace BGV by GSW for now
+		%
+		% ^.
+
+		\item $\mathcal{S}$ invokes $params_{BV} \gets
+		SGen_{BV}(1^\lambda)$
+		\item We are currently using a BV cryptosystem
+		(\cite{brakerski2011fully}). We refer the reader to section
+		\ref{sec:BVScheme} for details of $params_{BV}$, the public
+		key $pk$, the private key $sk$, as well as the
+		operations of the
+		cryptosystem.
+		\item A user $\mathcal{U}_k$ invokes $(pk_k,sk_k) \gets
+		UGen_{BGV}(params_{BGV})$ and makes $pk_k$ publicly
+		available to $\mathcal{S}$.
+
+
+
+
+		\iffalse
+		\item $\mathcal{S}$ invokes $params_{GSW} \gets
+		SGen_{GSW}(1^\lambda)$
+		\item We are currently using GSW cryptosystem
+		(\cite{gentry2013homomorphic}).
+		We refer the reader to section
+		\missref{} for details of $params_{GSW}$, the public
+		key $pk$, the private key $sk$, as well as the
+		homomorphic operations of the
+		cryptosystem.
+		\item A user $\mathcal{U}_k$ invokes $(pk_k,sk_k) \gets
+		UGen_{GSW}(params_{GSW})$ and make $pp_k$ publicly
+		available to $\mathcal{S}$
+		\fi
+
+
+	\end{itemize}
+	\item[Enrolment] The enrolment process runs as follows.
+	\begin{itemize}
+		\item $\mathcal{U}$ uses a specific sensor and algorithm to
+		extract his biometric template $X$. $\mathcal{U}$
+		encrypts $X$ with his public key $pk_k$ to get
+		$T_k = Enc^{(1)}(X)$.
+		\item $\mathcal{U}$ sends $(k,T_k)$ to $\mathcal{S}$.
+		Noted that $k$
+		is used as an identity index for $\mathcal{U}$.
+		\item $\mathcal{S}$ stores a tuple $(k, T_k)$ as a
+		record.
+	\end{itemize}
+	\item[Authentication] The authentication process for a user
+	$\mathcal{U}_k$ is as follows.
+	\begin{enumerate}
+		\item $\user_k$ extracts his query template $Y$. He
+		encrypts $Y$ with his public key $pk_k$ to obtain
+		$Q_k = Enc^{(1)}(Y)$.\label{protocol:step1}
+              \item $\user_k$ sends $(k,Q_k)$ to $\server$ and runs
+                $\mathbf{ZKPValidEnc((Q_k,pk_k),(Y,sk_k))}$ to prove the
+                validity of $Y$.\label{protocol:step2} was detailed in Chapter \ref{chap:firstProtocol}.
+              \item $\server$ locates the record $(k,T_k)$ and computes \ the
+                encrypted Hamming Distance $C_{HD} = Enc^{(1)}( HD)$ of $X$ and
+                $Y$, using the homomorphic operation discussed in Section \ref{sec:firstProcBGV}.
+		$$C_{HD} \gets
+		\textbf{EvalDistance}(T_k,Q_k).$$\label{protocol:step3}
+		\item $\server$ masks the $C_{HD}$ by sampling $r
+		\randomsample \mathcal{P}$
+		and performs one homomorphic addition to get
+		$C_{HD'} = Enc^{(1)}(HD + r) \gets Enc^{(1)}(HD) + Enc^{(1)}(r)$.
+		The result ciphertext is sent to $\user_k$.\label{protocol:step4}
+		\item $\user_k$ uses his private key $sk_k$ to decrypt $C_{HD'}$
+		and sends
+		the re-encryption $C_{HD'_0} = Enc^{(1)}(HD',0,0,\dots,0)$ back to $\server$.
+		$\user_k$ also decomposes the plaintext result
+		$HD' = HD+r$ into its binary representation:
+		\[
+		HD' = b_0 + b_12^1 + \dots + b_l2^{l-1}
+		\]
+		and sends $C_i = Enc^{(1)}(b_i)$ to $\server$
+		for $i = 0, \dots, l-1$.\label{protocol:step5}
+
+		\item $\user_k$ and $\server$ run the $\mathbf{ZKPUnpack}(C_{HD},C_{HD_0'})$ and
+		$\mathbf{ZKPBinDecomp}(C_{HD_0'},C_i)$
+		protocols to convince the server that
+		$\user_k$ did follow the protocol transcript correctly. This is detailed
+		in section
+		\ref{sec:ZKPReencrypt}.
+		\label{protocol:step6}
+		\item $\server$ computes $C_{HD}'' = Enc^{(2)}(2^l + t - HD) \gets
+		Enc^{(2)}(2^l + t) - Enc^{(2)}(HD+r) + Enc^{(2)}(r)$, where
+		$Enc^{(2)}(HD + r)$ is computed by $\mathbf{ToUnary}(C_i)$. We note that
+		$Enc^{(2)}$ is the second mode of encryption with the message
+		encoded in the exponent of the polynomial, which allows the
+		Most significat bit (MSB)
+		extraction on the ciphertext (this is detailed section \ref{sec:binToUna} \label{protocol:step7}).
+		\item $\server$ does $Enc^{(3)}(res) \gets
+		\mathbf{MSBExtract}(C_{HD}'')$, this is the ciphertext
+		of the authentication result, which is sent to $\user_k$. This
+		is described in section \ref{sec:MSBExtract}.
+		\label{protocol:step8}
+		\item $\user_k$ decrypts the result $res$ and sends it to $\server$
+		(it will be either \textbf{Accepted} or \textbf{Rejected} by $\server$).
+		$\user_k$ also runs another proof $\mathbf{ZKPCorrectDec}(res)$
+		to convince $\server$ that he
+		did follow the protocol honestly (Section \ref{sec:ZKPReencrypt}).\label{protocol:step9}
+
+
+
+
+		%$\server$ also computes
+		%the encryption of the authentication result $Enc(\Delta < \tau)$
+		%using another homomorphic operation $Enc(\Delta \stackrel{?}{<}
+		%\tau) \gets \textbf{EvalRes}(pk_k, \tau, Enc(\Delta))$.
+		%\item $\server$ sends $Enc(\Delta \stackrel{?}{<} \tau)$ to $\user_k$.
+		%$\user_k$ uses his private key $sk_k$ to decrypt the plaintext $
+		%res \gets \Delta
+		%\stackrel{?}{<} \tau$.
+
+
+
+		% * <trung.dinh@monash.edu> 2016-10-21T13:15:14.957Z:
+		%
+		% we agreed to do this later, for now, we change back to GSW instead of BGV. Later when we apply MCC we will consider bringing these garble circuit back.
+		%
+		% ^.
+		%\item $\server$ masks the computed distance with a random
+		%value $R$, using Homomorphic addition operation:
+		%$Enc(\Delta + R) \gets EvalAdd(pk_k, Enc(\Delta),
+		%Enc(R))$.
+		%\item $\server$ builds a garbled circuit $\textbf{GC}$ to evaluate
+		%the bit value of the comparison between a plaintext $\Delta$
+		%against a threshold
+		%$\tau$ privately $(\Delta \stackrel{?}{<} \tau) \gets
+		%\textbf{GC}(k_{\Delta + R}, k_R)$. We note that
+		%$k_{\Delta + R}$ and $k_R$ are cryptographic keys input
+		%to garble circuit protocol. We refer the reader to
+		%section \missref{} for details of garble circuit
+		%protocols.
+		%\item $\server$ sends $Enc(\Delta + R)$ and $\textbf{GC}$ to $\user_k$, $\user_k$
+		%uses his private key $sk_k$ to decrypt $\Delta+R$.
+		%\item $\user_k$ derives $k_{\Delta + R}$ to be use as the
+		%first input to $\textbf{GC}$ and $\user_k$ runs Oblivious Transfer protocol
+		%$\textbf{OT}$ to obtain $k_R$ from $\server$ privately.
+		%$\textbf{OT}$ is discussed in section
+		%\missref{}.
+		%\item $\user_k$ evaluates $(\Delta \stackrel{?}{<} \tau) \gets
+		%\textbf{GC}(k_{\Delta + R}, k_R)$ and sends the result
+		%$res$ to $\server$.
+
+
+
+
+
+		%\item $\user_k$ convinces $\server$ that he did follow the
+		%protocol honestly using Zero Knowledge Proof protocol
+		%$\textbf{ZKP}$. This protocol is discussed in section
+		%\missref{}.
+
+	\end{enumerate}
+	The proposed scheme satisfies the security notions defined in Sect. \ref{sec:syntaxModel}.
+	\begin{theorem}
+		\label{theo:server}
+		Under the IND-CPA security of a BV cryptosystem, and the zero-knowledge
+		property of the Stern protocol, the proposed scheme satisfies an (Honest But Curious) Server Privacy's Security.
+	\end{theorem}
+	\begin{theorem}
+		\label{theo:client}
+		Under the IND-CPA security of a BV cryptosystem and the soundness
+		property of the underlying Stern protocol, the proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has imperonsation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge errors $\eps_{ZK1},\ldots,\eps_{ZK4}$ such that $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
+\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq c_1 \cdot \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition $\sigma/r_0 \geq 4 \pi k n q$ holds, with $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ being an upper bound on the size of the noise in $C_{HD}$.
+	\end{theorem}
+
+\end{description}
+
+\begin{figure}[htbp!] 
+  \centering \procedure{THE THIRD PROTOCOL}{
+    \textbf{Client} \> \> \textbf{Server}\pclb
+    \pcintertext[dotted]{Enrolment}\\
+    \text{Extract } \mathbf{x} \randomsample D_k \> \> \\
+    T_k = Enc^{(1)}(\mathbf{x},\pk) \> \sendmessageright*{(k, T_k)}
+    \> \text{Persist $(k,T_{k})$}\pclb
+    \pcintertext[dotted]{Authentication}\\
+    \text{Extract } \mathbf{y} \randomsample D_k \> \> \\
+    Q_k = Enc^{(1)}(\mathbf{y},\pk) \> \sendmessageright*{(k, Q_k)}
+    \> \\
+    \> \sendmessageright*{\mathbf{ZKPValidEnc}} \> C_{HD} \gets \mathbf{EvalDistance}(T_k, Q_k)\\
+    \> \sendmessageleft*{C_{HD'}} \> C_{HD'} \gets Enc^{(1)}(HD,e_0) + Enc^{(1)}(r,e_r)\\
+    HD' \gets Dec(C_{HD'},\sk) \> \> \\
+    C_{HD'_0} \gets Enc^{(1)}(HD', 0, \dots, 0) \> \sendmessageright*{C_{HD'_0}} \> \\
+    HD' = b_0 + b_1 2 + \dots + b_l 2^{l-1} \> \> \\
+    C_i \gets Enc^{(1)}(b_i) \> \sendmessageright*{C_i} \> \\
+    \> \sendmessageright*{\mathbf{ZKPUnpack}(C_{HD}, C_{HD'_0})} \> \\
+    \> \sendmessageright*{\mathbf{ZKPBinDecomp}(C_{i}, C_{HD'_0})} \> C''_{HD} \gets Enc^{(2)}(2^t + \tau - HD)\\
+    \> \sendmessageleft*{C_{res}} \> C_{res} = Enc^{(3)}(res) \gets \mathbf{MSBExtract}(C''_{HD})\\
+    res = Dec(C_{res}) \> \sendmessageright*{\mathbf{ZKPCorrectDec}(res)} \>
+    }
+  \caption{The Third Protocol}
+  \label{fig:thirdProtocol}
+\end{figure}
+
+
 \section{The Homomorphic tools}
 \subsection{Extracting the Most Significant Bit homomorphically}
 \label{sec:MSBExtract}
@@ -446,7 +667,7 @@ We then provide details about the $\mathbf{ZKPBinDecomp(c,c_i)}$ module, aimed a
       \EndProcedure
     \end{algorithmic}
   \end{algorithm}
-\item [Applications in our protocol.] In \ref{protocol:step5}, after receiving
+\item [Applications in our protocol.] In authentication step \ref{protocol:step5}, after receiving
   the ciphertext $C_{HD'}$, which encrypts a plaintext
   of the form $(HD', g_1, \dots, g_{n-1})$, $\user_k$ removes the noise terms $g_1, \dots,
   g_{n-1}$ and sends the re-encryption $C_{HD_0'} = Enc(HD', 0, 0, \dots,
@@ -455,10 +676,13 @@ We then provide details about the $\mathbf{ZKPBinDecomp(c,c_i)}$ module, aimed a
   that the bits sent are actually the ones decomposed from $HD'$. This proof is done
   by $\mathbf{ZKPBinDecomp(C_{HD_0'},c_i)}$.
 
-  Besides, In \ref{protocol:step1}, $\user_k$ uses $\mathbf{ZKPBV}$ to convince $\server$ that he is
-  authenticating with a valid template $Y$. Moreover, in \ref{protocol:step9}, $\user_k$ can use either $\mathbf{ZKPExt3}$ or $\mathbf{ZKPExt4}$ to
+  Besides, In authentication step \ref{protocol:step1}, $\user_k$ uses $\mathbf{ZKPBV}$ to convince $\server$ that he is
+  authenticating with a valid template $Y$. Moreover, in step \ref{protocol:step9}, $\user_k$ can use either $\mathbf{ZKPExt3}$ or $\mathbf{ZKPExt4}$ to
   convince $\server$ about the authentication result.
 \end{description}
+
+\section{Evaluations and Improvements}
+\label{sec:evaluation}
 
 \subsection{Combination of ZKP}
 \label{sec:combination-zkp}
@@ -482,26 +706,41 @@ is an instance of such a protocol and the technique can be applied inherently.
   \(x\) and a random parameter \(\rho'\) as inputs, and and outputting a view
   \(\bar{c},\bar{ch},\bar{r}\) that is indistinguishable from the genuine view
   of the protocol.
-  \begin{figure}[h!]
-    \centering
-    \begin{equation*}
-      \begin{array}{c c c}
-        \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-        \\
-        \rho \randomsample random & & \\
-        c = comm(\rho) & & \\
-                               & \xrightarrow{c} & \\
-                               & & ch \randomsample random \\
-                               & \xleftarrow{ch} & \\
-        r = resp(\rho,w,x,ch) & & \\
-                               & \xrightarrow{r} & \\
-                               & & verify(r, ch, c)\\
-      \end{array}
-    \end{equation*}
+
+  \begin{figure}[htbp!] 
+    \centering \procedure{Sigma Protocol}{
+      \textbf{Prover} \> \> \textbf{Verifier}\\
+      \rho \randomsample random \> \> \\
+      c \gets comm(\rho) \> \> \\
+      \> \sendmessageright*{c} \> \\
+      \> \> ch \randomsample random \\
+      \> \sendmessageleft*{ch} \> \\
+      r \gets resp(\rho,w,x,ch) \> \> \\
+      \> \sendmessageright*{r} \> \\
+      \> \> verify(r, ch, c)\\
+    }
     \caption{Sigma Protocol}
     \label{fig:sigmaProtocol}
   \end{figure}
-  
+  % \begin{figure}[h!]
+  %   \centering
+  %   \begin{equation*}
+  %     \begin{array}{c c c}
+  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+  %       \\
+  %       \rho \randomsample random & & \\
+  %       c = comm(\rho) & & \\
+  %                              & \xrightarrow{c} & \\
+  %                              & & ch \randomsample random \\
+  %                              & \xleftarrow{ch} & \\
+  %       r = resp(\rho,w,x,ch) & & \\
+  %                              & \xrightarrow{r} & \\
+  %                              & & verify(r, ch, c)\\
+  %     \end{array}
+  %   \end{equation*}
+  %   \caption{Sigma Protocol}
+  %   \label{fig:sigmaProtocol}
+  % \end{figure}
 \end{description}
 
 
@@ -527,252 +766,54 @@ is an instance of such a protocol and the technique can be applied inherently.
   for example \(c = c_{1} \xor c_{2} \xor \dots \xor c_{n}\). The final OR-combination proof is
   obtained by composing one run of the \(\sum-protocol\) with other runs of the
   simulators for the \(\sum-protocol\). (Figure \ref{fig:OR-Combination})
-  \begin{figure}[h!]
-    \centering
-    \begin{equation*}
-      \begin{array}{c c c}
-        \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-        \\
-        \rho_{i} \randomsample random & & \\
-        c_{i} = comm(\rho_{i}) & & \\
-        \text{For } j = 1,\dots,n \wedge j \neq i: & & \\
-        \text{    } \rho_{j} \randomsample random; & & \\
-        \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) & & \\
-                               & \xrightarrow[ch_{j}]{c_{1}, c_{2}, \dots, c_{n}} & \\
-                               & & ch \randomsample \mathbb{Z}_{n} \\
-                               & \xleftarrow{ch} & \\
-        ch_{i} = ch - \sum_{j \neq i}{ch_{j}} & & \\
-        r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) & & \\
-                               & \xrightarrow{r_{1}, r_{2}, \dots, r_{n}} & \\
-                               & & \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
-                               & & ch = \sum_{i \in [n]}ch_{i}\\
-      \end{array}
-    \end{equation*}
-    \caption{}
-    \label{fig:OR-Combination}
-  \end{figure}
-\end{description}
 
-
-
-\section{Proposed Scheme}
-We propose a secure fingerprint authentication scheme that combines a Somewhat
-Homomorphic Encryption (SHE) with a Zero-Knowledge Proof (ZKP) to provide privacy
-features with low FAR overhead. The scheme is secure under a hybrid model that
-assumes an active client and an
-honest but curious (HBC) server. The server $\server$ is considered to be HBC
-by assuming that it can be audited regularly. This scheme uses Hamming
-Distance (HD) as the main measure unit to determine the difference between two
-fingerprint templates.
-
-\subsection{The protocol}
-\label{sec:theProtocol}
-\begin{description}
-	\item[Setup] The server and the user run the setup process as
-	follows:
-	\begin{itemize}
-
-
-
-		% * <trung.dinh@monash.edu> 2016-10-21T13:17:43.354Z:
-		%
-		% replace BGV by GSW for now
-		%
-		% ^.
-
-		\item $\mathcal{S}$ invokes $params_{BV} \gets
-		SGen_{BV}(1^\lambda)$
-		\item We are currently using a BV cryptosystem
-		(\cite{brakerski2011fully}). We refer the reader to section
-		\ref{sec:BVScheme} for details of $params_{BV}$, the public
-		key $pk$, the private key $sk$, as well as the
-		operations of the
-		cryptosystem.
-		\item A user $\mathcal{U}_k$ invokes $(pk_k,sk_k) \gets
-		UGen_{BGV}(params_{BGV})$ and makes $pk_k$ publicly
-		available to $\mathcal{S}$.
-
-
-
-
-		\iffalse
-		\item $\mathcal{S}$ invokes $params_{GSW} \gets
-		SGen_{GSW}(1^\lambda)$
-		\item We are currently using GSW cryptosystem
-		(\cite{gentry2013homomorphic}).
-		We refer the reader to section
-		\missref{} for details of $params_{GSW}$, the public
-		key $pk$, the private key $sk$, as well as the
-		homomorphic operations of the
-		cryptosystem.
-		\item A user $\mathcal{U}_k$ invokes $(pk_k,sk_k) \gets
-		UGen_{GSW}(params_{GSW})$ and make $pp_k$ publicly
-		available to $\mathcal{S}$
-		\fi
-
-
-	\end{itemize}
-	\item[Enrolment] The enrolment process runs as follows.
-	\begin{itemize}
-		\item $\mathcal{U}$ uses a specific sensor and algorithm to
-		extract his biometric template $X$. $\mathcal{U}$
-		encrypts $X$ with his public key $pk_k$ to get
-		$T_k = Enc^{(1)}(X)$.
-		\item $\mathcal{U}$ sends $(k,T_k)$ to $\mathcal{S}$.
-		Noted that $k$
-		is used as an identity index for $\mathcal{U}$.
-		\item $\mathcal{S}$ stores a tuple $(k, T_k)$ as a
-		record.
-	\end{itemize}
-	\item[Authentication] The authentication process for a user
-	$\mathcal{U}_k$ is as follows.
-	\begin{enumerate}
-		\item $\user_k$ extracts his query template $Y$. He
-		encrypts $Y$ with his public key $pk_k$ to obtain
-		$Q_k = Enc^{(1)}(Y)$.\label{protocol:step1}
-		\item $\user_k$ sends $(k,Q_k)$ to $\server$ and
-		runs $\mathbf{ZKPValidEnc((Q_k,pk_k),(Y,sk_k))}$ to prove the
-		validity of $Y$.\label{protocol:step2}
-              \item $\server$ locates the record $(k,T_k)$ and computes \ the
-                encrypted Hamming Distance $C_{HD} = Enc^{(1)}( HD)$ of $X$ and
-                $Y$, using the homomorphic operation discussed in Appendix
-                \ref{sec:HDComp}
-		$$C_{HD} \gets
-		\textbf{EvalDistance}(T_k,Q_k).$$\label{protocol:step3}
-		\item $\server$ masks the $C_{HD}$ by sampling $r
-		\randomsample \mathcal{P}$
-		and performs one homomorphic addition to get
-		$C_{HD'} = Enc^{(1)}(HD + r) \gets Enc^{(1)}(HD) + Enc^{(1)}(r)$.
-		The result ciphertext is sent to $\user_k$.\label{protocol:step4}
-		\item $\user_k$ uses his private key $sk_k$ to decrypt $C_{HD'}$
-		and sends
-		the re-encryption $C_{HD'_0} = Enc^{(1)}(HD',0,0,\dots,0)$ back to $\server$.
-		$\user_k$ also decomposes the plaintext result
-		$HD' = HD+r$ into its binary representation:
-		\[
-		HD' = b_0 + b_12^1 + \dots + b_l2^{l-1}
-		\]
-		and sends $C_i = Enc^{(1)}(b_i)$ to $\server$
-		for $i = 0, \dots, l-1$.\label{protocol:step5}
-
-		\item $\user_k$ and $\server$ run the $\mathbf{ZKPUnpack}(C_{HD},C_{HD_0'})$ and
-		$\mathbf{ZKPBinDecomp}(C_{HD_0'},C_i)$
-		protocols to convince the server that
-		$\user_k$ did follow the protocol transcript correctly. This is detailed
-		in section
-		\ref{sec:ZKPReencrypt}.
-		\label{protocol:step6}
-		\item $\server$ computes $C_{HD}'' = Enc^{(2)}(2^l + t - HD) \gets
-		Enc^{(2)}(2^l + t) - Enc^{(2)}(HD+r) + Enc^{(2)}(r)$, where
-		$Enc^{(2)}(HD + r)$ is computed by $\mathbf{ToUnary}(C_i)$. We note that
-		$Enc^{(2)}$ is the second mode of encryption with the message
-		encoded in the exponent of the polynomial, which allows the
-		Most significat bit (MSB)
-		extraction on the ciphertext (this is detailed section \ref{sec:binToUna} \label{protocol:step7}).
-		\item $\server$ does $Enc^{(3)}(res) \gets
-		\mathbf{MSBExtract}(C_{HD}'')$, this is the ciphertext
-		of the authentication result, which is sent to $\user_k$. This
-		is described in section \ref{sec:MSBExtract}.
-		\label{protocol:step8}
-		\item $\user_k$ decrypts the result $res$ and sends it to $\server$
-		(it will be either \textbf{Accepted} or \textbf{Rejected} by $\server$).
-		$\user_k$ also runs another proof $\mathbf{ZKPCorrectDec}(res)$
-		to convince $\server$ that he
-		did follow the protocol honestly (Section \ref{sec:ZKPReencrypt}).\label{protocol:step9}
-
-
-
-
-		%$\server$ also computes
-		%the encryption of the authentication result $Enc(\Delta < \tau)$
-		%using another homomorphic operation $Enc(\Delta \stackrel{?}{<}
-		%\tau) \gets \textbf{EvalRes}(pk_k, \tau, Enc(\Delta))$.
-		%\item $\server$ sends $Enc(\Delta \stackrel{?}{<} \tau)$ to $\user_k$.
-		%$\user_k$ uses his private key $sk_k$ to decrypt the plaintext $
-		%res \gets \Delta
-		%\stackrel{?}{<} \tau$.
-
-
-
-		% * <trung.dinh@monash.edu> 2016-10-21T13:15:14.957Z:
-		%
-		% we agreed to do this later, for now, we change back to GSW instead of BGV. Later when we apply MCC we will consider bringing these garble circuit back.
-		%
-		% ^.
-		%\item $\server$ masks the computed distance with a random
-		%value $R$, using Homomorphic addition operation:
-		%$Enc(\Delta + R) \gets EvalAdd(pk_k, Enc(\Delta),
-		%Enc(R))$.
-		%\item $\server$ builds a garbled circuit $\textbf{GC}$ to evaluate
-		%the bit value of the comparison between a plaintext $\Delta$
-		%against a threshold
-		%$\tau$ privately $(\Delta \stackrel{?}{<} \tau) \gets
-		%\textbf{GC}(k_{\Delta + R}, k_R)$. We note that
-		%$k_{\Delta + R}$ and $k_R$ are cryptographic keys input
-		%to garble circuit protocol. We refer the reader to
-		%section \missref{} for details of garble circuit
-		%protocols.
-		%\item $\server$ sends $Enc(\Delta + R)$ and $\textbf{GC}$ to $\user_k$, $\user_k$
-		%uses his private key $sk_k$ to decrypt $\Delta+R$.
-		%\item $\user_k$ derives $k_{\Delta + R}$ to be use as the
-		%first input to $\textbf{GC}$ and $\user_k$ runs Oblivious Transfer protocol
-		%$\textbf{OT}$ to obtain $k_R$ from $\server$ privately.
-		%$\textbf{OT}$ is discussed in section
-		%\missref{}.
-		%\item $\user_k$ evaluates $(\Delta \stackrel{?}{<} \tau) \gets
-		%\textbf{GC}(k_{\Delta + R}, k_R)$ and sends the result
-		%$res$ to $\server$.
-
-
-
-
-
-		%\item $\user_k$ convinces $\server$ that he did follow the
-		%protocol honestly using Zero Knowledge Proof protocol
-		%$\textbf{ZKP}$. This protocol is discussed in section
-		%\missref{}.
-
-	\end{enumerate}
-	The proposed scheme satisfies the security notions defined in Sect. \ref{sec:syntaxModel}.
-	\begin{theorem}
-		\label{theo:server}
-		Under the IND-CPA security of a BV cryptosystem, and the zero-knowledge
-		property of the Stern protocol, the proposed scheme satisfies an (Honest But Curious) Server Privacy's Security.
-	\end{theorem}
-	\begin{theorem}
-		\label{theo:client}
-		Under the IND-CPA security of a BV cryptosystem and the soundness
-		property of the underlying Stern protocol, the proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has imperonsation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge errors $\eps_{ZK1},\ldots,\eps_{ZK4}$ such that $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
-\varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq c_1 \cdot \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition $\sigma/r_0 \geq 4 \pi k n q$ holds, with $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ being an upper bound on the size of the noise in $C_{HD}$.
-	\end{theorem}
-
-\end{description}
-
-\begin{figure}[htbp!] 
-  \centering \procedure{THE THIRD PROTOCOL}{
-    \textbf{Client} \> \> \textbf{Server}\pclb
-    \pcintertext[dotted]{Enrolment}\\
-    \text{Extract } \mathbf{x} \randomsample D_k \> \> \\
-    T_k = Enc^{(1)}(\mathbf{x},\pk) \> \sendmessageright*{(k, T_k)}
-    \> \text{Persist $(k,T_{k})$}\pclb
-    \pcintertext[dotted]{Authentication}\\
-    \text{Extract } \mathbf{y} \randomsample D_k \> \> \\
-    Q_k = Enc^{(1)}(\mathbf{y},\pk) \> \sendmessageright*{(k, Q_k)}
-    \> \\
-    \> \sendmessageright*{\mathbf{ZKPValidEnc}} \> C_{HD} \gets \mathbf{EvalDistance}(T_k, Q_k)\\
-    \> \sendmessageleft*{C_{HD'}} \> C_{HD'} \gets Enc^{(1)}(HD,e_0) + Enc^{(1)}(r,e_r)\\
-    HD' \gets Dec(C_{HD'},\sk) \> \> \\
-    C_{HD'_0} \gets Enc^{(1)}(HD', 0, \dots, 0) \> \sendmessageright*{C_{HD'_0}} \> \\
-    HD' = b_0 + b_1 2 + \dots + b_l 2^{l-1} \> \> \\
-    C_i \gets Enc^{(1)}(b_i) \> \sendmessageright*{C_i} \> \\
-    \> \sendmessageright*{\mathbf{ZKPUnpack}(C_{HD}, C_{HD'_0})} \> \\
-    \> \sendmessageright*{\mathbf{ZKPBinDecomp}(C_{i}, C_{HD'_0})} \> C''_{HD} \gets Enc^{(2)}(2^t + \tau - HD)\\
-    \> \sendmessageleft*{C_{res}} \> C_{res} = Enc^{(3)}(res) \gets \mathbf{MSBExtract}(C''_{HD})\\
-    res = Dec(C_{res}) \> \sendmessageright*{\mathbf{ZKPCorrectDec}(res)} \>
+  \begin{figure}[htbp!] 
+    \centering \procedure{OR Composition of ZKP}{
+      \textbf{Prover} \> \> \textbf{Verifier}\\
+      \rho_{i} \randomsample random \> \> \\
+      c_{i} = comm(\rho_{i}) \> \> \\
+      \text{For } j = 1,\dots,n \wedge j \neq i: \> \> \\
+      \text{    } \rho_{j} \randomsample random; \> \> \\
+      \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) \> \> \\
+      \> \sendmessageright*{ch_j,c_{1}, c_{2}, \dots, c_{n}} \> \\
+      \> \> ch \randomsample \mathbb{Z}_{n} \\
+      \> \sendmessageleft*{ch} \> \\
+      ch_{i} = ch - \sum_{j \neq i}{ch_{j}} \> \> \\
+      r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) \> \> \\
+      \> \sendmessageright*{r_{1}, r_{2}, \dots, r_{n}} \> \\
+      \> \> \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
+      \> \> ch = \sum_{i \in [n]}ch_{i}\\
     }
-  \caption{The Third Protocol}
-  \label{fig:thirdProtocol}
-\end{figure}
+    \caption{OR Composition of ZKP}
+    \label{fig:OR-Composition}
+  \end{figure}
+  % \begin{figure}[h!]
+  %   \centering
+  %   \begin{equation*}
+  %     \begin{array}{c c c}
+  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+  %       \\
+  %       \rho_{i} \randomsample random & & \\
+  %       c_{i} = comm(\rho_{i}) & & \\
+  %       \text{For } j = 1,\dots,n \wedge j \neq i: & & \\
+  %       \text{    } \rho_{j} \randomsample random; & & \\
+  %       \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) & & \\
+  %                              & \xrightarrow[ch_{j}]{c_{1}, c_{2}, \dots, c_{n}} & \\
+  %                              & & ch \randomsample \mathbb{Z}_{n} \\
+  %                              & \xleftarrow{ch} & \\
+  %       ch_{i} = ch - \sum_{j \neq i}{ch_{j}} & & \\
+  %       r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) & & \\
+  %                              & \xrightarrow{r_{1}, r_{2}, \dots, r_{n}} & \\
+  %                              & & \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
+  %                              & & ch = \sum_{i \in [n]}ch_{i}\\
+  %     \end{array}
+  %   \end{equation*}
+  %   \caption{}
+  %   \label{fig:OR-Combination}
+  % \end{figure}
+\end{description}
+
+
 
 \section{Security Proofs}
 \label{append:Proofs}
@@ -780,32 +821,32 @@ fingerprint templates.
 The proof of theorem \ref{theo:server} and \ref{theo:client} can be provided
 using a sequence of games between the challenger $\challenger$ and the adversary
 $\attacker$. We present a sequence of games as well as the relations among them to demonstrate the type I security model proof.\\
-\begin{figure}[htbp!] 
-  \centering
-  \fbox{
-   \begin{gameproof}[nr=-1]
-  \gameprocedure[linenumbering, mode=text]{
-    $D_{k} \randomsample D_{bio}$\\
-    $(\sk, \pk) \gets KeyGen(params)$\\
-    $\mathbf{X}_{k} \randomsample D_{k}$\\
-    $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
-    For $i=1,\dots,q$:\\
-    $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
-    $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
-    $verifierView1 \gets \mathbf{ZKPoPK1}((\sk,\mathbf{Y}_{i});(\pk,\enc{\mathbf{Y}_{i}}))$\\
-    $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
-    $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
-    $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
-    $verifierView2 \gets \mathbf{ZKPoPK2}((\sk,\mathbf{HD'}_{i});(\pk,\enc{\mathbf{HD'}_{i}}))$\\
-    $HD_{i} \gets HD'_{i} - r_{i}$\\
-    $res_{i} \gets compare(HD_{i}, \tau)$\\
-    $\beta \gets \adv(verifierView1, verifierView2, \enc{\mathbf{X}_{k}}, \enc{\mathbf{Y}_{i}}, res_{i}, r_{i}, HD_{i},
-    \enc{\mathbf{HD'}_{i}}, \enc{\mathbf{HD}_{i}})$ }
-\end{gameproof}
-  }
-  \caption{Game 0 - Malicious Client game}
-  \label{fig:game0protocol3client}
-\end{figure}
+% \begin{figure}[htbp!] 
+%   \centering
+%   \fbox{
+%    \begin{gameproof}[nr=-1]
+%   \gameprocedure[linenumbering, mode=text]{
+%     $D_{k} \randomsample D_{bio}$\\
+%     $(\sk, \pk) \gets KeyGen(params)$\\
+%     $\mathbf{X}_{k} \randomsample D_{k}$\\
+%     $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+%     For $i=1,\dots,q$:\\
+%     $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
+%     $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+%     $verifierView1 \gets \mathbf{ZKPoPK1}((\sk,\mathbf{Y}_{i});(\pk,\enc{\mathbf{Y}_{i}}))$\\
+%     $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
+%     $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+%     $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
+%     $verifierView2 \gets \mathbf{ZKPoPK2}((\sk,\mathbf{HD'}_{i});(\pk,\enc{\mathbf{HD'}_{i}}))$\\
+%     $HD_{i} \gets HD'_{i} - r_{i}$\\
+%     $res_{i} \gets compare(HD_{i}, \tau)$\\
+%     $\beta \gets \adv(verifierView1, verifierView2, \enc{\mathbf{X}_{k}}, \enc{\mathbf{Y}_{i}}, res_{i}, r_{i}, HD_{i},
+%     \enc{\mathbf{HD'}_{i}}, \enc{\mathbf{HD}_{i}})$ }
+% \end{gameproof}
+%   }
+%   \caption{Game 0 - Malicious Client game}
+%   \label{fig:game0protocol3client}
+% \end{figure}
 \textit{Game 0} (Figure \ref{fig:game0protocol3client}). Game 0 is the original impersonation game for type I attack.
 \begin{description}
 	\item [Setup.] $\challenger$ intiates $D_k \randomsample D_{bio}$ and $X_k

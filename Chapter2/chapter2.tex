@@ -2054,27 +2054,44 @@ returns ElGamal encryptions of bits \(x_{0}, x_{1}\) using \(h_{0},h_{1}\) as
 public keys. The receiver then decrypts one of the encryptions to recover either
 \(x_{0} \text{ or } x_{1}\)
 
-\begin{figure}[h!]
+\begin{figure}[htbp!] 
   \centering
-  \begin{equation*}
-    \begin{array}{c c c}
-      \text{\textbf{Sender}} & & \text{\textbf{Receiver}} \\
-      \\
-      (x_{0}, x_{1} \in \{0,1\}) & & (s \in \{0,1\}) \\
-                             & & u \randomsample \mathbb{Z}_{n}\\
-                             & & h_{s} \gets g^{u}\\
-                             & & h_{1-s} \gets h/g^{u}\\
-                             & \xleftarrow{h_{0}, h_{1}} & \\
-      u_{0}, u_{1} \randomsample \mathbb{Z}_{n} & & \\
-      (A_{0}, B_{0}) \gets (g^{u_{0}}, h_{0}^{u_{0}}g^{x_{0}}) & & \\
-      (A_{1}, B_{1}) \gets (g^{u_{1}}, h_{1}^{u_{1}}g^{x_{1}}) & & \\
-                             & \xrightarrow{(A_{0}, B_{0}),(A_{1}, B_{1})} & \\
-      & & x_{s} \gets \log_{g}(B_{s}/A_{s}^{u})
-    \end{array}
-  \end{equation*}
+  \procedure{DH-based Protocol}{
+    \textbf{Sender} \> \> \textbf{Receiver}\\
+    (x_0, x_1 \in \{0,1\}) \> \> (s \in \{0,1\})\\
+    \> \> u \randomsample \mathbb{Z}n \\
+    \> \> h_s \gets g^u \\
+    \> \sendmessageleft*{h_0, h_1} \> h_{1 - s} \gets h/g^u \\
+    u_0, u_1 \randomsample \mathbb{Z}_n \> \> \\
+    (A_0, B_0) \gets (g^{u_0}, h_0^{u_0}g^{x_0}) \> \> \\
+    (A_1, B_1) \gets (g^{u_1}, h_1^{u_1}g^{x_1}) \> \sendmessageright*{(A_0, B_0), (A_1, B_1)} \> x_s \gets \log_g{(B_s/A_s^u)} \\
+  }
   \caption{OT protocol based on DH}
   \label{fig:DH21OT}
 \end{figure}
+
+
+% \begin{figure}[h!]
+%   \centering
+%   \begin{equation*}
+%     \begin{array}{c c c}
+%       \text{\textbf{Sender}} & & \text{\textbf{Receiver}} \\
+%       \\
+%       (x_{0}, x_{1} \in \{0,1\}) & & (s \in \{0,1\}) \\
+%                              & & u \randomsample \mathbb{Z}_{n}\\
+%                              & & h_{s} \gets g^{u}\\
+%                              & & h_{1-s} \gets h/g^{u}\\
+%                              & \xleftarrow{h_{0}, h_{1}} & \\
+%       u_{0}, u_{1} \randomsample \mathbb{Z}_{n} & & \\
+%       (A_{0}, B_{0}) \gets (g^{u_{0}}, h_{0}^{u_{0}}g^{x_{0}}) & & \\
+%       (A_{1}, B_{1}) \gets (g^{u_{1}}, h_{1}^{u_{1}}g^{x_{1}}) & & \\
+%                              & \xrightarrow{(A_{0}, B_{0}),(A_{1}, B_{1})} & \\
+%       & & x_{s} \gets \log_{g}(B_{s}/A_{s}^{u})
+%     \end{array}
+%   \end{equation*}
+%   \caption{OT protocol based on DH}
+%   \label{fig:DH21OT}
+% \end{figure}
 
 Efficient implementations of Oblivious Transfer can be found in
 \cite{naor2001efficient35}. The techniques found in \cite{ishai2003extending24}

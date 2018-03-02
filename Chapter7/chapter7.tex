@@ -58,21 +58,31 @@ technique maybe generalized to similar multi-stage protocols.
 
 \section{The Challenge-Response Technique}
 \label{sec:6challenge}
-Consider the following situation:  Alice sends a ciphertext \(C\) of a bitstring to
-Bob. Bob is supposed to use homomorphic encryption technique to process
-\(C\). Before doing so, Bob might want to make sure that \(C\) is an encryption
-of a bitstring and not something else. How can he achieve that? Suppose that the
-plaintext \(P\) is encoded as coefficients of a polynomial, or specifically,
-\(P\) can be an element of the ring \(R_{2}\), where
-\(R_{2} = \frac{\mathbb{Z}_{2}[x]}{x^{n} + 1}\), this ring has been used by many RLWE
-based cryptosystems lately. One solution can be to apply the Zero Knowlege Proof
-technique. This is however a costly choice. There are mainly two approaches
-for ZKP, the Schnorr's based protocol, e.g. \cite{benhamouda2014better} or
-a Stern's based protocol such as \cite{stern1993new} or
-\cite{ling2013improved}. The first approach has limitations on the norm of the
-secret it can prove and cannot be used to prove the knowledge of binary messages
-with norm 2. The second approach can prove binary messages but it has a very high
-communication cost due to a roundness error equaling \(2/3\).
+In the previous variants of the protocol, one critical module required to
+provide active security against a malicious client is the binary message format
+prover. Specifically, in our context, the client needs to prove that it is
+sending a ciphertext of a binary message. We have seen that before the server
+processes the ciphertext homomorphically, it needs to verify such claim
+first. In the last chapter, we used Zero Knowledge Proof technique for this
+step and it was showed that the communication size for this is large due to the soundness error $2/3$ for each round of the ZKP.
+
+
+Consider the following situation: Alice sends a ciphertext \(C\) of a
+bitstring to Bob. Bob is supposed to use homomorphic encryption technique to
+process \(C\). Before doing so, Bob might want to make sure that \(C\) is an
+encryption of a bitstring and not something else. How can he achieve that?
+Suppose that the plaintext \(P\) is encoded as coefficients of a polynomial, or
+specifically, \(P\) can be an element of the ring \(R_{2}\), where
+\(R_{2} = \frac{\mathbb{Z}_{2}[x]}{x^{n} + 1}\), this ring has been used by many
+RLWE based cryptosystems lately. One solution can be to apply the Zero Knowlege
+Proof technique. This is however a costly choice. There are mainly two
+approaches for ZKP, the Schnorr's based protocol,
+e.g. \cite{benhamouda2014better} or a Stern's based protocol such as
+\cite{stern1993new} or \cite{ling2013improved}. The first approach has
+limitations on the norm of the secret it can prove and cannot be used to prove
+the knowledge of binary messages with norm 2. The second approach can prove
+binary messages but it has a very high communication cost due to a roundness
+error equaling \(2/3\).
 \subsection{ZKP and $\sum$-Protocol}
 \label{sub:zkp_and_sum_protocol}
 A Zero-Knowledge Proof of Knowledge (ZKPoK) is a two party protocol between a
@@ -141,42 +151,37 @@ $\mathbf{c_0 + c_1s} = \mathbf{m} + t\mathbf{e}$, with
 $\norminf{\mathbf{e}} \leq \beta$. Note that the protocol guarantees with $V$
 that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
 
-\begin{figure}[h]
-  \centering
-  \begin{equation*}
-    \begin{array}{c c c}
-      \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-      \\
-      \mathbf{r_s,r_{e_0}} \randomsample D_{\beta_0} & & \\
-      \mathbf{r_e} \randomsample D_{\beta} & & \\
-      \mathbf{r_m} \randomsample D_{t} & & \\
-      \mathbf{t_c} = \mathbf{-c_1r_s} + t\mathbf{r_e + r_m} & & \\
-      \mathbf{t_k} = \mathbf{-p_1r_s} - t\mathbf{r_{e_0}} & & \\
-      (c_{aux}, d_{aux}) = aCommit(\mathbf{t_c,t_k}) &
-                                                       \xrightarrow{\hspace{1em}c_{aux}\hspace{1em}} & \\
-                             & & c \randomsample \mathcal{C} = \left\{ 0,\dots, 2n -1  \right\}\\
-                             &  \xleftarrow{\hspace{1em}c\hspace{1em}} & \\
-      \mathbf{s_s = r_s + x^cs} & & \\
-      \mathbf{s_e = r_e + x^ce} & & \\
-      \mathbf{s_m = r_m + x^cm} & & \\
-      \mathbf{s_{e_0} = r_{e_0} + x^ce_0} & & \\
-                             & \xrightarrow{\hspace{1em}d_{aux}, \mathbf{t_c, t_k, s_s, s_e, s_m,
-                               s_{e_0}}\hspace{1em}} & \\
-                             & & \mathbf{x^cc_0} + \mathbf{t_c} \stackrel{?}{=} -\mathbf{c_1s_s} +t\mathbf{s_e} +
-                                 \mathbf{s_m}\\
-                             & & \mathbf{x^cp_0} + \mathbf{t_k} \stackrel{?}{=} -\mathbf{p_1s_s}
-                                 -t\mathbf{s_{e_0}}\\
-                             & & aCOpen(\mathbf{t_c, t_k}, c_{aux}, d_{aux}) \stackrel{?}{=} accept \\
-                             & & \norm{s_s}, \norm{s_{e_0}} \leq 2\beta_0 \\
-                             & & \norm{s_e} \leq 2\beta \\
-                             & & \norm{s_m} \leq 2t
-    \end{array}
-  \end{equation*}
+\begin{figure}[htbp!] 
+  \centering \procedure{Schnorr-based ZKP for BV}{
+    \textbf{Prover} \> \> \textbf{Verifier}\\
+    \mathbf{r_s,r_{e_0}} \randomsample D_{\beta_0} \> \> \\
+    \mathbf{r_e} \randomsample D_{\beta} \> \> \\
+    \mathbf{r_m} \randomsample D_{t} \> \> \\
+    \mathbf{t_c} = \mathbf{-c_1r_s} + t\mathbf{r_e + r_m} \> \> \\
+    \mathbf{t_k} = \mathbf{-p_1r_s} - t\mathbf{r_{e_0}} \> \> \\
+    (c_{aux}, d_{aux}) = aCommit(\mathbf{t_c,t_k}) \>
+    \sendmessageright*{c_{aux}} \> \\
+    \> \> c \randomsample \mathcal{C} = \left\{ 0,\dots, 2n -1  \right\}\\
+    \>  \sendmessageleft*{c} \> \\
+    \mathbf{s_s = r_s + x^cs} \> \> \\
+    \mathbf{s_e = r_e + x^ce} \> \> \\
+    \mathbf{s_m = r_m + x^cm} \> \> \\
+    \mathbf{s_{e_0} = r_{e_0} + x^ce_0} \> \> \\
+    \> \sendmessageright*{d_{aux}, \mathbf{t_c, t_k, s_s, s_e, s_m,
+        s_{e_0}}} \> \\
+    \> \> \mathbf{x^cc_0} + \mathbf{t_c} \stackrel{?}{=} -\mathbf{c_1s_s}
+    +t\mathbf{s_e} + \mathbf{s_m}\\
+    \> \> \mathbf{x^cp_0} + \mathbf{t_k} \stackrel{?}{=} -\mathbf{p_1s_s}
+    -t\mathbf{s_{e_0}}\\
+    \> \> aCOpen(\mathbf{t_c, t_k}, c_{aux}, d_{aux}) \stackrel{?}{=} accept
+    \\
+    \> \> \norm{s_s}, \norm{s_{e_0}} \leq 2\beta_0 \\
+    \> \> \norm{s_e} \leq 2\beta \\
+    \> \> \norm{s_m} \leq 2t
+  }
   \caption{ZKP for BV cryptosystem relation}
   \label{fig:belhamoudaProtocol}
 \end{figure}
-
-
 
 \subsection{Schnorr-based ZKP technique}
 \label{sec:zero-knowledge-proof}
@@ -334,45 +339,79 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
   \end{description}
 \end{proof}
 
-  \begin{figure}[h!]
-    \centering
-    \begin{equation*}
-      \begin{array}{c c c}
-        \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-        \\
-        \mathbf{r_s,r_{e_0},r'_{s},r'_{e_{0}}} \randomsample D_{\beta_0} & & \\
-        \mathbf{r_e,r'_{e}} \randomsample D_{\beta} & & \\
-        \mathbf{r_m,r'_{m}} \randomsample D_{t} & & \\
-        \mathbf{t_c} = \mathbf{-c_1r_s} + t\mathbf{r_e + r_m} & & \\
-        \mathbf{t_k} = \mathbf{-p_1r_s} - t\mathbf{r_{e_0}} & & \\
-        \mathbf{t'_c} = \mathbf{-c_1r'_s} + t\mathbf{r'_e + r'_m} & & \\
-        \mathbf{t'_k} = \mathbf{-p_1r'_s} - t\mathbf{r'_{e_0}} & & \\
-        (c_{aux}, d_{aux}) = aCommit(\mathbf{t_c,t_k}) & & \\
-        (c'_{aux}, d'_{aux}) = aCommit(\mathbf{t'_c,t'_k}) &
-                                                         \xrightarrow{\hspace{1em}c_{aux},c'_{aux}\hspace{1em}} & \\
-                               & & c \randomsample \mathcal{C} = \left\{ 0,\dots, 2n -1  \right\}\\
-                               &  \xleftarrow{\hspace{1em}c\hspace{1em}} & \\
-        \mathbf{s_s = r_s + x^cs},\mathbf{s'_s = r'_s + x^cs} & & \\
-        \mathbf{s_e = r_e + x^ce},\mathbf{s'_e = r'_e + x^ce} & & \\
-        \mathbf{s_m = r_m + x^cm},\mathbf{s'_m = r'_m + x^cm} & & \\
-        \mathbf{s_{e_0} = r_{e_0} + x^ce_0},\mathbf{s'_{e_0} = r'_{e_0} + x^ce_0} & & \\
-                               & \xrightarrow[\hspace{1em}d'_{aux}, \mathbf{t'_c, t'_k, s'_s, s'_e, s'_m,
-                                 s'_{e_0}}\hspace{1em}]{\hspace{1em}d_{aux}, \mathbf{t_c, t_k, s_s, s_e, s_m,
-                                 s_{e_0}}\hspace{1em}} & \\
-                               & & \mathbf{x^cc_0} + \mathbf{t_c} \stackrel{?}{=} -\mathbf{c_1s_s} + t\mathbf{s_e} + \mathbf{s_m}\\
-                               & & \mathbf{x^cc_0} + \mathbf{t'_c} \stackrel{?}{=} -\mathbf{c_1s'_s} + t\mathbf{s'_e} + \mathbf{s'_m}\\
-                               & & \mathbf{x^cp_0} + \mathbf{t_k} \stackrel{?}{=} -\mathbf{p_1s_s} - t\mathbf{s_{e_0}}\\
-                               & & \mathbf{x^cp_0} + \mathbf{t'_k} \stackrel{?}{=} -\mathbf{p_1s'_s} - t\mathbf{s'_{e_0}}\\
-                               & & aCOpen(\mathbf{t_c, t_k}, c_{aux}, d_{aux}) \stackrel{?}{=} accept \\
-                               & & aCOpen(\mathbf{t'_c, t'_k}, c'_{aux}, d'_{aux}) \stackrel{?}{=} accept \\
-                               & & \norm{s_s}, \norm{s_{e_0}},\norm{s'_s}, \norm{s'_{e_0}} \leq 2\beta_0 \\
-                               & & \norm{s_e},\norm{s'_e}  \leq 2\beta \\
-                               & & \norm{s_m},\norm{s'_m} \leq 2t
-      \end{array}
-    \end{equation*}
-    \caption{AND-Composition for ZKP-BV }
-    \label{fig:belhamoudaProtocolAND}
-  \end{figure}
+\begin{figure}[htbp!] 
+  \centering \procedure{AND-Composition of Benhamouda ZKP}{
+    \textbf{Prover} \> \> \textbf{Verifier}\\
+    \mathbf{r_s,r_{e_0},r'_{s},r'_{e_{0}}} \randomsample D_{\beta_0} \> \> \\
+    \mathbf{r_e,r'_{e}} \randomsample D_{\beta} \> \> \\
+    \mathbf{r_m,r'_{m}} \randomsample D_{t} \> \> \\
+    \mathbf{t_c} = \mathbf{-c_1r_s} + t\mathbf{r_e + r_m} \> \> \\
+    \mathbf{t_k} = \mathbf{-p_1r_s} - t\mathbf{r_{e_0}} \> \> \\
+    \mathbf{t'_c} = \mathbf{-c_1r'_s} + t\mathbf{r'_e + r'_m} \> \> \\
+    \mathbf{t'_k} = \mathbf{-p_1r'_s} - t\mathbf{r'_{e_0}} \> \> \\
+    (c_{aux}, d_{aux}) = aCommit(\mathbf{t_c,t_k}) \> \> \\
+    (c'_{aux}, d'_{aux}) = aCommit(\mathbf{t'_c,t'_k}) \>
+    \sendmessageright*{c_{aux},c'_{aux}} \> \\
+    \> \> c \randomsample \mathcal{C} = \left\{ 0,\dots, 2n -1  \right\}\\
+    \>  \sendmessageleft*{c} \> \\
+    \mathbf{s_s = r_s + x^cs},\mathbf{s'_s = r'_s + x^cs} \> \> \\
+    \mathbf{s_e = r_e + x^ce},\mathbf{s'_e = r'_e + x^ce} \> \> \\
+    \mathbf{s_m = r_m + x^cm},\mathbf{s'_m = r'_m + x^cm} \> \> \\
+    \mathbf{s_{e_0} = r_{e_0} + x^ce_0},\mathbf{s'_{e_0} = r'_{e_0} + x^ce_0} \> \> \\
+    \> \sendmessageright{top=$d_{aux}$, bottom=$d'_{aux}$} \> \\
+    \> \> \mathbf{x^cc_0} + \mathbf{t_c} \stackrel{?}{=} -\mathbf{c_1s_s} + t\mathbf{s_e} + \mathbf{s_m}\\
+    \> \> \mathbf{x^cc_0} + \mathbf{t'_c} \stackrel{?}{=} -\mathbf{c_1s'_s} + t\mathbf{s'_e} + \mathbf{s'_m}\\
+    \> \> \mathbf{x^cp_0} + \mathbf{t_k} \stackrel{?}{=} -\mathbf{p_1s_s} - t\mathbf{s_{e_0}}\\
+    \> \> \mathbf{x^cp_0} + \mathbf{t'_k} \stackrel{?}{=} -\mathbf{p_1s'_s} - t\mathbf{s'_{e_0}}\\
+    \> \> aCOpen(\mathbf{t_c, t_k}, c_{aux}, d_{aux}) \stackrel{?}{=} accept \\
+    \> \> aCOpen(\mathbf{t'_c, t'_k}, c'_{aux}, d'_{aux}) \stackrel{?}{=} accept \\
+    \> \> \norm{s_s}, \norm{s_{e_0}},\norm{s'_s}, \norm{s'_{e_0}} \leq 2\beta_0 \\
+    \> \> \norm{s_e},\norm{s'_e}  \leq 2\beta \\
+    \> \> \norm{s_m},\norm{s'_m} \leq 2t
+  }
+  \caption{AND-Composition for ZKP-BV}
+  \label{fig:belhamoudaProtocolAND}
+\end{figure}
+
+  % \begin{figure}[h!]
+  %   \centering
+  %   \begin{equation*}
+  %     \begin{array}{c c c}
+  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+  %       \\
+  %       \mathbf{r_s,r_{e_0},r'_{s},r'_{e_{0}}} \randomsample D_{\beta_0} & & \\
+  %       \mathbf{r_e,r'_{e}} \randomsample D_{\beta} & & \\
+  %       \mathbf{r_m,r'_{m}} \randomsample D_{t} & & \\
+  %       \mathbf{t_c} = \mathbf{-c_1r_s} + t\mathbf{r_e + r_m} & & \\
+  %       \mathbf{t_k} = \mathbf{-p_1r_s} - t\mathbf{r_{e_0}} & & \\
+  %       \mathbf{t'_c} = \mathbf{-c_1r'_s} + t\mathbf{r'_e + r'_m} & & \\
+  %       \mathbf{t'_k} = \mathbf{-p_1r'_s} - t\mathbf{r'_{e_0}} & & \\
+  %       (c_{aux}, d_{aux}) = aCommit(\mathbf{t_c,t_k}) & & \\
+  %       (c'_{aux}, d'_{aux}) = aCommit(\mathbf{t'_c,t'_k}) &
+  %                                                        \xrightarrow{\hspace{1em}c_{aux},c'_{aux}\hspace{1em}} & \\
+  %                              & & c \randomsample \mathcal{C} = \left\{ 0,\dots, 2n -1  \right\}\\
+  %                              &  \xleftarrow{\hspace{1em}c\hspace{1em}} & \\
+  %       \mathbf{s_s = r_s + x^cs},\mathbf{s'_s = r'_s + x^cs} & & \\
+  %       \mathbf{s_e = r_e + x^ce},\mathbf{s'_e = r'_e + x^ce} & & \\
+  %       \mathbf{s_m = r_m + x^cm},\mathbf{s'_m = r'_m + x^cm} & & \\
+  %       \mathbf{s_{e_0} = r_{e_0} + x^ce_0},\mathbf{s'_{e_0} = r'_{e_0} + x^ce_0} & & \\
+  %                              & \xrightarrow[\hspace{1em}d'_{aux}, \mathbf{t'_c, t'_k, s'_s, s'_e, s'_m,
+  %                                s'_{e_0}}\hspace{1em}]{\hspace{1em}d_{aux}, \mathbf{t_c, t_k, s_s, s_e, s_m,
+  %                                s_{e_0}}\hspace{1em}} & \\
+  %                              & & \mathbf{x^cc_0} + \mathbf{t_c} \stackrel{?}{=} -\mathbf{c_1s_s} + t\mathbf{s_e} + \mathbf{s_m}\\
+  %                              & & \mathbf{x^cc_0} + \mathbf{t'_c} \stackrel{?}{=} -\mathbf{c_1s'_s} + t\mathbf{s'_e} + \mathbf{s'_m}\\
+  %                              & & \mathbf{x^cp_0} + \mathbf{t_k} \stackrel{?}{=} -\mathbf{p_1s_s} - t\mathbf{s_{e_0}}\\
+  %                              & & \mathbf{x^cp_0} + \mathbf{t'_k} \stackrel{?}{=} -\mathbf{p_1s'_s} - t\mathbf{s'_{e_0}}\\
+  %                              & & aCOpen(\mathbf{t_c, t_k}, c_{aux}, d_{aux}) \stackrel{?}{=} accept \\
+  %                              & & aCOpen(\mathbf{t'_c, t'_k}, c'_{aux}, d'_{aux}) \stackrel{?}{=} accept \\
+  %                              & & \norm{s_s}, \norm{s_{e_0}},\norm{s'_s}, \norm{s'_{e_0}} \leq 2\beta_0 \\
+  %                              & & \norm{s_e},\norm{s'_e}  \leq 2\beta \\
+  %                              & & \norm{s_m},\norm{s'_m} \leq 2t
+  %     \end{array}
+  %   \end{equation*}
+  %   \caption{AND-Composition for ZKP-BV }
+  %   \label{fig:belhamoudaProtocolAND}
+  % \end{figure}
 
 
 \subsection*{Summary of previous work}
@@ -433,18 +472,35 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
 \label{sec:6bgv}
 \paragraph{Ciphertext packing}
 
+We used BV cryptosystem \cite{brakerski2011fully} in the previous variants of
+the protocol where we only need 2 levels of multiplication on ciphertexts. In
+this variant, we do not use one inner product operation for HD computation but
+adding the bits of the bitstring, hence more multiplications on ciphertext
+during HD computation are needed. The BGV cryptosystem
+\cite{brakerski2014leveled} has a mechanism to control the noise after
+operations. We hereby discuss a specific version of this cryptosystem, where
+parameters are set to comply with the rings to be used in the protocol.
+
+\begin{description}
+\item[E.Setup] Let $\lambda$ be the security parameter that represents
+  $2^{\lambda}$ security level against known attack. Choose a modulus $q$ and 
+\end{description}
+
+
 We have seen that a plaintext can be packed in a specific way to support
 homomorphic operations efficiently. The approach of \cite{yasuda2014practical}
-can compute the inner product operations to perform really fast; however, it does not
-support the Single Instruction Multiple Data (SIMD) operation, which is required by
-our challenge-response protocol. This section discusses a different approach for
-plaintext packing and specifies the operations it supports: we are referring to the CRT packing method
-\cite{smart2014fully}. In this method, a message \(\mathbf{m} \in R_{t}\) is
-packed by representing it in the NTT domain. In NTT domains, a single operation
-(addition or multiplication) of a pair of ciphertexts implicitly compute
-the entire plaintext vectors component-wise. Besides SIMD support, we can also
-\textit{rotate} or \textit{permute} the plaintext slots
-(\cite{gentry2012fully}), we only need a  \textit{rotate} operation to this end.
+can compute the inner product operations to perform really fast; however, it
+does not support the Single Instruction Multiple Data (SIMD) operation, which is
+required by our challenge-response protocol. This section discusses a different
+approach for plaintext packing and specifies the operations it supports: we are
+referring to the CRT packing method \cite{smart2014fully}. In this method, a
+message \(\mathbf{m} \in R_{t}\) is packed by representing it in the NTT
+domain. In NTT domains, a single operation (addition or multiplication) of a
+pair of ciphertexts implicitly compute the entire plaintext vectors
+component-wise. Besides SIMD support, we can also \textit{rotate} or
+\textit{permute} the plaintext slots (\cite{gentry2012fully}), we only need a
+\textit{rotate} operation to this end.
+
 
 \paragraph{Number Theoretic Transform}
 In our application context, the most costly low-level computation operation is
@@ -720,68 +776,103 @@ non-XOR gates.
 
 \subsection{The protocol description}
 \label{sec:4thprocSteps}
-    
-\begin{figure}[h!]
-  \centering
-    \begin{equation*}
-        \begin{array}{c c c}
-        \text{\textbf{Client}} & & \text{\textbf{Server}} \\
-          \\
-          \text{1. Registered template \textbf{T}} & \xrightarrow{\enc{\mathbf{T}}} & \text{Store } \enc{\mathbf{T}}\\
-          
-          \text{2. Query template \textbf{Q}} & \xrightarrow{\enc{\mathbf{Q}}} & \text{Initiate Query Proof}\\
 
-                               & \xleftrightarrow{\text{3. Prove small noise in \textbf{Q}}} & \\
-
-                               & \xleftrightarrow{\text{4. Prove \textbf{Q} is binary}} & \\
-
-                               & & \text{Sample \(r \randomsample \mathbb{Z}_{t}\)}\\
-                               & & \text{5. Setup garbled circuit GC, for } i = 1,\dots,k \\
-
-                               & & \text{6. Setup } (K^{0}_{r_{i}}, K^{1}_{r_{i}}) \text{ for } GC_r \\
-          
-                               & & \text{7. Setup } (K^{0}_{h_{i}}, K^{1}_{h_{i}}) \text{ for } GC_{h}\\
-          
-                               & & \text{8. Setup } (K^{0}_{out}, K^{1}_{out}) \\
-
-                               & & \text{9. Compute } \enc{K^0_{h_i}},\enc{K^1_{h_i}}\\
-          \\
-
-                               & & \text{10. } \enc{\mathbf{HD}} = HDBGV(\enc{\mathbf{T}},\enc{\mathbf{Q}}) \\
-          
-                                   & & \text{Compute } \enc{\mathbf{HD'}} = \enc{\mathbf{HD + r}}\\
-
-                               & \xleftarrow{\enc{\mathbf{HD'}}} & \\
-
-                               & \xleftarrow{GC} & \\
-
-                               & \xleftarrow{K_{r_i}^j \text{of } GC_r} & \\
-
-          \text{12. Decrypt } \mathbf{HD'} = dec(\enc{\mathbf{HD}}) & & \\
-
-          \text{13. Decompose } \mathbf{HD'} = \sum_{i=0}^k{2^ih_i} & & \\
-
-          \text{14. Encrypt } \enc{h_i} & & \\
-          
-          \text{15. Initiate OT protocol} & & \\
-
-                               & \xrightarrow{16. \enc{h_i}} & \\
-          
-                               & \xrightarrow{\text{17. Prove correct decryption}} & \\
-
-                               & \xleftarrow{\text{18. Retrieve } \enc{K_{h_i}^j}} & \\
-
-          \text{19. Decrypt } K_{h_i}^j & & \\
-          20. K_{out} = GC( K_{h_i}^j , K_{r_i}^j) & & \\
-
-                               & \xrightarrow{K_{out}} & \text{21. Compare } K_{out} \text{ with } K_{out}^0, K_{out}^1 \\
-          & & \text{ Output res = \textbf{Accept|Reject}}
-        \end{array}
-    \end{equation*}
-
-  \caption{The fourth protocol}
+\begin{figure}[htbp!] 
+  \centering \procedure{The Fourth Protocol}{
+    \textbf{Client} \> \> \textbf{Server}\\
+    \text{1. Registered template \textbf{T}} \> \sendmessageright*{\enc{\mathbf{T}}} \> \text{Store } \enc{\mathbf{T}}\\
+    \text{2. Query template \textbf{Q}} \> \sendmessageright*{\enc{\mathbf{Q}}} \> \text{Initiate Query Proof}\\
+    \> \sendmessageleft*{\text{3. Prove small noise in \textbf{Q}}} \> \\
+    \> \sendmessageleft*{\text{4. Prove \textbf{Q} is binary}} \> \\
+    \> \> \text{Sample \(r \randomsample \mathbb{Z}_{t}\)}\\
+    \> \> \text{5. Setup garbled circuit GC, for } i = 1,\dots,k \\
+    \> \> \text{6. Setup } (K^{0}_{r_{i}}, K^{1}_{r_{i}}) \text{ for } GC_r \\
+    \> \> \text{7. Setup } (K^{0}_{h_{i}}, K^{1}_{h_{i}}) \text{ for } GC_{h}\\
+    \> \> \text{8. Setup } (K^{0}_{out}, K^{1}_{out}) \\
+    \> \> \text{9. Compute } \enc{K^0_{h_i}},\enc{K^1_{h_i}}\\
+    \> \> \text{10. } \enc{\mathbf{HD}} = HDBGV(\enc{\mathbf{T}},\enc{\mathbf{Q}}) \\
+    \> \> \text{Compute } \enc{\mathbf{HD'}} = \enc{\mathbf{HD + r}}\\
+    \> \sendmessageleft*{\enc{\mathbf{HD'}}} \> \\
+    \> \sendmessageleft*{GC} \> \\
+    \> \sendmessageleft*{K_{r_i}^j \text{of } GC_r} \> \\
+    \text{12. Decrypt } \mathbf{HD'} = dec(\enc{\mathbf{HD}}) \> \> \\
+    \text{13. Decompose } \mathbf{HD'} = \sum_{i=0}^k{2^ih_i} \> \> \\
+    \text{14. Encrypt } \enc{h_i} \> \> \\
+    \text{15. Initiate OT protocol} \> \> \\
+    \> \sendmessageright*{16. \enc{h_i}} \> \\
+    \> \sendmessageright*{\text{17. Prove correct decryption}} \> \\
+    \> \sendmessageleft*{\text{18. Retrieve } \enc{K_{h_i}^j}} \> \\
+    \text{19. Decrypt } K_{h_i}^j \> \> \\
+    20. K_{out} = GC( K_{h_i}^j , K_{r_i}^j) \> \> \\
+    \> \sendmessageright*{K_{out}} \> \text{21. Compare } K_{out} \text{ with } K_{out}^0, K_{out}^1 \\
+    \> \> \text{ Output res = \textbf{Accept|Reject}}
+  }
+  \caption{The fourth Protocol}
   \label{fig:fourthProtocol}
 \end{figure}
+
+    
+% \begin{figure}[h!]
+%   \centering
+%     \begin{equation*}
+%         \begin{array}{c c c}
+%         \text{\textbf{Client}} & & \text{\textbf{Server}} \\
+%           \\
+%           \text{1. Registered template \textbf{T}} & \xrightarrow{\enc{\mathbf{T}}} & \text{Store } \enc{\mathbf{T}}\\
+          
+%           \text{2. Query template \textbf{Q}} & \xrightarrow{\enc{\mathbf{Q}}} & \text{Initiate Query Proof}\\
+
+%                                & \xleftrightarrow{\text{3. Prove small noise in \textbf{Q}}} & \\
+
+%                                & \xleftrightarrow{\text{4. Prove \textbf{Q} is binary}} & \\
+
+%                                & & \text{Sample \(r \randomsample \mathbb{Z}_{t}\)}\\
+%                                & & \text{5. Setup garbled circuit GC, for } i = 1,\dots,k \\
+
+%                                & & \text{6. Setup } (K^{0}_{r_{i}}, K^{1}_{r_{i}}) \text{ for } GC_r \\
+          
+%                                & & \text{7. Setup } (K^{0}_{h_{i}}, K^{1}_{h_{i}}) \text{ for } GC_{h}\\
+          
+%                                & & \text{8. Setup } (K^{0}_{out}, K^{1}_{out}) \\
+
+%                                & & \text{9. Compute } \enc{K^0_{h_i}},\enc{K^1_{h_i}}\\
+%           \\
+
+%                                & & \text{10. } \enc{\mathbf{HD}} = HDBGV(\enc{\mathbf{T}},\enc{\mathbf{Q}}) \\
+          
+%                                    & & \text{Compute } \enc{\mathbf{HD'}} = \enc{\mathbf{HD + r}}\\
+
+%                                & \xleftarrow{\enc{\mathbf{HD'}}} & \\
+
+%                                & \xleftarrow{GC} & \\
+
+%                                & \xleftarrow{K_{r_i}^j \text{of } GC_r} & \\
+
+%           \text{12. Decrypt } \mathbf{HD'} = dec(\enc{\mathbf{HD}}) & & \\
+
+%           \text{13. Decompose } \mathbf{HD'} = \sum_{i=0}^k{2^ih_i} & & \\
+
+%           \text{14. Encrypt } \enc{h_i} & & \\
+          
+%           \text{15. Initiate OT protocol} & & \\
+
+%                                & \xrightarrow{16. \enc{h_i}} & \\
+          
+%                                & \xrightarrow{\text{17. Prove correct decryption}} & \\
+
+%                                & \xleftarrow{\text{18. Retrieve } \enc{K_{h_i}^j}} & \\
+
+%           \text{19. Decrypt } K_{h_i}^j & & \\
+%           20. K_{out} = GC( K_{h_i}^j , K_{r_i}^j) & & \\
+
+%                                & \xrightarrow{K_{out}} & \text{21. Compare } K_{out} \text{ with } K_{out}^0, K_{out}^1 \\
+%           & & \text{ Output res = \textbf{Accept|Reject}}
+%         \end{array}
+%     \end{equation*}
+
+%   \caption{The fourth protocol}
+%   \label{fig:fourthProtocol}
+% \end{figure}
 
 \subsection{The Garbled Circuit and Oblivious Transfer}
 We use a standard substractor circuit for the operation \(HD = HD' - r\). Given a 2
