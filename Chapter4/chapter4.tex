@@ -18,61 +18,100 @@ privacy issues, to allow a third party server to keep the client's secret key, t
 distance plaintext decryption should be performed by the client, which, in turn,
 raises the following challenges:
 \begin{description}
-\item[Multifactor security] A malicious client with a compromised secret key
-  about the distance between the registred template and the extracted template while he decrypting the homomorphic ciphertext result sent by the server.
+\item[Multifactor security] A malicious client with access to the compromised
+  secret key of the honest client can derive information about the distance
+  between the registred template and the extracted template while he decrypting
+  the homomorphic ciphertext result sent by the server.
 \item[Malicious Client Model Impact] It is important for the protocol to be secure
   against the \textit{active client }model, by which an adversary does not simply follow the
   protocol transcript but also tries to draw information from it (this model is also known
   as \textit{Semi Honest}, \textit{Honest-But-Curious}, or \textit{Passive} Client Model). 
 \end{description}
 
-The first issue has been solved forcing the server to mask the distance between templates by means of some
-random value before sending it to the client
-(\cite{mandal2015comprehensive}). In this chapter, we discuss the solution to
-the second issue, where a new Zero-Knowledge-Proof (ZKP) technique for
-lattice-based cryptosystems is introduced so as to compel the client to prove that the protocol is followed honestly. The technique not only provides a
-proof of plaintext knowledge, it has another important advantage, namely, to prove the
-binary format of the query template as well. Therefore, we can use the ZKP at
-two stages: When the client first sends the query in order to start authenticating,
-and at the final step, proving that the Hamming Distance is correctly decrypted.
+The first issue has been solved in previous work of
+\cite{mandal2015comprehensive} forcing the server to mask the distance between
+templates by means of some random value before sending it to the client. In this
+chapter, we discuss the solution to the second issue, where a new
+Zero-Knowledge-Proof (ZKP) technique for lattice-based cryptosystems is
+introduced so as to compel the client to prove that the protocol is followed
+honestly. The technique not only provides a proof of plaintext knowledge, it has
+another important advantage, it also proves the binary format of the query
+template in a way that is compatible with the existing efficient plaintext
+packing technique. We can use the ZKP at two stages: When the
+client first sends the query in order to start authenticating, and at the final
+step, proving that the Hamming Distance is correctly decrypted.
 
 
 \section{Related Work}
 \label{sec:iscRelatedWor}
-In a biometric authentication system, a user $\mathcal{U}$ first registers his fingerprint template $X$ on the server
-$\mathcal{S}$. $\mathcal{U}$ later authenticates before $\mathcal{S}$ using the same finger with a template $Y$, $\server$
-uses an algorithm $Verify(X,Y)$ to obtain the result of the authentication: \textbf{Accept} or
-\textbf{Reject}. Different biometric systems might use different methods to compute the distance $\Delta$ between $X$ and
-$Y$ within the algorithm $verify$. The distance $\Delta$ is compared to some predifined threshold value $\tau$ to determine
-the result of the authentication trial. We refer the reader to \cite{jain2007handbook} for biometric feature extraction and
-comparison techniques. Unlike password based systems, where $\user$ always uses one and the same same query for many authentication trials,
-all biometric systems implement the concept of False Acceptance Rate (FAR), corresponding to the system's \textbf{Accept} answer while receiving an incorrect
-template; and False Rejection Rate (FRR), where the system's \textbf{Reject} answer follows reception of a genuine one.  Balancing these 2 rates
-while keeping good performances is one of the main challenges that fingerprint verification algorithms
-\cite{FVConGoi2:online} try to solve. In this work, we consider that biometric data are represented as binary
-codes and that HD is used to measure the similarity between two of them. We refer the readers to \cite{daugman2003importance}
-or \cite{FujitsuD7:online} for examples of 2048-bit iris code generation and HD comparison.
+In a biometric authentication system, a user $\mathcal{U}$ first registers his
+biometric template $X$ on the server $\mathcal{S}$. $\mathcal{U}$ later
+authenticates to $\mathcal{S}$ using the same finger with a template $Y$,
+$\server$ uses an algorithm $Verify(X,Y)$ to obtain the result of the
+authentication: \textbf{Accept} or \textbf{Reject}. Different biometric systems
+might use different methods to compute the distance $\Delta$ between $X$ and $Y$
+within the algorithm $verify$. The distance $\Delta$ is compared to some
+predifined threshold value $\tau$ to determine the result of the authentication
+trial. We refer the reader to \cite{jain2007handbook} for biometric feature
+extraction and comparison techniques. Unlike password based systems, where
+$\user$ always uses one and the same same query for many authentication trials,
+all biometric systems implement the concept of False Acceptance Rate (FAR),
+corresponding to the system's \textbf{Accept} answer while receiving an
+incorrect template; and False Rejection Rate (FRR), where the system's
+\textbf{Reject} answer follows reception of a genuine one.  Balancing these 2
+rates while keeping good performances is one of the main challenges that
+fingerprint verification algorithms \cite{FVConGoi2:online} try to solve. In
+this work, we assume that biometric data are represented as binary codes and
+that HD is used to measure the similarity between two of them. We refer the
+readers to \cite{daugman2003importance} or \cite{FujitsuD7:online} for examples
+of 2048-bit iris code generation and HD comparison.
 
-There are three main approaches for privacy-preserving biometric authentication (\cite{jain201650},
-\cite{belguechi2011overview}, \cite{jain2008biometric}). In the \emph{Feature transformation approach} (cancelable
-biometrics or biohashing, such as \cite{teoh2008cancellable}, \cite{cappelli2010minutia}), the template data are
-encrypted using a client's key. Being a single factor protection, it has a low security level as the key might be leaked. The \emph{Biometric
-  cryptosystem approach} (fuzzy vault and fuzzy commitment, \cite{uludag2004biometric}, \cite{nagar2010hybrid}) is based
-on error correcting codes and the trade-off between biometric accuracy and security seems to be insufficiently understood . We focus
-our work on the last approach, \emph{Homomorphic Encryption}, which appears as the best candidate to provide all of the system design requirements mentioned.
+There are three main approaches for privacy-preserving biometric authentication
+(\cite{jain201650}, \cite{belguechi2011overview}, \cite{jain2008biometric}). In
+the \emph{Feature transformation approach} (cancelable biometrics or biohashing,
+such as \cite{teoh2008cancellable}, \cite{cappelli2010minutia}), the template
+data are encrypted using a client's key. Being a single factor protection, it
+has a low security level as the key might be leaked. The \emph{Biometric
+  cryptosystem approach} (fuzzy vault and fuzzy commitment,
+\cite{uludag2004biometric}, \cite{nagar2010hybrid}) is based on error correcting
+codes and the trade-off between biometric accuracy and security seems to be
+insufficiently understood . We focus our work on the last approach,
+\emph{Homomorphic Encryption}, which appears as the best candidate to provide
+all of the system design requirements mentioned.
 
-The idea was first proposed in 2006 (\cite{schoenmakers2006efficient}) using the Paillier addictive homomorphic system
-(\cite{paillier1999public}). In 2010, Osadchy et al. (\cite{osadchy2010scifi}) provided a privacy-preserving feature by
-combining Paillier system with an oblivious transfer protocol. SCiFI uses 900-bit vector to represent face image data and
-Hamming Distance (HD) to compare two vectors. \cite{blanton2011secure} developed a similar system for iris and
-fingerprints but using the DGK cryptosystem \cite{damgard2008homomorphic} and garble circuit technique instead. They
-represented biometric data as 2048-bit vectors and also used HD for threshold comparison. \cite{yasuda2014practical}
-proposed an approach based on Somewhat Homomorphic Encryption (SHE) \cite{brakerski2011fully}. They introduced a
-ciphertext packing technique to speed up the HD computation operation. There have been variations and improvements over
-time (\cite{shahandashti2012private}, \cite{mandal2015comprehensive}, etc.). However, most of the protocols are only
-secure against a semi-honest client, many of them relying on one or more trusted third parties with the client's secret key being used to decrypt the HD.
+The idea was first proposed in 2006 (\cite{schoenmakers2006efficient}) using the
+Paillier addictive homomorphic system (\cite{paillier1999public}). In 2010,
+Osadchy et al. (\cite{osadchy2010scifi}) provided a privacy-preserving feature
+by combining Paillier system with an oblivious transfer protocol. SCiFI uses
+900-bit vector to represent face image data and Hamming Distance (HD) to compare
+two vectors. \cite{blanton2011secure} developed a similar system for iris and
+fingerprints but using the DGK cryptosystem \cite{damgard2008homomorphic} and
+garble circuit technique instead. They represented biometric data as 2048-bit
+vectors and also used HD for threshold comparison. \cite{yasuda2014practical}
+proposed an approach based on Somewhat Homomorphic Encryption (SHE)
+\cite{brakerski2011fully}. They introduced a ciphertext packing technique to
+speed up the HD computation operation. There have been variations and
+improvements over time (\cite{shahandashti2012private},
+\cite{mandal2015comprehensive}, etc.). However, most of the protocols are only
+secure against a semi-honest client, many of them relying on one or more trusted
+third parties with the client's secret key being used to decrypt the HD.
 
-
+\begin{table}[]
+  \centering
+  \caption{Comparison with previous works}
+  \label{tab:compare}
+  \begin{tabular}{l|c|c|c|c|c|c}
+    \cline{2-7}
+    & \multicolumn{3}{c|}{\textbf{Client Impersonation Security}} & \multicolumn{3}{c|}{\textbf{Server Privacy Security}}                                                                                                                                                                         \\ \cline{2-7}
+    & \begin{tabular}[c]{@{}c@{}}Malicious \\ client \\ model\end{tabular} & \begin{tabular}[c]{@{}c@{}}Stolen \\ device,\\ secret key\end{tabular} & \begin{tabular}[c]{@{}c@{}}Leaked\\ Template\end{tabular} & \begin{tabular}[c]{@{}c@{}}Template \\ protection\\ against server\end{tabular} & \begin{tabular}[c]{@{}c@{}}Trusted \\ party\\ required\end{tabular} & \begin{tabular}[c]{@{}c@{}}Hill \\ climbing\\ protection\end{tabular} \\ \hline
+    \cite{dodis2008fuzzy}          & No                                                                   & Yes                                                                    & Yes                                                       & No                                                                              & No                                                                  & No                                                                    \\ \cline{1-1}
+    \cite{mandal2015comprehensive} & No                                                                   & No                                                                     & Yes                                                       & No                                                                             & Yes                                                                 & No                                                                    \\ \cline{1-1}
+    \cite{shahandashti2012private} & No                                                                   & Yes                                                                    & Yes                                                       & No                                                                             & No                                                                  & Yes                                                                   \\ \cline{1-1}
+    \cite{higo2015privacy}         & No                                                                   & Yes                                                                    & Yes                                                       & Yes                                                                             & Yes                                                                 & Yes                                                                   \\ \cline{1-1}
+    \cite{vsedvenka2015secure}         & Yes                                                                   & No                                                                    & Yes                                                       & Yes                                                                             & Yes                                                                 & No                                                                   \\ \cline{1-1}
+    This paper                       & Yes                                                                  & Yes                                                                    & Yes                                                       & Yes                                                                             & No                                                                  & Yes                                                                   \\ \hline
+	\end{tabular}
+\end{table}
 
 \section{The BV Cryptosystem and Yasuda Packing Method}
 \label{sec:firstProcBGV}
@@ -87,22 +126,22 @@ chapters of the thesis, an extension of this cryptosystem (namely, BGV
 the basic operations within a BV system, which works
 as follows:
 \begin{description}
-\item[Setup.] Initiate $(n,m,q,t, \chi)$ to define the ciphertext space $R_q$,
+\item[Setup.] Initiate $(n,m,q,t, \chi)$ to define the ciphertext space $R_q = \frac{\mathbb{Z}_{q}[x]}{x^{n} + 1}$,
   the plaintext space $R_t = \frac{\mathbb{Z}_{t}[x]}{x^{n} + 1}$, and the error
-  distribution, for \(t << q\).
+  distribution $\chi$ on $\mathbb{Z}_{q}$, for \(t << q\).
 \item[KeyGen.] In this step, the secret key $sk$ is chosen by selecting a small element
   $\mathbf{s} \in R_{q}$, $\mathbf{s} \randomsample \chi^{n}$. The public key $pk$ is a pair of ring elements
-  $(\mathbf{p_0},\mathbf{p_1})$, where $\mathbf{p_1} \randomsample R_q$ and
-  $\mathbf{p_0} = -(\mathbf{p_1}\mathbf{s} + t\mathbf{e})$ with
+  $(\mathbf{p}_0,\mathbf{p}_1)$, where $\mathbf{p}_1 \randomsample R_q$ and
+  $\mathbf{p}_0 = -(\mathbf{p}_1\mathbf{s} + t\mathbf{e})$ with
   $\mathbf{e} \randomsample \chi^{n}$.
 \item[Encryption.] Given a plaintext $\mathbf{m} \in R_t$ and a public key
-  $pk=(\mathbf{p_0},\mathbf{p_1})$, the encryption first calculates
+  $pk=(\mathbf{p}_0,\mathbf{p}_1)$, the encryption first calculates
   $\mathbf{u},\mathbf{f},\mathbf{g} \randomsample \chi$, then computes a fresh
   ciphertext by
     \[
-      Enc_{pk}(\mathbf{m}) = (\mathbf{c_0},\mathbf{c_1}) =
-      (\mathbf{p_0}\mathbf{u} + t\mathbf{g} + \mathbf{m},
-      \mathbf{p_1}\mathbf{u} + t\mathbf{f})
+      Enc_{pk}(\mathbf{m}) = (\mathbf{c}_0,\mathbf{c}_1) =
+      (\mathbf{p}_0\mathbf{u} + t\mathbf{g} + \mathbf{m},
+      \mathbf{p}_1\mathbf{u} + t\mathbf{f})
     \]
     By convention, $\enc{P}$ denotes the encryption of a plaintext $P$ under the
     BV scheme with the public key, and randomness is not taken into
@@ -111,18 +150,18 @@ as follows:
   \item[Decryption.] Although the above encryption generates ciphertexts of 2
     elements only in $R_q$, the homomorphic operations (discussed next) will
     make the ciphertext longer. The decryption of the ciphertext appears as
-    $c=(\mathbf{c_0},\mathbf{c_1},\dots,\mathbf{c_L})$, with secret key
-    $sk = (1, \mathbf{s}, \mathbf{s^2},\dots, \mathbf{s^L})$ as
+    $c=(\mathbf{c}_0,\mathbf{c}_1,\dots,\mathbf{c}_L)$, with secret key
+    $sk = (1, \mathbf{s}, \mathbf{s}^2,\dots, \mathbf{s}^L)$ as
     $ Dec(\mathbf{c},sk) = \left[\left[ \langle \mathbf{c}, \mathbf{sk} \rangle
       \right]_Q \right]_t $.
   \item[Homomorphic Operations.] Given 2 ciphertexts
-    $c = (\mathbf{c_0},\mathbf{c_1},\dots,\mathbf{c_L})$ and
-    $c' = (\mathbf{c'_0},\mathbf{c'_1},\dots,\mathbf{c'_{K}})$, before any
+    $c = (\mathbf{c}_0,\mathbf{c}_1,\dots,\mathbf{c}_L)$ and
+    $c' = (\mathbf{c}'_0,\mathbf{c}'_1,\dots,\mathbf{c}'_K)$, before any
     operations are carried out, the ciphertexts are padded with zeros first if
     necessary (to make $K = L$, assuming that, initially, $K < L$).  The
     homomorphic addition $add(c,c')$ is computed by the component-wise addition
-    $add(c,c') = (\mathbf{c_0} +\mathbf{c'_0}, \dots,
-    \mathbf{c_L}+\mathbf{c'_L})$. The homomorphic multiplication $mult(c,c')$ is
+    $add(c,c') = (\mathbf{c}_0 +\mathbf{c}'_0, \dots,
+    \mathbf{c}_L+\mathbf{c}'_L)$. The homomorphic multiplication $mult(c,c')$ is
     computed by
     $mult(c,c') = (\mathbf{\hat{c_0}}, \mathbf{\hat{c_1}}, \dots,
     \mathbf{\hat{c}_{2L-2}})$ with
@@ -135,13 +174,16 @@ as follows:
 \label{sub:ciphertext_packing}
 Given a bit string plaintext $m \in \{0,1\}^*$, there are several ways to encode
 it as a polynomial, or a ring element \textbf{m} $\in$ R$_{t}$ before
-encryption. A recent popular approach for BV cryptosystems is the so-called CRT packing
-method, based on the Chinese Remainder Theorem \cite{smart2014fully}. The
-method allows Single Instruction, Multiple Data (SIMD) operations on encrypted
-data. However, we do not use this packing technique in this chapter (later, in
-chapter \ref{chap:fourthProtocol}, we propose a different approach to packing methods). This chapter focuses on the method of \cite{yasuda2014practical}, which is
-an extension of \cite{naehrig2011can}, the technique allowing HD computation
-with just one level of multiplication.
+encryption. A recent popular approach for BV cryptosystems is the so-called CRT
+packing method, based on the Chinese Remainder Theorem
+\cite{smart2014fully}. The method allows Single Instruction, Multiple Data
+(SIMD) operations on encrypted data. However, we do not use this packing
+technique in this chapter as it involves some complications unrelated to the
+main point of this chapter (later, in chapter \ref{chap:fourthProtocol}, we
+propose a different approach to packing methods). This chapter focuses on the
+method of \cite{yasuda2014practical}, which is an extension of
+\cite{naehrig2011can}, the technique allowing HD computation with just one level
+of multiplication.
 
 Biometrics are used in authentication as the human features they record
 systematically differ from one person to another. There are many algorithms that
@@ -153,9 +195,9 @@ evaluate our hypothesis (\ref{protocol:step3}). In the work of
 \cite{yasuda2014practical}, the authors propose an innovative to compute the HD
 of two n-bits templates $X$ and $Y$ in the ciphertext domain. Specifically, the
 method packs all the bits of a template into a single ciphertext, and a linear
-combination of homomorphic operations would purveys an HD result. We sketchily
-present their method below.
-\begin{definition}
+combination of homomorphic operations would purveys an HD result. We sketch
+their method below.
+\begin{definition} [\cite{yasuda2014practical}]
   For $\mathbf{T} = (t_0, \dots, t_{n-1}$ and
   $\mathbf{Q} = (q_0, \dots, q_{n-1})$, we define two types of polynomials in
   the ring $R_q$ of the SHE schme:
@@ -223,22 +265,23 @@ anonymous credential systems ( \cite{camenisch2008efficient},
 \cite{galil1985symmetric}, \cite{goldreich2009foundations},
 \cite{goldwasser2005proof}, \cite{katz2003efficient},\dots), and many more. 
 
-In this chapter, we discuss zero-knowledge proofs of plaintext knowledge for 
-LWE-based cryptosystems. Given a system with a public key $\pk$, a proof of 
-plaintext knowledge (PoPK) allows a $Prover$ P to convince a $Verifier$ V that 
-it knows the plaintext $M$ of some ciphertext $c = Enc(\pk, M)$. The witness 
-used in the proof normally consists of the plaintext, the secret key, and the 
-randomness factor implemented during encrypting $c$. A PoPK system is zero-knowledge in the 
-sense that it does not allow V to acquire any information about $M$. This research
-area has received attention in recent years. A ZKPoPK for a variant of the Ajtai-Dwork
-system \cite{ajtai1997public} was engineered by \cite{goldreich1999approximating}, who 
-adapted the protocol from \cite{micciancio2003statistical}. Xagawa and Tanaka 
-\cite{xagawa2009zero} used the Stern-KTX proof \cite{stern1993new, kawachi2008concurrently}
-to obtain PoPK for NTRU cryptosystems \cite{hoffstein1998ntru}. Many projects targeted 
-Regev's LWE-based cryptosystem (\cite{bendlin2010threshold, bendlin2011semi, asharov2012multiparty},
-but they all derived from a secure Multi-Party Computation protocol, specifically the IKOS
-transformation \cite{ishai2007zero}, and therefore had a relatively high communication cost, equalling $\bigO{n^2}$ . We present a ZKPoPK for the BV encryption scheme \cite{brakerski2011fully}, with communication cost $\bigO{n}$.
-
+In this chapter, we discuss zero-knowledge proofs of plaintext knowledge for
+LWE-based cryptosystems. Given a system with a public key $\pk$, a proof of
+plaintext knowledge (PoPK) allows a $Prover$ P to convince a $Verifier$ V that
+it knows the plaintext $M$ of some ciphertext $c = Enc(\pk, M)$. The witness
+used in the proof normally consists of the plaintext, the secret key, and the
+randomness factor implemented during encrypting $c$. A PoPK system is
+zero-knowledge in the sense that it does not allow V to acquire any information
+about $M$. This research area has received attention in recent years. A ZKPoPK
+for a variant of the Ajtai-Dwork system \cite{ajtai1997public} was engineered by
+\cite{goldreich1999approximating}, who adapted the protocol from
+\cite{micciancio2003statistical}. Xagawa and Tanaka \cite{xagawa2009zero} used
+the Stern-KTX proof \cite{stern1993new, kawachi2008concurrently} to obtain PoPK
+for NTRU cryptosystems \cite{hoffstein1998ntru}. Many projects targeted Regev's
+LWE-based cryptosystem (\cite{bendlin2010threshold, bendlin2011semi,
+  asharov2012multiparty}, but they all derived from a secure Multi-Party
+Computation protocol, specifically the IKOS transformation \cite{ishai2007zero},
+and therefore had a relatively high communication cost. 
 
 
 
@@ -306,11 +349,12 @@ equation:
                    &= \mathbf{A}\vec{s}\vec{r} + t\vec{e}\vec{r} + M - \mathbf{A}\vec{r}\vec{s}\\
                    &= t\tilde{e} + M
 \end{align*}
+We denote $S_{1}, S_{2}, S_{m}$ to be subsets of $\mathbb{Z}_{q}$ corresponding to small coefficients of $\mathbf{s}, \mathbf{e}, \mathbf{m}$
 Therefore, we can write out the decryption relation as:
 \begin{equation*}
   \begin{multlined}[][\LTcapwidth]
     R_{Regev,dec}^{q,m,n,t\chi} = \{((p_0,p_1),(c_0,c_1),\vec{s},\vec{e},\tilde{e}, M) \in (\mathbb{Z}_q^{m \times n}
-    \times \mathbb{Z}_q^{m})\times (\mathbb{Z}_q^n \times \mathbb{Z}_q)\times \chi^n \times \chi^n \times \chi \times
+    \times \mathbb{Z}_q^{m})\times (\mathbb{Z}_q^n \times \mathbb{Z}_q)\times S_{1}^n \times S_{2}^n \times S_{m} \times
     \zzq:\\ (p_1 = p_0\vec{s} + t\vec{e}) \land (c_{1} = c_{0}\vec{s} + t\tilde{e} + M) \}
   \end{multlined}
 \end{equation*}
@@ -323,17 +367,21 @@ $\norminf{\tilde{e}} >
 $\mathbf{X}_{Stern}$ are quite close to each other. In other latticed-based system, the difference can be big, as for example, the BV system's decryption relation:
 \begin{equation*}
   \begin{multlined}[][\LTcapwidth]
-  R_{BV}^{q,n,t,\chi} = \{((\mathbf{c_0}, \mathbf{c_1}),(\mathbf{p_0}, \mathbf{p_1}), \mathbf{s},\mathbf{e'}, \mathbf{e}, \mathbf{m} \in
-  (\rrq \times \rrq) \times (\rrq \times \rrq)  \times \chi^n \times \chi^n \times \chi^n \times R_t:\\
-  (\mathbf{p_1}\mathbf{s} + t\mathbf{e} = -\mathbf{p_0} ) \land (\mathbf{c_1}\mathbf{s} - t\mathbf{e'} -\mathbf{m} = -\mathbf{c_0})
+  R_{BV}^{q,n,t,\chi} = \{((\mathbf{c}_0, \mathbf{c}_1),(\mathbf{p}_0, \mathbf{p}_1), \mathbf{s},\mathbf{e}', \mathbf{e}, \mathbf{m} \in
+  (\rrq \times \rrq) \times (\rrq \times \rrq)  \times S_{1}^n \times S_{2}^n \times S_{2}^n \times S_{m}:\\
+  (\mathbf{p}_1\mathbf{s} + t\mathbf{e} = -\mathbf{p}_0 ) \land (\mathbf{c}_1\mathbf{s} - t\mathbf{e}' -\mathbf{m} = -\mathbf{c}_0)
   \}
   \end{multlined}
 \end{equation*}
 
 Our \emph{Prover}'s witness in this situation is
-\(\mathbf{X}_{Stern} = [\mathbf{s, e', e, m}]^{T}\) with $\norminf{s} \approx \norminf{e} < \norminf{e'} << \norminf{m}$.  Therefore, instead of proving
-$\norminf{\mathbf{X}_{Stern}} < \beta$, we need a proof with different constraints on the witness' components. We
-present a solution for this problem.
+\(\mathbf{X}_{Stern} = [\mathbf{s, e', e, m}]^{T}\) with
+$\norminf{s} \approx \norminf{e} > \norminf{e'} >> \norminf{m}$.  Therefore,
+instead of proving $\norminf{\mathbf{X}_{Stern}} < \beta$, we need a proof with
+different constraints on the witness' components. In particular in our
+application, we need to prove that the message has binary coefficients (for
+correctness of the Hamming Distance homomorphic computation), whereas the errors
+have non-binary coefficients. We present a solution for this problem.
 \subsubsection*{Our construction}
 % There are several requirements need to be
 % satisfied:
@@ -353,35 +401,46 @@ present a solution for this problem.
       R_{KTX} = \{\mathbf{((A,y),x)} \in \mathcal{Z}_{q}^{n \times m} \times \mathcal{Z}_{q}^{n}\times \{0,1\}^{m}:
       wt(\mathbf{x}) \wedge \mathbf{A . x = y} \mod q\},
     \end{multlined}
-  \end{equation*} the proof for the original relation \(R_{BV}^{q,n,t,\chi}\) can be obtained. Note that, at this point
-  the $Prover$'s witness is a binary vector, that is, if it needs to be to proved that some part of the message is binary, such a proof can be obtained at this point as well. It is important to use such a proof for latticed-based cryptosystems where the
-  message space is $\mathbf{R}_2$: a proof for the ISIS relation would be irrelevant in such situations, as it only asserts that the infinity norm of the whole witness is less than some $\beta$.
+  \end{equation*}
+
+  the proof for the original relation \(R_{BV}^{q,n,t,\chi}\) can be
+  obtained. Note that, at this point the $Prover$'s witness is a binary vector,
+  that is, if it needs to be to proved that some part of the message is binary,
+  such a proof can be obtained at this point as well. It is important to use
+  such a proof for latticed-based cryptosystems where the message space is
+  $\mathbf{R}_2$: a proof for the ISIS relation would not be suitable in such
+  situations, as it only asserts that the infinity norm of the whole witness is
+  less than some $\beta$.
 
 \item [Protocol description.]
   The protocol \textbf{SternBV(A,y,x)} works as follows: Let $A$ be a matrix of $m \times l$ ring element ($A \in R_{q}^{m \times l}$),
-  $\mathbf{x}$ be a vector of $l$ ring elements $\mathbf{x} = \left\{ \mathbf{x_1, x_2, \dots, x_l} \right\}$ and
-  similarly $\mathbf{y} = \left\{ \mathbf{y_1,\dots,y_m} \right\}$. The protocol includes the following steps:
+  $\mathbf{x}$ be a vector of $l$ ring elements $\mathbf{x} = \left\{ \mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_l \right\}$ and
+  similarly $\mathbf{y} = \left\{ \mathbf{y}_1,\dots,\mathbf{y}_m \right\}$. The protocol includes the following steps:
 
-\item [Step 1.] Normalizing the bound of each component $x_i$ of \textbf{x} from $\{-\beta_i,\dots,\beta_i\}$ to
-  $\{0,\dots,2^{l_i}\}$, where $l_i$ is the smallest integer satisfying $2^{l_i} > (2\beta_i -1)$. This step is done by
-  one ring multiplication for each $\mathbf{x_i}$, let $x_i' = x_i + \beta_i.\mathbf{f}(x)$, where
-  $f(x) = 1 + x + x^2 + \dots + x^{n-1}$. After this normalization step, instead of proving the relation
-  $\mathbf{a_i x_i = y_i}$ with $\norminf{x_i} \in \left\{ -\beta_i, \dots, \beta_i \right\}$, we prove
-  $\mathbf{a_i x'_i = y'_i}$ with $\norminf{ x'_i } \in \left\{ 0,\dots,2^{l_i} \right\}$, where
-  $\mathbf{y'_i = y_i + a_i\beta_i f(x)}$.
+\item [Step 1.] Normalizing the bound of each component $x_i$ of \textbf{x} from
+  $\{-\beta_i,\dots,\beta_i\}$ to $\{0,\dots,2^{l_i}\}$, where $l_i$ is the
+  smallest integer satisfying $2^{l_i} > (2\beta_i -1)$. This step is done by
+  one ring multiplication for each $\mathbf{x}_i$, let
+  $\mathbf{x}_i' = \mathbf{x}_i + \beta_i.\mathbf{f}(x)$, where
+  $\mathbf{f}(x) = 1 + x + x^2 + \dots + x^{n-1}$. After this normalization step, instead
+  of proving the relation $\sum_{j}\mathbf{a}_{i,j} \mathbf{x}_j = \mathbf{y}_i$ with
+  $\norminf{\mathbf{x}_i} \in \left\{ -\beta_i, \dots, \beta_i \right\}$, we prove
+  $\sum_{j}\mathbf{a}_{i,j} \mathbf{x}'_j = \mathbf{y}'_i$ with
+  $\norminf{ \mathbf{x}'_i } \in \left\{ 0,\dots,2^{l_i} \right\}$, where
+  $\mathbf{y}'_i = \sum_{j}\mathbf{a}_{i,j}\beta_j \mathbf{f}(x)$.
 
-\item [Step 2.] Decompose $x'_i = x_i + \beta_i$ into their binary representation
+\item [Step 2.] Decompose $\mathbf{x}'_i = \mathbf{x}_i + \mathbf{\beta}_i$ into their binary representation
   \[
-    \mathbf{x''_i} = \sum_{j = 0}^{l_i -1}{2_j b_j}
+    \mathbf{x}''_i = \sum_{j = 0}^{l_i -1}{2_j b_j}
   \]
-  Let $\mathbf{x''}$ be the result ring element that concatenates all $\mathbf{x''_i}$ and has $L = \sum{l_i}$
-  coefficients. In this step we need to hide the Hamming Weight of the secret vector $\mathbf{x'_i}$. This hiding task
+  Let $\mathbf{x}''$ be the result ring element that concatenates all $\mathbf{x}''_i$ and has $L = \sum{l_i}$
+  coefficients. In this step we need to hide the Hamming Weight of the secret vector $\mathbf{x}'_i$. This hiding task
   is achieved by padding:
   \begin{enumerate}
-  \item Let $\zeta_0$ and $\zeta_1$ be the number of coefficients of $\mathbf{x''}$ equal to 0 or 1, respectively.
+  \item Let $\zeta_0$ and $\zeta_1$ be the number of coefficients of $\mathbf{x}''$ equal to 0 or 1, respectively.
   \item Sample a random vector $\mathbf{\zeta} \in \left\{ 0,1 \right\}^{L}$ that has $(L - \zeta_0)$ coefficients 0 and
     $(L - \zeta_1)$ coefficients 1.
-  \item Output $\mathbf{x_{Stern}} = \mathbf{x''} || \mathbf{\zeta}$.
+  \item Output $\mathbf{x_{Stern}} = \mathbf{x}'' || \mathbf{\zeta}$.
   \end{enumerate}
   The resulting binary vector $\mathbf{x_{Stern}}$ has length $2L$ and the total number of 0s and 1s in the
   $\mathbf{x_{Stern}}$ are the same.
@@ -400,14 +459,17 @@ present a solution for this problem.
   \]
   The matrix $A$ can be then reconstructed as $rot$ matrices:
   \[
-    \forall \mathbf{a_{i,j}} \in \mathbf{A}: \mathbf{a'_{i,j}} =
-    rot(\mathbf{a_{i,j}})
+    \forall \mathbf{a}_{i,j} \in \mathbf{A}: \mathbf{a}'_{i,j} =
+    rot(\mathbf{a}_{i,j})
   \]
-  The result expanded matrix is denoted $\mathbf{A'}$. We also need to pad the resulting matrix with a corresponding
-  number of 0s to make sure that $\mathbf{A'}$ complies with all $x'_i$. Let $\mathbf{A_{Stern}}$ be the padded result.
+  The result expanded matrix is denoted $\mathbf{A'}$. We also need to pad the
+  resulting matrix with a corresponding number of 0s to make sure that
+  $\mathbf{A'}$ complies with all $x'_i$. Let $\mathbf{A_{Stern}}$ be the padded
+  result.
 
-\item [Step 4.] Modify $\mathbf{y_i}$: Let $\mathbf{y'_i} = \mathbf{y_i + a_i\beta_if(x)}$ and let $\mathbf{y_{Stern}}$ be
-  the concatenation of all $\mathbf{y'_i}$.
+\item [Step 4.] Modify $\mathbf{y}_i$: Let
+  $\mathbf{y}'_i = \sum_{j}\mathbf{a}_{i,j}\mathbf{\beta}_{j}\mathbf{f}(x)$ and
+  let $\mathbf{y_{Stern}}$ be the concatenation of all $\mathbf{y}'_i$.
 
 
 \item [Step 5.] Run the Stern protocol (Section \ref{append:Stern}) for the proof of $\mathbf{A_{Stern}x_{Stern} = y_{Stern}}$.
@@ -438,8 +500,8 @@ present a solution for this problem.
     \caption{ZKPoPK Improved for BV}\label{alg:ZKPBVImproved}
     \begin{algorithmic}[1]
       \Procedure{ZKPBV}{$(\mathbf{c}, pk),(\mathbf{m, s, e, e'}))$}
-      \State $rot_{c_1} \gets rot(\mathbf{c_1})$
-      \State $rot_{p_1} \gets rot(\mathbf{pk_1})$
+      \State $rot_{c_1} \gets rot(\mathbf{c}_1)$
+      \State $rot_{p_1} \gets rot(\mathbf{pk}_1)$
       \State let I be the $n \times n$ identity matrix
       \State let Z be the $n \times n $ zero matrix
       \State $\mathbf{A} \gets ((rot_{c_1},-tI, Z, -I),(rot_{p_1}, Z, tI,Z)) $
@@ -488,17 +550,17 @@ main submodules in the protocol: Setup, Enrol, and Authenticate. Figure \ref{fig
   \item[Keygen.] Keys are generated for $\user$:
     \begin{itemize}
     \item Secret key: $\mathbf{s} \randomsample \chi_{\alpha q}^n$, \(sk = (1, \mathbf{s, s^{2}, ...})\)
-    \item Public key: $pk = \mathbf{(p_0,p_1)}$, with $\mathbf{p_1} \randomsample R_q$ and
-      $\mathbf{p_0} = -\mathbf{p_1s} - t\mathbf{e}$, with $\mathbf{e} \randomsample \chi_{\alpha q}^n$.
+    \item Public key: $pk = (\mathbf{p}_0,\mathbf{p}_1)$, with $\mathbf{p}_1 \randomsample R_q$ and
+      $\mathbf{p}_0 = -\mathbf{p}_1\mathbf{s} - t\mathbf{e}$, with $\mathbf{e} \randomsample \chi_{\alpha q}^n$.
     \end{itemize}
   \end{description}
 \item [Enrolment.] $\user$ extracts the biometric template $\mathbf{x}$, the bit string $\mathbf{x}$ being
-  represented as a ring element of ${R}_t$.  The encryption is done by $\enc{\mathbf{x}} = (\mathbf{c_0},\mathbf{c_1})$
+  represented as a ring element of ${R}_t$.  The encryption is done by $\enc{\mathbf{x}} = (\mathbf{c}_0,\mathbf{c}_1)$
   and sent to $\server$.
 \item [Authentication.] The following steps are required:
   \begin{enumerate}
   \item $\user$ extracts his biometric features again $\mathbf{y}$ to use them as the query. $\user$ sends
-    $\enc{\mathbf{y}} = (\mathbf{c_0', c_1'})$ to $\server$.
+    $\enc{\mathbf{y}} = (\mathbf{c}_0', \mathbf{c}_1')$ to $\server$.
   \item ZKP for the first relation: $\user$ has to prove that $\enc{\mathbf{y}}$ is a valid encryption, that is, it
     encrypts a bit string under the BV cryptosystem using the corresponding secret key. This is done by module
     \textbf{SternBV(A, y, x)} described in Sect. \ref{sec:Stern-basedZKP}, where
@@ -509,10 +571,10 @@ main submodules in the protocol: Setup, Enrol, and Authenticate. Figure \ref{fig
 \item HD Computation: $\server$ computes $\enc{HD_{\mathbf{x,y}}}$ using
   procedure \ref{sub:ciphertext_packing} and mask $HD$ by adding some random
   value $r$ homomorphically to $\enc{HD_{\mathbf{x,y}}}$. The result
-  $\enc{\mathbf{HD'}}$ is then sent to $\user$.
-\item \(\user\) decrypts $\enc{\mathbf{HD'}}$ and derives the actual value
+  $\enc{\mathbf{HD}'}$ is then sent to $\user$.
+\item \(\user\) decrypts $\enc{\mathbf{HD}'}$ and derives the actual value
   ${HD'}$ from the first coefficient of the plaintext:
-  \( dec\enc{\mathbf{HD'}} = HD' + r_1 + r_2 + \dots + r_{n-1} \). \(\user\)
+  \( dec\enc{\mathbf{HD}'} = HD' + r_1 + r_2 + \dots + r_{n-1} \). \(\user\)
   sends \(HD'\) to \(\server\).
 \item \(\user\) proves that it does the decryption honestly, this is done
   similarly to step 2.
@@ -553,9 +615,9 @@ main submodules in the protocol: Setup, Enrol, and Authenticate. Figure \ref{fig
 \label{sec:correctness}
 In the enrolment step, as mentioned before, in order to encrypt $\mathbf{x}$,
 $\user$ samples $\mathbf{u,f,g} \randomsample \chi_{\alpha q}^n$ and does
-$\mathbf{c_0} = \mathbf{p_0u} + t\mathbf{f} + \mathbf{x}$ and
-$\mathbf{c_1} = \mathbf{p_1u} + t\mathbf{g}$. The condition for decryption
-correctness is $[\langle \mathbf{c_0 + c_1s} \rangle]_q < q/2$, or,
+$\mathbf{c}_0 = \mathbf{p}_0\mathbf{u} + t\mathbf{f} + \mathbf{x}$ and
+$\mathbf{c}_1 = \mathbf{p}_1\mathbf{u} + t\mathbf{g}$. The condition for decryption
+correctness is $[\langle \mathbf{c}_0 + \mathbf{c}_1\mathbf{s} \rangle]_q < q/2$, or,
 $-t\mathbf{eu} + t\mathbf{f} + t\mathbf{gs} < q/2$.
 
 In the authentication step, \(\enc{HD}\) is decryptable if

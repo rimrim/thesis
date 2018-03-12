@@ -11,25 +11,31 @@
 
 \section{Introduction}
 \label{sec:syntaxModel}
-In this chapter, we first describe the protocol and its security model generically.
-We then go into details and further use it as a framework for our specific
-proposals in later chapters. In order to precisely grasp  the definition of security,
-we will describe the protocols' security models in terms of \textbf{attack
-  games} played bettwen two parties: a \textbf{challenger} and an
-\textbf{adversary}. Generally, the challenger \(\challenger\) follows a simple,
-fixed protocol and the adversary \(\attacker\) may follow an arbitrary and
-efficient protocol. The two players send messages back and forth to each other
-as specified in their protocols, and, at the end of the games, \(\attacker\)
-outputs some value. The attack games define a probability space based on this
-output value, and it defines the adversary's \textit{advantage}, which normally
-measures the difference between the probabilities of two events in the given
-probability space: One is the event that the adversary wins the \textit{real}
-game; the other one is the event that the adversary wins the game with one (or
-some) of the system's components replaced by an idealized version of such
-component(s). The security proofs of protocols will also be organized as
-sequences of games. This technique appears in the literature in different flavours
-with different degrees of formalisation. For us, it provides a helpful tool
-to reduce the complexity of security proofs that might otherwise become
+In this chapter, we first describe the protocol and its security model
+generically.  We then go into details and further use it as a framework for our
+specific proposals in later chapters. In order to precisely grasp the definition
+of security, we will describe the protocols' security models in terms of
+\textbf{attack games} played between two parties: a \textbf{challenger} and an
+\textbf{adversary}, adapting the standard game based security model approach
+commonly used in cryptography \cite{boneh2008graduate} . Generally, the
+challenger \(\challenger\) follows a simple, fixed protocol and the adversary
+\(\attacker\) may follow an arbitrary and efficient protocol. The two players
+send messages back and forth to each other as specified in their protocols, and,
+at the end of the games, \(\attacker\) outputs some value. We use
+\textit{``simulation based''} security models, where the attack game defines a
+probability space based on the output value , and it defines the adversary's
+\textit{advantage}, which normally measures the difference between the
+probabilities of two events in the given probability space: One is the event
+that the adversary wins the \textit{real} game; the other one is the event that
+a related adversary wins an ideal game with one (or some) of the system's
+components replaced by an idealized version of such component(s). By
+demonstrating that the advantage between the real and ideal games is negligible,
+we can conclude that the security of the ``real'' protocol is essentially the
+same as the ``ideal'' protocol. The security proofs of protocols will also be
+organized as sequences of games. This technique appears in the literature in
+different flavours with different degrees of formalisation. We also use an
+incremental game based proof approach \cite{shoup2004sequences} as a helpful
+tool to reduce the complexity of security proofs that might otherwise become
 messy and complicated. We note that the technique is only a tool to organize the
 models and the proofs, the actual ideas for cryptographic constructions and
 security analysis come from elsewhere, specifically the problems discussed in
@@ -51,15 +57,15 @@ authentication should satisfy the following properties:
 \subsection{The threats}
 \label{sec:privacyReqs}
 There are common security threats to many authentication systems such as Trojan
-horse, replay, man-in-the-middle (MITM) attack, etc. Biometrics authentication
+horse, replay, man-in-the-middle (MITM) attack. Biometrics authentication
 systems are also vulnerable to such attacks. We can borrow ideas from secure
 password-based schemes to address such issues. However, there are two categories
 of vulnerabilities that are specific to biometric systems.  The first one is
-impersonation, or spoofing, the attack happens at the client's side as the
+impersonation, or spoofing. The attack happens at the client's side as the
 adversary tries to cheat the system with counterfeit or invalid inputs.  The
 other issue is at the server's side and yields privacy concerns.
 
-We will discuss the formal models that capture all the known threats of
+We will present formal models that capture all the known threats of
 biometric authentication:
 \begin{itemize}
 \item Confidential data leakage due to attacks on the template database: Server
@@ -101,11 +107,11 @@ biometric authentication:
 \item[Biometrics Features in non-private setting] In biometric authentication
   systems (e.g., fingerprint authentication system), a user $\mathcal{U}$ first
   registers his fingerprint template $X$ on the server
-  $\mathcal{S}$. $\mathcal{U}$ later authenticates before $\mathcal{S}$ using
+  $\mathcal{S}$. $\mathcal{U}$ later authenticates to $\mathcal{S}$ using
   the same finger with a template $Y$, $\server$ uses an algorithm $Verify(X,Y)$
   to obtain the result of the authentication: \textbf{Accept} or
   \textbf{Reject}. Different fingerprint systems might use different features of
-  fingers such as minutia or fingercode to compute the distance $\Delta$ between
+  fingers such as minutia or fingercode \cite{ferrara2012noninvertible ,jain1999fingercode} to compute the distance $\Delta$ between
   $X$ and $Y$ within the algorithm $Verify$. The distance $\Delta$ is compared
   to some predifined threshold value $\tau$ to determine the result of the
   authentication. We refer the reader to \cite{jain2007handbook} for biometric
@@ -122,20 +128,21 @@ biometric authentication:
   models.
 
 \item[Algorithms and Procedures in privacy-preserving settings:] We describe the
-  high-level constructions of the privacy-preserving protocol as follows:
+  high-level syntax of the privacy-preserving biometric authentication protocol consisting of the following procedures:
   \begin{description}
   \item[Enrol.] This procedure inserts records into the server's database.
     \begin{itemize}
-    \item Input: Client: identity $k$, a registered template $X_k$; Server:
-      Parameters of the cryptographic tools used.
+    \item Client's input: identity $k$, a registered template $X_k$
+    \item Server's input: Parameters of the cryptographic tools used.
     \item Output: A public-private key pair $(sk_k, pk_k)$ for the user
-      $\user_k$. The server stores the protected template of $T_k$ (which can be
+      $\user_k$. The server stores the protected biometric template $T_k$ (which is typically
       some encryption of $X_k$).
     \end{itemize}
   \item[Auth.] This procedure allows a user to authenticate to the system.
     \begin{itemize}
-    \item Input: Client: identity $k$, a query template $Y_k$ and the secret key
-      $sk_k$; Server: record $(k, T_k, pk_k)$
+    \item Client's Input: identity $k$, a query template $Y_k$ and the secret key
+      $sk_k$ 
+    \item Server's Input: record $(k, T_k, pk_k)$
     \item Output: The server computes the authentication result
       $res=\{\textbf{Accept,Reject}\}$. The transcript of the protocol can also
       be obtained: We denote \(V_{c}\) and \(V_{s}\) to be the \textit{view} of
@@ -143,9 +150,10 @@ biometric authentication:
     \end{itemize}
 
   \item[Correctness Requirement:] A genuine user $\user_k$ executes
-    $(sk_k, T_k) \gets \mathbf{Enroll}(k, X_k)$ using a $X_k \in Supp(D_k)$ and
+    $(sk_k, T_k) \gets \mathbf{Enroll}(k, X_k)$ using a $X_k \randomsample Supp(D_k)$ and
     later uses his biometric template $Y_k \randomsample D_k$ to perform
-    $$res \gets \mathbf{Auth}( (k, Y_k, sk_k), (k, T_k, pk_k))$$
+    $$res \gets \mathbf{Auth}_{\user,\server}( (k, Y_k, sk_k), (k, T_k, pk_k))$$
+    Where $\user, \server$ are the honest client and server parties.
     The privacy-preserving protocol works correctly if the FRR under this system
     is exactly equal to the FRR of the non-privacy preserving system:
     \[
@@ -155,6 +163,12 @@ biometric authentication:
 \end{description}
 
 \subsection{The privacy preserving model}
+  Our security model intends to capture both threats for client and server's
+  sides as discussed previously. There is only one variant which do not capture a
+  threat related to Hamming Distance leakeage to server, this imperfect privacy
+  was introduced with the assumption that given such a value of HD of 2 bit
+  strings, it is not feasible to infer information from the original bit
+  strings.
 \begin{description}
 \item[Privacy against an Honest But Curious server:] The security model is defined in terms of the following security games.
   % Although the model assumes the server behaves honestly \emph{within} the protocol (since we our main aim is security
@@ -212,7 +226,7 @@ $\adv$'s \textbf{passive server security advantage} with respect to protocol $\p
   protocol is $q$-private in the sense of biometric template privacy against an
   honest but curious server $\server$ if for every efficient real-game attacker
   $\attacker$, there exists an efficient ideal-game attacker $\attacker'$ such
-  that, for all $(D_k,X_k)$ the following stands:
+  that, for all $(D_k,X_k)$, with $X_{k} \in Supp(D_{k})$, the following stands:
   \[
     \advantage{PS}{\adv,\pdv} \leq negl(n).
   \]
@@ -228,19 +242,20 @@ schematic diagrams of the Privacy Security against Server games.
       \begin{bbrbox}[name=Adversary, minheight=2cm]
         
       \end{bbrbox}
-      \bbroutput{$\beta = A(D_{k}, X_{k})$}
+      \bbroutput{$\beta = A(T_{k}, (res_{i}, v_{s}^{i})_{i=1}^{q})$}
       \begin{bbrchallenger}{PSChallenger}
-        \begin{bbrbox}[name=Challenger]
+        \begin{bbrbox}[name=Challenger, minheight=2cm]
           \pseudocode{
             \\
             (\pk,\sk) \gets KeyGen\\
-            X_k \randomsample D_k\\
+            % X_k \randomsample D_k\\
             T_k \gets \mathbf{enroll}(k,X_k)\\
             \text{For } i = 1,\dots,q:\\
             Y_k \randomsample D_k\\
             res_i = \mathbf{auth}(k,T_k,Y_k)
          } 
-        \end{bbrbox}
+       \end{bbrbox}
+       \bbrinput{$(X_k, D_k)$}
       \end{bbrchallenger}
       \bbrchallengerqryto{top=$T_{k}$}
       \bbrchallengerqryto{top=$res_{i}$}
@@ -259,19 +274,20 @@ schematic diagrams of the Privacy Security against Server games.
       \begin{bbrbox}[name=Adversary, minheight=2cm]
         
       \end{bbrbox}
-      \bbroutput{$\beta' = A'(D_{k}, X_{k})$}
+      \bbroutput{$\beta' = A'((res_{i})_{i=1}^{q})$}
       \begin{bbrchallenger}{PSChallengerIdeal}
         \begin{bbrbox}[name=Challenger]
           \pseudocode{
             \\
             (\pk,\sk) \gets KeyGen\\
-            X_k \randomsample D_k\\
+            % X_k \randomsample D_k\\
             T_k \gets \mathbf{enroll}(k,X_k)\\
             \text{For } i = 1,\dots,q:\\
             Y_k \randomsample D_k\\
             res_i = Verify(X_k, Y_k)
          } 
         \end{bbrbox}
+       \bbrinput{$(X_k, D_k)$}
       \end{bbrchallenger}
       % \bbrchallengerqryto{top=$T_{k}$}
       % \bbrchallengerqryto{top=$res_{i}$}
@@ -318,19 +334,19 @@ the security proofs:
     \begin{description}
     \item[Setup:] $\challenger$ samples $X_k \randomsample D_{k}$ from a random
       $\user_k$ ($D_k \randomsample D_{bio}$).
-    \item[Query:] $\attacker$ is given access to the authentication oracle
-      $verify(X_k,Y)$, which returns the authentication result of $\user_k$ with
-      a query template $Y$. $\attacker$ has $q$ attempts to make queries, in
-      each attempt, $\attacker$ chooses a $Y_{q}$ by himself and executes
-      $verify(X_k,Y_{q})$.
+    \item[Query:] $\attacker$ is given access to the authentication oracle $q$ times
+      $verify(X_k,Y_{i})$, which returns the authentication result of $\user_k$ with
+      a query template $Y_{i}$. $\attacker$ has $q$ attempts to make queries, in
+      each attempt, $\attacker$ chooses a $Y_{i}$ by himself and executes
+      $verify(X_k,Y_{i})$.
     \item[Guess:] $\attacker$ outputs $Y_{q'}$ such that
       $verify(X_k,Y_{q'}) = \textbf{Accept}$.
     \end{description}
 
     Figure \ref{fig:maliciousNonPrivate} show the biometric
-    imperationation (non private) attack game. Let $W_{0}$ be the event that
-    $\attacker$ output $Y_{q'}$ such that
-    $verify(X_{k},Y_{k}) = \mathbf{Accept}$ and let $p_{0} = \prob{W_{0}} $.
+    imperationation (non private) attack game. Let $W_{0}$ be the event that there exists some $i$ such that
+    $\attacker$ output $Y_{i}$ such that
+    $verify(X_{k},Y_{i}) = \mathbf{Accept}$ and let $p_{0} = \prob{W_{0}} $.
     \begin{figure}[!h]
       \begin{center}
         \begin{bbrenv}{nonPrivacyServer}
@@ -341,7 +357,7 @@ the security proofs:
               Y_i \gets \{0,1\}^n
            } 
           \end{bbrbox}
-          \bbroutput{$Y_{q}'$}
+          % \bbroutput{$Y_{q}'$}
           \begin{bbrchallenger}{nonPrivacyChallenger}
             \begin{bbrbox}[name=Challenger]
               \pseudocode{
@@ -351,6 +367,7 @@ the security proofs:
                 res_i = Verify(X_k, Y_k)\\
               } 
             \end{bbrbox}
+            \bbroutput{$(res_{1},\dots,res_{q})$}
           \end{bbrchallenger}
           \bbrchallengerqryfrom{top=$Y_{k}$}
           % \bbrchallengerqryto{top=$res_{i}$}
@@ -378,26 +395,27 @@ the security proofs:
       \begin{itemize}
       \item $\challenger$ samples $X_k \randomsample D_{k}$ from a random
         $\user_k$ ($D_k \randomsample D_{bio}$).
-      \item $\challenger$ runs $\textbf{Enroll}(k, X_k)$, which returns $(sk_k, T_k)$.
+      \item $\challenger$ runs $\textbf{Enroll}(k, X_k)$, which returns $(sk_k, pk_{k}, T_k)$.
       \end{itemize}
     \item[Query:] In the query phase:
       \begin{itemize}
       \item $\attacker$ is given access to the authentication oracle
-        $\mathbf{Auth}(Y)$ returning the authentication result of $\user_k$ with
-        a query template $Y$.
+        $\mathbf{Auth}$, the input to \textbf{Auth} supplied by $\attacker$ are
+        the client's messages in the \textbf{Auth} protocol, returning the
+        authentication result of $\user_k$ with a query template $Y$.
 
       \item $\challenger$ and $\attacker$ run $\mathbf{Auth()}$ $q$ times, For
-        the $i^{th}$ run, $\attacker$ plays the client's role, choosing and
-        sending $Y_i$ to $\challenger$, $\challenger$ plays the server's role,
-        replying with $res_i = \mathbf{Auth}(Y_i)$.
+        the $i^{th}$ run, $\attacker$ plays the client's role, $\challenger$ plays the server's role,
+        replying with $res_i = \mathbf{Auth}$.
       \end{itemize}
-    \item[Guess:] $\attacker$ wins the game if it outputs $Y$ such that $\mathbf{Auth}(Y) = \textbf{Accepted}$.
+    \item[Guess:] $\attacker$ wins the game if there exists $i$ such that $res_{i} = \textbf{Accepted}$.
     \end{description}
     Figure \ref{fig:impersonationAttackGame} show the impersonation attack
-    game. Let $W_{1}$ be the event that $\attacker$ output $Y_{q'}$ such that
-    $verify(X_{k},Y_{k}) = \mathbf{Accept}$ and let $p_{1} = \prob{W_{1}} $. We
-    define $\adv$'s \textbf{active impersonation advantage} with respect to the
-    protocol $\pdv$ as
+    game. Let $W_{1}$ be the event that there exists $i$ such that
+    $res_{i} = \mathbf{Accepted}$ and let $p_{1} = \prob{W_{1}} $, recall that
+    $P_{0}$ is the advantage of $\attacker$ in the biometric impersonation
+    attack game. We define $\adv$'s \textbf{active impersonation advantage} with
+    respect to the protocol $\pdv$ as
     \[
       \advantage{AI}{\adv,\pdv} = |p_{1} - p_{0}|
     \]
@@ -419,7 +437,7 @@ the security proofs:
               Y_i \gets \{0,1\}^n
             }
           \end{bbrbox}
-          \bbroutput{$Y_{q}'$}
+          % \bbroutput{$Y_{q}'$}
           \begin{bbrchallenger}{impersonationChallenger}
             \begin{bbrbox}[name=Challenger]
               \pseudocode{
@@ -431,9 +449,10 @@ the security proofs:
                 res_i = \mathbf{Auth}(Y_i, T_k, k)
               } 
             \end{bbrbox}
+            \bbroutput{$(res_{1}, \dots, res_{q})$}
           \end{bbrchallenger}
           \bbrchallengerqryto{top=$pk_{k}$}
-          \bbrchallengerqryfrom{top=$Y_{i}$}
+          \bbrchallengerqryfrom{top=$Auth_{i}$}
           \bbrchallengerqryto{top=$V_c^i$}
           \bbrchallengerqryto{top=$res_{i}$}
           % \bbrchallengerqryto{top=$m_{2}$}
@@ -455,9 +474,6 @@ the security proofs:
       \end{itemize}
     \item[Query:] In the query phase:
       \begin{itemize}
-      \item $\attacker$ is given access to the authentication oracle
-        $\mathbf{Auth}(Y)$ returning the authentication result of $\user_k$ with
-        a query template $Y$.
       \item $\attacker$ chooses the attack type $t \in \{I,II\}$ which specifies
         the scenario of key exposure or template exposure.
 
@@ -465,6 +481,9 @@ the security proofs:
         $\attacker$. Note that this model reflects the 2-factors authentication
         (the secret key and the biometric template), and, thus, if $\attacker$
         requests both factors, he loses the game.
+      % \item $\attacker$ is given access to the authentication oracle
+      %   $\mathbf{Auth}(Y)$ returning the authentication result of $\user_k$ with
+      %   a query template $Y$.
       \item $\challenger$ and $\attacker$ run $\mathbf{Auth()}$ $q$ times, For
         the $i^{th}$ run, $\attacker$ plays the client's role, choosing and
         sending $Y_i$ to $\challenger$, $\challenger$ plays the server's role,
@@ -475,10 +494,11 @@ the security proofs:
     \end{description}
     
     Figure \ref{fig:multifactorAttackGame} show the multi-factors attack
-    game. Let $W_{2}$ be the event that $\attacker$ output $Y_{q'}$ such that
-    $verify(X_{k},Y_{k}) = \mathbf{Accept}$ and let $p_{2} = \prob{W_{2}} $. We
-    define $\adv$'s \textbf{active multifactor advantage} with respect to the
-    protocol $\pdv$ as
+    game. Let $W_{2}$ be the event that there exists $i$ such that
+    $res_{i} = \mathbf{Accepted}$ and let $p_{2} = \prob{W_{2}} $. Let $p_{0}$
+    define the winning probability of the $\attacker$ in the non-privacy
+    biometric authentication game. We define $\adv$'s \textbf{active multifactor
+      advantage} with respect to the protocol $\pdv$ as
     \[
       \advantage{AM}{\adv,\pdv} = |p_{2} - p_{0}|
     \]
@@ -494,7 +514,7 @@ the security proofs:
               Y_i \gets \{0,1\}^n
             }
           \end{bbrbox}
-          \bbroutput{$Y_{q}'$}
+          % \bbroutput{$Y_{q}'$}
           \begin{bbrchallenger}{multifactorChallenger}
             \begin{bbrbox}[name=Challenger, minheight=2cm]
               \pseudocode{
@@ -506,11 +526,12 @@ the security proofs:
                 res_i = \mathbf{Auth}(Y_i, T_k, k)
               } 
             \end{bbrbox}
+            \bbroutput{$(res_{1},\dots,res_{q})$}
           \end{bbrchallenger}
           \bbrchallengerqryto{top=$pk_{k}$}
           \bbrchallengerqryfrom{top=type I,bottom=or II}
           \bbrchallengerqryto{top=$sk$,bottom=or $D_{k}$}
-          \bbrchallengerqryfrom{top=$Y_{i}$}
+          \bbrchallengerqryfrom{top=$Auth_{i}$}
           \bbrchallengerqryto{top=$V_c^i$}
           \bbrchallengerqryto{top=$res_{i}$}
           % \bbrchallengerqryto{top=$m_{2}$}
