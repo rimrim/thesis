@@ -470,7 +470,6 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
 
 \section{The BGV Cryptosystem and CRT packing method}
 \label{sec:6bgv}
-\paragraph{Ciphertext packing}
 
 We used BV cryptosystem \cite{brakerski2011fully} in the previous variants of
 the protocol where we only need 2 levels of multiplication on ciphertexts. In
@@ -478,15 +477,66 @@ this variant, we do not use one inner product operation for HD computation but
 adding the bits of the bitstring, hence more multiplications on ciphertext
 during HD computation are needed. The BGV cryptosystem
 \cite{brakerski2014leveled} has a mechanism to control the noise after
-operations. We hereby discuss a specific version of this cryptosystem, where
-parameters are set to comply with the rings to be used in the protocol.
+operations on ciphertexts. We hereby discuss a specific version of this
+cryptosystem, where parameters are set to comply with the rings to be used in
+the protocol. The basic cryptosystem works as follows.
 
 \begin{description}
 \item[E.Setup] Let $\lambda$ be the security parameter that represents
-  $2^{\lambda}$ security level against known attack. Choose a modulus $q$ and 
+  $2^{\lambda}$ security level against known attack. Choose a modulus $q$ and a
+  noise distribution $\chi$ satisfying correctness and security requirements
+  (discussed later). Let the ``dimension'' $n$ be a power of 2 and let
+  $R = \mathbb{Z}[x] / (x^{n} + 1)$, let $params = (q, n, \chi)$
+\item[E.SecretKeyGen] Draw $\mathbf{s'} \randomsample \chi^{n}$. Set $sk = (1,\mathbf{s'}) \in R_{q}^{2}$
+\item[E.PublicKeyGen] Takes as input a secret key $sk$ and $params$. Draw
+  $\mathbf{a'} \in R_{q}$ and a vector $\mathbf{e} \in \chi^{n}$ and set
+  $\mathbf{b} \gets \mathbf{a's'} + 2\mathbf{e} \in R_{q}$. The we set
+  $\mathbf{A} = (\mathbf{b}, -\mathbf{a'}) \in R_{q}^{2}$. Let the public key
+  $pk = \mathbf{A}$. Observe that $\mathbf{A} \cdot \mathbf{s} = 2\mathbf{e}$
+\item[E.Enc($params, pk, m$)] To encrypt a message $\mathbf{m} \in R_{2}$,
+  sample $\mathbf{r} \randomsample R_{2}$ and output the ciphertext
+  $\mathbf{c} \gets \mathbf{r}\mathbf{A} + \mathbf{(m,0)} \in R_{q}^{2}$
+\item[E.Dec($params,sk,\mathbf{c}$)] Output
+  $\mathbf{m} \gets
+  \left[\left[\Angle{\mathbf{c},\mathbf{s}}\right]_{q}\right]_{2}$
+\end{description}
+
+Before detailing homomorphic operations, we first discuss two important
+components supporting the noise controlling process: Key Switching (Dimension
+Reduction) and Modulus Switching.
+
+\begin{description}
+\item[Key Switching] This operation allow a ciphertext encrypted with a key
+  \textbf{s}' to be transformed to another ciphertext encrypted with another key
+  \textbf{s}'', the dimension of \textbf{s}' and \textbf{s}'' can be
+  different. The idea is we first prepare a set of switching key pairs that can
+  be considered the encryptions of the power of 2 of the bits of $\mathbf{s}'$,
+  putting $2^{i}$ in front:
+  \[
+    \begin{cases}
+      \mathbf{a}_{i} \randomsample R_{q}, \mathbf{e}_{i} \randomsample \chi^{n}\\
+      \mathbf{b}_{i} \gets \mathbf{a}_{i}\mathbf{s}'' + 2^{i}\mathbf{s}' + 2\mathbf{e}_{i}
+    \end{cases}
+  \]
+
+  Then, given a ciphertext encrypted with a key \textbf{s}' having the form
+  $(\mathbf{a}', \mathbf{c}' = \mathbf{a}'\mathbf{s}' + 2\mathbf{e}' +
+  \mathbf{m}')$, we want to do key switching $(\mathbf{a}',\mathbf{c}')$ from
+  $\mathbf{s}'$ to $\mathbf{s}''$. The process is accomplished through two steps
+  \begin{enumerate}
+  \item Decompose $\mathbf{a}' \in R_{q}$ into its bit representation
+    $\mathbf{a}' = \sum_{0}^{\log q - 1}2^{i}\mathbf{a}'_{i}$.
+  \item Linear combination computation
+    $\sum_{0}^{\log q - 1}\mathbf{a}'_{i} \cdot (\mathbf{a}_{i},
+    \mathbf{b}_{i})$, which gives result
+    $(\mathbf{a} = \sum_{0}^{\log q - 1}\mathbf{a}'_{i}\mathbf{a}_{i},
+    \mathbf{b} = \sum_{0}^{\log q - 1}\mathbf{a}'_{i}(\mathbf{a}_{i}\mathbf{s}''
+    + 2^{i}\mathbf{s}' + 2\mathbf{e}_{i}))$
+  \end{enumerate}
 \end{description}
 
 
+\paragraph{ciphertext packing}
 We have seen that a plaintext can be packed in a specific way to support
 homomorphic operations efficiently. The approach of \cite{yasuda2014practical}
 can compute the inner product operations to perform really fast; however, it
@@ -684,7 +734,7 @@ either the coefficient or the NTT representation of \(a(x)\).
   \end{align*}
 
   This representation shows that the \(\mathbf{\bar{b}}\)'s coefficients
-  \(\bar{b}_{i,i'}\) are the \(\mathbf{\bar{a}}\)'s coefficients
+  \(\bar{b}_{i,i'}\) are the \(\mathbf{\bar{a}}\)'s coefficients\\
   \(\bar{a}_{i+x_{j} \mod n/2, i' + y_{j} \mod 2}\). Actually, there is a
   rotation here! It is not exactly a normal rotation, but it is a double rotation on
   the 2 halves, each one of them rotating by \(x_{j}\) position, then swaping
