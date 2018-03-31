@@ -234,7 +234,7 @@ additions and 3 multiplications on ciphertexts.
 \begin{algorithm}
 \caption{HD Computation Homomorphically}\label{alg:EvalDistance}
 \begin{algorithmic}[1]
-\Procedure{EvalDistance}{$\mathbf{T,Q}$}
+\Procedure{EvalDistance}{$\mathbf{T,Q}$} 
 \State $C_1 \gets - \sum_{i=0}^{n-1}x^{n-i}$
 \State $C_2 \gets 2 - C_1$
 \State $C_{HD} \gets ct_1(\mathbf{T})*Enc(C_1) + ct_2(\mathbf{Q})*

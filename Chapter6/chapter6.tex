@@ -12,11 +12,11 @@
 
 \section{Introduction}
 \label{sub:introChap3}
-In the previous chapter, we assumed that, given the Hamming Distance (HD) between two
+In the previous chapter, we assumed that, given the Hamming Distance (HD) between the registered and queried
 binary bitstring templates, it is infeasible for an attacker to infer or acquire any information
-about the original templates stored on the server. This assumption is plausible as long as the
-distributions of the registered and the queried templates are not in any way
-correlated (analysing these distributions is out of scope of the
+about the registered templates stored on the server. This assumption is plausible as long as the
+distributions of the HD between registered and the queried templates is not in any way
+correlated to the templates themselves (analysing these distributions is out of scope of the
 project). However, in this chapter, we introduce our first attempt to hide 
 information from the server as well. Our results not only cause the protocol
 to work regardless of the aforementioned dependencies, it is also the first step we take to
@@ -47,7 +47,12 @@ server. The server $\server$ is considered to be HBC by assuming that it can be
 audited regularly. This scheme uses Hamming Distance (HD) as the main measure
 unit to determine the difference between two fingerprint templates. The detailed
 descriptions of each protocol step are discussed in later sections of the
-chapter.
+chapter. Together with notations according to previous chapter, we use extra notations regarding encryptions as follows:
+\begin{itemize}
+\item $Enc^{(1)}(m)$: The BV encryption of $m$ as in previous chapter.
+\item $Enc^{(2)}(m)$: The BV encryption of $x^{m}$: $Enc^{(2)}(m) = Enc^{(1)}(x^{m})$
+\item $Enc^{(3)}(m)$: The LWE encryption of $m$ over $\mathbb{Z}_{Q}$ defined in section \ref{def:PublicKeyIndCPARegev}.
+\end{itemize}
 
 \subsection{The protocol}
 \label{sec:theProtocol}
@@ -148,7 +153,7 @@ chapter.
 		\item $\server$ computes $C_{HD}'' = Enc^{(2)}(2^l + t - HD) \gets
 		Enc^{(2)}(2^l + t) - Enc^{(2)}(HD+r) + Enc^{(2)}(r)$, where
 		$Enc^{(2)}(HD + r)$ is computed by $\mathbf{ToUnary}(C_i)$. We note that
-		$Enc^{(2)}$ is the second mode of encryption with the message
+		$Enc^{(2)}$ is the ``unary'' mode of encryption with the message
 		encoded in the exponent of the polynomial, which allows the
 		Most significat bit (MSB)
 		extraction on the ciphertext (this is detailed section \ref{sec:binToUna} \label{protocol:step7}).
@@ -267,8 +272,8 @@ attempt to compare Hamming Distance homomorphically, the idea is to let the
 server compute homomorphically the ciphertext of \(MSB(2^{l} + \tau - HD)\),
 then having the client to decrypt it and to send back the authentication result
 with a zero knowledge proof. This section discusses a variant of the technique
-from \cite{ducas2015fhew} to compute the MSB of the plaintext $M$ given
-$Enc(M)$. The main idea comes from the way we encode the message $M$ before the
+from \cite{ducas2015fhew} to efficiently compute the MSB of the plaintext $M$ given
+$Enc(M)$, we adapt this technique to work with BGV encryption rather than GSW encryption used in \cite[ducas2015fhew]. The main idea comes from the way we encode the message $M$ in ``unary'' form before the
 encryption.
 
 Given $M \in \mathbb{Z}_{2n}$, we observe that
@@ -284,14 +289,14 @@ Assume that we encrypt $M$ using the SHE scheme (section
 we can encode $M$ as a ring element $m \in R_t$ as follows
 \[
   m(x) = 0x^0 + 0x^1 + \dots + 1x^M + \dots + 0x^{n-1}
-  \ \textnormal{if} \ M \in [0,d)
+  \ \textnormal{if} \ M \in [0,n)
 \]
 or, due to $x^n = -1$ in $R_q$, we can also encode M as
 \[
   m(x) = 0x^0 + 0x^1 + \dots - 1x^M + \dots + 0x^{n-1}
   \ \textnormal{if} \ M \in [n,2n)
 \]
-The ciphertext $Enc(M)$ has this form
+The ciphertext $Enc^{(2)}(M)$ has this form
 $(\mathbf{c} = \mathbf{p_0}\mathbf{u} + t\mathbf{g} + \mathbf{m}, \mathbf{c'} =
 \mathbf{p_1}\mathbf{u} + t\mathbf{f})$, where $(\mathbf{p_0}, \mathbf{p_1})$ is
 the public key and
@@ -309,10 +314,10 @@ cyclic rotations of $\mathbf{c}$ with the cycled entries negated
   \end{bmatrix}
 \]
 It's easy to see that $rot(\mathbf{c}\mathbf{u}) = rot(\mathbf{c})
-\vec{u}$.
+\vec{u}$. Let $rot(\mathbf{c})[0]$ to be the first column of $rot(\mathbf{c})$.
 
 \begin{lemma}\label{lemma:bitToBin}
-	Given $M \in Z_{2n}$ and $(\mathbf{c},\mathbf{c'}) = Enc(M)$ as the first level ciphertext of $M$ from the BV scheme, let $\vec{1} = \{1,1,\dots,1\} \in \mathbb{Z}^n$. The transformed ciphertext $(l, l') \leftarrow (\vec{1}
+	Given $M \in Z_{2n}$ and $(\mathbf{c},\mathbf{c'}) = Enc^{(2)}(M)$ as the first level ciphertext of $M$ from the BV scheme, let $\vec{1} = \{1,1,\dots,1\} \in \mathbb{Z}^n$. The transformed ciphertext $(l, l') \leftarrow (\vec{1}
 	rot({\mathbf{c}})[0], \vec{1}
 	rot({\mathbf{c'}})) \in (\mathbb{Z}_Q
 	, \mathbb{Z}_Q^n)$ encrypts the MSB information of $M$.
@@ -320,13 +325,15 @@ It's easy to see that $rot(\mathbf{c}\mathbf{u}) = rot(\mathbf{c})
 
 \begin{algorithm}
   \caption{Most Significant bit extraction}\label{alg:MSBExtract}
+  \hspace*{\algorithmicindent} \textbf{Input:} $\mathbf{c} = Enc^{(2)}(M)$ \\
+  \hspace*{\algorithmicindent} \textbf{Output: $EncLWE((-1)^{MSB(M)})$} 
   \begin{algorithmic}[1]
-    \Procedure{MSBExtract}{$\mathbf{c}$}
+    \Procedure{MSBExtract}{$\mathbf{c}$} 
     \State $allOne = \{1,\dots,1\}$
     \State $rot_{c_0} \gets rot(c_0)$
-    \State $lwe_0 \gets allOne \times rot_{c_0}[0]$
+    \State $lwe_0 \gets allOne \cdot rot_{c_0}[0]$
     \State $rot_{c_1} \gets rot(c_1)$
-    \State $lwe_1 \gets allOne \times rot_{c_1}$
+    \State $lwe_1 \gets allOne \cdot rot_{c_1}$
     \State \textbf{return} $(lwe_0,lwe_1)$
     \EndProcedure
   \end{algorithmic}
@@ -336,14 +343,14 @@ It's easy to see that $rot(\mathbf{c}\mathbf{u}) = rot(\mathbf{c})
 \begin{proof}
 	The following is the case:\\
 	\begin{align*}
-	\vec{1}rot(\mathbf{c})[0] \in \zzq &= \vec{1}\overrightarrow{
+	\vec{1} \cdot rot(\mathbf{c})[0] \in \zzq &= \vec{1}\overrightarrow{
 		\mathbf{p_0}\mathbf{u} + t\mathbf{g} + \mathbf{m}}\\
-	&= \vec{1}\overrightarrow{p_0u} +t\vec{1}\vec{g} +\vec{1}\vec{m}\\
-	&= -\vec{1}(rot(p_1s)\vec{u} +t.rot(e)\vec{u}) + t\vec{1}\vec{g} \pm1\\
-	&= -\vec{1}rot(p_1)\vec{u}\vec{s} - t.rot(e)\vec{u}\vec{s} + t\vec{1}\vec{g} \pm1\\
+	&= \vec{1}\cdot\overrightarrow{p_0u} +t\vec{1}\cdot\vec{g} +\vec{1}\cdot\vec{m}\\
+	&= -\vec{1}(rot(p_1s)\vec{u} +t.rot(e)\vec{u}) + t\vec{1}\cdot\vec{g} + (-1)^{MSB(M)}\\
+	&= -\vec{1}rot(p_1)\vec{u}\vec{s} - t.rot(e)\vec{u}\vec{s} + t\vec{1}\cdot\vec{g} + (-1)^{MSB(M)}\\
 	\end{align*}
 	Provided that $\mathbf{c'} = \mathbf{p_1}\mathbf{u} + t\mathbf{f}$, the decryption $\langle(l,l'),(1,\mathbf{s})\rangle \mod t$ is $\pm1$.
-	This implies the MSB information of M as discussed.
+	This implies the MSB information of M as discussed. We use here the relation $\vec{1}\cdot \vec{m} = (-1)^{MSB(M)}$ thanks to the ``unary'' encoding of M discussed previously.
 \end{proof}
 
 \subsection{Converting from binary-encoded to unary-encoded plaintext}
@@ -367,33 +374,36 @@ $T$ in the ciphertext domain to obtain $Enc(x^{jb})$ given $Enc(b)$,
 for $b \in \{0,1\}$:
 \begin{align}
   \label{eq:encBitConvert}
-  Enc(x^{jb}) &= Enc(c)Enc(b) + Enc(d) \nonumber \\
-              &= Enc(x^j - 1)Enc(b) + Enc(1)
+  Enc^{(2)}(j.b) = Enc^{(1)}(x^{jb}) &= Enc^{(1)}(c)Enc(b) + Enc^{(1)}(d) \nonumber \\
+              &= Enc^{(1)}(x^j - 1)Enc^{(1)}(b) + Enc^{(1)}(1)
 \end{align}
 From the implementation point of view, this operation can be done faster
 by ensuring $\mathbf{u}, \mathbf{f}, \mathbf{g} \gets 0$ instead of sampling them from
-$\chi$ during $Enc(x^j -1)$ and $Enc(1)$, which results in $Enc(x^j -1) = (x^j - 1, 0)$ and $Enc(1) = (1,0)$. These are still valid encryptions and will not affect the correctness of Eq. (\ref{eq:encBitConvert}).
+$\chi$ during $Enc(x^j -1)$ and $Enc(1)$, which results in $Enc^{(1)}(x^j -1) = (x^j - 1, 0)$ and $Enc^{(1)}(1) = (1,0)$. These are still valid encryptions and will not affect the correctness of Eq. (\ref{eq:encBitConvert}).
 
 This submodule is used in our protocol at authentication step
 \ref{protocol:step7}. Recall that the server needs to compute $Enc^{(2)}(HD')$,
-which is the encryption of $HD'$ in the second mode of encoding (the message is
-encoded in the exponent instead of in the coefficient of the polynomial). Given
-$HD' = \sum_{i=0}^{l-1}b_i2^i$ and $Enc(b_i)$, the server can convert them to
+which is the encryption of $HD'$ in the ``unary'' mode of encoding (the message is
+encoded in the exponent instead of in the coefficient of the polynomial). Given the encryptions $Enc(b_{i})$ of the bits $b_{i}$ of $HD' = \sum_{j = 0}^{l -1} b_{j}2^{j}$
+, the server can convert $Enc(b_{j})$ to $Enc(2^{i}b_{i})$
 $Enc(x^{jb})$ and perform
 \[
-  Enc^{(2)}(x^{HD'}) = \prod_{i=0}^{l-1}Enc^{(2)}(x^{b_i2^i})
+  Enc^{(2)}(HD') = Enc^{(1)}(x^{HD'}) = \prod_{i=0}^{l-1}Enc^{(1)}(x^{b_i2^i})
 \]
 Note that this operation involves $log(l)$ levels of homomorphic multiplication, where
 $l$ is the bit length of the Hamming Distance.
 \begin{algorithm}
   \caption{Binary to Unary ciphertext}\label{alg:ToUnary}
+    \hspace*{\algorithmicindent} \textbf{Input:} $\mathbf{c_{i}} = Enc(b_{i})$ \\
+  \hspace*{\algorithmicindent} \textbf{Output:} $HD$
   \begin{algorithmic}[1]
     \Procedure{ToUnary}{$\mathbf{c_i}$}
-    \For{$j = 0, \dots, l-1$}
-    \State let $\mathbf{hd_j} \gets (x^j - 1,0)\times \mathbf{c_j} + (1,0)$
+    \For{$i = 0, \dots, l-1$}
+    \State let $j = 2^{i}$
+    \State let $\mathbf{hd_i} \gets (x^j - 1,0)\times \mathbf{c_i} + (1,0)$
     \EndFor
-    \State let $\mathbf{hd} \gets \mathbf{hd_0} \times \mathbf{hd_1} \times \dots
-    \times \mathbf{hd_{l-1}}$
+    \State let $\mathbf{hd} \gets \mathbf{hd}_0 \times \mathbf{hd}_1 \times \dots
+    \times \mathbf{hd}_{l-1}$
 
 
     \State \textbf{return} $\mathbf{hd}$
@@ -436,7 +446,7 @@ let $\mathbf{x} = \begin{bmatrix}
 \end{bmatrix}$
 be the $Prover$'s witness. We observe that $\mathbf{A'}\mathbf{x}= \mathbf{y} \mod q$, that is, $\mathbf{x}$ is a solution
 to the ISIS problem defined by $(\mathbf{A'},\mathbf{y})$ and that we can use the \textbf{SternExt} protocol (section
-\ref{sec:zkpisis}) to obtain an efficent ZKPoPK. This works in a symmetric key setting, where the $Prover$ knows
+\ref{append:Stern}) to obtain an efficent ZKPoPK. This works in a symmetric key setting, where the $Prover$ knows
 the random $\vec{r}$ to use as his witness. In our context, the client does not know that $\vec{r}$ as encryption was
 set by the server. Following the decryption equation:
 \begin{align*}
@@ -523,7 +533,7 @@ By constructing the matrix $\mathbf{A}$ this way, we can let $\mathbf{x} = \begi
 \end{bmatrix}$,  $\mathbf{y} = \begin{bmatrix}
   -\mathbf{c_0}\\-\mathbf{p_0}
 \end{bmatrix}$ and come up with the original ISIS relation $\mathbf{A}\mathbf{x} = \mathbf{y} \mod Q$. Again,
-we can use the \textbf{SternExt} protocol (section \ref{sec:zkpisis}) to obtain the ZKPoPK with $\mathbf{x}$ being
+we can use the \textbf{SternExt} protocol (section \ref{append:Stern}) to obtain the ZKPoPK with $\mathbf{x}$ being
 the $Prover$'s witness and $\mathbf{A}, \mathbf{y}$ being the public parameters (Algorithm \ref{alg:ZKPBV}).
 
 \begin{algorithm}
@@ -681,140 +691,6 @@ We then provide details about the $\mathbf{ZKPBinDecomp(c,c_i)}$ module, aimed a
   convince $\server$ about the authentication result.
 \end{description}
 
-\section{Evaluations and Improvements}
-\label{sec:evaluation}
-
-\subsection{Combination of ZKP}
-\label{sec:combination-zkp}
-A $\sum-$protocol can be composed together to construct more complex relations.
-There are several forms of decomposition such as AND, OR, NEQ, etc.  We describe
-some forms of composition of the \(\sum-protocol\) that are used in our own protocol:
-AND-composition, OR-composition. We first describe the generic \(\sum-\)protocol
-and its combinations. The BV-ZKP (Figure \ref{fig:belhamoudaProtocol}) protocol
-is an instance of such a protocol and the technique can be applied inherently.
-\begin{description}
-\item[$\sum-$protocol] The protocol is a generic 3-moves transaction between 2 parties
-  \(Prover\) and \(Verifier\), it is used to prove (supporting zero-knowledge) a
-  relation \(R(x,w)\), where \(x\) is the public parameter known by both
-  parties and \(w\) is a witness known by the \(Prover\) only. The protocol's
-  view is a set of 3 messages (Figure \ref{fig:sigmaProtocol}): the commitment
-  \(c\) is a function of a random factor \(\rho\), the challenge \(ch\) is
-  normally random, and the response \(r\) is a function computed from
-  \(x, w, \rho, ch\). There are 2 extra algorithms for the \(\sum-\)protocol: a
-  \(verify(r,ch,c)\) algorithm used by the \(Verifier\) in the last step to
-  check the correctness of the proof result, and a simulator \(sim\), taking
-  \(x\) and a random parameter \(\rho'\) as inputs, and and outputting a view
-  \(\bar{c},\bar{ch},\bar{r}\) that is indistinguishable from the genuine view
-  of the protocol.
-
-  \begin{figure}[htbp!] 
-    \centering \procedure{Sigma Protocol}{
-      \textbf{Prover} \> \> \textbf{Verifier}\\
-      \rho \randomsample random \> \> \\
-      c \gets comm(\rho) \> \> \\
-      \> \sendmessageright*{c} \> \\
-      \> \> ch \randomsample random \\
-      \> \sendmessageleft*{ch} \> \\
-      r \gets resp(\rho,w,x,ch) \> \> \\
-      \> \sendmessageright*{r} \> \\
-      \> \> verify(r, ch, c)\\
-    }
-    \caption{Sigma Protocol}
-    \label{fig:sigmaProtocol}
-  \end{figure}
-  % \begin{figure}[h!]
-  %   \centering
-  %   \begin{equation*}
-  %     \begin{array}{c c c}
-  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-  %       \\
-  %       \rho \randomsample random & & \\
-  %       c = comm(\rho) & & \\
-  %                              & \xrightarrow{c} & \\
-  %                              & & ch \randomsample random \\
-  %                              & \xleftarrow{ch} & \\
-  %       r = resp(\rho,w,x,ch) & & \\
-  %                              & \xrightarrow{r} & \\
-  %                              & & verify(r, ch, c)\\
-  %     \end{array}
-  %   \end{equation*}
-  %   \caption{Sigma Protocol}
-  %   \label{fig:sigmaProtocol}
-  % \end{figure}
-\end{description}
-
-
-\begin{description}
-\item[AND-COMPOSITION] Given two relations $R_1 = \left\{ (v_1,w_1) \right\}$
-  and $R_2 = \left\{ (v_2, w_2) \right\}$ with the same challenge space, a
-  $\sum$-Protocol of
-  $R_1 \wedge R_2 = \left\{ (v_1, v_2, w_1, w_2): (v_1;w_1) \in R_1, (v_2,w_2)
-    \in R_2\right\}$ can be obtained by running a $\sum$-Protocol for $R_1$ and
-  a $\sum$-Protocol for $R_2$ in parallel, using a \emph{common} challenge.
-  Figure \ref{fig:belhamoudaProtocolAND} is a concrete example combining 2 ZKP for BV.
-  
-
-\item[OR-Compostion] In this composition, given the $\sum-protocol$ for many  
-  relations $R_{1}$,$R_{2}$,\dots,\(R_{n}\) the goal is to construct a protocol for the
-  relation
-  $R_{OR}(\vec{x}, w_{i}) $, where \(\exists i \leq n: R(x_{i},w_{i}) = 1\). The main reason behind this composition is that the verifier
-  can let the prover use the simulator of the \(\sum-protocol\) for the
-  relations \(R_{j}\), for which the prover does not know the witness.
-  The verifier provides a single challenge \(c\)
-  such that the prover can split that into challenges \(c_{1}, c_{2}, \dots, c_{n}\)
-  provided that \(c_{i}\) satisfies a linear constraint in terms of \(c\),
-  for example \(c = c_{1} \xor c_{2} \xor \dots \xor c_{n}\). The final OR-combination proof is
-  obtained by composing one run of the \(\sum-protocol\) with other runs of the
-  simulators for the \(\sum-protocol\). (Figure \ref{fig:OR-Combination})
-
-  \begin{figure}[htbp!] 
-    \centering \procedure{OR Composition of ZKP}{
-      \textbf{Prover} \> \> \textbf{Verifier}\\
-      \rho_{i} \randomsample random \> \> \\
-      c_{i} = comm(\rho_{i}) \> \> \\
-      \text{For } j = 1,\dots,n \wedge j \neq i: \> \> \\
-      \text{    } \rho_{j} \randomsample random; \> \> \\
-      \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) \> \> \\
-      \> \sendmessageright*{ch_j,c_{1}, c_{2}, \dots, c_{n}} \> \\
-      \> \> ch \randomsample \mathbb{Z}_{n} \\
-      \> \sendmessageleft*{ch} \> \\
-      ch_{i} = ch - \sum_{j \neq i}{ch_{j}} \> \> \\
-      r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) \> \> \\
-      \> \sendmessageright*{r_{1}, r_{2}, \dots, r_{n}} \> \\
-      \> \> \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
-      \> \> ch = \sum_{i \in [n]}ch_{i}\\
-    }
-    \caption{OR Composition of ZKP}
-    \label{fig:OR-Composition}
-  \end{figure}
-  % \begin{figure}[h!]
-  %   \centering
-  %   \begin{equation*}
-  %     \begin{array}{c c c}
-  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-  %       \\
-  %       \rho_{i} \randomsample random & & \\
-  %       c_{i} = comm(\rho_{i}) & & \\
-  %       \text{For } j = 1,\dots,n \wedge j \neq i: & & \\
-  %       \text{    } \rho_{j} \randomsample random; & & \\
-  %       \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) & & \\
-  %                              & \xrightarrow[ch_{j}]{c_{1}, c_{2}, \dots, c_{n}} & \\
-  %                              & & ch \randomsample \mathbb{Z}_{n} \\
-  %                              & \xleftarrow{ch} & \\
-  %       ch_{i} = ch - \sum_{j \neq i}{ch_{j}} & & \\
-  %       r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) & & \\
-  %                              & \xrightarrow{r_{1}, r_{2}, \dots, r_{n}} & \\
-  %                              & & \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
-  %                              & & ch = \sum_{i \in [n]}ch_{i}\\
-  %     \end{array}
-  %   \end{equation*}
-  %   \caption{}
-  %   \label{fig:OR-Combination}
-  % \end{figure}
-\end{description}
-
-
-
 \section{Security Proofs}
 \label{append:Proofs}
 \subsection{Security Proof for Theorem~\ref{theo:client}: Type I Impersionation attack}
@@ -847,7 +723,7 @@ $\attacker$. We present a sequence of games as well as the relations among them 
 %   \caption{Game 0 - Malicious Client game}
 %   \label{fig:game0protocol3client}
 % \end{figure}
-\textit{Game 0} (Figure \ref{fig:game0protocol3client}). Game 0 is the original impersonation game for type I attack.
+\textit{Game 0} Game 0 is the original impersonation game for type I attack.
 \begin{description}
 	\item [Setup.] $\challenger$ intiates $D_k \randomsample D_{bio}$ and $X_k
 	\randomsample D_k$. $\challenger$ sets up $(sk_k, pk_k)$ and executes
@@ -985,6 +861,141 @@ The proof of Theorem \ref{theo:client} can be done using a sequence of games bet
 \textit{Game 2}. We change the computation of the zero-knowledge protocol transcripts. Instead of computing those transcripts using the secret witnesses, we simulate them using the statistical zero-knowledge simulator algorithms for the zero-knowledge proofs. By the zero-knowledge property, this is a perfect simulation, yielding $\Pr[S_2]= \Pr[S_1]$.\\\\
 \textit{Game 3}. We change the computation of the ciphertexts $C^{(j)}_i$ for $i=0,\ldots,l-1$ and $Q^{(j)}_k$ for $j=1,\ldots,q$ and $C_k$ to encrypt zero messages, instead of encrypting the secret-related messages as in the previous game. Since now $sk_k$ is not used anywhere in generating the view of $\attacker$, it follows by a hybrid argument that $|\Pr[S_3]-\Pr[S_2]| ((l+1) \cdot q + 1) \cdot \varepsilon_{BV}$, where $\varepsilon_{BV}$ denotes the maximal advantage of an attacker against IND-CPA of BV scheme against attacks with run-time $T + \mathrm{poly}(n, \log Q)$, where $T$ is the run-time of $\attacker$.
 In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^{j})$ queries, the challenger together with $\attacker$ constitute an efficient attacker against the ideal privacy game, which outputs 1 with probability different by at most $(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ relatively to the probability of outputting 1 in the real privacy game, as required.
+
+\section{Evaluations and Improvements}
+\label{sec:evaluation}
+
+
+\subsection{Combination of ZKP}
+\label{sec:combination-zkp}
+A $\sum-$protocol can be composed together to construct more complex relations.
+There are several forms of decomposition such as AND, OR, NEQ, etc.  We describe
+some forms of composition of the \(\sum-protocol\) that are used in our own protocol:
+AND-composition, OR-composition. We first describe the generic \(\sum-\)protocol
+and its combinations. The BV-ZKP (Figure \ref{fig:belhamoudaProtocol}) protocol
+is an instance of such a protocol and the technique can be applied inherently.
+\begin{description}
+\item[$\sum-$protocol] The protocol is a generic 3-moves transaction between 2 parties
+  \(Prover\) and \(Verifier\), it is used to prove (supporting zero-knowledge) a
+  relation \(R(x,w)\), where \(x\) is the public parameter known by both
+  parties and \(w\) is a witness known by the \(Prover\) only. The protocol's
+  view is a set of 3 messages (Figure \ref{fig:sigmaProtocol}): the commitment
+  \(c\) is a function of a random factor \(\rho\), the challenge \(ch\) is
+  normally random, and the response \(r\) is a function computed from
+  \(x, w, \rho, ch\). There are 2 extra algorithms for the \(\sum-\)protocol: a
+  \(verify(r,ch,c)\) algorithm used by the \(Verifier\) in the last step to
+  check the correctness of the proof result, and a simulator \(sim\), taking
+  \(x\) and a random parameter \(\rho'\) as inputs, and and outputting a view
+  \(\bar{c},\bar{ch},\bar{r}\) that is indistinguishable from the genuine view
+  of the protocol.
+
+  \begin{figure}[htbp!] 
+    \centering \procedure{Sigma Protocol}{
+      \textbf{Prover} \> \> \textbf{Verifier}\\
+      \rho \randomsample random \> \> \\
+      c \gets comm(\rho) \> \> \\
+      \> \sendmessageright*{c} \> \\
+      \> \> ch \randomsample random \\
+      \> \sendmessageleft*{ch} \> \\
+      r \gets resp(\rho,w,x,ch) \> \> \\
+      \> \sendmessageright*{r} \> \\
+      \> \> verify(r, ch, c)\\
+    }
+    \caption{Sigma Protocol}
+    \label{fig:sigmaProtocol}
+  \end{figure}
+  % \begin{figure}[h!]
+  %   \centering
+  %   \begin{equation*}
+  %     \begin{array}{c c c}
+  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+  %       \\
+  %       \rho \randomsample random & & \\
+  %       c = comm(\rho) & & \\
+  %                              & \xrightarrow{c} & \\
+  %                              & & ch \randomsample random \\
+  %                              & \xleftarrow{ch} & \\
+  %       r = resp(\rho,w,x,ch) & & \\
+  %                              & \xrightarrow{r} & \\
+  %                              & & verify(r, ch, c)\\
+  %     \end{array}
+  %   \end{equation*}
+  %   \caption{Sigma Protocol}
+  %   \label{fig:sigmaProtocol}
+  % \end{figure}
+\end{description}
+
+
+\begin{description}
+\item[AND-COMPOSITION] Given two relations $R_1 = \left\{ (v_1,w_1) \right\}$
+  and $R_2 = \left\{ (v_2, w_2) \right\}$ with the same challenge space, a
+  $\sum$-Protocol of
+  $R_1 \wedge R_2 = \left\{ (v_1, v_2, w_1, w_2): (v_1;w_1) \in R_1, (v_2,w_2)
+    \in R_2\right\}$ can be obtained by running a $\sum$-Protocol for $R_1$ and
+  a $\sum$-Protocol for $R_2$ in parallel, using a \emph{common} challenge.
+  Figure \ref{fig:belhamoudaProtocolAND} is a concrete example combining 2 ZKP for BV.
+  
+
+\item[OR-Compostion] In this composition, given the $\sum-protocol$ for many  
+  relations $R_{1}$,$R_{2}$,\dots,\(R_{n}\) the goal is to construct a protocol for the
+  relation
+  $R_{OR}(\vec{x}, w_{i}) $, where \(\exists i \leq n: R(x_{i},w_{i}) = 1\). The main reason behind this composition is that the verifier
+  can let the prover use the simulator of the \(\sum-protocol\) for the
+  relations \(R_{j}\), for which the prover does not know the witness.
+  The verifier provides a single challenge \(c\)
+  such that the prover can split that into challenges \(c_{1}, c_{2}, \dots, c_{n}\)
+  provided that \(c_{i}\) satisfies a linear constraint in terms of \(c\),
+  for example \(c = c_{1} \xor c_{2} \xor \dots \xor c_{n}\). The final OR-combination proof is
+  obtained by composing one run of the \(\sum-protocol\) with other runs of the
+  simulators for the \(\sum-protocol\). (Figure \ref{fig:OR-Combination})
+
+  \begin{figure}[htbp!] 
+    \centering \procedure{OR Composition of ZKP}{
+      \textbf{Prover} \> \> \textbf{Verifier}\\
+      \rho_{i} \randomsample random \> \> \\
+      c_{i} = comm(\rho_{i}) \> \> \\
+      \text{For } j = 1,\dots,n \wedge j \neq i: \> \> \\
+      \text{    } \rho_{j} \randomsample random; \> \> \\
+      \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) \> \> \\
+      \> \sendmessageright*{ch_j,c_{1}, c_{2}, \dots, c_{n}} \> \\
+      \> \> ch \randomsample \mathbb{Z}_{n} \\
+      \> \sendmessageleft*{ch} \> \\
+      ch_{i} = ch - \sum_{j \neq i}{ch_{j}} \> \> \\
+      r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) \> \> \\
+      \> \sendmessageright*{r_{1}, r_{2}, \dots, r_{n}} \> \\
+      \> \> \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
+      \> \> ch = \sum_{i \in [n]}ch_{i}\\
+    }
+    \caption{OR Composition of ZKP}
+    \label{fig:OR-Composition}
+  \end{figure}
+  % \begin{figure}[h!]
+  %   \centering
+  %   \begin{equation*}
+  %     \begin{array}{c c c}
+  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+  %       \\
+  %       \rho_{i} \randomsample random & & \\
+  %       c_{i} = comm(\rho_{i}) & & \\
+  %       \text{For } j = 1,\dots,n \wedge j \neq i: & & \\
+  %       \text{    } \rho_{j} \randomsample random; & & \\
+  %       \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) & & \\
+  %                              & \xrightarrow[ch_{j}]{c_{1}, c_{2}, \dots, c_{n}} & \\
+  %                              & & ch \randomsample \mathbb{Z}_{n} \\
+  %                              & \xleftarrow{ch} & \\
+  %       ch_{i} = ch - \sum_{j \neq i}{ch_{j}} & & \\
+  %       r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) & & \\
+  %                              & \xrightarrow{r_{1}, r_{2}, \dots, r_{n}} & \\
+  %                              & & \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
+  %                              & & ch = \sum_{i \in [n]}ch_{i}\\
+  %     \end{array}
+  %   \end{equation*}
+  %   \caption{}
+  %   \label{fig:OR-Combination}
+  % \end{figure}
+\end{description}
+
+
 
 \section{Evaluation and Results}
 \label{sec:5results}
