@@ -282,6 +282,22 @@ because Ajtai mathematically proved that if there is an algorithm to solve the
 $\gamma-SVP$ problem for these lattices, the same algorithm can be used to break
 $\gamma-SVP$ for any lattice. This is the \emph{worst-case to average-case}
 security reduction and allows for confidence in concluding that the problem is hard on average.
+
+We recall one fundamental tool in lattice-based cryptography: Gaussian distributions over lattices, parameterized by $\sigma > 0$, is defined by the density function
+\[
+  \forall x \in \mathbb{R}, D_{\sigma}(x) = 1/\sigma \cdot exp(-\pi(x/\sigma)^{2})
+\]
+The m-dimensional Gaussian distribution is defined by the density function $D_{\sigma}(x) = 1/\sigma^{m} \cdot exp(-\pi(\norm{\mathbf{x}}/\sigma)^{2})$. Denote $D_{\sigma,c}$ to be the m-dimensional Gaussian distribution with center $\mathbf{c} \in \mathbb{R}^{m}$. Let $L \subseteq \mathbb{Z}^{m}$ be a lattice, the discrete Gaussian distribution $D_{L, \sigma, c}$ is the m-dimensional Gaussian centered at \textbf{c}, with support restricted to the lattice $L$. Namely, the density function of the discrete Gaussian distribution is
+\[
+  \forall x \in L : D_{L,\sigma, c}(\mathbf{x}) = \frac{D_{\sigma, \mathbf{c(x)}}}{\sum_{x \in L}D_{\sigma,c}}
+\]
+
+\begin{lemma}
+  [\cite{gentry2008trapdoors}] Given a basis \textbf{B} of an m-dimensional lattice $L$, a Gaussian parameter $\sigma \geq \norm{\mathbf{B}} \cdot \omega(\sqrt{\log m})$, and an arbitrary center $\mathbf{c} \in \mathbb{Z} ^{m}$, there is a probabilistic polynomial time algorithm that outputs a sample from a distribution statistically close to $D_{L,\sigma,c}$
+\end{lemma}
+
+In the thesis, we denote $D_{\sigma}$ for simplicity, we are interested in discrete Gaussian distribution over integers ($L = \mathbb{Z}^{m}$). Next, we discuss SIS, which will be extensively used throughout the thesis.
+
 \begin{definition}[Small Integer Solution (SIS) problem]
   $SIS_{q,m,n,\gamma}$ Given n and matrix $\mathbf{A}$ sampled uniformly in
   $\mathbb{Z}_q^{n \times m}$, find $\vec{z} \in \mathbb{Z}^{m \times n}$ such
