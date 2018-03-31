@@ -504,7 +504,12 @@ have non-binary coefficients. We present a solution for this problem.
       \State $rot_{p_1} \gets rot(\mathbf{pk}_1)$
       \State let I be the $n \times n$ identity matrix
       \State let Z be the $n \times n $ zero matrix
-      \State $\mathbf{A} \gets ((rot_{c_1},-tI, Z, -I),(rot_{p_1}, Z, tI,Z)) $
+      \State $\mathbf{A} \gets
+      \begin{bmatrix*}
+        rot_{c}, -tI, Z, -I\\
+        rot_{p_{1}}, Z, tI, Z
+      \end{bmatrix*}
+$
       \State $\mathbf{x} \gets (\mathbf{s, e', e, m})$
       \State $\mathbf{y} \gets (\mathbf{-c_0, -pk_0})$
       \State \textbf{Return} $\mathbf{SternExt(A,x,y)}$
@@ -544,8 +549,7 @@ main submodules in the protocol: Setup, Enrol, and Authenticate. Figure \ref{fig
     \item $t$: Integer $t$ defining the plaintext space ring $R_t = \mathbb{Z}_t[x]/x^n+1$.
     \item $q$: Integer $q$ defining the ciphertext space ring $R_q = \mathbb{Z}_q[x]/x^n+1$
     \item $\chi_{\alpha q}$: A distribution used to sample noises for LWE-based techniques.  Typically, $\chi$
-      is a Gaussian distribution with standard deviation $\alpha q$.
-    \item \(\delta\): Renyi Divergence parameter for the security of noise masking.
+      is a discrete Gaussian distribution with standard deviation $\alpha q$ (Section \ref{sub:q-ary lattices and SIS problem}).
     \end{itemize}
   \item[Keygen.] Keys are generated for $\user$:
     \begin{itemize}
@@ -565,20 +569,20 @@ main submodules in the protocol: Setup, Enrol, and Authenticate. Figure \ref{fig
     encrypts a bit string under the BV cryptosystem using the corresponding secret key. This is done by module
     \textbf{SternBV(A, y, x)} described in Sect. \ref{sec:Stern-basedZKP}, where
     $\mathbf{A} = \begin{bmatrix} c_{y0}, t, 0, 1\\p_{y0}, 0, t, 0
-    \end{bmatrix}$, \(\mathbf{X} = [\vec{s},\tilde{e_{y}},\vec{e_{0}},y]^T\) and \(\mathbf{Y
+    \end{bmatrix}$, \(\mathbf{x} = [\vec{s},\tilde{e_{y}},\vec{e_{0}},y]^T\) and \(\mathbf{y
     = [c_{y1},p_{y1}]}^{T}\).
 
 \item HD Computation: $\server$ computes $\enc{HD_{\mathbf{x,y}}}$ using
-  procedure \ref{sub:ciphertext_packing} and mask $HD$ by adding some random
+  procedure \textbf{EvalDistance} \ref{sub:ciphertext_packing} and mask $HD$ by adding some random
   value $r$ homomorphically to $\enc{HD_{\mathbf{x,y}}}$. The result
-  $\enc{\mathbf{HD}'}$ is then sent to $\user$.
+  $\enc{\mathbf{HD}'} = \enc{HD_{x,y}} + \enc{r}$ is then sent to $\user$.
 \item \(\user\) decrypts $\enc{\mathbf{HD}'}$ and derives the actual value
   ${HD'}$ from the first coefficient of the plaintext:
   \( dec\enc{\mathbf{HD}'} = HD' + r_1 + r_2 + \dots + r_{n-1} \). \(\user\)
-  sends \(HD'\) to \(\server\).
+  sends \(HD' \in \mathbb{Z}\) to \(\server\).
 \item \(\user\) proves that it does the decryption honestly, this is done
   similarly to step 2.
-\item \(\server\) unmasks \(HD'\) and outputs the authentication result
+\item \(\server\) unmasks \(HD'\) (by computing $HD'' = HD' - r$) and outputs the authentication result
   \(HD \stackrel{?}{<} \tau\)
   \end{enumerate}
 
@@ -706,13 +710,13 @@ change the value of $res_{i}$, so $\Pr[S_1] = \Pr[S_0]$.
     $D_{k} \randomsample D_{bio}$\\
     $(\sk, \pk) \gets KeyGen$\\
     $\mathbf{X}_{k} \randomsample D_{k}$\\
-    $\enc{\mathbf{X_{k}}} \gets Enc(\mathbf{X}_{k},\pk)$\\
+    $\enc{\mathbf{X}_{k}} \gets Enc(\mathbf{X}_{k},\pk)$\\
     For $i=1,\dots,q$:\\
     $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
     $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
     $verifierView1 \gets \mathbf{ZKPoPK1}((\sk,\mathbf{Y}_{i});(\pk,\enc{\mathbf{Y}_{i}}))$\\
     $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
-    $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
+    $r_{i} \randomsample \mathbb{Z}_{t}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
     $HD'_{i} \gets Dec(\enc{\mathbf{HD'}_{i}},\sk)$\\
     $verifierView2 \gets \mathbf{ZKPoPK2}((\sk,\mathbf{HD'}_{i});(\pk,\enc{\mathbf{HD'}_{i}}))$\\
     $HD_{i} \gets HD'_{i} - r_{i}$\\
@@ -729,8 +733,8 @@ change the value of $res_{i}$, so $\Pr[S_1] = \Pr[S_0]$.
 zero-knowledge protocol transcripts is modified: Instead of computing the
 transcripts using the secret, we generate them using the statistical
 zero-knowledge simulator algorithms for the zero-knowledge proofs. By the
-zero-knowledge property, this is a perfect simulation, the result of it being
-$\Pr[S_2]= \Pr[S_1]$.
+zero-knowledge property, whose simulator has a $2^{-\lambda}$ statistical distance from the real distribution, the result of it being
+$\Pr[S_2] - \Pr[S_1] \leq 2^{-\lambda}$.
 
 \begin{figure}[htbp!] 
   \centering    
@@ -765,7 +769,7 @@ game. We also change the computation of $HD_{i}$ to the direct operation
 $HammingDistance(\mathbf{X}_{k}, \mathbf{Y}_{i})$. Since $sk_k$ is thus not used
 any longer for generating the view of $\attacker$, it follows by a hybrid
 argument that
-$|\Pr[S_3]-\Pr[S_2] \cdot ((l+1) \cdot q + 1) \cdot
+$|\Pr[S_3]-\Pr[S_2] \cdot (q + 1) \cdot
 \varepsilon_{BV}$, where $\varepsilon_{BV}$ denotes the maximal advantage of an
 attacker against IND-CPA of the BV scheme against attacks with run-time
 $T + \mathrm{poly}(n, \log Q)$, where $T$ is the run-time of $\attacker$.  In
@@ -787,7 +791,7 @@ in the real privacy game, as required.
     \gamechange{$\enc{\mathbf{X_{k}}} \gets Enc(0,\pk)$}\\
     For $i=1,\dots,q$:\\
     $\mathbf{Y}_{i} \gets \{0,1\}^{n}$\\
-    $\enc{\mathbf{Y}_{i}} \gets Enc(\mathbf{Y}_{i},\pk)$\\
+    \gamechange{$\enc{\mathbf{Y}_{i}} \gets Enc(0,\pk)$}\\
     $verifierView1 \gets \mathbf{ZKPSimulator}$\\
     $\enc{\mathbf{HD}_{i}} = EvalDistance(\enc{\mathbf{X}_{k}},\enc{\mathbf{Y}_{i}})$\\
     $r_{i} \randomsample \mathbb{Z}_{HD}$,$\enc{\mathbf{HD'}_{i}} = Add(\enc{\mathbf{HD}_{i}},\enc{r_{i}})$\\
@@ -827,8 +831,7 @@ impersonation game for type I attack.
   $\attacker$ submits a type 1 attack query and receives $sk_k$ from
   $\challenger$.
 \item [Query.] $\attacker$ runs $q$ authentication sessions. In each session
-  $j = 1, \dots, q$, $\attacker$ can choose $\mathbf{Y}_{i} \gets \{0,1\}^{n}$
-  and sends $\enc{\mathbf{Y}_{i}}$. $\attacker$ and $\challenger$ run
+  $j = 1, \dots, q$, $\attacker$ can choose a ciphertext. $\attacker$ and $\challenger$ run
   $\mathbf{ZKPoPK1}$. $\challenger$ evaluates $\enc{\mathbf{HD}_{k}}$ then
   computes $\enc{\mathbf{HD'}_{k}}$. The resulting ciphertext is sent to
   $\attacker$, $\attacker$ decrypts $\enc{\mathbf{HD'}_{k}}$ and sends back the
@@ -868,11 +871,11 @@ impersonation game for type I attack.
 Next, we discuss following games, the plan being to proceed towards the final
 game, where everything related to $X_k$ that $\attacker$ receives can be simulated
 without any knowledge about $X_k$ (the only known information about $X_k$ is the
-function $Verify(X_k, Y)$). Let $res_i = Verify(X_k, Y_{i})$ and $S_j$ be
-the event in the game $j$ such that $res_j = Accept$.\\
-\textit{Game 1}. In this game, we abort $\mathbf{ZKPoPK1}$ if $\enc{\mathbf{Y_{i}}}$ is
+function $Verify(X_k, Y_{i})$). Let $res_i = Verify(X_k, Y_{i})$ ($i = 1, \dots, q$) and $S_j$ be
+the event in the game $j$ such that $res_i = Accept$ for some $Y_{i} \in {0,1}^{n}$.\\
+\textit{Game 1}. In this game, we abort $\mathbf{ZKPoPK1}$ if $\enc{\mathbf{Y}_{i}}$ is
 not a valid encryption of the query, but the $Prover$ manages to pass the
-proof. Let $(*)_1$ be this event.
+proof. Let $(*)_i$ be this event.
 \[
   (*_1)res_i = \begin{cases}
     \text{Reject if } \mathbf{ZKPoPK1} \text{ fails}\\
@@ -1033,19 +1036,24 @@ ZKP is approximately 8MB to provide security against a malicious client model.
 
 \subsection{Limitations and open problems}
 \label{sec:limitations}
-We expose the HD to the server in the last step of the protocol and let the server do the threshold comparison
-operation in the plaintext domain. We believe that, given such a value, the server should not be able to acquire any
-information about the original bit strings template (assuming the provable CPA-secure ciphertexts of the underlying
-Comparing the HD with threshold
-homomorphhically proves much less efficient, and removing this assumption is thus left as an open problem.
+We expose the HD to the server in the last step of the protocol and let the
+server do the threshold comparison operation in the plaintext domain. We assume
+that, given such a value, the server is not able to acquire any
+information about the original bit strings template (assuming the provable
+CPA-secure ciphertexts of the underlying cryptosystem). This assumption depends on the feature extraction function and would hold if the HD between a registered user's biometric template and another sample of that user's template is statistically independent of the registered template. Comparing the HD with threshold
+homomorphhically proves much less efficient, and removing this assumption is
+thus left as a topic of next chapters.
 
-Also, we assume an honest but curious server, which is reasonable against passive exposure attacks. Active attacks are
-harder to carry out undetected and also slower, provided the server can be audited regularly. We emphasize that previous quantum
-resistant protocols also made this assumption, and were not even able to resist passive honest but curious trusted
-parties. Defending privacy against a malicious server is left as an open problem.
+Also, we assume an honest but curious server, which is reasonable against
+passive exposure attacks. Active attacks are harder to carry out undetected and
+also slower, provided the server can be audited regularly. We emphasize that
+previous quantum resistant protocols also made this assumption, and were not
+even able to resist passive honest but curious trusted parties. Defending
+privacy against a malicious server is left as an open problem.
 
-Finally, the communication size of the Stern-based ZKP protocol is large, due to the round soundness error \(2/3\) (many
-communication rounds will be needed for security). We leave the problem of how to reduce such overhead for future work.
+Finally, the communication size of the Stern-based ZKP protocol is large, due to
+the round soundness error \(2/3\) (many communication rounds will be needed for
+security). We show how to reduce this overhead in chapter 6.
 
 %%% Local Variables:
 %%% mode: latex

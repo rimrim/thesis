@@ -433,12 +433,14 @@ $, and $\mathbf{y} = \begin{bmatrix}
 let $\mathbf{x} = \begin{bmatrix}
   \vec{r}\\
   M
-\end{bmatrix}$
-be the $Prover$'s witness. We observe that $\mathbf{A'}\mathbf{x}= \mathbf{y} \mod q$, that is, $\mathbf{x}$ is a solution
-to the ISIS problem defined by $(\mathbf{A'},\mathbf{y})$ and that we can use the \textbf{SternExt} protocol (section
-\ref{sec:zkpisis}) to obtain an efficent ZKPoPK. This works in a symmetric key setting, where the $Prover$ knows
-the random $\vec{r}$ to use as his witness. In our context, the client does not know that $\vec{r}$ as encryption was
-set by the server. Following the decryption equation:
+\end{bmatrix}$ be the $Prover$'s witness. We observe that
+$\mathbf{A'}\mathbf{x}= \mathbf{y} \mod q$, that is, $\mathbf{x}$ is a solution
+to the ISIS problem defined by $(\mathbf{A'},\mathbf{y})$ and that we can use
+the \textbf{SternExt} protocol to obtain an efficent
+ZKPoPK. This works in a symmetric key setting, where the $Prover$ knows the
+random $\vec{r}$ to use as his witness. In our context, the client does not know
+that $\vec{r}$ as encryption was set by the server. Following the decryption
+equation:
 \begin{align*}
   c_1 - c_0\vec{s} &= p_1\vec{r} + M - p_0\vec{r}\vec{s} \\
                    &= \mathbf{A}\vec{s}\vec{r} + t\vec{e}\vec{r} + M - \mathbf{A}\vec{r}\vec{s}\\
