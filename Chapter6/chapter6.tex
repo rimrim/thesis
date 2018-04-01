@@ -51,7 +51,7 @@ chapter. Together with notations according to previous chapter, we use extra not
 \begin{itemize}
 \item $Enc^{(1)}(m)$: The BV encryption of $m$ as in previous chapter.
 \item $Enc^{(2)}(m)$: The BV encryption of $x^{m}$: $Enc^{(2)}(m) = Enc^{(1)}(x^{m})$
-\item $Enc^{(3)}(m)$: The LWE encryption of $m$ over $\mathbb{Z}_{Q}$ defined in section \ref{def:PublicKeyIndCPARegev}.
+\item $Enc^{(3)}(m)$: The LWE encryption of $m$ over $\mathbb{Z}_{Q}$ defined in section \ref{sec:LWESymmetric}}.
 \end{itemize}
 
 \subsection{The protocol}
@@ -862,151 +862,15 @@ The proof of Theorem \ref{theo:client} can be done using a sequence of games bet
 \textit{Game 1}. We change the computation of the authentication result bit $res^{(j)}$ sent by client to server from the decryption of the ciphertext $\textbf{MSBExtract}(C''_{HD}$ (its value in Game 0) to the result returned by $Verify(X_k, Y^{(j)})$. By correctness of the protocol, this does not change the value of $res^{(j)}$, so $\Pr[S_1] = \Pr[S_0]$. \\\\
 \textit{Game 2}. We change the computation of the zero-knowledge protocol transcripts. Instead of computing those transcripts using the secret witnesses, we simulate them using the statistical zero-knowledge simulator algorithms for the zero-knowledge proofs. By the zero-knowledge property, this is a perfect simulation, yielding $\Pr[S_2]= \Pr[S_1]$.\\\\
 \textit{Game 3}. We change the computation of the ciphertexts $C^{(j)}_i$ for $i=0,\ldots,l-1$ and $Q^{(j)}_k$ for $j=1,\ldots,q$ and $C_k$ to encrypt zero messages, instead of encrypting the secret-related messages as in the previous game. Since now $sk_k$ is not used anywhere in generating the view of $\attacker$, it follows by a hybrid argument that $|\Pr[S_3]-\Pr[S_2]| ((l+1) \cdot q + 1) \cdot \varepsilon_{BV}$, where $\varepsilon_{BV}$ denotes the maximal advantage of an attacker against IND-CPA of BV scheme against attacks with run-time $T + \mathrm{poly}(n, \log Q)$, where $T$ is the run-time of $\attacker$.
-In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^{j})$ queries, the challenger together with $\attacker$ constitute an efficient attacker against the ideal privacy game, which outputs 1 with probability different by at most $(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ relatively to the probability of outputting 1 in the real privacy game, as required.
+In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^{j})$ queries, the challenger together with $\attacker$ constitute an efficient attacker against the ideal privacy game, which outputs 1 with probability different by at most $(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ relatively to the probability of outputting 1 in the real privacy game, as section.
 
-\section{Evaluations and Improvements}
+\section{Conclusion}
 \label{sec:evaluation}
+We quickly notice that the main bottle neck of this protocol is the communication size: 4 different Zero-Knowledge Proofs are needed for one authentication. With the parameters set used previously ($n=2048, q \approxeq 2^{70}, t = 2048, \sigma=8$), the communication size ($\approx 84MB$) will not satisfy the practical usage requirement. However, the contributions of this chapter maybe of independent interest as building blocks for other secure computation protocols based on the BV SWHE scheme:
+\begin{itemize}
+\item A ZKP technique to prove the correctness of re-encryption of a binary-encoded plaintext (useful for efficient homomorphic addition/multiplication arithmetic operation) as a unary-encoded plaintext (useful for efficient homomorphic comparison operations).
+\item Correctness of re-encryption of a coefficient-packed plaintext slot vector into an unpacked single slot plaintext
+\end{itemize}
+In the next chapter, we discuss different techniques used to remove this communication overhead: we replace the Stern-based ZKP technique which require many rounds of proof for security with Schnoor-based technique (only 1 round required). Other cryptographic tools including Garbled Circuit and Oblivious Transfer will be used in the HD comparision step to avoid another proof during authentication.
 
 
-\subsection{Combination of ZKP}
-\label{sec:combination-zkp}
-A $\sum-$protocol can be composed together to construct more complex relations.
-There are several forms of decomposition such as AND, OR, NEQ, etc.  We describe
-some forms of composition of the \(\sum-protocol\) that are used in our own protocol:
-AND-composition, OR-composition. We first describe the generic \(\sum-\)protocol
-and its combinations. The BV-ZKP (Figure \ref{fig:belhamoudaProtocol}) protocol
-is an instance of such a protocol and the technique can be applied inherently.
-\begin{description}
-\item[$\sum-$protocol] The protocol is a generic 3-moves transaction between 2 parties
-  \(Prover\) and \(Verifier\), it is used to prove (supporting zero-knowledge) a
-  relation \(R(x,w)\), where \(x\) is the public parameter known by both
-  parties and \(w\) is a witness known by the \(Prover\) only. The protocol's
-  view is a set of 3 messages (Figure \ref{fig:sigmaProtocol}): the commitment
-  \(c\) is a function of a random factor \(\rho\), the challenge \(ch\) is
-  normally random, and the response \(r\) is a function computed from
-  \(x, w, \rho, ch\). There are 2 extra algorithms for the \(\sum-\)protocol: a
-  \(verify(r,ch,c)\) algorithm used by the \(Verifier\) in the last step to
-  check the correctness of the proof result, and a simulator \(sim\), taking
-  \(x\) and a random parameter \(\rho'\) as inputs, and and outputting a view
-  \(\bar{c},\bar{ch},\bar{r}\) that is indistinguishable from the genuine view
-  of the protocol.
-
-  \begin{figure}[htbp!] 
-    \centering \procedure{Sigma Protocol}{
-      \textbf{Prover} \> \> \textbf{Verifier}\\
-      \rho \randomsample random \> \> \\
-      c \gets comm(\rho) \> \> \\
-      \> \sendmessageright*{c} \> \\
-      \> \> ch \randomsample random \\
-      \> \sendmessageleft*{ch} \> \\
-      r \gets resp(\rho,w,x,ch) \> \> \\
-      \> \sendmessageright*{r} \> \\
-      \> \> verify(r, ch, c)\\
-    }
-    \caption{Sigma Protocol}
-    \label{fig:sigmaProtocol}
-  \end{figure}
-  % \begin{figure}[h!]
-  %   \centering
-  %   \begin{equation*}
-  %     \begin{array}{c c c}
-  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-  %       \\
-  %       \rho \randomsample random & & \\
-  %       c = comm(\rho) & & \\
-  %                              & \xrightarrow{c} & \\
-  %                              & & ch \randomsample random \\
-  %                              & \xleftarrow{ch} & \\
-  %       r = resp(\rho,w,x,ch) & & \\
-  %                              & \xrightarrow{r} & \\
-  %                              & & verify(r, ch, c)\\
-  %     \end{array}
-  %   \end{equation*}
-  %   \caption{Sigma Protocol}
-  %   \label{fig:sigmaProtocol}
-  % \end{figure}
-\end{description}
-
-
-\begin{description}
-\item[AND-COMPOSITION] Given two relations $R_1 = \left\{ (v_1,w_1) \right\}$
-  and $R_2 = \left\{ (v_2, w_2) \right\}$ with the same challenge space, a
-  $\sum$-Protocol of
-  $R_1 \wedge R_2 = \left\{ (v_1, v_2, w_1, w_2): (v_1;w_1) \in R_1, (v_2,w_2)
-    \in R_2\right\}$ can be obtained by running a $\sum$-Protocol for $R_1$ and
-  a $\sum$-Protocol for $R_2$ in parallel, using a \emph{common} challenge.
-  Figure \ref{fig:belhamoudaProtocolAND} is a concrete example combining 2 ZKP for BV.
-  
-
-\item[OR-Compostion] In this composition, given the $\sum-protocol$ for many  
-  relations $R_{1}$,$R_{2}$,\dots,\(R_{n}\) the goal is to construct a protocol for the
-  relation
-  $R_{OR}(\vec{x}, w_{i}) $, where \(\exists i \leq n: R(x_{i},w_{i}) = 1\). The main reason behind this composition is that the verifier
-  can let the prover use the simulator of the \(\sum-protocol\) for the
-  relations \(R_{j}\), for which the prover does not know the witness.
-  The verifier provides a single challenge \(c\)
-  such that the prover can split that into challenges \(c_{1}, c_{2}, \dots, c_{n}\)
-  provided that \(c_{i}\) satisfies a linear constraint in terms of \(c\),
-  for example \(c = c_{1} \xor c_{2} \xor \dots \xor c_{n}\). The final OR-combination proof is
-  obtained by composing one run of the \(\sum-protocol\) with other runs of the
-  simulators for the \(\sum-protocol\). (Figure \ref{fig:OR-Combination})
-
-  \begin{figure}[htbp!] 
-    \centering \procedure{OR Composition of ZKP}{
-      \textbf{Prover} \> \> \textbf{Verifier}\\
-      \rho_{i} \randomsample random \> \> \\
-      c_{i} = comm(\rho_{i}) \> \> \\
-      \text{For } j = 1,\dots,n \wedge j \neq i: \> \> \\
-      \text{    } \rho_{j} \randomsample random; \> \> \\
-      \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) \> \> \\
-      \> \sendmessageright*{ch_j,c_{1}, c_{2}, \dots, c_{n}} \> \\
-      \> \> ch \randomsample \mathbb{Z}_{n} \\
-      \> \sendmessageleft*{ch} \> \\
-      ch_{i} = ch - \sum_{j \neq i}{ch_{j}} \> \> \\
-      r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) \> \> \\
-      \> \sendmessageright*{r_{1}, r_{2}, \dots, r_{n}} \> \\
-      \> \> \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
-      \> \> ch = \sum_{i \in [n]}ch_{i}\\
-    }
-    \caption{OR Composition of ZKP}
-    \label{fig:OR-Composition}
-  \end{figure}
-  % \begin{figure}[h!]
-  %   \centering
-  %   \begin{equation*}
-  %     \begin{array}{c c c}
-  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-  %       \\
-  %       \rho_{i} \randomsample random & & \\
-  %       c_{i} = comm(\rho_{i}) & & \\
-  %       \text{For } j = 1,\dots,n \wedge j \neq i: & & \\
-  %       \text{    } \rho_{j} \randomsample random; & & \\
-  %       \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) & & \\
-  %                              & \xrightarrow[ch_{j}]{c_{1}, c_{2}, \dots, c_{n}} & \\
-  %                              & & ch \randomsample \mathbb{Z}_{n} \\
-  %                              & \xleftarrow{ch} & \\
-  %       ch_{i} = ch - \sum_{j \neq i}{ch_{j}} & & \\
-  %       r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) & & \\
-  %                              & \xrightarrow{r_{1}, r_{2}, \dots, r_{n}} & \\
-  %                              & & \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
-  %                              & & ch = \sum_{i \in [n]}ch_{i}\\
-  %     \end{array}
-  %   \end{equation*}
-  %   \caption{}
-  %   \label{fig:OR-Combination}
-  % \end{figure}
-\end{description}
-
-
-
-\section{Evaluation and Results}
-\label{sec:5results}
-
-
-\label{sec:5combineZKP}
-
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../thesis"
-%%% End:

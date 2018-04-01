@@ -414,6 +414,144 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
   % \end{figure}
 
 
+\subsection{Combination of ZKP}
+\label{sec:combination-zkp}
+A $\sum-$protocol can be composed together to construct more complex relations.
+There are several forms of decomposition such as AND, OR, NEQ, etc.  We describe
+some forms of composition of the \(\sum-protocol\) that are used in our own protocol:
+AND-composition, OR-composition. We first describe the generic \(\sum-\)protocol
+and its combinations. The BV-ZKP (Figure \ref{fig:belhamoudaProtocol}) protocol
+is an instance of such a protocol and the technique can be applied inherently.
+\begin{description}
+\item[$\sum-$protocol] The protocol is a generic 3-moves transaction between 2 parties
+  \(Prover\) and \(Verifier\), it is used to prove (supporting zero-knowledge) a
+  relation \(R(x,w)\), where \(x\) is the public parameter known by both
+  parties and \(w\) is a witness known by the \(Prover\) only. The protocol's
+  view is a set of 3 messages (Figure \ref{fig:sigmaProtocol}): the commitment
+  \(c\) is a function of a random factor \(\rho\), the challenge \(ch\) is
+  normally random, and the response \(r\) is a function computed from
+  \(x, w, \rho, ch\). There are 2 extra algorithms for the \(\sum-\)protocol: a
+  \(verify(r,ch,c)\) algorithm used by the \(Verifier\) in the last step to
+  check the correctness of the proof result, and a simulator \(sim\), taking
+  \(x\) and a random parameter \(\rho'\) as inputs, and and outputting a view
+  \(\bar{c},\bar{ch},\bar{r}\) that is indistinguishable from the genuine view
+  of the protocol.
+
+  \begin{figure}[htbp!] 
+    \centering \procedure{Sigma Protocol}{
+      \textbf{Prover} \> \> \textbf{Verifier}\\
+      \rho \randomsample random \> \> \\
+      c \gets comm(\rho) \> \> \\
+      \> \sendmessageright*{c} \> \\
+      \> \> ch \randomsample random \\
+      \> \sendmessageleft*{ch} \> \\
+      r \gets resp(\rho,w,x,ch) \> \> \\
+      \> \sendmessageright*{r} \> \\
+      \> \> verify(r, ch, c)\\
+    }
+    \caption{Sigma Protocol}
+    \label{fig:sigmaProtocol}
+  \end{figure}
+  % \begin{figure}[h!]
+  %   \centering
+  %   \begin{equation*}
+  %     \begin{array}{c c c}
+  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+  %       \\
+  %       \rho \randomsample random & & \\
+  %       c = comm(\rho) & & \\
+  %                              & \xrightarrow{c} & \\
+  %                              & & ch \randomsample random \\
+  %                              & \xleftarrow{ch} & \\
+  %       r = resp(\rho,w,x,ch) & & \\
+  %                              & \xrightarrow{r} & \\
+  %                              & & verify(r, ch, c)\\
+  %     \end{array}
+  %   \end{equation*}
+  %   \caption{Sigma Protocol}
+  %   \label{fig:sigmaProtocol}
+  % \end{figure}
+\end{description}
+
+
+\begin{description}
+\item[AND-COMPOSITION] Given two relations $R_1 = \left\{ (v_1,w_1) \right\}$
+  and $R_2 = \left\{ (v_2, w_2) \right\}$ with the same challenge space, a
+  $\sum$-Protocol of
+  $R_1 \wedge R_2 = \left\{ (v_1, v_2, w_1, w_2): (v_1;w_1) \in R_1, (v_2,w_2)
+    \in R_2\right\}$ can be obtained by running a $\sum$-Protocol for $R_1$ and
+  a $\sum$-Protocol for $R_2$ in parallel, using a \emph{common} challenge.
+  Figure \ref{fig:belhamoudaProtocolAND} is a concrete example combining 2 ZKP for BV.
+  
+
+\item[OR-Compostion] In this composition, given the $\sum-protocol$ for many  
+  relations $R_{1}$,$R_{2}$,\dots,\(R_{n}\) the goal is to construct a protocol for the
+  relation
+  $R_{OR}(\vec{x}, w_{i}) $, where \(\exists i \leq n: R(x_{i},w_{i}) = 1\). The main reason behind this composition is that the verifier
+  can let the prover use the simulator of the \(\sum-protocol\) for the
+  relations \(R_{j}\), for which the prover does not know the witness.
+  The verifier provides a single challenge \(c\)
+  such that the prover can split that into challenges \(c_{1}, c_{2}, \dots, c_{n}\)
+  provided that \(c_{i}\) satisfies a linear constraint in terms of \(c\),
+  for example \(c = c_{1} \xor c_{2} \xor \dots \xor c_{n}\). The final OR-combination proof is
+  obtained by composing one run of the \(\sum-protocol\) with other runs of the
+  simulators for the \(\sum-protocol\). (Figure \ref{fig:OR-Combination})
+
+  \begin{figure}[htbp!] 
+    \centering \procedure{OR Composition of ZKP}{
+      \textbf{Prover} \> \> \textbf{Verifier}\\
+      \rho_{i} \randomsample random \> \> \\
+      c_{i} = comm(\rho_{i}) \> \> \\
+      \text{For } j = 1,\dots,n \wedge j \neq i: \> \> \\
+      \text{    } \rho_{j} \randomsample random; \> \> \\
+      \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) \> \> \\
+      \> \sendmessageright*{ch_j,c_{1}, c_{2}, \dots, c_{n}} \> \\
+      \> \> ch \randomsample \mathbb{Z}_{n} \\
+      \> \sendmessageleft*{ch} \> \\
+      ch_{i} = ch - \sum_{j \neq i}{ch_{j}} \> \> \\
+      r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) \> \> \\
+      \> \sendmessageright*{r_{1}, r_{2}, \dots, r_{n}} \> \\
+      \> \> \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
+      \> \> ch = \sum_{i \in [n]}ch_{i}\\
+    }
+    \caption{OR Composition of ZKP}
+    \label{fig:OR-Composition}
+  \end{figure}
+  % \begin{figure}[h!]
+  %   \centering
+  %   \begin{equation*}
+  %     \begin{array}{c c c}
+  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+  %       \\
+  %       \rho_{i} \randomsample random & & \\
+  %       c_{i} = comm(\rho_{i}) & & \\
+  %       \text{For } j = 1,\dots,n \wedge j \neq i: & & \\
+  %       \text{    } \rho_{j} \randomsample random; & & \\
+  %       \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) & & \\
+  %                              & \xrightarrow[ch_{j}]{c_{1}, c_{2}, \dots, c_{n}} & \\
+  %                              & & ch \randomsample \mathbb{Z}_{n} \\
+  %                              & \xleftarrow{ch} & \\
+  %       ch_{i} = ch - \sum_{j \neq i}{ch_{j}} & & \\
+  %       r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) & & \\
+  %                              & \xrightarrow{r_{1}, r_{2}, \dots, r_{n}} & \\
+  %                              & & \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
+  %                              & & ch = \sum_{i \in [n]}ch_{i}\\
+  %     \end{array}
+  %   \end{equation*}
+  %   \caption{}
+  %   \label{fig:OR-Combination}
+  % \end{figure}
+\end{description}
+
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:
+
 \subsection*{Summary of previous work}
 \begin{description}
 \item Lyubashevsky's proof systems (\cite{lyubashevsky2008lattice},
