@@ -817,7 +817,7 @@ been working on a \textit{semi-honest} server modeal and a \textit{malicious }
 client, this will save us one proof to assess that the circuit is generated
 correctly.
 
-As described before in Section \ref{sec:yao-garbled-circuit}, the server garbles
+As described before in previously, the server garbles
 the circuit \(GC\) and sends the result to the client together with its
 \textit{labels} of \(r\), which are \(K_{r_{i}}^{j}\). Next, the client uses our
 OT technique (discussed in the following section) to select the correct
@@ -961,6 +961,27 @@ guessing).
 
 \subsection{The protocol description}
 \label{sec:4thprocSteps}
+With similar notations to previous protocols, we describe the last variant of the authentication system as follows (Figure \ref{fig:fourthProtocol})
+\begin{enumerate}
+\item In the enrollment stage, the client $\user$ extracts his template $\enc{\mathbf{T}}$ and sends to the server $\server$
+\item In the authentication stage, $\user$ extracts his query template $\enc{\mathbf{Q}}$ and sends to the server
+\item $\user$ use Schnorr-based ZKP (Section \ref{sec:zkpschnorr}) to prove that the noise associated with $\enc{\mathbf{Q}}$ is small
+\item $\user$ use Challenge-Response technique (Section \ref{sec:challengeResponse}) to prove that $\enc{\mathbf{Q}}$ is encrypting a binary message
+\item If the proofs pass, the $\server$ starts preparing the garbled circuit $GC$, it first sample $r \randomsample \mathbb{Z}_{t}$ and decompose it to binary representation, assuming that $r$ is $k$ bits long.
+\item $\server$ establishes $k$ pairs of key $(K_{r_{i}}^{0}, K_{r_{i}}^{1})$ for the inputs of $GC_{r}$
+\item $\server$ establishes $k$ pairs of key $(K_{h_{i}}^{0}, K_{h_{i}}^{1})$ for the inputs of $GC_{h}$
+\item $\server$ establishes the pairs of key for authentication result outputs $(K_{out}^{0}, K_{out}^{1})$
+\item $\server$ encrypts the $k$ keys of $GC_{h}$ to obtain $\enc{K_{h_{i}}^{0}}, \enc{K_{h_{i}}^{1}}$
+\item $\server$ computes $\enc{HD} \gets HDBGV(\enc{\mathbf{T}}, \enc{\mathbf{Q}})$
+\item $\server$ masks the Hamming Distance $\enc{\mathbf{HD'}} = \enc{\mathbf{HD + r}}$ and send the result together with the garbled ciruit $GC$ and the keys $K_{r_{i}}^{j}$ to $\user$, where $j$ associates the key of $GC_{r}$ corresponding to the $r$ chosen by $\server$.
+\item $\user$ decrypts $\enc{\mathbf{HD}'}$
+\item $\user$ decompose the plaintext $HD'$ to its binary representation $HD' = \sum_{0}^{k-1}2^{i}h_{i}$
+\item $\user$ re-encrypt the bits of the decomposition
+\item $\user$ use the ciphertext $\enc{h_{i}}$ in the Oblivious Transfer Protocol (Section \ref{sec:obliviousTransferPre}) to retrieve the ciphertexts $\enc{K_{h_{i}}^{j}}$
+\item $\user$ decrypts the result to obtain another set of keys for the garbled circuit
+\item $\user$ evaluates the circuit with the keys $(K_{h_{i}}^{j}, K_{r_{i}}^{j})$ and send the result to the server
+\item $\server$ compares the result with the output keys prepared in step 8 and outputs the authentication final result.
+\end{enumerate}
 
 \begin{figure}[htbp!] 
   \centering \procedure{The Fourth Protocol}{
@@ -996,6 +1017,37 @@ guessing).
   \label{fig:fourthProtocol}
 \end{figure}
 
+\subsection{Implementation Result}
+\label{sec:7result}
+We observe significant improvements in communication size thanks to the
+Challenge-Response technique (only 2 messages required). The Schnorr-based ZKP
+also contributes to this factor by reducing the number of rounds in proofs to 1
+instead of 17 for similar settings
+$(n = 2048, t = 2048, \alpha q = 8, q \approx 2^{72}, FAR \approx
+10^{-3})$. Total number of gates used in the garbled circuit for $n=2048$ is 25
+gates which only cost $\approx 3.2$ KB for the HD comparison purpose. All of
+this improvements come with a one time setup cost for preparing the switch keys
+for the HD computation operation: we need to rotate 10 times and swap 1 time to
+compute $HD$, each operation needs 1 key switch to transform the result back to
+the original ciphertext format (2 ring elements) before the next homomorphic
+operation. The total key switch size needed was $2*n*\log q*11$, which is
+approximately 389 MB in our setting. Considering the privacy features provide,
+we believe such one time set up cost is acceptable. We conclude the chapter with
+the comparison of the 4 protocols in the thesis
+
+\begin{table}[h!]
+\centering
+\caption{Protocols' features comparison}
+\label{my-label}
+\begin{tabular}{lllll}
+\hline
+                                          & \textbf{Multi-factor}    & \textbf{HD Non-exposure} & \textbf{Low Init cost} & \textbf{Low Communication} \\ \hline
+\multicolumn{1}{|l|}{\textbf{Protocol 1}} & \multicolumn{1}{l|}{No}  & \multicolumn{1}{l|}{No}        & \multicolumn{1}{l|}{Yes}   & \multicolumn{1}{l|}{Yes}   \\ \hline
+\multicolumn{1}{|l|}{\textbf{Protocol 2}} & \multicolumn{1}{l|}{Yes} & \multicolumn{1}{l|}{No}        & \multicolumn{1}{l|}{Yes}   & \multicolumn{1}{l|}{Yes}   \\ \hline
+\multicolumn{1}{|l|}{\textbf{Protocol 3}} & \multicolumn{1}{l|}{Yes} & \multicolumn{1}{l|}{Yes}       & \multicolumn{1}{l|}{Yes}   & \multicolumn{1}{l|}{No}    \\ \hline
+\multicolumn{1}{|l|}{\textbf{Protocol 4}} & \multicolumn{1}{l|}{Yes} & \multicolumn{1}{l|}{Yes}       & \multicolumn{1}{l|}{No}    & \multicolumn{1}{l|}{Yes}   \\ \hline
+\end{tabular}
+\end{table}
     
 % \begin{figure}[h!]
 %   \centering
@@ -1296,7 +1348,7 @@ guessing).
   %   \caption{}
   %   \label{fig:OR-Combination}
   % \end{figure}
-\end{description}
+% \end{description}
 
 
 

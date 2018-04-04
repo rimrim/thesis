@@ -10,8 +10,30 @@
 
 % ***** Main ****
 
-\section{Introduction}
-
+Throughout the thesis, we have developed different solutions to privacy
+preserving biometrics authentication. Starting from a protocol with an inspiring
+technique of ciphertext packing but lacking of protection against malicious
+client model, we constructed a Zero Knowledge Proof technique to provide
+solution to the problem. The technique also help the protocol not to rely on any
+trusted third party to keep the client's secret key for decrypting results from
+homomorphic operations. In the next protocol, we discover that to fully support
+multi-factor security, especially in the biometrics authentication context, the
+circuit privacy problem needs to be solved efficiently. We proposed Renyi
+Divergence technique in the security analysis so that the protocol can preserve
+its security level while still keeping the parameter settings within practical
+threshold, specifically, we showed that the noise of results from homomorphic
+operations can be covered by not-too-large masks to add extra security to the
+ciphertext result. The third variant was our first attempt to do all the
+essential operations homomorphically: in addition to computing the Hamming
+Distance, we also wanted to compare the ciphertext result with some threshold
+value, under the malicious client model. Although the results were not practical
+enough in terms of communication size, we learned different techniques to
+balance the tradeoffs between communication and computation. In our last
+version, we proposed another alternative that cover all the weakness of the
+previous protocol. The solution include combinations of many advanced
+cryptographic techniques: Homomorphic Encryption, Zero Knowledge Proof, Garbled
+Circuit and Oblivious Transfer. However, we still notice a significant one time
+setup cost.
 
 %%% Local Variables:
 %%% mode: latex
