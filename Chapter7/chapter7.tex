@@ -27,17 +27,18 @@ features.
     noise in the ciphertext is small. This variant reduces the total
     communication rounds from \(log_{2/3}(FAR)\) to only 1.
   \item A challenge-response protocol to prove the binary format of the
-    plaintext. The protocol can be summarized as follows:
-    \begin{enumerate}
-    \item The server samples \(r_{1}, r_{2} \randomsample R_{q}\) and computes
-      \(ch = enc(r_{1}*Q*(1-Q) + r_{2}) + enc(0,r)\) and sends \(ch\) to the
-      client.
-    \item The client decrypts the result and sends back \(rsp\).
-    \item The server accepts the response if and only if \(rsp = r_{2} \)
-    \end{enumerate}
-    We remark that the first operation needs to be computed bit-wise, that means
-    we need to change the ciphertext packing method (the CRT-packing
-    \cite{smart2014fully} can support this requirement).
+    plaintext.
+    % The protocol can be summarized as follows:
+    % \begin{enumerate}
+    % \item The server samples \(r_{1}, r_{2} \randomsample R_{q}\) and computes
+    %   \(ch = enc(r_{1}*Q*(1-Q) + r_{2}) + enc(0,r)\) and sends \(ch\) to the
+    %   client.
+    % \item The client decrypts the result and sends back \(rsp\).
+    % \item The server accepts the response if and only if \(rsp = r_{2} \)
+    % \end{enumerate}
+    % We remark that the first operation needs to be computed bit-wise, that means
+    % we need to change the ciphertext packing method (the CRT-packing
+    % \cite{smart2014fully} can support this requirement).
   \end{itemize}
 \item[Reducing Computation Time.] By applying a new ciphertext packing
   method, we can effectively change the way of computing Hamming Distance by
@@ -56,45 +57,29 @@ one-time set up phase of the protocol (the enrollment stage). Our result shows
 that the protocol can work efficiently during authentication stage. The
 technique maybe generalized to similar multi-stage protocols.
 
-\section{The Challenge-Response Technique}
+\section{The Challenge-Response and Schnorr-based ZKP}
 \label{sec:6challenge}
 In the previous variants of the protocol, one critical module required to
 provide active security against a malicious client is the binary message format
-prover. Specifically, in our context, the client needs to prove that it is
-sending a ciphertext of a binary message. We have seen that before the server
-processes the ciphertext homomorphically, it needs to verify such claim
-first. In the last chapter, we used Zero Knowledge Proof technique for this
-step and it was showed that the communication size for this is large due to the soundness error $2/3$ for each round of the ZKP.
+prover. Specifically, Alice sends a ciphertext \(C\) of a bitstring to Bob. Bob
+is supposed to use homomorphic encryption technique to process \(C\). Before
+doing so, Bob might want to make sure that \(C\) is an encryption of a bitstring
+and not something else. In the last chapter, we used Stern-based Zero Knowledge
+Proof technique for this step and it was showed that the communication size for
+this is large due to the soundness error $2/3$ for each round of the ZKP (The
+repeatation of many rounds of proof is required to obtain a specific security
+level). This chapter investigate the other alternative of ZKP that have better
+soundness error of $1/n$ within one round of proof only, where $n$ is typically
+the required parameter: the Schnorr-based ZKP technique. We first recall some
+notations and concepts being used in the chapter.
 
-
-Consider the following situation: Alice sends a ciphertext \(C\) of a
-bitstring to Bob. Bob is supposed to use homomorphic encryption technique to
-process \(C\). Before doing so, Bob might want to make sure that \(C\) is an
-encryption of a bitstring and not something else. How can he achieve that?
-Suppose that the plaintext \(P\) is encoded as coefficients of a polynomial, or
-specifically, \(P\) can be an element of the ring \(R_{2}\), where
-\(R_{2} = \frac{\mathbb{Z}_{2}[x]}{x^{n} + 1}\), this ring has been used by many
-RLWE based cryptosystems lately. One solution can be to apply the Zero Knowlege
-Proof technique. This is however a costly choice. There are mainly two
-approaches for ZKP, the Schnorr's based protocol,
-e.g. \cite{benhamouda2014better} or a Stern's based protocol such as
-\cite{stern1993new} or \cite{ling2013improved}. The first approach has
-limitations on the norm of the secret it can prove and cannot be used to prove
-the knowledge of binary messages with norm 2. The second approach can prove
-binary messages but it has a very high communication cost due to a roundness
-error equaling \(2/3\).
-\subsection{ZKP and $\sum$-Protocol}
-\label{sub:zkp_and_sum_protocol}
-A Zero-Knowledge Proof of Knowledge (ZKPoK) is a two party protocol between a
-Prover $P$ and a Verifier $V$. The protocol allows $P$ to convince $V$ that it
-knows some secret without revealing anything about the secret. We refer readers
-to \cite{bellare1992defining} for formal definition of the original ZKPoK. We
-discuss a definition of the sigma protocol from \cite{benhamouda2014better} which can be adapted to suit the techniques we use in our project.
-
-Notation: We denote a language $\mathcal{L} \subseteq \left\{ 0,1 \right\}^* $
-having a witness relationship $R \subseteq \left\{ 0,1 \right\}^* \times \left\{
-  0,1 \right\}^*$ if $x \in \mathcal{L} \iff \exists (x,w) \in R$, where
-$w$ is a witness for $x \in \mathcal{L}$.
+We denote a language $\mathcal{L} \subseteq \left\{ 0,1 \right\}^* $ having a
+witness relationship
+$R \subseteq \left\{ 0,1 \right\}^* \times \left\{ 0,1 \right\}^*$ if
+$x \in \mathcal{L} \iff \exists (x,w) \in R$, where $w$ is a witness for
+$x \in \mathcal{L}$.We discuss a definition of the sigma protocol from
+\cite{benhamouda2014better} which can be adapted to suit the techniques we use
+in our project.
 
 \begin{definition}
   \label{def:zkp-sum-protocol}
@@ -135,6 +120,47 @@ is guaranteed privacy, but the verifier is only ensured that the $P$ only knows
 a witness for $\mathcal{R'}$. We refer to this as \emph{soundness gap}, if the
 gap is small enough, it implies security guarantee for higher level application
 ($\mathcal{R} = \mathcal{R'}$ in the original protocol).
+
+The original Schnorr ZKP protocol \cite{schnorr1989efficient} used to prove knowledge of a discrete logarithm. It is described informally as in Figure \ref{fig:schnorrProtocol}
+
+\begin{figure}[htbp!] 
+\centering \procedure{Schnorr Protocol for DL}{
+  \textbf{Prover} \> \> \textbf{Verifier}\\
+  (x = \log_g h) \> \> \\
+  u \randomsample \mathbb{Z}_n \> \> \\
+  t \gets g^u \> \sendmessageright*{t} \> \\
+  \> \sendmessageleft*{c} \> c \randomsample \mathbb{Z}_n \\
+  s \gets u + cx \> \sendmessageright*{s} \> \\
+  \> \> g^s \stackrel{?}{=} ah^c
+}
+\caption{Schnorr Protocol}
+\label{fig:schnorrProtocol}
+\end{figure}
+
+The soundness property of Schnorr's protocol can be argued by assuming a prover is able to answer correctly at least two challenges $c$ and $c'$ (with $c \neq c'$) after commit to an announcement $t$, then he would be able to know the solution to the hard problem of discrete log $x = \log_{g}h$. Hence, intuitively, the prover can answer at most one challenge correctly, the probability of success is bounded by $1/n$, which can be negligibly small. The Zero Knowledge property (against semi honest Verifier) was proved by showing that the real conversation $\{(t,c,s): u,c \randomsample \mathbb{Z}_{n}; t \gets g^{u}; s \gets u + cx\}$ and the simulated conversation $\{(t,c,s): c, s \randomsample \mathbb{Z}_{n}; t \gets g^{s}h^{-c}\}$ are identical (each valid conversation $(t;c;s)$ occurs with probability $1/n^{2}$ in both distributions).
+
+Consider the following situation:  How can he achieve that?
+Suppose that the plaintext \(P\) is encoded as coefficients of a polynomial, or
+specifically, \(P\) can be an element of the ring \(R_{2}\), where
+\(R_{2} = \frac{\mathbb{Z}_{2}[x]}{x^{n} + 1}\), this ring has been used by many
+RLWE based cryptosystems lately. One solution can be to apply the Zero Knowlege
+Proof technique. This is however a costly choice. There are mainly two
+approaches for ZKP, the Schnorr's based protocol,
+e.g. \cite{benhamouda2014better} or a Stern's based protocol such as
+\cite{stern1993new} or \cite{ling2013improved}. The first approach has
+limitations on the norm of the secret it can prove and cannot be used to prove
+the knowledge of binary messages with norm 2. The second approach can prove
+binary messages but it has a very high communication cost due to a roundness
+error equaling \(2/3\).
+\subsection{ZKP and $\sum$-Protocol}
+\label{sub:zkp_and_sum_protocol}
+A Zero-Knowledge Proof of Knowledge (ZKPoK) is a two party protocol between a
+Prover $P$ and a Verifier $V$. The protocol allows $P$ to convince $V$ that it
+knows some secret without revealing anything about the secret. We refer readers
+to \cite{bellare1992defining} for formal definition of the original ZKPoK. 
+
+Notation: 
+
 
 
 We present an adaption of the ZKP protocol in \cite{benhamouda2014better} to

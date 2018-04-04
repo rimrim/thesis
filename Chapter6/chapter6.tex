@@ -862,7 +862,7 @@ The proof of Theorem \ref{theo:client} can be done using a sequence of games bet
 \textit{Game 1}. We change the computation of the authentication result bit $res^{(j)}$ sent by client to server from the decryption of the ciphertext $\textbf{MSBExtract}(C''_{HD}$ (its value in Game 0) to the result returned by $Verify(X_k, Y^{(j)})$. By correctness of the protocol, this does not change the value of $res^{(j)}$, so $\Pr[S_1] = \Pr[S_0]$. \\\\
 \textit{Game 2}. We change the computation of the zero-knowledge protocol transcripts. Instead of computing those transcripts using the secret witnesses, we simulate them using the statistical zero-knowledge simulator algorithms for the zero-knowledge proofs. By the zero-knowledge property, this is a perfect simulation, yielding $\Pr[S_2]= \Pr[S_1]$.\\\\
 \textit{Game 3}. We change the computation of the ciphertexts $C^{(j)}_i$ for $i=0,\ldots,l-1$ and $Q^{(j)}_k$ for $j=1,\ldots,q$ and $C_k$ to encrypt zero messages, instead of encrypting the secret-related messages as in the previous game. Since now $sk_k$ is not used anywhere in generating the view of $\attacker$, it follows by a hybrid argument that $|\Pr[S_3]-\Pr[S_2]| ((l+1) \cdot q + 1) \cdot \varepsilon_{BV}$, where $\varepsilon_{BV}$ denotes the maximal advantage of an attacker against IND-CPA of BV scheme against attacks with run-time $T + \mathrm{poly}(n, \log Q)$, where $T$ is the run-time of $\attacker$.
-In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^{j})$ queries, the challenger together with $\attacker$ constitute an efficient attacker against the ideal privacy game, which outputs 1 with probability different by at most $(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ relatively to the probability of outputting 1 in the real privacy game, as section.
+In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^{j})$ queries, the challenger together with $\attacker$ constitute an efficient attacker against the ideal privacy game, which outputs 1 with probability different by at most $(l+1) \cdot q + 1) \cdot \varepsilon_{BV}$ relatively to the probability of outputting 1 in the real privacy game, as required.
 
 \section{Conclusion}
 \label{sec:evaluation}
@@ -874,3 +874,8 @@ We quickly notice that the main bottle neck of this protocol is the communicatio
 In the next chapter, we discuss different techniques used to remove this communication overhead: we replace the Stern-based ZKP technique which require many rounds of proof for security with Schnoor-based technique (only 1 round required). Other cryptographic tools including Garbled Circuit and Oblivious Transfer will be used in the HD comparision step to avoid another proof during authentication.
 
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:
