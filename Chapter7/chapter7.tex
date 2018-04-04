@@ -57,8 +57,11 @@ one-time set up phase of the protocol (the enrollment stage). Our result shows
 that the protocol can work efficiently during authentication stage. The
 technique maybe generalized to similar multi-stage protocols.
 
-\section{The Challenge-Response and Schnorr-based ZKP}
+\section{Reducing the communication overhead}
 \label{sec:6challenge}
+
+\subsection{The Schnorr-based ZKP}
+\label{sec:zkpschnorr}
 In the previous variants of the protocol, one critical module required to
 provide active security against a malicious client is the binary message format
 prover. Specifically, Alice sends a ciphertext \(C\) of a bitstring to Bob. Bob
@@ -139,7 +142,7 @@ The original Schnorr ZKP protocol \cite{schnorr1989efficient} used to prove know
 
 The soundness property of Schnorr's protocol can be argued by assuming a prover
 is able to answer correctly at least two challenges $c$ and $c'$ (with
-$c \neq c'$) after commit to an announcement $t$, then he would be able to know
+$c \neq c'$) after committing to an announcement $t$, then he would be able to know
 the solution to the hard problem of discrete log $x = \log_{g}h$. Hence,
 intuitively, the prover can answer at most one challenge correctly, the
 probability of success is bounded by $1/n$, which can be negligibly small. The
@@ -156,47 +159,27 @@ such technique to prove LWE-secrets (Figure \ref{fig:benhamoudaProtocol} )
 \begin{figure}[htbp!] 
 \centering \procedure{Benhamouda Protocol for LWE}{
   \textbf{Prover} \> \> \textbf{Verifier}\\
-  \mathbf{r}_s, \mathbf{r}_e \randomsample D_{\bigO{\sqrt{n}\alpha}}
+  \mathbf{r}_s, \mathbf{r}_e \randomsample D_{\bigO{\sqrt{n}\alpha}} \> \> \\
+  t = a \mathbf{r}_s + \mathbf{r}_e \> \> \\
+  (c_{aux}, d_{aux}) = aCommit(t) \> \sendmessageright*{c_{aux}} \> \\
+  \> \sendmessageleft*{c} \> c \randomsample \{0, \dots, 2n -1\}\\
+  \mathbf{s}_s = \mathbf{r}_s + X^c s \> \> \\
+  \mathbf{s}_e = \mathbf{r}_e + X^c e \> \> \\
+  \> \sendmessageright*{t, d_{aux}, (\mathbf{s}_s, \mathbf{s}_e)} \> X^cy + t \stackrel{?}{=} a \mathbf{s}_s + \mathbf{s}_e \\
+  \> \> aCOpen(t, c_{aux}, d_{aux}) \stackrel{?}{=} \text{accept}\\
+  \> \> \norm{\mathbf{s}_s}, \norm{\mathbf{s}_e} \leq \bigO{n\alpha}
 }
 \caption{Proof of knowledge of LWE secrets}
 \label{fig:benhamoudaProtocol}
 \end{figure}
 
-$s, e$ such that $y = as + e$
-
-\section{Related Work}
-\label{sec:chap7RelatedWorks}
-
-
-
-Consider the following situation:  How can he achieve that?
-Suppose that the plaintext \(P\) is encoded as coefficients of a polynomial, or
-specifically, \(P\) can be an element of the ring \(R_{2}\), where
-\(R_{2} = \frac{\mathbb{Z}_{2}[x]}{x^{n} + 1}\), this ring has been used by many
-RLWE based cryptosystems lately. One solution can be to apply the Zero Knowlege
-Proof technique. This is however a costly choice. There are mainly two
-approaches for ZKP, the Schnorr's based protocol,
-e.g. \cite{benhamouda2014better} or a Stern's based protocol such as
-\cite{stern1993new} or \cite{ling2013improved}. The first approach has
-limitations on the norm of the secret it can prove and cannot be used to prove
-the knowledge of binary messages with norm 2. The second approach can prove
-binary messages but it has a very high communication cost due to a roundness
-error equaling \(2/3\).
-\subsection{ZKP and $\sum$-Protocol}
-\label{sub:zkp_and_sum_protocol}
-A Zero-Knowledge Proof of Knowledge (ZKPoK) is a two party protocol between a
-Prover $P$ and a Verifier $V$. The protocol allows $P$ to convince $V$ that it
-knows some secret without revealing anything about the secret. We refer readers
-to \cite{bellare1992defining} for formal definition of the original ZKPoK. 
-
-Notation: 
-
-
-
-We present an adaption of the ZKP protocol in \cite{benhamouda2014better} to
-prove the plaintext knowledge of BV cryptosystems. Recall that given
-$\mathbf{(sk,pk) = (s,(p_0,p_1))}$ where $\mathbf{s} \in \chi_{\beta_0}^n$,
-$\mathbf{p_0,p_1} \in R_q$ , a message $\mathbf{m} \in R_t$ is encrypted by
+Where $y = as + e$, and $s, e \randomsample D_{\alpha}$. In the protocol, the
+prover is able to convince a verifier that it knows short secrets for twice the
+public input (by short, we mean that $\norm{s},\norm{e} \leq \bigO{n\alpha}$).
+We present an adaption of this ZKP protocol to prove the plaintext knowledge of
+BV cryptosystems. Recall that given $\mathbf{(sk,pk) = (s,(p_0,p_1))}$ where
+$\mathbf{s} \in \chi_{\beta_0}^n$, $\mathbf{p_0,p_1} \in R_q$ , a message
+$\mathbf{m} \in R_t$ is encrypted by
 $\enc{\mathbf{m}} := \mathbf{(c_0, c_1)} = (\mathbf{p_0u} + t\mathbf{f + m,
   p_1u} + t\mathbf{g)}$. The protocol (Figure \ref{fig:belhamoudaProtocol}) is
 an AND composition of 2 ZKPs that prove 2 relations: the secret key $\mathbf{s}$
@@ -239,8 +222,6 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
   \label{fig:belhamoudaProtocol}
 \end{figure}
 
-\subsection{Schnorr-based ZKP technique}
-\label{sec:zero-knowledge-proof}
 
 \begin{theorem}
   Figure (\ref{fig:belhamoudaProtocol}) is a $\sum'$-Protocol for the following
@@ -302,8 +283,7 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
     \norm{\mathbf{r_s}} + \norm{\mathbf{s}} \leq 2\beta_0$, and
     the same for $\mathbf{\norm{s_e}, \norm{s_m}, \norm{s_{e_0}}}$.
   \item [Special Soundness.] Before proving this property, we describe the
-    following technical lemma ( the detailed proof can be found in
-    \cite{benhamouda2014better})
+    following technical lemma 
     \begin{lemma}
       Let n be a power of 2 and let $0 <i,j< 2n-1$. Then, $2(x^i -
       x^j)^{-1} \mod (x^n +1)$ only has coefficients in $\left\{ -1,
@@ -386,281 +366,33 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
     \item $S$ outputs $(c_{aux}, c, (\mathbf{(t_c,t_k)},
       d_{aux},(\mathbf{s_s,s_{e_0},s_e,s_m})))$
     \end{itemize}
-    If no abort occurs, the distribution of $\mathbf{(s_s, s_{e_0}, s_e,
-      s_m)}$ does not depend on real secrets. Hence, the simulated
-    transcript becomes insdistinguishable from the real one. If an abort
-    occurs, the indistinguishability comes from the hiding property of
-    the commitment scheme?
-
+    The distribution of $\mathbf{(s_s, s_{e_0}, s_e, s_m)}$ does not depend on
+    real secrets. Hence, the simulated transcript becomes insdistinguishable
+    from the real one.
   \end{description}
 \end{proof}
 
-\begin{figure}[htbp!] 
-  \centering \procedure{AND-Composition of Benhamouda ZKP}{
-    \textbf{Prover} \> \> \textbf{Verifier}\\
-    \mathbf{r_s,r_{e_0},r'_{s},r'_{e_{0}}} \randomsample D_{\beta_0} \> \> \\
-    \mathbf{r_e,r'_{e}} \randomsample D_{\beta} \> \> \\
-    \mathbf{r_m,r'_{m}} \randomsample D_{t} \> \> \\
-    \mathbf{t_c} = \mathbf{-c_1r_s} + t\mathbf{r_e + r_m} \> \> \\
-    \mathbf{t_k} = \mathbf{-p_1r_s} - t\mathbf{r_{e_0}} \> \> \\
-    \mathbf{t'_c} = \mathbf{-c_1r'_s} + t\mathbf{r'_e + r'_m} \> \> \\
-    \mathbf{t'_k} = \mathbf{-p_1r'_s} - t\mathbf{r'_{e_0}} \> \> \\
-    (c_{aux}, d_{aux}) = aCommit(\mathbf{t_c,t_k}) \> \> \\
-    (c'_{aux}, d'_{aux}) = aCommit(\mathbf{t'_c,t'_k}) \>
-    \sendmessageright*{c_{aux},c'_{aux}} \> \\
-    \> \> c \randomsample \mathcal{C} = \left\{ 0,\dots, 2n -1  \right\}\\
-    \>  \sendmessageleft*{c} \> \\
-    \mathbf{s_s = r_s + x^cs},\mathbf{s'_s = r'_s + x^cs} \> \> \\
-    \mathbf{s_e = r_e + x^ce},\mathbf{s'_e = r'_e + x^ce} \> \> \\
-    \mathbf{s_m = r_m + x^cm},\mathbf{s'_m = r'_m + x^cm} \> \> \\
-    \mathbf{s_{e_0} = r_{e_0} + x^ce_0},\mathbf{s'_{e_0} = r'_{e_0} + x^ce_0} \> \> \\
-    \> \sendmessageright{top=$d_{aux}$, bottom=$d'_{aux}$} \> \\
-    \> \> \mathbf{x^cc_0} + \mathbf{t_c} \stackrel{?}{=} -\mathbf{c_1s_s} + t\mathbf{s_e} + \mathbf{s_m}\\
-    \> \> \mathbf{x^cc_0} + \mathbf{t'_c} \stackrel{?}{=} -\mathbf{c_1s'_s} + t\mathbf{s'_e} + \mathbf{s'_m}\\
-    \> \> \mathbf{x^cp_0} + \mathbf{t_k} \stackrel{?}{=} -\mathbf{p_1s_s} - t\mathbf{s_{e_0}}\\
-    \> \> \mathbf{x^cp_0} + \mathbf{t'_k} \stackrel{?}{=} -\mathbf{p_1s'_s} - t\mathbf{s'_{e_0}}\\
-    \> \> aCOpen(\mathbf{t_c, t_k}, c_{aux}, d_{aux}) \stackrel{?}{=} accept \\
-    \> \> aCOpen(\mathbf{t'_c, t'_k}, c'_{aux}, d'_{aux}) \stackrel{?}{=} accept \\
-    \> \> \norm{s_s}, \norm{s_{e_0}},\norm{s'_s}, \norm{s'_{e_0}} \leq 2\beta_0 \\
-    \> \> \norm{s_e},\norm{s'_e}  \leq 2\beta \\
-    \> \> \norm{s_m},\norm{s'_m} \leq 2t
-  }
-  \caption{AND-Composition for ZKP-BV}
-  \label{fig:belhamoudaProtocolAND}
-\end{figure}
+\subsection{The challenge response operation}
+\label{sec:challengeResponse}
+It has been shown in the previous section that we can replace the Stern-based
+ZKP technique with Schnorr-based one and save us many rounds of communication
+due to the soundness error decreasing from $2/3$ to $1/n$. However, the new
+proof technique could not prove that the encrypted message was in binary format:
+The proof shown the noises are small ($\mathbf{s}_{e} \leq 2\beta$) and the
+message is small ($\mathbf{s}_{m} \leq 2t$). To solve this problem, we include
+one homomorphic operation after the $Client$ was able to pass the proof. The operation works as follows.
 
-  % \begin{figure}[h!]
-  %   \centering
-  %   \begin{equation*}
-  %     \begin{array}{c c c}
-  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-  %       \\
-  %       \mathbf{r_s,r_{e_0},r'_{s},r'_{e_{0}}} \randomsample D_{\beta_0} & & \\
-  %       \mathbf{r_e,r'_{e}} \randomsample D_{\beta} & & \\
-  %       \mathbf{r_m,r'_{m}} \randomsample D_{t} & & \\
-  %       \mathbf{t_c} = \mathbf{-c_1r_s} + t\mathbf{r_e + r_m} & & \\
-  %       \mathbf{t_k} = \mathbf{-p_1r_s} - t\mathbf{r_{e_0}} & & \\
-  %       \mathbf{t'_c} = \mathbf{-c_1r'_s} + t\mathbf{r'_e + r'_m} & & \\
-  %       \mathbf{t'_k} = \mathbf{-p_1r'_s} - t\mathbf{r'_{e_0}} & & \\
-  %       (c_{aux}, d_{aux}) = aCommit(\mathbf{t_c,t_k}) & & \\
-  %       (c'_{aux}, d'_{aux}) = aCommit(\mathbf{t'_c,t'_k}) &
-  %                                                        \xrightarrow{\hspace{1em}c_{aux},c'_{aux}\hspace{1em}} & \\
-  %                              & & c \randomsample \mathcal{C} = \left\{ 0,\dots, 2n -1  \right\}\\
-  %                              &  \xleftarrow{\hspace{1em}c\hspace{1em}} & \\
-  %       \mathbf{s_s = r_s + x^cs},\mathbf{s'_s = r'_s + x^cs} & & \\
-  %       \mathbf{s_e = r_e + x^ce},\mathbf{s'_e = r'_e + x^ce} & & \\
-  %       \mathbf{s_m = r_m + x^cm},\mathbf{s'_m = r'_m + x^cm} & & \\
-  %       \mathbf{s_{e_0} = r_{e_0} + x^ce_0},\mathbf{s'_{e_0} = r'_{e_0} + x^ce_0} & & \\
-  %                              & \xrightarrow[\hspace{1em}d'_{aux}, \mathbf{t'_c, t'_k, s'_s, s'_e, s'_m,
-  %                                s'_{e_0}}\hspace{1em}]{\hspace{1em}d_{aux}, \mathbf{t_c, t_k, s_s, s_e, s_m,
-  %                                s_{e_0}}\hspace{1em}} & \\
-  %                              & & \mathbf{x^cc_0} + \mathbf{t_c} \stackrel{?}{=} -\mathbf{c_1s_s} + t\mathbf{s_e} + \mathbf{s_m}\\
-  %                              & & \mathbf{x^cc_0} + \mathbf{t'_c} \stackrel{?}{=} -\mathbf{c_1s'_s} + t\mathbf{s'_e} + \mathbf{s'_m}\\
-  %                              & & \mathbf{x^cp_0} + \mathbf{t_k} \stackrel{?}{=} -\mathbf{p_1s_s} - t\mathbf{s_{e_0}}\\
-  %                              & & \mathbf{x^cp_0} + \mathbf{t'_k} \stackrel{?}{=} -\mathbf{p_1s'_s} - t\mathbf{s'_{e_0}}\\
-  %                              & & aCOpen(\mathbf{t_c, t_k}, c_{aux}, d_{aux}) \stackrel{?}{=} accept \\
-  %                              & & aCOpen(\mathbf{t'_c, t'_k}, c'_{aux}, d'_{aux}) \stackrel{?}{=} accept \\
-  %                              & & \norm{s_s}, \norm{s_{e_0}},\norm{s'_s}, \norm{s'_{e_0}} \leq 2\beta_0 \\
-  %                              & & \norm{s_e},\norm{s'_e}  \leq 2\beta \\
-  %                              & & \norm{s_m},\norm{s'_m} \leq 2t
-  %     \end{array}
-  %   \end{equation*}
-  %   \caption{AND-Composition for ZKP-BV }
-  %   \label{fig:belhamoudaProtocolAND}
-  % \end{figure}
-
-
-\subsection{Combination of ZKP}
-\label{sec:combination-zkp}
-A $\sum-$protocol can be composed together to construct more complex relations.
-There are several forms of decomposition such as AND, OR, NEQ, etc.  We describe
-some forms of composition of the \(\sum-protocol\) that are used in our own protocol:
-AND-composition, OR-composition. We first describe the generic \(\sum-\)protocol
-and its combinations. The BV-ZKP (Figure \ref{fig:belhamoudaProtocol}) protocol
-is an instance of such a protocol and the technique can be applied inherently.
-\begin{description}
-\item[$\sum-$protocol] The protocol is a generic 3-moves transaction between 2 parties
-  \(Prover\) and \(Verifier\), it is used to prove (supporting zero-knowledge) a
-  relation \(R(x,w)\), where \(x\) is the public parameter known by both
-  parties and \(w\) is a witness known by the \(Prover\) only. The protocol's
-  view is a set of 3 messages (Figure \ref{fig:sigmaProtocol}): the commitment
-  \(c\) is a function of a random factor \(\rho\), the challenge \(ch\) is
-  normally random, and the response \(r\) is a function computed from
-  \(x, w, \rho, ch\). There are 2 extra algorithms for the \(\sum-\)protocol: a
-  \(verify(r,ch,c)\) algorithm used by the \(Verifier\) in the last step to
-  check the correctness of the proof result, and a simulator \(sim\), taking
-  \(x\) and a random parameter \(\rho'\) as inputs, and and outputting a view
-  \(\bar{c},\bar{ch},\bar{r}\) that is indistinguishable from the genuine view
-  of the protocol.
-
-  \begin{figure}[htbp!] 
-    \centering \procedure{Sigma Protocol}{
-      \textbf{Prover} \> \> \textbf{Verifier}\\
-      \rho \randomsample random \> \> \\
-      c \gets comm(\rho) \> \> \\
-      \> \sendmessageright*{c} \> \\
-      \> \> ch \randomsample random \\
-      \> \sendmessageleft*{ch} \> \\
-      r \gets resp(\rho,w,x,ch) \> \> \\
-      \> \sendmessageright*{r} \> \\
-      \> \> verify(r, ch, c)\\
-    }
-    \caption{Sigma Protocol}
-    \label{fig:sigmaProtocol}
-  \end{figure}
-  % \begin{figure}[h!]
-  %   \centering
-  %   \begin{equation*}
-  %     \begin{array}{c c c}
-  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-  %       \\
-  %       \rho \randomsample random & & \\
-  %       c = comm(\rho) & & \\
-  %                              & \xrightarrow{c} & \\
-  %                              & & ch \randomsample random \\
-  %                              & \xleftarrow{ch} & \\
-  %       r = resp(\rho,w,x,ch) & & \\
-  %                              & \xrightarrow{r} & \\
-  %                              & & verify(r, ch, c)\\
-  %     \end{array}
-  %   \end{equation*}
-  %   \caption{Sigma Protocol}
-  %   \label{fig:sigmaProtocol}
-  % \end{figure}
-\end{description}
-
-
-\begin{description}
-\item[AND-COMPOSITION] Given two relations $R_1 = \left\{ (v_1,w_1) \right\}$
-  and $R_2 = \left\{ (v_2, w_2) \right\}$ with the same challenge space, a
-  $\sum$-Protocol of
-  $R_1 \wedge R_2 = \left\{ (v_1, v_2, w_1, w_2): (v_1;w_1) \in R_1, (v_2,w_2)
-    \in R_2\right\}$ can be obtained by running a $\sum$-Protocol for $R_1$ and
-  a $\sum$-Protocol for $R_2$ in parallel, using a \emph{common} challenge.
-  Figure \ref{fig:belhamoudaProtocolAND} is a concrete example combining 2 ZKP for BV.
-  
-
-\item[OR-Compostion] In this composition, given the $\sum-protocol$ for many  
-  relations $R_{1}$,$R_{2}$,\dots,\(R_{n}\) the goal is to construct a protocol for the
-  relation
-  $R_{OR}(\vec{x}, w_{i}) $, where \(\exists i \leq n: R(x_{i},w_{i}) = 1\). The main reason behind this composition is that the verifier
-  can let the prover use the simulator of the \(\sum-protocol\) for the
-  relations \(R_{j}\), for which the prover does not know the witness.
-  The verifier provides a single challenge \(c\)
-  such that the prover can split that into challenges \(c_{1}, c_{2}, \dots, c_{n}\)
-  provided that \(c_{i}\) satisfies a linear constraint in terms of \(c\),
-  for example \(c = c_{1} \xor c_{2} \xor \dots \xor c_{n}\). The final OR-combination proof is
-  obtained by composing one run of the \(\sum-protocol\) with other runs of the
-  simulators for the \(\sum-protocol\). (Figure \ref{fig:OR-Combination})
-
-  \begin{figure}[htbp!] 
-    \centering \procedure{OR Composition of ZKP}{
-      \textbf{Prover} \> \> \textbf{Verifier}\\
-      \rho_{i} \randomsample random \> \> \\
-      c_{i} = comm(\rho_{i}) \> \> \\
-      \text{For } j = 1,\dots,n \wedge j \neq i: \> \> \\
-      \text{    } \rho_{j} \randomsample random; \> \> \\
-      \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) \> \> \\
-      \> \sendmessageright*{ch_j,c_{1}, c_{2}, \dots, c_{n}} \> \\
-      \> \> ch \randomsample \mathbb{Z}_{n} \\
-      \> \sendmessageleft*{ch} \> \\
-      ch_{i} = ch - \sum_{j \neq i}{ch_{j}} \> \> \\
-      r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) \> \> \\
-      \> \sendmessageright*{r_{1}, r_{2}, \dots, r_{n}} \> \\
-      \> \> \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
-      \> \> ch = \sum_{i \in [n]}ch_{i}\\
-    }
-    \caption{OR Composition of ZKP}
-    \label{fig:OR-Composition}
-  \end{figure}
-  % \begin{figure}[h!]
-  %   \centering
-  %   \begin{equation*}
-  %     \begin{array}{c c c}
-  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
-  %       \\
-  %       \rho_{i} \randomsample random & & \\
-  %       c_{i} = comm(\rho_{i}) & & \\
-  %       \text{For } j = 1,\dots,n \wedge j \neq i: & & \\
-  %       \text{    } \rho_{j} \randomsample random; & & \\
-  %       \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) & & \\
-  %                              & \xrightarrow[ch_{j}]{c_{1}, c_{2}, \dots, c_{n}} & \\
-  %                              & & ch \randomsample \mathbb{Z}_{n} \\
-  %                              & \xleftarrow{ch} & \\
-  %       ch_{i} = ch - \sum_{j \neq i}{ch_{j}} & & \\
-  %       r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) & & \\
-  %                              & \xrightarrow{r_{1}, r_{2}, \dots, r_{n}} & \\
-  %                              & & \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
-  %                              & & ch = \sum_{i \in [n]}ch_{i}\\
-  %     \end{array}
-  %   \end{equation*}
-  %   \caption{}
-  %   \label{fig:OR-Combination}
-  % \end{figure}
-\end{description}
-
-
-
-
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../thesis"
-%%% End:
-
-\subsection*{Summary of previous work}
-\begin{description}
-\item Lyubashevsky's proof systems (\cite{lyubashevsky2008lattice},
-  \cite{lyubashevsky2009fiat}): This system is similar to the classical Schnorr's
-  ZKP system, the main advantage is its communication size efficiency. However,
-  this approach is not zero-knowledge (it is only proved to be witness
- -indistinguishable). Moreover, there is a completeness error in each round, and
-  lastly, the extraction gap is $O(\sqrt{n})$.
-
-  A quick discussion on extraction gaps: we refer to an extraction gap as a security
-  parameter of ZKP systems for ISIS problem. Generally, we say that a proof accepts
-  an extraction gap $\gamma$ ($\gamma > 1$) if the knowledge extractor of the
-  protocol can extract a vector $\vec{v}$ such that
-  $\norminf{v} = \gamma \norminf{w}$, where $\norminf{w}$ is a valid witness
-  from the \emph{Prover}. Ideally, when $\gamma = 1$, one can use the extractor
-  to solve the underlying ISIS instance. In other words, ZKP with $\gamma = 1$
-  is strongly secure, as breaking it is at least as hard as solving the
-  underlying problem. When $\gamma > 1$, the soundness of the proof has to rely
-  on a stronger hardness assumption of certain potentially easier problems is hard
-  to solve.
-\item Micciancio-Vadhan proof system \cite{micciancio2003statistical}: This
-  protocol provides ZKP for the GapCVP problem, but it can be adapted to prove the ISIS
-  relation: Let $\mathbf{B}$ be a basis of the perp lattice
-  $\Lambda_q^\bot(\mathbf{A}) = \{\mathbf{x} \in \mathbb{Z}^m: \mathbf{A.x = 0}\
-  \mod \ q\}$.  and $\mathbf{t} \in \mathbb{Z}^m: \mathbf{A.t = y}\ \mod \ q$
-  ($\mathbf{B}$ and $\mathbf{t}$ can be computed efficiently), then run the ZKP
-  protocol for $GapCVP_\gamma^\infty$ with public parameters
-  $(\mathbf{B,t},\beta$). The $Prover$'s witness is $\mathbf{e = t - x}$. Recall
-  that The knowledge extractor of the protocol can output a vector
-  $\mathbf{e'} \in \Lambda_q^\bot( \mathbf{A}$ such that
-  $\norminf{\mathbf{ t - e'}} \leq g.\beta$ for some $g \geq O(\sqrt[]
-  {m}$). This implies a perfect ZKPoPK with extraction gap $O(\sqrt[]{m})$.
-\item Stern's protocol [\todo{citeStern}] and extension: The original Stern's
-  proof worked on the SD relation \todo{SD relation}. This ZKP does not have any
-  completeness error and there is no extraction gap, i.e., $\gamma =
-  1$. Extensions of this work include KTX [137,85], associated with the
-  following relation \todo{ktxRelation}.
-
-  The work of \cite{ling2013improved} provides a proof for the ISIS relation
-  \todo{ISIS relation}.  Stern's based techniques inherently do not have
-  extraction gaps nor completeness errors, their communication efficiency is:
-  \todo{missing figure}. Our protocol will also be based on this technique, the
-  enhancement being that it can prove different bounds of different elements in the
-  $Prover$'s witness vector. Such improvement is important in ZKPoPK for
-  lattice-based cryptosystems, especially in contexts where public key settings
-  and homomorphic operations are used. The bounds of messages and errors can be
-  largely different: for example, the original message can be binary while the
-  noises' bounds increase according to the ladder of homomorphic operations.
-
-\end{description}
-
-
-
+\begin{enumerate}
+\item The server samples \(r_{1}, r_{2} \randomsample R_{q}\) and computes
+    \(ch = enc(r_{1}*Q*(1-Q) + r_{2}) + enc(0,r)\) and sends \(ch\) to the
+    client.
+\item The client decrypts the result and sends back \(rsp\).
+\item The server accepts the response if and only if \(rsp = r_{2} \)
+\end{enumerate}
+We remark that the first operation needs to be computed bit-wise, that means the
+packing technique we used in the previous protocol cannot be applied. In the
+next section, we discuss how CRT-packing method \cite{smart2014fully} is adapted
+to compute the Hamming Distance of the registered and queried template.
 
 \section{The BGV Cryptosystem and CRT packing method}
 \label{sec:6bgv}
@@ -695,42 +427,6 @@ the protocol. The basic cryptosystem works as follows.
   \left[\left[\Angle{\mathbf{c},\mathbf{s}}\right]_{q}\right]_{2}$
 \end{description}
 
-Before detailing homomorphic operations, we first discuss two important
-components supporting the noise controlling process: Key Switching (Dimension
-Reduction) and Modulus Switching.
-
-\begin{description}
-\item[Key Switching] This operation allow a ciphertext encrypted with a key
-  \textbf{s}' to be transformed to another ciphertext encrypted with another key
-  \textbf{s}'', the dimension of \textbf{s}' and \textbf{s}'' can be
-  different. The idea is we first prepare a set of switching key pairs that can
-  be considered the encryptions of the power of 2 of the bits of $\mathbf{s}'$,
-  putting $2^{i}$ in front:
-  \[
-    \begin{cases}
-      \mathbf{a}_{i} \randomsample R_{q}, \mathbf{e}_{i} \randomsample \chi^{n}\\
-      \mathbf{b}_{i} \gets \mathbf{a}_{i}\mathbf{s}'' + 2^{i}\mathbf{s}' + 2\mathbf{e}_{i}
-    \end{cases}
-  \]
-
-  Then, given a ciphertext encrypted with a key \textbf{s}' having the form
-  $(\mathbf{a}', \mathbf{c}' = \mathbf{a}'\mathbf{s}' + 2\mathbf{e}' +
-  \mathbf{m}')$, we want to do key switching $(\mathbf{a}',\mathbf{c}')$ from
-  $\mathbf{s}'$ to $\mathbf{s}''$. The process is accomplished through two steps
-  \begin{enumerate}
-  \item Decompose $\mathbf{a}' \in R_{q}$ into its bit representation
-    $\mathbf{a}' = \sum_{0}^{\log q - 1}2^{i}\mathbf{a}'_{i}$.
-  \item Linear combination computation
-    $\sum_{0}^{\log q - 1}\mathbf{a}'_{i} \cdot (\mathbf{a}_{i},
-    \mathbf{b}_{i})$, which gives result
-    $(\mathbf{a} = \sum_{0}^{\log q - 1}\mathbf{a}'_{i}\mathbf{a}_{i},
-    \mathbf{b} = \sum_{0}^{\log q - 1}\mathbf{a}'_{i}(\mathbf{a}_{i}\mathbf{s}''
-    + 2^{i}\mathbf{s}' + 2\mathbf{e}_{i}))$
-  \end{enumerate}
-\end{description}
-
-
-\paragraph{ciphertext packing}
 We have seen that a plaintext can be packed in a specific way to support
 homomorphic operations efficiently. The approach of \cite{yasuda2014practical}
 can compute the inner product operations to perform really fast; however, it
@@ -950,68 +646,313 @@ Therefore, a ciphertext of the form
 and \(\mathbf{m}\) before adding up the results.
 \end{description}
 
-\subsection{The flattening gadget}
-\label{sec:6flattening}
+\subsection{HD Computation Homomorphically and Key Switching}
+Given two bistring \(\mathbf{a}\) and \(\mathbf{b}\) of length \(n\) (for \(n\)
+being a power of 2), and the $rotate$ function discussed above, the Hamming
+Distance \(HD_{(\mathbf{a,b})}\) can be computed by first rotating and adding the bits of \(\mathbf{a} + \mathbf{b} - 2\mathbf{ab}\) (Algorithm
+\ref{alg:hd-comp-homom}). Provided that the BGV cryptosystem in use supports
+SIMD operations, the algorithm can run with homomorphic addition and
+multiplication. ($\triangle$ denotes component-wise homomorphic multiplication)
 
-\subsection{The keyswitch and modswitch operation}
-\label{sec:6keyswitch}
+\begin{algorithm}
+\caption{HD computation}\label{alg:hd-comp-homom}
+\begin{algorithmic}[1]
+  \Procedure{HDBGV}{$\mathbf{a,b}$}
+  \State $\mathbf{c} \gets \mathbf{a} + \mathbf{b} - 2 \mathbf{a} \triangle \mathbf{b}$
+  \State let $n \gets length(\mathbf{a})$
+  
+  \For{$i = 0,\dots,n-1$}
+  \State let $\mathbf{t} \gets rotate(\mathbf{c}, 2^{i})$
+  \State let $\mathbf{c} \gets add(\mathbf{c}, \mathbf{t})$
 
-\section{HD computation}
-\label{sec:6hdcomp}
+  \EndFor
+
+  \State let $\mathbf{c}_{swap} \gets swapHalves(\mathbf{c})$
+  \State let $\mathbf{c} \gets add(\mathbf{c},\mathbf{c}_{swap})$
+  
+\State \textbf{return} $\mathbf{c}[0]$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Another useful tool to control the noise during homomorphic operations is
+\textit{key switching}, it keeps the multiplied ciphertexts to always be 2
+elements of the ring $R_{q}$, we briefly discuss the operation.
+
+\begin{description}
+\item[Key Switching] This operation allow a ciphertext encrypted with a key
+  \textbf{s}' to be transformed to another ciphertext encrypted with another key
+  \textbf{s}'', the dimension of \textbf{s}' and \textbf{s}'' can be
+  different. The idea is we first prepare a set of switching key pairs that can
+  be considered the encryptions of the power of 2 of the bits of $\mathbf{s}'$,
+  putting $2^{i}$ in front:
+  \[
+    \begin{cases}
+      \mathbf{a}_{i} \randomsample R_{q}, \mathbf{e}_{i} \randomsample \chi^{n}\\
+      \mathbf{b}_{i} \gets \mathbf{a}_{i}\mathbf{s}'' + 2^{i}\mathbf{s}' + 2\mathbf{e}_{i}
+    \end{cases}
+  \]
+
+  Then, given a ciphertext encrypted with a key \textbf{s}' having the form
+  $(\mathbf{a}', \mathbf{c}' = \mathbf{a}'\mathbf{s}' + 2\mathbf{e}' +
+  \mathbf{m}')$, we want to do key switching $(\mathbf{a}',\mathbf{c}')$ from
+  $\mathbf{s}'$ to $\mathbf{s}''$. The process is accomplished through several steps
+  \begin{enumerate}
+  \item Decompose $\mathbf{a}' \in R_{q}$ into its bit representation
+    $\mathbf{a}' = \sum_{0}^{\log q - 1}2^{i}\mathbf{a}'_{i}$.
+  \item Linear combination computation
+    $\sum_{0}^{\log q - 1}\mathbf{a}'_{i} \cdot (\mathbf{a}_{i},
+    \mathbf{b}_{i})$, which gives result
+    $$(\mathbf{a} = \sum_{0}^{\log q - 1}\mathbf{a}'_{i}\mathbf{a}_{i},
+    \mathbf{b} = \sum_{0}^{\log q - 1}\mathbf{a}'_{i}(\mathbf{a}_{i}\mathbf{s}''
+    + 2^{i}\mathbf{s}' + 2\mathbf{e}_{i}))$$
+    or
+    $$(\mathbf{a}, \mathbf{a}\mathbf{s}'' + \mathbf{a}'\mathbf{s}' + \tilde{\mathbf{e}}')$$
+  \item Let $\mathbf{b}'' = \mathbf{c}' - \mathbf{b} = 2\mathbf{e}' - \mathbf{m}' -\mathbf{a}\mathbf{s}'' - \tilde{\mathbf{e}}$.
+  \end{enumerate}
+
+  In other words, $(-\mathbf{a}, \mathbf{b}'')$ is the new ciphertext encrypted
+  with $\mathbf{s}''$. With the discussed techniques, we are able to compute the
+  Hamming Distance homomorphically and the next step is to compare the result
+  with the threshold to output the authentication result. In the third variant
+  of our protocol, we see that applying the ZKP techniques only is not practical
+  enough due to large communication size. Next, we propose another approach,
+  which is based on different cryptographic technique: Garbled Circuit and
+  Oblivious Transfer.
+\end{description}
 
 \section{Garbled Circuit and Oblivious Transfer}
-\label{sec:6garbled}
+\label{sec:defMPP}
+
+\subsection{Garbled Circuit}
+\label{sec:garbledCircuitPre}
+
+The "garbled circuit" concept was originally proposed in \cite{yao1986generate}, to
+allow two parties to securely evaluate any functions (represented by a logic
+circuit). It is secure in the sense that the communicating parties do not acquire
+any information about each others' inputs, as they only have access to the output of the
+function. The idea is that, given a circuit (composed of gates connected by
+wires), the server ``garbles'' the circuit by randomly assigning two encryption
+keys \(\omega_{j,0}\) and \(\omega_{j,1}\) to each wire \(\omega_{j}\). The pair
+of keys represent respectively values 0 and 1, which are possible values of the
+logic gates' wires. The server then encrypts a truth table corresponding to each
+gate using nested encryption. Figure \ref{fig:garbledCircuit} illustrates how
+this can be done: Computing the output key of a gate requires knowning two of
+its input's keys.
+
+After garbling the gates, the server sends the ciphertext tables and the keys corresponding to the server's input values to the client. The client uses an
+\textit{Oblivious Transfer } technique (discussed below) to obtain the keys
+corresponding to the client's input values. After having the keys for each wire,
+the client can, in turn, decrypt the gates until discovering the final output keys
+(which can be encoded initially in a special way to represent value 0 or 1). The
+wires' keys are also referred to as \textit{labels} in literature.
+
+\begin{figure}[htbp!] 
+  \centering    
+  \includegraphics[width=1.0\textwidth]{Chapter2/Figs/Raster/garbledCircuit}
+  \caption{Garbled Circuit example}
+  \label{fig:garbledCircuit}
+\end{figure}
+
+Recent works provides optimizations to improve the computation and communication
+overhead associated with encrypt/decrypt operations and ciphertext tables'
+sizes. In \cite{kolesnikov2008improved30}, the authors proposed a modification
+to allow XOR gates to be evaluated \textit{for free}: the labels of XOR gates
+are not chosen independently but by \(\omega_{i,0} = \omega_{i,1} \xor r\), for
+some random value of \(r\). Pinkas et al. \cite{pinkas2009secure38} introduced a
+way to reduce the communication size of binary gates by 25\%: each gate can be
+specified by three ciphertexts instead of all four. Finally,
+\cite{kolesnikov2009improved29} improve some commonly used circuits such as
+addition, comparision, etc., by reducing the number of non-XOR gates.
+
+We use a standard substractor circuit for the operation \(HD = HD' - r\). Given a 2
+n-bit bitstring, the circuit is built from 1 half-substractor and \(n-1\)
+full-substractors as in Figure \ref{fig:substractor}
+
+\begin{figure}[htbp!] 
+  \centering    
+  \includegraphics[width=1.0\textwidth]{Chapter7/Figs/Raster/subCircuit}
+  \caption{Substractor Circuit}
+  \label{fig:substractor}
+\end{figure}
+
+Where a half-substractor is built from 1 XOR gate and 1 AND gate, a
+full-substractor is built from 2 half-substractors and 1 OR gate (Figure
+\ref{fig:fullSubstractor})
+
+\begin{figure}[htbp!] 
+  \centering    
+  \includegraphics[width=1.0\textwidth]{Chapter7/Figs/Raster/fullSubstractor}
+  \caption{Half-substractor and Full-substractor}
+  \label{fig:fullSubstractor}
+\end{figure}
+
+In our context, let \(l\) be the bit length of the HD' and r (\(l\) is typically
+10-12 bits for 1024-2048 bits biometrics data), which makes the number of
+substractor logic gates equal to \(5l\). The comparision circuit no longer needs
+to output 3 results (as standard circuits would: either A > B, A < B or A =
+B). Our aim is just to check whether \(HD' - r < \tau\), so we simply need to
+have l NAND gates plus \(l-1\) XOR gates at hand for the comparsion
+circuit. Figure \ref{fig:comparisionCircuit1} shows an example of such a
+configuration
+\begin{figure}[htbp!] 
+  \centering    
+  \includegraphics[scale=0.75]{Chapter7/Figs/Raster/comparisionCircuit}
+  \caption{Comparator Circuit}
+  \label{fig:comparisionCircuit1}
+\end{figure}
+
+\paragraph{Garbled Circuit preparation}
+We denote \(GC\) to be the garbled circuit prepared by the server. The inputs to
+the circuit include the server's \(GC_{r}\) and the client's \(GC_{h}\), which
+are the cryptographic key \textit{labels} corresponding to the server's input
+\(r\) and to the client's input \(HD'\) to the function \textit{CompareHD}. The main
+function of the circuit is, first, to substract \(HD' - r = HD\) then compare
+\(HD \stackrel{?}{<} \tau\), where \(\tau\) is the constant value of the
+threshold required to decide the authentication result, which can be built into the
+circuit itself. We note that either the server or the client can play the role of
+setting up the garbled circuit; in our work, we let the server take this role
+(Figure \ref{fig:fourthProtocol} - Step 5, 6, 7, 8): as we have
+been working on a \textit{semi-honest} server modeal and a \textit{malicious }
+client, this will save us one proof to assess that the circuit is generated
+correctly.
+
+As described before in Section \ref{sec:yao-garbled-circuit}, the server garbles
+the circuit \(GC\) and sends the result to the client together with its
+\textit{labels} of \(r\), which are \(K_{r_{i}}^{j}\). Next, the client uses our
+OT technique (discussed in the following section) to select the correct
+\textit{labels} of \(HD'\): the first part of the OT will ensure that the client
+will get back the encryptions \(\enc{K_{h_{i}}^{j}}\). The second part of the OT
+makes sure that the protocol is secure against \textit{malicious} clients: it
+needs to prove that it decrypted and decomposed \(\enc{\mathbf{HD'}}\) correctly
+(Figure \ref{fig:fourthProtocol} - Step 12,13). In other words, the client wants
+to prove that the encryptions \(\enc{h_{i}}\) it sent are actually the
+encryptions of the bits of \(HD'_{i}\). Recall that the server still has
+\(\enc{\mathbf{HD'}}\), so the proof can be a homomorphical check of
+\(\enc{\mathbf{HD'}} - \sum{2^{i}\enc{h_{i}}} = \enc{0}\). However,
+in order to allow this proof to support homomorphic operations, we need to use
+the same encryption scheme for the OT protocol, in other words, we need an OT
+protocol based on BGV.
+
+We note that inside the garbled circuit, AES is normally used to encrypt the
+\textit{labels}, this encryption is a part of the garbled circuit and not
+related to the OT protocol we just described, and can still be used independently
+to ensure the performance of circuit evaluations. Next, we discuss an approach
+to design an OT protocol compatible with the BGV cryptosystem
 
 \subsection{Oblivious Transfer}
-In the 1-out-of-2 Oblivious Transfer protocol (denoted by
-\(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT), a \textit{sender} has
-two choices \(m_{0}, m_{1}\), and a \textit{receiver} has one bit \(b\) as its
-input. At the end of the protocol, the \(receiver\) discovers \(m_{b}\) while the
-sender gains no knowledge  about the \(receiver\)'s query.
+\label{sec:obliviousTransferPre}
 
-\subsection{Yao Garbled Circuit}
-\label{sec:yao-garbled-circuit}
+\textit{"You take the blue pill, the story ends. You wake up in your bed and
+  believe whatever you want to believe. You take the red pill, you stay in
+  wonderland, and I show you how deep the rabbit hole goes."} - Morpheus to Neo,
+The Matrix.
 
-% \graphicspath{{Chapter7/Figs/Vector/}}
-% \begin{center}
-% \input{Chapter7/Figs/Vector/GC.pdf_tex}
-% \end{center}
 
-The concept of garbled circuit was proposed in \missref{``yao generate exchange
-  secret''}, it allows 2 parties to evaluate securely any function (represented
-as boolean circuits). We refer to the \(server\) as the one preparing the
-circuit and the \(client\) as the one evaluating the circuit. The general idea
-is that given a function composed of logic gates that are connected by wires,
-the server ``garbles'' the circuit by assigning two random cryptographic keys
-\(K_{j}^{0}\) and \(K_{j}^{1}\) to each wire \(j\). The keys represent 0 and 1
-values, which are the possible inputs to each wire (in related literature, keys
-are also referred to as \textit{labels}).  The server then encrypts a truth table
-for each gate of the circuit such that in order to compute the \textit{output
-  label } of a gate, one must know the \textit{labels}, or keys of the input,
-this is achieved by double encryption using possible combinations of the input
-keys. Figure \missref{} shows an example of a simple gate with its key and truth
-table.
+\begin{figure}[htbp!] 
+\centering    
+\includegraphics[width=1.0\textwidth]{Chapter2/Figs/Raster/RedPillBluePill}
+\caption[Minion]{Red Pill - Blue Pill}
+\label{fig:RedPillBluePill}
+\end{figure}
 
-The final output of the function is also represented as pair of keys, the server
-knows the value of the function output corresponding to each
-\textit{label}. After setting up the garbled circuit, the server sends it to the
-client and its input's keys. The client then uses OT technique discussed to
-obtain the keys corresponding to its inputs. During evaluation of the circuit, the
-client decrypts one \textit{label} \(K_{j}^{i}\) for each output wire \(j\),
-where \(i \in \{0,1\}\) and uses the decrypted result to continue evaluating the
-circuit until it gets the final keys of it. The client then sends the
-final labels to the server to verify the function's output.
+What if, in such situation, there were a protocol to give privacy to
+\(Neo\): \(Morpheus\) should not be able to discover what option \(Neo\) has chosen. Moreover, the
+protocol can also provide privacy to \(Morpheus\): \(Neo\) be unable to get information about the unchosen pill. In cryptography, Oblivious Transfer (OT) is a
+protocol able to support such scenario. 
+In its most basic form, it is a
+two-parties protocol between a \textit{Sender} and a \textit{Receiver}, denoted
+by \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT. The \(Sender\) uses
+two private inputs \(x_{0}, x_{1}\) and the \(Receiver\) uses one input bit
+\(s\). At the completion of the protocol, the \(Receiver\) gets the bit
+\(x_{s}\), without letting the \(Sender\) acquire any information about the value of
+\(s\): \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix}
+\)-OT\((x_{0},x_{1};s) = x_{s}\).
 
-Recent improvements reduce both computation time and communication overhead
-associated with circuit setup and evaluation. \missref{``vsedvenka 30''}
-described a technique allowing XOR gates to be evaluated \textit{for free}:
-there is no communication overhead for such gates and the evaluation does not
-involve cryptographic operations. \missref{``vsedvenka 38''} proposed a
-mechanism to reduce the communication size of binary gates by 25\%: each gate
-can be specified by encoding only three outcomes instead of all four. The
-research by \missref{``vsedvenka 29''} improved the complexity of basic
-operations (addition, multiplication, comparison, etc.) by reducing the number of
-non-XOR gates.
+The general idea is that, when the receiver requests an item, the sender sends
+all the available items to him, he is unaware of which one has been requested
+requested. However, the response is encrypted in such a way that the receiver
+can only decrypt the one he requested. A concrete implementation example of
+\(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT protocol based on
+discrete log DH is illustrated in figure \ref{fig:DH21OT} (This protocol is
+secure against \textit{honest but curious} attacks). The receiver picks
+\(h_{0},h_{1}\) such that \(h_{0}h_{1} = h\), he cannot access both
+\(\log_{g}h_{0}\) and \(\log_{g}h_{1}\). Given \(h_{0}, h_{1}\), the sender
+returns ElGamal encryptions of bits \(x_{0}, x_{1}\) using \(h_{0},h_{1}\) as
+public keys. The receiver then decrypts one of the encryptions to recover either
+\(x_{0} \text{ or } x_{1}\)
+
+\begin{figure}[htbp!] 
+  \centering
+  \procedure{DH-based Protocol}{
+    \textbf{Sender} \> \> \textbf{Receiver}\\
+    (x_0, x_1 \in \{0,1\}) \> \> (s \in \{0,1\})\\
+    \> \> u \randomsample \mathbb{Z}n \\
+    \> \> h_s \gets g^u \\
+    \> \sendmessageleft*{h_0, h_1} \> h_{1 - s} \gets h/g^u \\
+    u_0, u_1 \randomsample \mathbb{Z}_n \> \> \\
+    (A_0, B_0) \gets (g^{u_0}, h_0^{u_0}g^{x_0}) \> \> \\
+    (A_1, B_1) \gets (g^{u_1}, h_1^{u_1}g^{x_1}) \> \sendmessageright*{(A_0, B_0), (A_1, B_1)} \> x_s \gets \log_g{(B_s/A_s^u)} \\
+  }
+  \caption{OT protocol based on DH}
+  \label{fig:DH21OT}
+\end{figure}
+
+Efficient implementations of Oblivious Transfer can be found in
+\cite{naor2001efficient35}. The techniques found in \cite{ishai2003extending24}
+can reduce a large number of OT protocol executions to \(\lambda\), where
+\(\lambda\) is the security parameter. In this thesis, we propose a new OT
+technique to be used with lattice-based cryptosystems. The technique can be used
+together with the garbled circuit protocol discussed earlier. The problem can be
+stated as follows: Given a BGV ciphertext of a bit selection \(h_{i}\):
+\(\enc{h_{i}}\), the server computes and returns a BGV encryption of the
+corresponding key selected by the bit. We observe that the following homomorphic
+operations will satisfy such a requirement:
+\[
+\enc{K_{i}^{j}} = \enc{h_{i}^{j}} \cdot \enc{K_{i}^{1}} + (1 - \enc{h_{i}^{j}}) \cdot \enc{K_{i}^{0}}
+\]
+where \(K_{i}^{0}, K_{i}^{1}\) are the \textit{labels} corresponding to the wire
+inputs 0 or 1. The function includes one level of homomorphic multiplication, two
+additions and one multiplication with a constant. This approach is simple enough
+and it is secure against a \textit{malicious client} model in our context because
+the client needs to prove that he actually encrypted \(\enc{h_{i}}\)
+correctly already. Other applications of this OT should take into account that a
+malicious client can encrypt \(\enc{h_{i}}\) incorrectly to obtain information about
+\(K_{i}^{0}\) and/or \(K_{i}^{1}\).
+
+The other issue that we have to be careful about is \textit{Circuit Privacy}:
+for a multi-factor attacker able to access the secret key but not the
+biometric template, it is possible to obtain information about the randomness of the
+operation. The randomness of the above operation is of the form
+\(K_{i}^{0} + (K_{i}^{1} - K_{i}^{0})r_{0}\), which is correlated to both
+keys. Again, we can mask the randomness of this leakage similarly to what we did
+in the second variant of the protocol. By a similar analysis, we can still show
+that computing the HD cannot be achieved with a significant level of probability (the privacy
+security requirement related to what the client sees is indistinguishable
+from the probability he has to compute the HD, which is not much more than random
+guessing).
+
+% \begin{figure}[h!]
+%   \centering
+%   \begin{equation*}
+%     \begin{array}{c c c}
+%       \text{\textbf{Sender}} & & \text{\textbf{Receiver}} \\
+%       \\
+%       (x_{0}, x_{1} \in \{0,1\}) & & (s \in \{0,1\}) \\
+%                              & & u \randomsample \mathbb{Z}_{n}\\
+%                              & & h_{s} \gets g^{u}\\
+%                              & & h_{1-s} \gets h/g^{u}\\
+%                              & \xleftarrow{h_{0}, h_{1}} & \\
+%       u_{0}, u_{1} \randomsample \mathbb{Z}_{n} & & \\
+%       (A_{0}, B_{0}) \gets (g^{u_{0}}, h_{0}^{u_{0}}g^{x_{0}}) & & \\
+%       (A_{1}, B_{1}) \gets (g^{u_{1}}, h_{1}^{u_{1}}g^{x_{1}}) & & \\
+%                              & \xrightarrow{(A_{0}, B_{0}),(A_{1}, B_{1})} & \\
+%       & & x_{s} \gets \log_{g}(B_{s}/A_{s}^{u})
+%     \end{array}
+%   \end{equation*}
+%   \caption{OT protocol based on DH}
+%   \label{fig:DH21OT}
+% \end{figure}
 
 
 
@@ -1118,146 +1059,308 @@ non-XOR gates.
 %   \label{fig:fourthProtocol}
 % \end{figure}
 
-\subsection{The Garbled Circuit and Oblivious Transfer}
-We use a standard substractor circuit for the operation \(HD = HD' - r\). Given a 2
-n-bit bitstring, the circuit is built from 1 half-substractor and \(n-1\)
-full-substractors as in Figure \ref{fig:substractor}
 
-\begin{figure}[htbp!] 
-  \centering    
-  \includegraphics[width=1.0\textwidth]{Chapter7/Figs/Raster/subCircuit}
-  \caption{Substractor Circuit}
-  \label{fig:substractor}
-\end{figure}
+% \section{Related Work}
+% \label{sec:chap7RelatedWorks}
 
-Where a half-substractor is built from 1 XOR gate and 1 AND gate, a full-substractor is built from 2 half-substractors and 1 OR gate (Figure \ref{fig:fullSubstractor})
 
-\begin{figure}[htbp!] 
-  \centering    
-  \includegraphics[width=1.0\textwidth]{Chapter7/Figs/Raster/fullSubstractor}
-  \caption{Half-substractor and Full-substractor}
-  \label{fig:fullSubstractor}
-\end{figure}
 
-In our context, let \(l\) be the bit length of the HD' and r (\(l\) is
-typically 10-12 bits for 1024-2048 bits biometrics data), which makes the number of substractor logic gates equal to
-\(5l\). The comparision circuit no longer needs 
-to output 3 results (as standard circuits would: either A > B, A < B
-or A = B). Our aim is just to check whether \(HD' - r < \tau\), so we simply need to
-have l NAND gates plus \(l-1\) XOR gates at hand for the comparsion circuit. Figure \ref{fig:comparisionCircuit} shows an example of such a configuration
-\begin{figure}[htbp!] 
-  \centering    
-  \includegraphics[width=1.0\textwidth]{Chapter7/Figs/Raster/comparisionCircuit}
-  \caption{Comparator Circuit}
-  \label{fig:comparisionCircuit}
-\end{figure}
+% Consider the following situation:  How can he achieve that?
+% Suppose that the plaintext \(P\) is encoded as coefficients of a polynomial, or
+% specifically, \(P\) can be an element of the ring \(R_{2}\), where
+% \(R_{2} = \frac{\mathbb{Z}_{2}[x]}{x^{n} + 1}\), this ring has been used by many
+% RLWE based cryptosystems lately. One solution can be to apply the Zero Knowlege
+% Proof technique. This is however a costly choice. There are mainly two
+% approaches for ZKP, the Schnorr's based protocol,
+% e.g. \cite{benhamouda2014better} or a Stern's based protocol such as
+% \cite{stern1993new} or \cite{ling2013improved}. The first approach has
+% limitations on the norm of the secret it can prove and cannot be used to prove
+% the knowledge of binary messages with norm 2. The second approach can prove
+% binary messages but it has a very high communication cost due to a roundness
+% error equaling \(2/3\).
+% \subsection{ZKP and $\sum$-Protocol}
+% \label{sub:zkp_and_sum_protocol}
+% A Zero-Knowledge Proof of Knowledge (ZKPoK) is a two party protocol between a
+% Prover $P$ and a Verifier $V$. The protocol allows $P$ to convince $V$ that it
+% knows some secret without revealing anything about the secret. We refer readers
+% to \cite{bellare1992defining} for formal definition of the original ZKPoK. 
 
-\paragraph{Garbled Circuit preparation}
-We denote \(GC\) to be the garbled circuit prepared by the server. The inputs to
-the circuit include the server's \(GC_{r}\) and the client's \(GC_{h}\), which
-are the cryptographic key \textit{labels} corresponding to the server's input
-\(r\) and to the client's input \(HD'\) to the function \textit{CompareHD}. The main
-function of the circuit is, first, to substract \(HD' - r = HD\) then compare
-\(HD \stackrel{?}{<} \tau\), where \(\tau\) is the constant value of the
-threshold required to decide the authentication result, which can be built into the
-circuit itself. We note that either the server or the client can play the role of
-setting up the garbled circuit; in our work, we let the server take this role
-(Figure \ref{fig:fourthProtocol} - Step 5, 6, 7, 8): as we have
-been working on a \textit{semi-honest} server modeal and a \textit{malicious }
-client, this will save us one proof to assess that the circuit is generated
-correctly.
-
-As described before in Section \ref{sec:yao-garbled-circuit}, the server garbles
-the circuit \(GC\) and sends the result to the client together with its \textit{labels} of
-\(r\), which are \(K_{r_{i}}^{j}\). Next, the client uses our OT technique
-(\missref{}) to select the correct \textit{labels} of \(HD'\): the first part of
-the OT will ensure that the client will get back the encryptions
-\(\enc{K_{h_{i}}^{j}}\). The second part of the OT makes sure that the protocol
-is secure against \textit{malicious} clients: it needs to prove that it
-decrypted and decomposed \(\enc{\mathbf{HD'}}\) correctly (Figure
-\ref{fig:fourthProtocol} - Step 12,13). In other words, the client wants to
-prove that the encryptions \(\enc{h_{i}}\) it sent are actually the
-encryptions of the bits of \(HD'_{i}\). Recall that the server still has
-\(\enc{\mathbf{HD'}}\), so the proof can be a homomorphical check of
-\(\enc{\mathbf{HD'}} - \sum{2^{i}\enc{h_{i}}} = \enc{0}\). This is a part of
-the proof we carried out in the third variant of the protocol \missref{}. However, in
-order to allow this proof to support homomorphic operations, we need to use the
-same encryption scheme for the OT protocol, in other words, we need an OT
-protocol based on BGV.
-
-We note that inside the garbled circuit, AES is normally used to encrypt the
-\textit{labels}, this encryption is a part of the garbled circuit and not
-related to the OT protocol we just described, and can still be used independently
-to ensure the performance of circuit evaluations. Next, we discuss an approach
-to design an OT protocol compatible with the BGV cryptosystem
-
-\paragraph{BGV-based OT}
-\todo{review PVW08, oblivious transfer LWE}
-
-This section describes a technique to use BGV homomorphic operations to
-implement an OT protocol. The technique can be used together with the garbled
-circuit protocol discussed earlier. The problem can be stated as follows: Given
-a BGV ciphertext of a bit selection \(h_{i}\): \(\enc{h_{i}}\), the server
-computes and returns a BGV encryption of the corresponding key selected by the
-bit. We observe that the following homomorphic operations will satisfy such a
-requirement:
-\[
-\enc{K_{i}^{j}} = \enc{h_{i}^{j}} \cdot \enc{K_{i}^{1}} + (1 - \enc{h_{i}^{j}}) \cdot \enc{K_{i}^{0}}
-\]
-where \(K_{i}^{0}, K_{i}^{1}\) are the \textit{labels} corresponding to the wire
-inputs 0 or 1. The function includes one level of homomorphic multiplication, two
-additions and one multiplication with a constant. This approach is simple enough
-and it is secure against a \textit{malicious client} model in our context because
-the client needs to prove that he actually encrypted \(\enc{h_{i}}\)
-correctly already. Other applications of this OT should take into account that a
-malicious client can encrypt \(\enc{h_{i}}\) incorrectly to obtain information about
-\(K_{i}^{0}\) and/or \(K_{i}^{1}\).
-
-The other issue that we have to be careful about is \textit{Circuit Privacy}:
-for a multi-factor attacker able to access the secret key but not the
-biometric template, it is possible to obtain information about the randomness of the
-operation. The randomness of the above operation is of the form
-\(K_{i}^{0} + (K_{i}^{1} - K_{i}^{0})r_{0}\), which is correlated to both
-keys. Again, we can mask the randomness of this leakage similarly to what we did
-in the second variant of the protocol. By a similar analysis, we can still show
-that computing the HD cannot be achieved with a significant level of probability (the privacy
-security requirement related to what the client sees is indistinguishable
-from the probability he has to compute the HD, which is not much more than random
-guessing). This will be detailed in the security analysis \missref{}.
+% Notation: 
 
 
 
 
+% \subsection{Schnorr-based ZKP technique}
+% \label{sec:zero-knowledge-proof}
 
 
-\subsection{HD Computation Homomorphically - BGV}
-Given two bistring \(\mathbf{a}\) and \(\mathbf{b}\) of length \(n\) (for \(n\)
-being a power of 2), the Hamming Distance \(HD_{(\mathbf{a,b})}\) can be computed
-by adding up and rotating all the bits of \(\mathbf{a} \xor \mathbf{b}\)
-(Algorithm \ref{alg:hd-comp-homom}). Provided that the BGV cryptosystem in use
-supports SIMD operations, the algorithm can run with homomorphic addition and
-multiplication. ($\triangle$ denotes component-wise homomorphic multiplication)
+% \begin{figure}[htbp!] 
+%   \centering \procedure{AND-Composition of Benhamouda ZKP}{
+%     \textbf{Prover} \> \> \textbf{Verifier}\\
+%     \mathbf{r_s,r_{e_0},r'_{s},r'_{e_{0}}} \randomsample D_{\beta_0} \> \> \\
+%     \mathbf{r_e,r'_{e}} \randomsample D_{\beta} \> \> \\
+%     \mathbf{r_m,r'_{m}} \randomsample D_{t} \> \> \\
+%     \mathbf{t_c} = \mathbf{-c_1r_s} + t\mathbf{r_e + r_m} \> \> \\
+%     \mathbf{t_k} = \mathbf{-p_1r_s} - t\mathbf{r_{e_0}} \> \> \\
+%     \mathbf{t'_c} = \mathbf{-c_1r'_s} + t\mathbf{r'_e + r'_m} \> \> \\
+%     \mathbf{t'_k} = \mathbf{-p_1r'_s} - t\mathbf{r'_{e_0}} \> \> \\
+%     (c_{aux}, d_{aux}) = aCommit(\mathbf{t_c,t_k}) \> \> \\
+%     (c'_{aux}, d'_{aux}) = aCommit(\mathbf{t'_c,t'_k}) \>
+%     \sendmessageright*{c_{aux},c'_{aux}} \> \\
+%     \> \> c \randomsample \mathcal{C} = \left\{ 0,\dots, 2n -1  \right\}\\
+%     \>  \sendmessageleft*{c} \> \\
+%     \mathbf{s_s = r_s + x^cs},\mathbf{s'_s = r'_s + x^cs} \> \> \\
+%     \mathbf{s_e = r_e + x^ce},\mathbf{s'_e = r'_e + x^ce} \> \> \\
+%     \mathbf{s_m = r_m + x^cm},\mathbf{s'_m = r'_m + x^cm} \> \> \\
+%     \mathbf{s_{e_0} = r_{e_0} + x^ce_0},\mathbf{s'_{e_0} = r'_{e_0} + x^ce_0} \> \> \\
+%     \> \sendmessageright{top=$d_{aux}$, bottom=$d'_{aux}$} \> \\
+%     \> \> \mathbf{x^cc_0} + \mathbf{t_c} \stackrel{?}{=} -\mathbf{c_1s_s} + t\mathbf{s_e} + \mathbf{s_m}\\
+%     \> \> \mathbf{x^cc_0} + \mathbf{t'_c} \stackrel{?}{=} -\mathbf{c_1s'_s} + t\mathbf{s'_e} + \mathbf{s'_m}\\
+%     \> \> \mathbf{x^cp_0} + \mathbf{t_k} \stackrel{?}{=} -\mathbf{p_1s_s} - t\mathbf{s_{e_0}}\\
+%     \> \> \mathbf{x^cp_0} + \mathbf{t'_k} \stackrel{?}{=} -\mathbf{p_1s'_s} - t\mathbf{s'_{e_0}}\\
+%     \> \> aCOpen(\mathbf{t_c, t_k}, c_{aux}, d_{aux}) \stackrel{?}{=} accept \\
+%     \> \> aCOpen(\mathbf{t'_c, t'_k}, c'_{aux}, d'_{aux}) \stackrel{?}{=} accept \\
+%     \> \> \norm{s_s}, \norm{s_{e_0}},\norm{s'_s}, \norm{s'_{e_0}} \leq 2\beta_0 \\
+%     \> \> \norm{s_e},\norm{s'_e}  \leq 2\beta \\
+%     \> \> \norm{s_m},\norm{s'_m} \leq 2t
+%   }
+%   \caption{AND-Composition for ZKP-BV}
+%   \label{fig:belhamoudaProtocolAND}
+% \end{figure}
 
-\begin{algorithm}
-\caption{HD computation}\label{alg:hd-comp-homom}
-\begin{algorithmic}[1]
-  \Procedure{HDBGV}{$\mathbf{a,b}$}
-  \State $\mathbf{c} \gets \mathbf{a} + \mathbf{b} - 2 \mathbf{a} \triangle \mathbf{b}$
-  \State let $n \gets length(\mathbf{a})$
+  % \begin{figure}[h!]
+  %   \centering
+  %   \begin{equation*}
+  %     \begin{array}{c c c}
+  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+  %       \\
+  %       \mathbf{r_s,r_{e_0},r'_{s},r'_{e_{0}}} \randomsample D_{\beta_0} & & \\
+  %       \mathbf{r_e,r'_{e}} \randomsample D_{\beta} & & \\
+  %       \mathbf{r_m,r'_{m}} \randomsample D_{t} & & \\
+  %       \mathbf{t_c} = \mathbf{-c_1r_s} + t\mathbf{r_e + r_m} & & \\
+  %       \mathbf{t_k} = \mathbf{-p_1r_s} - t\mathbf{r_{e_0}} & & \\
+  %       \mathbf{t'_c} = \mathbf{-c_1r'_s} + t\mathbf{r'_e + r'_m} & & \\
+  %       \mathbf{t'_k} = \mathbf{-p_1r'_s} - t\mathbf{r'_{e_0}} & & \\
+  %       (c_{aux}, d_{aux}) = aCommit(\mathbf{t_c,t_k}) & & \\
+  %       (c'_{aux}, d'_{aux}) = aCommit(\mathbf{t'_c,t'_k}) &
+  %                                                        \xrightarrow{\hspace{1em}c_{aux},c'_{aux}\hspace{1em}} & \\
+  %                              & & c \randomsample \mathcal{C} = \left\{ 0,\dots, 2n -1  \right\}\\
+  %                              &  \xleftarrow{\hspace{1em}c\hspace{1em}} & \\
+  %       \mathbf{s_s = r_s + x^cs},\mathbf{s'_s = r'_s + x^cs} & & \\
+  %       \mathbf{s_e = r_e + x^ce},\mathbf{s'_e = r'_e + x^ce} & & \\
+  %       \mathbf{s_m = r_m + x^cm},\mathbf{s'_m = r'_m + x^cm} & & \\
+  %       \mathbf{s_{e_0} = r_{e_0} + x^ce_0},\mathbf{s'_{e_0} = r'_{e_0} + x^ce_0} & & \\
+  %                              & \xrightarrow[\hspace{1em}d'_{aux}, \mathbf{t'_c, t'_k, s'_s, s'_e, s'_m,
+  %                                s'_{e_0}}\hspace{1em}]{\hspace{1em}d_{aux}, \mathbf{t_c, t_k, s_s, s_e, s_m,
+  %                                s_{e_0}}\hspace{1em}} & \\
+  %                              & & \mathbf{x^cc_0} + \mathbf{t_c} \stackrel{?}{=} -\mathbf{c_1s_s} + t\mathbf{s_e} + \mathbf{s_m}\\
+  %                              & & \mathbf{x^cc_0} + \mathbf{t'_c} \stackrel{?}{=} -\mathbf{c_1s'_s} + t\mathbf{s'_e} + \mathbf{s'_m}\\
+  %                              & & \mathbf{x^cp_0} + \mathbf{t_k} \stackrel{?}{=} -\mathbf{p_1s_s} - t\mathbf{s_{e_0}}\\
+  %                              & & \mathbf{x^cp_0} + \mathbf{t'_k} \stackrel{?}{=} -\mathbf{p_1s'_s} - t\mathbf{s'_{e_0}}\\
+  %                              & & aCOpen(\mathbf{t_c, t_k}, c_{aux}, d_{aux}) \stackrel{?}{=} accept \\
+  %                              & & aCOpen(\mathbf{t'_c, t'_k}, c'_{aux}, d'_{aux}) \stackrel{?}{=} accept \\
+  %                              & & \norm{s_s}, \norm{s_{e_0}},\norm{s'_s}, \norm{s'_{e_0}} \leq 2\beta_0 \\
+  %                              & & \norm{s_e},\norm{s'_e}  \leq 2\beta \\
+  %                              & & \norm{s_m},\norm{s'_m} \leq 2t
+  %     \end{array}
+  %   \end{equation*}
+  %   \caption{AND-Composition for ZKP-BV }
+  %   \label{fig:belhamoudaProtocolAND}
+  % \end{figure}
+
+
+% \subsection{Combination of ZKP}
+% \label{sec:combination-zkp}
+% A $\sum-$protocol can be composed together to construct more complex relations.
+% There are several forms of decomposition such as AND, OR, NEQ, etc.  We describe
+% some forms of composition of the \(\sum-protocol\) that are used in our own protocol:
+% AND-composition, OR-composition. We first describe the generic \(\sum-\)protocol
+% and its combinations. The BV-ZKP (Figure \ref{fig:belhamoudaProtocol}) protocol
+% is an instance of such a protocol and the technique can be applied inherently.
+% \begin{description}
+% \item[$\sum-$protocol] The protocol is a generic 3-moves transaction between 2 parties
+%   \(Prover\) and \(Verifier\), it is used to prove (supporting zero-knowledge) a
+%   relation \(R(x,w)\), where \(x\) is the public parameter known by both
+%   parties and \(w\) is a witness known by the \(Prover\) only. The protocol's
+%   view is a set of 3 messages (Figure \ref{fig:sigmaProtocol}): the commitment
+%   \(c\) is a function of a random factor \(\rho\), the challenge \(ch\) is
+%   normally random, and the response \(r\) is a function computed from
+%   \(x, w, \rho, ch\). There are 2 extra algorithms for the \(\sum-\)protocol: a
+%   \(verify(r,ch,c)\) algorithm used by the \(Verifier\) in the last step to
+%   check the correctness of the proof result, and a simulator \(sim\), taking
+%   \(x\) and a random parameter \(\rho'\) as inputs, and and outputting a view
+%   \(\bar{c},\bar{ch},\bar{r}\) that is indistinguishable from the genuine view
+%   of the protocol.
+
+%   \begin{figure}[htbp!] 
+%     \centering \procedure{Sigma Protocol}{
+%       \textbf{Prover} \> \> \textbf{Verifier}\\
+%       \rho \randomsample random \> \> \\
+%       c \gets comm(\rho) \> \> \\
+%       \> \sendmessageright*{c} \> \\
+%       \> \> ch \randomsample random \\
+%       \> \sendmessageleft*{ch} \> \\
+%       r \gets resp(\rho,w,x,ch) \> \> \\
+%       \> \sendmessageright*{r} \> \\
+%       \> \> verify(r, ch, c)\\
+%     }
+%     \caption{Sigma Protocol}
+%     \label{fig:sigmaProtocol}
+%   \end{figure}
+%   % \begin{figure}[h!]
+%   %   \centering
+%   %   \begin{equation*}
+%   %     \begin{array}{c c c}
+%   %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+%   %       \\
+%   %       \rho \randomsample random & & \\
+%   %       c = comm(\rho) & & \\
+%   %                              & \xrightarrow{c} & \\
+%   %                              & & ch \randomsample random \\
+%   %                              & \xleftarrow{ch} & \\
+%   %       r = resp(\rho,w,x,ch) & & \\
+%   %                              & \xrightarrow{r} & \\
+%   %                              & & verify(r, ch, c)\\
+%   %     \end{array}
+%   %   \end{equation*}
+%   %   \caption{Sigma Protocol}
+%   %   \label{fig:sigmaProtocol}
+%   % \end{figure}
+% \end{description}
+
+
+% \begin{description}
+% \item[AND-COMPOSITION] Given two relations $R_1 = \left\{ (v_1,w_1) \right\}$
+%   and $R_2 = \left\{ (v_2, w_2) \right\}$ with the same challenge space, a
+%   $\sum$-Protocol of
+%   $R_1 \wedge R_2 = \left\{ (v_1, v_2, w_1, w_2): (v_1;w_1) \in R_1, (v_2,w_2)
+%     \in R_2\right\}$ can be obtained by running a $\sum$-Protocol for $R_1$ and
+%   a $\sum$-Protocol for $R_2$ in parallel, using a \emph{common} challenge.
+%   Figure \ref{fig:belhamoudaProtocolAND} is a concrete example combining 2 ZKP for BV.
   
-  \For{$i = 0,\dots,n-1$}
-  \State let $\mathbf{t} \gets rotate(\mathbf{c}, 2^{i})$
-  \State let $\mathbf{c} \gets add(\mathbf{c}, \mathbf{t})$
 
-  \EndFor
-  
-\State \textbf{return} $\mathbf{c}[0]$
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
+% \item[OR-Compostion] In this composition, given the $\sum-protocol$ for many  
+%   relations $R_{1}$,$R_{2}$,\dots,\(R_{n}\) the goal is to construct a protocol for the
+%   relation
+%   $R_{OR}(\vec{x}, w_{i}) $, where \(\exists i \leq n: R(x_{i},w_{i}) = 1\). The main reason behind this composition is that the verifier
+%   can let the prover use the simulator of the \(\sum-protocol\) for the
+%   relations \(R_{j}\), for which the prover does not know the witness.
+%   The verifier provides a single challenge \(c\)
+%   such that the prover can split that into challenges \(c_{1}, c_{2}, \dots, c_{n}\)
+%   provided that \(c_{i}\) satisfies a linear constraint in terms of \(c\),
+%   for example \(c = c_{1} \xor c_{2} \xor \dots \xor c_{n}\). The final OR-combination proof is
+%   obtained by composing one run of the \(\sum-protocol\) with other runs of the
+%   simulators for the \(\sum-protocol\). (Figure \ref{fig:OR-Combination})
 
-\section{Results}
-\label{sec:6results}
+%   \begin{figure}[htbp!] 
+%     \centering \procedure{OR Composition of ZKP}{
+%       \textbf{Prover} \> \> \textbf{Verifier}\\
+%       \rho_{i} \randomsample random \> \> \\
+%       c_{i} = comm(\rho_{i}) \> \> \\
+%       \text{For } j = 1,\dots,n \wedge j \neq i: \> \> \\
+%       \text{    } \rho_{j} \randomsample random; \> \> \\
+%       \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) \> \> \\
+%       \> \sendmessageright*{ch_j,c_{1}, c_{2}, \dots, c_{n}} \> \\
+%       \> \> ch \randomsample \mathbb{Z}_{n} \\
+%       \> \sendmessageleft*{ch} \> \\
+%       ch_{i} = ch - \sum_{j \neq i}{ch_{j}} \> \> \\
+%       r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) \> \> \\
+%       \> \sendmessageright*{r_{1}, r_{2}, \dots, r_{n}} \> \\
+%       \> \> \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
+%       \> \> ch = \sum_{i \in [n]}ch_{i}\\
+%     }
+%     \caption{OR Composition of ZKP}
+%     \label{fig:OR-Composition}
+%   \end{figure}
+  % \begin{figure}[h!]
+  %   \centering
+  %   \begin{equation*}
+  %     \begin{array}{c c c}
+  %       \text{\textbf{Prover}} & & \text{\textbf{Verifier}} \\
+  %       \\
+  %       \rho_{i} \randomsample random & & \\
+  %       c_{i} = comm(\rho_{i}) & & \\
+  %       \text{For } j = 1,\dots,n \wedge j \neq i: & & \\
+  %       \text{    } \rho_{j} \randomsample random; & & \\
+  %       \text{    } (c_{j}, ch_{j}, r_{j}) \gets ZKPSim(\rho_{j}, x_{j}) & & \\
+  %                              & \xrightarrow[ch_{j}]{c_{1}, c_{2}, \dots, c_{n}} & \\
+  %                              & & ch \randomsample \mathbb{Z}_{n} \\
+  %                              & \xleftarrow{ch} & \\
+  %       ch_{i} = ch - \sum_{j \neq i}{ch_{j}} & & \\
+  %       r_{i} = resp(\rho_{i}, w_{i}, x_{i}, ch_{i}) & & \\
+  %                              & \xrightarrow{r_{1}, r_{2}, \dots, r_{n}} & \\
+  %                              & & \forall i \in [n], ver(r_{i}, ch_{i}, c_{i}) = 1 \\
+  %                              & & ch = \sum_{i \in [n]}ch_{i}\\
+  %     \end{array}
+  %   \end{equation*}
+  %   \caption{}
+  %   \label{fig:OR-Combination}
+  % \end{figure}
+\end{description}
+
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:
+
+% \subsection*{Summary of previous work}
+% \begin{description}
+% \item Lyubashevsky's proof systems (\cite{lyubashevsky2008lattice},
+%   \cite{lyubashevsky2009fiat}): This system is similar to the classical Schnorr's
+%   ZKP system, the main advantage is its communication size efficiency. However,
+%   this approach is not zero-knowledge (it is only proved to be witness
+%  -indistinguishable). Moreover, there is a completeness error in each round, and
+%   lastly, the extraction gap is $O(\sqrt{n})$.
+
+%   A quick discussion on extraction gaps: we refer to an extraction gap as a security
+%   parameter of ZKP systems for ISIS problem. Generally, we say that a proof accepts
+%   an extraction gap $\gamma$ ($\gamma > 1$) if the knowledge extractor of the
+%   protocol can extract a vector $\vec{v}$ such that
+%   $\norminf{v} = \gamma \norminf{w}$, where $\norminf{w}$ is a valid witness
+%   from the \emph{Prover}. Ideally, when $\gamma = 1$, one can use the extractor
+%   to solve the underlying ISIS instance. In other words, ZKP with $\gamma = 1$
+%   is strongly secure, as breaking it is at least as hard as solving the
+%   underlying problem. When $\gamma > 1$, the soundness of the proof has to rely
+%   on a stronger hardness assumption of certain potentially easier problems is hard
+%   to solve.
+% \item Micciancio-Vadhan proof system \cite{micciancio2003statistical}: This
+%   protocol provides ZKP for the GapCVP problem, but it can be adapted to prove the ISIS
+%   relation: Let $\mathbf{B}$ be a basis of the perp lattice
+%   $\Lambda_q^\bot(\mathbf{A}) = \{\mathbf{x} \in \mathbb{Z}^m: \mathbf{A.x = 0}\
+%   \mod \ q\}$.  and $\mathbf{t} \in \mathbb{Z}^m: \mathbf{A.t = y}\ \mod \ q$
+%   ($\mathbf{B}$ and $\mathbf{t}$ can be computed efficiently), then run the ZKP
+%   protocol for $GapCVP_\gamma^\infty$ with public parameters
+%   $(\mathbf{B,t},\beta$). The $Prover$'s witness is $\mathbf{e = t - x}$. Recall
+%   that The knowledge extractor of the protocol can output a vector
+%   $\mathbf{e'} \in \Lambda_q^\bot( \mathbf{A}$ such that
+%   $\norminf{\mathbf{ t - e'}} \leq g.\beta$ for some $g \geq O(\sqrt[]
+%   {m}$). This implies a perfect ZKPoPK with extraction gap $O(\sqrt[]{m})$.
+% \item Stern's protocol [\todo{citeStern}] and extension: The original Stern's
+%   proof worked on the SD relation \todo{SD relation}. This ZKP does not have any
+%   completeness error and there is no extraction gap, i.e., $\gamma =
+%   1$. Extensions of this work include KTX [137,85], associated with the
+%   following relation \todo{ktxRelation}.
+
+%   The work of \cite{ling2013improved} provides a proof for the ISIS relation
+%   \todo{ISIS relation}.  Stern's based techniques inherently do not have
+%   extraction gaps nor completeness errors, their communication efficiency is:
+%   \todo{missing figure}. Our protocol will also be based on this technique, the
+%   enhancement being that it can prove different bounds of different elements in the
+%   $Prover$'s witness vector. Such improvement is important in ZKPoPK for
+%   lattice-based cryptosystems, especially in contexts where public key settings
+%   and homomorphic operations are used. The bounds of messages and errors can be
+%   largely different: for example, the original message can be binary while the
+%   noises' bounds increase according to the ladder of homomorphic operations.
+
+% \end{description}
+
+
+
+
 
 
 %%% Local Variables:
