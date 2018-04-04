@@ -137,7 +137,37 @@ The original Schnorr ZKP protocol \cite{schnorr1989efficient} used to prove know
 \label{fig:schnorrProtocol}
 \end{figure}
 
-The soundness property of Schnorr's protocol can be argued by assuming a prover is able to answer correctly at least two challenges $c$ and $c'$ (with $c \neq c'$) after commit to an announcement $t$, then he would be able to know the solution to the hard problem of discrete log $x = \log_{g}h$. Hence, intuitively, the prover can answer at most one challenge correctly, the probability of success is bounded by $1/n$, which can be negligibly small. The Zero Knowledge property (against semi honest Verifier) was proved by showing that the real conversation $\{(t,c,s): u,c \randomsample \mathbb{Z}_{n}; t \gets g^{u}; s \gets u + cx\}$ and the simulated conversation $\{(t,c,s): c, s \randomsample \mathbb{Z}_{n}; t \gets g^{s}h^{-c}\}$ are identical (each valid conversation $(t;c;s)$ occurs with probability $1/n^{2}$ in both distributions).
+The soundness property of Schnorr's protocol can be argued by assuming a prover
+is able to answer correctly at least two challenges $c$ and $c'$ (with
+$c \neq c'$) after commit to an announcement $t$, then he would be able to know
+the solution to the hard problem of discrete log $x = \log_{g}h$. Hence,
+intuitively, the prover can answer at most one challenge correctly, the
+probability of success is bounded by $1/n$, which can be negligibly small. The
+Zero Knowledge property (against semi honest Verifier) was proved by showing
+that the real conversation
+$\{(t,c,s): u,c \randomsample \mathbb{Z}_{n}; t \gets g^{u}; s \gets u + cx\}$
+and the simulated conversation
+$\{(t,c,s): c, s \randomsample \mathbb{Z}_{n}; t \gets g^{s}h^{-c}\}$ are
+identical (each valid conversation $(t;c;s)$ occurs with probability $1/n^{2}$
+in both distributions).
+
+In the work of \cite{benhamouda2014better}, the authors proposed a variant of
+such technique to prove LWE-secrets (Figure \ref{fig:benhamoudaProtocol} )
+\begin{figure}[htbp!] 
+\centering \procedure{Benhamouda Protocol for LWE}{
+  \textbf{Prover} \> \> \textbf{Verifier}\\
+  \mathbf{r}_s, \mathbf{r}_e \randomsample D_{\bigO{\sqrt{n}\alpha}}
+}
+\caption{Proof of knowledge of LWE secrets}
+\label{fig:benhamoudaProtocol}
+\end{figure}
+
+$s, e$ such that $y = as + e$
+
+\section{Related Work}
+\label{sec:chap7RelatedWorks}
+
+
 
 Consider the following situation:  How can he achieve that?
 Suppose that the plaintext \(P\) is encoded as coefficients of a polynomial, or
