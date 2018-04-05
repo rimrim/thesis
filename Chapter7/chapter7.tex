@@ -378,7 +378,7 @@ It has been shown in the previous section that we can replace the Stern-based
 ZKP technique with Schnorr-based one and save us many rounds of communication
 due to the soundness error decreasing from $2/3$ to $1/n$. However, the new
 proof technique could not prove that the encrypted message was in binary format:
-The proof shown the noises are small ($\mathbf{s}_{e} \leq 2\beta$) and the
+The proof only shown the noises are small ($\mathbf{s}_{e} \leq 2\beta$) and the
 message is small ($\mathbf{s}_{m} \leq 2t$). To solve this problem, we include
 one homomorphic operation after the $Client$ was able to pass the proof. The operation works as follows.
 
@@ -1031,7 +1031,7 @@ for the HD computation operation: we need to rotate 10 times and swap 1 time to
 compute $HD$, each operation needs 1 key switch to transform the result back to
 the original ciphertext format (2 ring elements) before the next homomorphic
 operation. The total key switch size needed was $2*n*\log q*11$, which is
-approximately 389 MB in our setting. Considering the privacy features provide,
+approximately 389 MB in our setting. Considering the privacy features provided,
 we believe such one time set up cost is acceptable. We conclude the chapter with
 the comparison of the 4 protocols in the thesis
 

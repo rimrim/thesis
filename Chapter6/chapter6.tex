@@ -866,12 +866,28 @@ In this game, since the only information on $X_k$ comes via the $Verify(X_k,Y_k^
 
 \section{Conclusion}
 \label{sec:evaluation}
-We quickly notice that the main bottle neck of this protocol is the communication size: 4 different Zero-Knowledge Proofs are needed for one authentication. With the parameters set used previously ($n=2048, q \approxeq 2^{70}, t = 2048, \sigma=8$), the communication size ($\approx 84MB$) will not satisfy the practical usage requirement. However, the contributions of this chapter maybe of independent interest as building blocks for other secure computation protocols based on the BV SWHE scheme:
+We quickly notice that the main bottle neck of this protocol is the
+communication size: 4 different Zero-Knowledge Proofs are needed for one
+authentication. With the parameters set used previously
+($n=2048, q \approxeq 2^{70}, t = 2048, \sigma=8$), the communication size for
+each authentication ($\approx 84MB$) will not satisfy the practical usage
+requirement. However, the contributions of this chapter maybe of independent
+interest as building blocks for other secure computation protocols based on the
+BV SWHE scheme:
 \begin{itemize}
-\item A ZKP technique to prove the correctness of re-encryption of a binary-encoded plaintext (useful for efficient homomorphic addition/multiplication arithmetic operation) as a unary-encoded plaintext (useful for efficient homomorphic comparison operations).
-\item Correctness of re-encryption of a coefficient-packed plaintext slot vector into an unpacked single slot plaintext
+\item A ZKP technique to prove the correctness of re-encryption of a
+  binary-encoded plaintext (useful for efficient homomorphic
+  addition/multiplication arithmetic operation) as a unary-encoded plaintext
+  (useful for efficient homomorphic comparison operations).
+\item Correctness of re-encryption of a coefficient-packed plaintext slot vector
+  into an unpacked single slot plaintext
 \end{itemize}
-In the next chapter, we discuss different techniques used to remove this communication overhead: we replace the Stern-based ZKP technique which require many rounds of proof for security with Schnoor-based technique (only 1 round required). Other cryptographic tools including Garbled Circuit and Oblivious Transfer will be used in the HD comparision step to avoid another proof during authentication.
+In the next chapter, we discuss different techniques used to remove this
+communication overhead: we replace the Stern-based ZKP technique which require
+many rounds of proof for security with Schnoor-based technique (only 1 round
+required). Other cryptographic tools including Garbled Circuit and Oblivious
+Transfer will be used in the HD comparision step to avoid another proof during
+authentication.
 
 
 
