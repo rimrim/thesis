@@ -10,50 +10,53 @@
 
 % ***** Main ****
 
-Throughout the thesis, we have developed different solutions to privacy
+Throughout this thesis, we have developed different solutions to privacy
 preserving biometrics authentication. Starting from a protocol with an inspiring
-technique of ciphertext packing but lacking of protection against malicious
-client model, we constructed a Zero Knowledge Proof technique to provide
-solution to the problem. The technique also help the protocol not to rely on any
+technique of ciphertext packing but lacking of protection against a malicious
+client model, we constructed a Zero Knowledge Proof technique to provide a
+solution to the problem. The technique also causes the protocol not to rely on any
 trusted third party to keep the client's secret key for decrypting results from
-homomorphic operations. In the next protocol, we discover that to fully support
+homomorphic operations. Discussing the next protocol, we noted that, to fully support
 multi-factor security, especially in the biometrics authentication context, the
-circuit privacy problem needs to be solved efficiently. We proposed Renyi
-Divergence technique in the security analysis so that the protocol can preserve
+circuit privacy problem needs to be solved efficiently. We proposed to enforce the Renyi
+Divergence technique in the security analysis, so that the protocol can preserve
 its security level while still keeping the parameter settings within practical
-threshold, specifically, we showed that the noise of results from homomorphic
+thresholds. Specifically, we showed that the noise within the results of homomorphic
 operations can be covered by not-too-large masks to add extra security to the
 ciphertext result. The third variant was our first attempt to do all the
-essential operations homomorphically: in addition to computing the Hamming
+essential operations homomorphically: besides computing the Hamming
 Distance, we also wanted to compare the ciphertext result with some threshold
-value, under the malicious client model. Although the results were not practical
+value, under the malicious client mode hypothesisl. Although the results were not practical
 enough in terms of communication size, we learned different techniques to
 balance the tradeoffs between communication and computation. In our last
-version, we proposed another alternative that cover all the weakness of the
-previous protocol. The solution include combinations of many advanced
+version, we proposed another alternative to address all the weakness of the
+previous protocols. The solution includes the combinations of many advanced
 cryptographic techniques: Homomorphic Encryption, Zero Knowledge Proof, Garbled
 Circuit and Oblivious Transfer. However, we still notice a significant one time
 setup cost.
 
 Some of the techniques developed in this thesis can be used to construct other
-privacy-preserving protocol. For example, the decomposition technique used to
+privacy-preserving protocols. For example, the decomposition technique used to
 construct Stern-based ZKP can be applied to contexts where balancing
 communication/computation is neccessary, or the Renyi Divergence security
-analysis technique can be applied to lattice-based cryptosystems that required
-circuit privacy and keeping the parameters to be in practical thresholds. The
+analysis technique can be applied to lattice-based cryptosystems requiring
+circuit privacy and keeping the parameters within practical thresholds. The
 new challenge-response and Oblivious Transfer submodules used in the last
-protocol can be used in different Homomorphic Cryptosystems in other context.
+protocol can be used in different Homomorphic Cryptosystems in various contexts.
 
-There are open questions with respect to the schemes we have constructed
+There are open questions with respect to the schemes we have put forward:
 \begin{itemize}
-\item We obtain security against malicious client model and assume the server is
-  \textit{semi-honest}, designing a practical scheme that is also secure against
-  malicious server is an interesting open question.
+\item We obtain security against a malicious client model and assume the server is
+  \textit{semi-honest}. Designing a practical scheme that is also secure against a
+  malicious server is an interesting open challenge.
 \item We mainly used Hamming Distance to measure the difference between the
-  registered and queried templates. There are lots of other approach
-  \cite{jain201650} that promise better False Acceptance Rate and False
-  Rejection Rate. The applicability of our techniques to such methods is left as
-  future works
+  registered and queried templates. There are many other approaches
+  \cite{jain201650} yielding a better False Acceptance Rate and False
+  Rejection Rate. The applicability of our technique to such methods is left for
+  future work
+\item The operations of computing and comparing different types of distances can be
+applied to contexts unrelated to biometric authentication. 
+\item Further optimizations to reduce computation time or communication size, such as the composition of the Zero Knowledge Proof (AND, OR, EQ) can be investigated to improve the practical implementation of protocols.
 \end{itemize}
 
 %%% Local Variables:

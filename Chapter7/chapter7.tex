@@ -12,11 +12,11 @@
 
 \section{Introduction}
 \label{sec:6intro}
-In the last chapter, we developed a two-parties authentication protocol that
+In the last chapter, we develop a two-parties authentication protocol that
 proves secure against a malicious client and does not leak any information to the
-server (the main difference with the second protocol being that the server learns the
-value of the distance only). The final variant aims to reduce both communication
-size and computation time of the third variant, while providing all the recommended security
+server (the main difference with the second protocol being that the server is only able to acquire the
+value of the Hamming Distance). This final variant aims to reduce both the communication
+size and the computation time, while providing all the recommended security
 features.
 \begin{description}
 \item[Reducing Communication Size] We observe that the main bottle neck of the
@@ -25,7 +25,7 @@ features.
   \begin{itemize}
   \item A Schnorr-based approach to replace the Stern-based one, to ensure that the
     noise in the ciphertext is small. This variant reduces the total
-    communication rounds from \(log_{2/3}(FAR)\) to only 1.
+    communication rounds from \(log_{2/3}(FAR)\) to just 1.
   \item A challenge-response protocol to prove the binary format of the
     plaintext.
     % The protocol can be summarized as follows:
@@ -41,19 +41,19 @@ features.
     % \cite{smart2014fully} can support this requirement).
   \end{itemize}
 \item[Reducing Computation Time.] By applying a new ciphertext packing
-  method, we can effectively change the way of computing Hamming Distance by
-  summing the bits of the XOR result of 2 bitstring instead of computing their
-  inner product. Therefore, enforcing this approach, we save the computation by performing
+  method, we can effectively change the way of computing the Hamming Distance by
+  summing up the bits of the XOR result of 2 bitstrings instead of computing their
+  inner product. Therefore, enforcing this approach, we lower the computation time by performing
   additions only (without any homomorphic multiplication). The cost of this change
   is a set of switching keys for homomorphic rotation operations, which are
   generated during the enrollment process. Additionally, we introduce the
   appplication of state-of-the-art \textit{Secure-Multiparty-Protocol}
   techniques, such as \textit{Garbled Circuit} and \textit{Oblivious Transfer} into
-  the lattice-based context, to further improve both of the computation time and
-  the communication size overhead from previous ZKP protocols.
+  the lattice-based context, to further improve both the computation time and
+  the communication size overhead implied by previous ZKP protocols.
 \end{description}
 This approach is practical because it moves a major part of the overhead to the
-one-time set up phase of the protocol (the enrollment stage). Our result shows
+one-time set up phase of the protocol (the enrollment stage). Our results show
 that the protocol can work efficiently during authentication stage. The
 technique maybe generalized to similar multi-stage protocols.
 
@@ -62,26 +62,26 @@ technique maybe generalized to similar multi-stage protocols.
 
 \subsection{The Schnorr-based ZKP}
 \label{sec:zkpschnorr}
-In the previous variants of the protocol, one critical module required to
+In the previous variants of the protocol, the critical module required to
 provide active security against a malicious client is the binary message format
 prover. Specifically, Alice sends a ciphertext \(C\) of a bitstring to Bob. Bob
-is supposed to use homomorphic encryption technique to process \(C\). Before
+is supposed to use a homomorphic encryption technique to process \(C\). Before
 doing so, Bob might want to make sure that \(C\) is an encryption of a bitstring
-and not something else. In the last chapter, we used Stern-based Zero Knowledge
-Proof technique for this step and it was showed that the communication size for
-this is large due to the soundness error $2/3$ for each round of the ZKP (The
-repeatation of many rounds of proof is required to obtain a specific security
-level). This chapter investigate the other alternative of ZKP that have better
+(and not something else). In the last chapter, we used the Stern-based Zero Knowledge
+Proof technique for this step, and it was shown that the communication size for
+this is large due to the soundness error $2/3$ for each round of the ZKP (the
+repetition of many proof-rounds being required to obtain a specific security
+level). This chapter investigates another alternative to ZKP, exhibiting a better
 soundness error of $1/n$ within one round of proof only, where $n$ is typically
 the required parameter: the Schnorr-based ZKP technique. We first recall some
-notations and concepts being used in the chapter.
+notation and concepts to be used in the chapter.
 
 We denote a language $\mathcal{L} \subseteq \left\{ 0,1 \right\}^* $ having a
 witness relationship
 $R \subseteq \left\{ 0,1 \right\}^* \times \left\{ 0,1 \right\}^*$ if
 $x \in \mathcal{L} \iff \exists (x,w) \in R$, where $w$ is a witness for
 $x \in \mathcal{L}$.We discuss a definition of the sigma protocol from
-\cite{benhamouda2014better} which can be adapted to suit the techniques we use
+\cite{benhamouda2014better}, which can be adapted to suit the techniques we use
 in our project.
 
 \begin{definition}
@@ -121,10 +121,10 @@ Second, a second language $\mathcal{L}$ is introduced, with witness relation
 $\mathcal{R} \subseteq \mathcal{R'}$: A prover knows a witness in $\mathcal{R}$
 is guaranteed privacy, but the verifier is only ensured that the $P$ only knows
 a witness for $\mathcal{R'}$. We refer to this as \emph{soundness gap}, if the
-gap is small enough, it implies security guarantee for higher level application
+gap is small enough, it implies security guarantee for higher level applications
 ($\mathcal{R} = \mathcal{R'}$ in the original protocol).
 
-The original Schnorr ZKP protocol \cite{schnorr1989efficient} used to prove knowledge of a discrete logarithm. It is described informally as in Figure \ref{fig:schnorrProtocol}
+The original Schnorr ZKP protocol \cite{schnorr1989efficient} used to prove knowledge of a discrete logarithm problem. It is described informally as in Figure \ref{fig:schnorrProtocol}
 
 \begin{figure}[htbp!] 
 \centering \procedure{Schnorr Protocol for DL}{
@@ -140,13 +140,13 @@ The original Schnorr ZKP protocol \cite{schnorr1989efficient} used to prove know
 \label{fig:schnorrProtocol}
 \end{figure}
 
-The soundness property of Schnorr's protocol can be argued by assuming a prover
+The soundness property of Schnorr's protocol can be argued by assuming that if a prover
 is able to answer correctly at least two challenges $c$ and $c'$ (with
-$c \neq c'$) after committing to an announcement $t$, then he would be able to know
-the solution to the hard problem of discrete log $x = \log_{g}h$. Hence,
-intuitively, the prover can answer at most one challenge correctly, the
+$c \neq c'$) after committing to an announcement $t$, then he would be able to infer
+a solution for the hard problem of discrete log $x = \log_{g}h$. Hence,
+intuitively, if the prover can answer at most one challenge correctly, the
 probability of success is bounded by $1/n$, which can be negligibly small. The
-Zero Knowledge property (against semi honest Verifier) was proved by showing
+Zero Knowledge property (against a semi-honest Verifier) was proved by showing
 that the real conversation
 $\{(t,c,s): u,c \randomsample \mathbb{Z}_{n}; t \gets g^{u}; s \gets u + cx\}$
 and the simulated conversation
@@ -175,7 +175,7 @@ such technique to prove LWE-secrets (Figure \ref{fig:benhamoudaProtocol} )
 
 Where $y = as + e$, and $s, e \randomsample D_{\alpha}$. In the protocol, the
 prover is able to convince a verifier that it knows short secrets for twice the
-public input (by short, we mean that $\norm{s},\norm{e} \leq \bigO{n\alpha}$).
+public input (in short, we mean that $\norm{s},\norm{e} \leq \bigO{n\alpha}$).
 We present an adaption of this ZKP protocol to prove the plaintext knowledge of
 BV cryptosystems. Recall that given $\mathbf{(sk,pk) = (s,(p_0,p_1))}$ where
 $\mathbf{s} \in \chi_{\beta_0}^n$, $\mathbf{p_0,p_1} \in R_q$ , a message
@@ -187,7 +187,7 @@ corresponds to the public key $\mathbf{(p_0,p_1)}$, i.e.,
 $\mathbf{p_0 = -p_1s} - t\mathbf{e_0}$, and the ciphertext $\mathbf{(c_0,c_1)}$
 is well-formed and encrypts the message $\mathbf{m}$, that is,
 $\mathbf{c_0 + c_1s} = \mathbf{m} + t\mathbf{e}$, with
-$\norminf{\mathbf{e}} \leq \beta$. Note that the protocol guarantees with $V$
+$\norminf{\mathbf{e}} \leq \beta$. Note that the protocol guarantees by $V$
 that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
 
 \begin{figure}[htbp!] 
@@ -375,12 +375,12 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
 \subsection{The challenge response operation}
 \label{sec:challengeResponse}
 It has been shown in the previous section that we can replace the Stern-based
-ZKP technique with Schnorr-based one and save us many rounds of communication
+ZKP technique with a Schnorr-based one and consequently save many rounds of communication,
 due to the soundness error decreasing from $2/3$ to $1/n$. However, the new
-proof technique could not prove that the encrypted message was in binary format:
-The proof only shown the noises are small ($\mathbf{s}_{e} \leq 2\beta$) and the
-message is small ($\mathbf{s}_{m} \leq 2t$). To solve this problem, we include
-one homomorphic operation after the $Client$ was able to pass the proof. The operation works as follows.
+proof technique would not be capable of proving that the encrypted message is in binary format:
+The proof only shows that the noise level is small ($\mathbf{s}_{e} \leq 2\beta$) and that the
+message is small ($\mathbf{s}_{m} \leq 2t$) as well. To solve this problem, we include
+one homomorphic operation, to be performed  after the $Client$ has passed the proof. The operation works as follows.
 
 \begin{enumerate}
 \item The server samples \(r_{1}, r_{2} \randomsample R_{q}\) and computes
@@ -391,32 +391,32 @@ one homomorphic operation after the $Client$ was able to pass the proof. The ope
 \end{enumerate}
 We remark that the first operation needs to be computed bit-wise, that means the
 packing technique we used in the previous protocol cannot be applied. In the
-next section, we discuss how CRT-packing method \cite{smart2014fully} is adapted
+next section, we discuss how CRT-packing method \cite{smart2014fully} can be adapted
 to compute the Hamming Distance of the registered and queried template.
 
 \section{The BGV Cryptosystem and CRT packing method}
 \label{sec:6bgv}
 
-We used BV cryptosystem \cite{brakerski2011fully} in the previous variants of
-the protocol where we only need 2 levels of multiplication on ciphertexts. In
-this variant, we do not use one inner product operation for HD computation but
-adding the bits of the bitstring, hence more multiplications on ciphertext
-during HD computation are needed. The BGV cryptosystem
+We used the BV cryptosystem \cite{brakerski2011fully} in the previous variants of
+the protocol, as only 2 levels of multiplication on ciphertexts were needed. In
+this variant, we do not use one inner product operation for HD computation,  but, instead, we 
+add the bits of the bitstring together. Hence, more operations on ciphertexts
+during HD computation will be needed. The BGV cryptosystem
 \cite{brakerski2014leveled} has a mechanism to control the noise after
-operations on ciphertexts. We hereby discuss a specific version of this
+operations on ciphertexts have been performed. We hereby discuss a specific version of this
 cryptosystem, where parameters are set to comply with the rings to be used in
 the protocol. The basic cryptosystem works as follows.
 
 \begin{description}
 \item[E.Setup] Let $\lambda$ be the security parameter that represents
-  $2^{\lambda}$ security level against known attack. Choose a modulus $q$ and a
+  $2^{\lambda}$ security level against known attacks. Choose a modulus $q$ and a
   noise distribution $\chi$ satisfying correctness and security requirements
   (discussed later). Let the ``dimension'' $n$ be a power of 2 and let
   $R = \mathbb{Z}[x] / (x^{n} + 1)$, let $params = (q, n, \chi)$
 \item[E.SecretKeyGen] Draw $\mathbf{s'} \randomsample \chi^{n}$. Set $sk = (1,\mathbf{s'}) \in R_{q}^{2}$
-\item[E.PublicKeyGen] Takes as input a secret key $sk$ and $params$. Draw
+\item[E.PublicKeyGen] Takes as its input a secret key $sk$ and $params$. Draw
   $\mathbf{a'} \in R_{q}$ and a vector $\mathbf{e} \in \chi^{n}$ and set
-  $\mathbf{b} \gets \mathbf{a's'} + 2\mathbf{e} \in R_{q}$. The we set
+  $\mathbf{b} \gets \mathbf{a's'} + 2\mathbf{e} \in R_{q}$. Then we set
   $\mathbf{A} = (\mathbf{b}, -\mathbf{a'}) \in R_{q}^{2}$. Let the public key
   $pk = \mathbf{A}$. Observe that $\mathbf{A} \cdot \mathbf{s} = 2\mathbf{e}$
 \item[E.Enc($params, pk, m$)] To encrypt a message $\mathbf{m} \in R_{2}$,
@@ -457,8 +457,8 @@ ZKPs overhead of the previous protocols.
   \(b(x) = b_{0} + b_{1}x + \dots + b_{n-1}x^{n-1}\), we denote \(\cdot\) to be
   the convolution multiplication and \(\triangle\) to be the component-wise
   multiplication of the two polynomials.
-\item[Introduction] One of the most important applications of Fast Fourier
-  Transform (FFT) is multiplication of large integers and polynomial
+\item[Introduction] One of the most important applications of the Fast Fourier
+  Transform (FFT) is the multiplication of large integers and polynomial
   multiplication (which is the cyclic convolution of two integer sequences). The
   last operation can be computed by applying the FFT to the sequences, then
   multiplying the result component-wise and applying the inverse FFT to the
@@ -466,7 +466,7 @@ ZKPs overhead of the previous protocols.
   \[
     a(x)\cdot b(x) = FFT^{-1}(FFT(a(x)) \triangle FFT(b(x)))
   \]
-s  When the coefficients are elements of a finite field, the FFT is called the
+When the coefficients are elements of a finite field, the FFT is called the
   Number Theoretic Transform (NTT). We recall the definition of NTT: Given the
   parameters of our context, where \(n\) is a power of 2 and \(t\) is a prime
   with \(t = 1 \mod 2n\), let
@@ -631,7 +631,7 @@ either the coefficient or the NTT representation of \(a(x)\).
   if \(y_{j} = 1\). In our context, we can take
   \(x_{j} = 2^{0}, 2^{1}, \dots, 2^{\log n/2}\) and \(y_{j} = 0\) to add up the
   bits of each half, then we swap the halves by setting \(x_{j} = 0\) and
-  \(y_{j} = 1\) to add up all the bits and get the final value of Hamming
+  \(y_{j} = 1\) to add up all the bits and get the final value of the Hamming
   Distance.
   
   For ciphertexts that result from operations on polynomials, rotations can be mapped one by one and then added or multiplied:
@@ -646,13 +646,13 @@ Therefore, a ciphertext of the form
 and \(\mathbf{m}\) before adding up the results.
 \end{description}
 
-\subsection{HD Computation Homomorphically and Key Switching}
+\subsection{HD Homomorphic Computation  and Key Switching}
 Given two bistring \(\mathbf{a}\) and \(\mathbf{b}\) of length \(n\) (for \(n\)
 being a power of 2), and the $rotate$ function discussed above, the Hamming
 Distance \(HD_{(\mathbf{a,b})}\) can be computed by first rotating and adding the bits of \(\mathbf{a} + \mathbf{b} - 2\mathbf{ab}\) (Algorithm
 \ref{alg:hd-comp-homom}). Provided that the BGV cryptosystem in use supports
 SIMD operations, the algorithm can run with homomorphic addition and
-multiplication. ($\triangle$ denotes component-wise homomorphic multiplication)
+multiplication. ($\triangle$ denotes component-wise homomorphic multiplication).
 
 \begin{algorithm}
 \caption{HD computation}\label{alg:hd-comp-homom}
@@ -677,15 +677,15 @@ multiplication. ($\triangle$ denotes component-wise homomorphic multiplication)
 
 Another useful tool to control the noise during homomorphic operations is
 \textit{key switching}, it keeps the multiplied ciphertexts to always be 2
-elements of the ring $R_{q}$, we briefly discuss the operation.
+elements of the ring $R_{q}$. We briefly discuss this operation.
 
 \begin{description}
-\item[Key Switching] This operation allow a ciphertext encrypted with a key
-  \textbf{s}' to be transformed to another ciphertext encrypted with another key
-  \textbf{s}'', the dimension of \textbf{s}' and \textbf{s}'' can be
-  different. The idea is we first prepare a set of switching key pairs that can
+\item[Key Switching] This operation allows a ciphertext encrypted with a key
+  \textbf{s}' to be transformed into another ciphertext encrypted with a  key
+  \textbf{s}'' (the dimension of \textbf{s}' and \textbf{s}'' can be
+  different). The idea is to first prepare a set of switching key pairs that can
   be considered the encryptions of the power of 2 of the bits of $\mathbf{s}'$,
-  putting $2^{i}$ in front:
+  putting $2^{i}$ in front of them:
   \[
     \begin{cases}
       \mathbf{a}_{i} \randomsample R_{q}, \mathbf{e}_{i} \randomsample \chi^{n}\\
@@ -695,14 +695,14 @@ elements of the ring $R_{q}$, we briefly discuss the operation.
 
   Then, given a ciphertext encrypted with a key \textbf{s}' having the form
   $(\mathbf{a}', \mathbf{c}' = \mathbf{a}'\mathbf{s}' + 2\mathbf{e}' +
-  \mathbf{m}')$, we want to do key switching $(\mathbf{a}',\mathbf{c}')$ from
-  $\mathbf{s}'$ to $\mathbf{s}''$. The process is accomplished through several steps
+  \mathbf{m}')$, we want to switch the keys $(\mathbf{a}',\mathbf{c}')$ from
+  $\mathbf{s}'$ to $\mathbf{s}''$. The process is accomplished through several steps.
   \begin{enumerate}
   \item Decompose $\mathbf{a}' \in R_{q}$ into its bit representation
     $\mathbf{a}' = \sum_{0}^{\log q - 1}2^{i}\mathbf{a}'_{i}$.
   \item Linear combination computation
     $\sum_{0}^{\log q - 1}\mathbf{a}'_{i} \cdot (\mathbf{a}_{i},
-    \mathbf{b}_{i})$, which gives result
+    \mathbf{b}_{i})$, with result
     $$(\mathbf{a} = \sum_{0}^{\log q - 1}\mathbf{a}'_{i}\mathbf{a}_{i},
     \mathbf{b} = \sum_{0}^{\log q - 1}\mathbf{a}'_{i}(\mathbf{a}_{i}\mathbf{s}''
     + 2^{i}\mathbf{s}' + 2\mathbf{e}_{i}))$$
@@ -713,11 +713,11 @@ elements of the ring $R_{q}$, we briefly discuss the operation.
 
   In other words, $(-\mathbf{a}, \mathbf{b}'')$ is the new ciphertext encrypted
   with $\mathbf{s}''$. With the discussed techniques, we are able to compute the
-  Hamming Distance homomorphically and the next step is to compare the result
-  with the threshold to output the authentication result. In the third variant
-  of our protocol, we see that applying the ZKP techniques only is not practical
-  enough due to large communication size. Next, we propose another approach,
-  which is based on different cryptographic technique: Garbled Circuit and
+  Hamming Distance homomorphically, the next step being to compare the outcomes
+  with the threshold in order to output the authentication result. In the third variant
+  of our protocol, we have noticed that applying the ZKP technique only proves not practical
+  enough, due to the large communication size. Next, we propose a new approach,
+  which is based on different cryptographic techniques: Garbled Circuit and
   Oblivious Transfer.
 \end{description}
 
@@ -754,7 +754,7 @@ wires' keys are also referred to as \textit{labels} in literature.
   \label{fig:garbledCircuit}
 \end{figure}
 
-Recent works provides optimizations to improve the computation and communication
+Recent work provides optimizations to improve the computation and communication
 overhead associated with encrypt/decrypt operations and ciphertext tables'
 sizes. In \cite{kolesnikov2008improved30}, the authors proposed a modification
 to allow XOR gates to be evaluated \textit{for free}: the labels of XOR gates
@@ -764,10 +764,11 @@ way to reduce the communication size of binary gates by 25\%: each gate can be
 specified by three ciphertexts instead of all four. Finally,
 \cite{kolesnikov2009improved29} improve some commonly used circuits such as
 addition, comparision, etc., by reducing the number of non-XOR gates.
-
 We use a standard substractor circuit for the operation \(HD = HD' - r\). Given a 2
 n-bit bitstring, the circuit is built from 1 half-substractor and \(n-1\)
-full-substractors as in Figure \ref{fig:substractor}
+full-substractors as in Figure \ref{fig:substractor}, where a half-substractor is built from 1 XOR gate and 1 AND gate, a
+full-substractor is built from 2 half-substractors and 1 OR gate (Figure
+\ref{fig:fullSubstractor})
 
 \begin{figure}[htbp!] 
   \centering    
@@ -776,9 +777,7 @@ full-substractors as in Figure \ref{fig:substractor}
   \label{fig:substractor}
 \end{figure}
 
-Where a half-substractor is built from 1 XOR gate and 1 AND gate, a
-full-substractor is built from 2 half-substractors and 1 OR gate (Figure
-\ref{fig:fullSubstractor})
+
 
 \begin{figure}[htbp!] 
   \centering    
@@ -790,7 +789,7 @@ full-substractor is built from 2 half-substractors and 1 OR gate (Figure
 In our context, let \(l\) be the bit length of the HD' and r (\(l\) is typically
 10-12 bits for 1024-2048 bits biometrics data), which makes the number of
 substractor logic gates equal to \(5l\). The comparision circuit no longer needs
-to output 3 results (as standard circuits would: either A > B, A < B or A =
+to output 3 results (as a standard circuits would: Either A > B, A < B or A =
 B). Our aim is just to check whether \(HD' - r < \tau\), so we simply need to
 have l NAND gates plus \(l-1\) XOR gates at hand for the comparsion
 circuit. Figure \ref{fig:comparisionCircuit1} shows an example of such a
@@ -809,7 +808,7 @@ are the cryptographic key \textit{labels} corresponding to the server's input
 \(r\) and to the client's input \(HD'\) to the function \textit{CompareHD}. The main
 function of the circuit is, first, to substract \(HD' - r = HD\) then compare
 \(HD \stackrel{?}{<} \tau\), where \(\tau\) is the constant value of the
-threshold required to decide the authentication result, which can be built into the
+threshold required to decide upon the authentication result, which can be built into the
 circuit itself. We note that either the server or the client can play the role of
 setting up the garbled circuit; in our work, we let the server take this role
 (Figure \ref{fig:fourthProtocol} - Step 5, 6, 7, 8): as we have
@@ -817,7 +816,7 @@ been working on a \textit{semi-honest} server modeal and a \textit{malicious }
 client, this will save us one proof to assess that the circuit is generated
 correctly.
 
-As described before in previously, the server garbles
+As pointed out previously, the server garbles
 the circuit \(GC\) and sends the result to the client together with its
 \textit{labels} of \(r\), which are \(K_{r_{i}}^{j}\). Next, the client uses our
 OT technique (discussed in the following section) to select the correct
@@ -858,8 +857,8 @@ The Matrix.
 
 What if, in such situation, there were a protocol to give privacy to
 \(Neo\): \(Morpheus\) should not be able to discover what option \(Neo\) has chosen. Moreover, the
-protocol can also provide privacy to \(Morpheus\): \(Neo\) be unable to get information about the unchosen pill. In cryptography, Oblivious Transfer (OT) is a
-protocol able to support such scenario. 
+protocol can also provide privacy to \(Morpheus\): \(Neo\) being thus unable to get information about the unchosen pill. In cryptography, Oblivious Transfer (OT) is a
+protocol able to support such a scenario. 
 In its most basic form, it is a
 two-parties protocol between a \textit{Sender} and a \textit{Receiver}, denoted
 by \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT. The \(Sender\) uses
@@ -870,9 +869,8 @@ two private inputs \(x_{0}, x_{1}\) and the \(Receiver\) uses one input bit
 \)-OT\((x_{0},x_{1};s) = x_{s}\).
 
 The general idea is that, when the receiver requests an item, the sender sends
-all the available items to him, he is unaware of which one has been requested
-requested. However, the response is encrypted in such a way that the receiver
-can only decrypt the one he requested. A concrete implementation example of
+all the available items to him, unaware of which one has been requested. However, the response is encrypted in such a way that the receiver
+can only decrypt the one he requested. A concrete implementation example of the
 \(\begin{psmallmatrix} 2 \\ 1 \end{psmallmatrix} \)-OT protocol based on
 discrete log DH is illustrated in figure \ref{fig:DH21OT} (This protocol is
 secure against \textit{honest but curious} attacks). The receiver picks
@@ -961,26 +959,26 @@ guessing).
 
 \subsection{The protocol description}
 \label{sec:4thprocSteps}
-With similar notations to previous protocols, we describe the last variant of the authentication system as follows (Figure \ref{fig:fourthProtocol})
+With a notation similar to the one used for previous protocols, we describe the last variant of the authentication system as follows (Figure \ref{fig:fourthProtocol})
 \begin{enumerate}
-\item In the enrollment stage, the client $\user$ extracts his template $\enc{\mathbf{T}}$ and sends to the server $\server$
-\item In the authentication stage, $\user$ extracts his query template $\enc{\mathbf{Q}}$ and sends to the server
-\item $\user$ use Schnorr-based ZKP (Section \ref{sec:zkpschnorr}) to prove that the noise associated with $\enc{\mathbf{Q}}$ is small
-\item $\user$ use Challenge-Response technique (Section \ref{sec:challengeResponse}) to prove that $\enc{\mathbf{Q}}$ is encrypting a binary message
-\item If the proofs pass, the $\server$ starts preparing the garbled circuit $GC$, it first sample $r \randomsample \mathbb{Z}_{t}$ and decompose it to binary representation, assuming that $r$ is $k$ bits long.
-\item $\server$ establishes $k$ pairs of key $(K_{r_{i}}^{0}, K_{r_{i}}^{1})$ for the inputs of $GC_{r}$
-\item $\server$ establishes $k$ pairs of key $(K_{h_{i}}^{0}, K_{h_{i}}^{1})$ for the inputs of $GC_{h}$
-\item $\server$ establishes the pairs of key for authentication result outputs $(K_{out}^{0}, K_{out}^{1})$
+\item In the enrollment stage, the client $\user$ extracts his template $\enc{\mathbf{T}}$ and sends it to the server $\server$
+\item In the authentication stage, $\user$ extracts his query template $\enc{\mathbf{Q}}$ and sends it to the server
+\item $\user$ uses a Schnorr-based ZKP (Section \ref{sec:zkpschnorr}) to prove that the noise associated with $\enc{\mathbf{Q}}$ is small
+\item $\user$ uses the Challenge-Response technique (Section \ref{sec:challengeResponse}) to prove that $\enc{\mathbf{Q}}$ is encrypting a binary message
+\item If the proofs pass, $\server$ starts preparing the garbled circuit $GC$, it first samples $r \randomsample \mathbb{Z}_{t}$ and decomposes it into a binary representation, assuming that $r$ is $k$ bits long.
+\item $\server$ establishes $k$ pair of keys $(K_{r_{i}}^{0}, K_{r_{i}}^{1})$ for the inputs of $GC_{r}$
+\item $\server$ establishes $k$ pair of keys $(K_{h_{i}}^{0}, K_{h_{i}}^{1})$ for the inputs of $GC_{h}$
+\item $\server$ establishes the pair of keys for authentication result outputs $(K_{out}^{0}, K_{out}^{1})$
 \item $\server$ encrypts the $k$ keys of $GC_{h}$ to obtain $\enc{K_{h_{i}}^{0}}, \enc{K_{h_{i}}^{1}}$
 \item $\server$ computes $\enc{HD} \gets HDBGV(\enc{\mathbf{T}}, \enc{\mathbf{Q}})$
-\item $\server$ masks the Hamming Distance $\enc{\mathbf{HD'}} = \enc{\mathbf{HD + r}}$ and send the result together with the garbled ciruit $GC$ and the keys $K_{r_{i}}^{j}$ to $\user$, where $j$ associates the key of $GC_{r}$ corresponding to the $r$ chosen by $\server$.
+\item $\server$ masks the Hamming Distance $\enc{\mathbf{HD'}} = \enc{\mathbf{HD + r}}$ and sends the result together with the garbled ciruit $GC$ and the keys $K_{r_{i}}^{j}$ to $\user$, where $j$ associates the key of $GC_{r}$ corresponding to the $r$ chosen by $\server$.
 \item $\user$ decrypts $\enc{\mathbf{HD}'}$
-\item $\user$ decompose the plaintext $HD'$ to its binary representation $HD' = \sum_{0}^{k-1}2^{i}h_{i}$
-\item $\user$ re-encrypt the bits of the decomposition
-\item $\user$ use the ciphertext $\enc{h_{i}}$ in the Oblivious Transfer Protocol (Section \ref{sec:obliviousTransferPre}) to retrieve the ciphertexts $\enc{K_{h_{i}}^{j}}$
+\item $\user$ decomposes the plaintext $HD'$ into its binary representation $HD' = \sum_{0}^{k-1}2^{i}h_{i}$
+\item $\user$ re-encrypts the bits of the decomposition
+\item $\user$ uses the ciphertext $\enc{h_{i}}$ in the Oblivious Transfer Protocol (Section \ref{sec:obliviousTransferPre}) to retrieve the ciphertexts $\enc{K_{h_{i}}^{j}}$
 \item $\user$ decrypts the result to obtain another set of keys for the garbled circuit
-\item $\user$ evaluates the circuit with the keys $(K_{h_{i}}^{j}, K_{r_{i}}^{j})$ and send the result to the server
-\item $\server$ compares the result with the output keys prepared in step 8 and outputs the authentication final result.
+\item $\user$ evaluates the circuit with the keys $(K_{h_{i}}^{j}, K_{r_{i}}^{j})$ and sends the result to the server
+\item $\server$ compares this outcome with the output keys prepared in step 8 and outputs the final authentication result.
 \end{enumerate}
 
 \begin{figure}[htbp!] 
@@ -1021,19 +1019,18 @@ With similar notations to previous protocols, we describe the last variant of th
 \label{sec:7result}
 We observe significant improvements in communication size thanks to the
 Challenge-Response technique (only 2 messages required). The Schnorr-based ZKP
-also contributes to this factor by reducing the number of rounds in proofs to 1
+also contributes to this factor by reducing the number of rounds in proofs to 1,
 instead of 17 for similar settings
 $(n = 2048, t = 2048, \alpha q = 8, q \approx 2^{72}, FAR \approx
-10^{-3})$. Total number of gates used in the garbled circuit for $n=2048$ is 25
-gates which only cost $\approx 3.2$ KB for the HD comparison purpose. All of
-this improvements come with a one time setup cost for preparing the switch keys
+10^{-3})$. The total number of gates used in the garbled circuit for $n=2048$ eaquals 25, which only cost $\approx 3.2$ KB for the HD comparison purpose. All of
+these improvements come with a one time setup cost for preparing the switch keys
 for the HD computation operation: we need to rotate 10 times and swap 1 time to
 compute $HD$, each operation needs 1 key switch to transform the result back to
 the original ciphertext format (2 ring elements) before the next homomorphic
-operation. The total key switch size needed was $2*n*\log q*11$, which is
+operation. The total key switch size needed is $2*n*\log q*11$, which is
 approximately 389 MB in our setting. Considering the privacy features provided,
 we believe such one time set up cost is acceptable. We conclude the chapter with
-the comparison of the 4 protocols in the thesis
+the comparison of the 4 protocols described in the thesis
 
 \begin{table}[h!]
 \centering
