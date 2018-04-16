@@ -12,10 +12,10 @@
 
 \section{Introduction}
 \label{sec:6intro}
-In the last chapter, we develop a two-parties authentication protocol that
+In the last chapter, we developed a two-parties authentication protocol that
 proves secure against a malicious client and does not leak any information to the
-server (the main difference with the second protocol being that the server is only able to acquire the
-value of the Hamming Distance). This final variant aims to reduce both the communication
+server (the main difference with the second protocol being that the server is not able to acquire the
+value of the Hamming Distance between the registered and queried templates). This final variant aims to reduce both the communication
 size and the computation time, while providing all the recommended security
 features.
 \begin{description}
@@ -23,9 +23,11 @@ features.
   communication is the size of the Stern-based ZKPs. We propose the
   following approach to replace old ZKPs:
   \begin{itemize}
-  \item A Schnorr-based approach to replace the Stern-based one, to ensure that the
-    noise in the ciphertext is small. This variant reduces the total
-    communication rounds from \(log_{2/3}(FAR)\) to just 1.
+  \item A Schnorr-based approach to replace the Stern-based one, to ensure that
+    the noise in the ciphertext is small. This variant reduces the total
+    communication rounds from \(log_{3/2}(FAR)^{-1}\) to just 1. Given a typical
+    value of $FAR = 10^{-4}$, such improvement reduces the total number of
+    communication rounds from $\approx 22$ to $1$.
   \item A challenge-response protocol to prove the binary format of the
     plaintext.
     % The protocol can be summarized as follows:
@@ -124,7 +126,9 @@ a witness for $\mathcal{R'}$. We refer to this as \emph{soundness gap}, if the
 gap is small enough, it implies security guarantee for higher level applications
 ($\mathcal{R} = \mathcal{R'}$ in the original protocol).
 
-The original Schnorr ZKP protocol \cite{schnorr1989efficient} used to prove knowledge of a discrete logarithm problem. It is described informally as in Figure \ref{fig:schnorrProtocol}
+The original Schnorr ZKP protocol \cite{schnorr1989efficient} can be used to prove
+knowledge of a discrete logarithm (DL). It is described informally as in
+Figure \ref{fig:schnorrProtocol}
 
 \begin{figure}[htbp!] 
 \centering \procedure{Schnorr Protocol for DL}{
@@ -157,7 +161,7 @@ in both distributions).
 In the work of \cite{benhamouda2014better}, the authors proposed a variant of
 such technique to prove LWE-secrets (Figure \ref{fig:benhamoudaProtocol} )
 \begin{figure}[htbp!] 
-\centering \procedure{Benhamouda Protocol for LWE}{
+\centering \procedure{Benhamouda Protocol for RLWE}{
   \textbf{Prover} \> \> \textbf{Verifier}\\
   \mathbf{r}_s, \mathbf{r}_e \randomsample D_{\bigO{\sqrt{n}\alpha}} \> \> \\
   t = a \mathbf{r}_s + \mathbf{r}_e \> \> \\
@@ -169,7 +173,7 @@ such technique to prove LWE-secrets (Figure \ref{fig:benhamoudaProtocol} )
   \> \> aCOpen(t, c_{aux}, d_{aux}) \stackrel{?}{=} \text{accept}\\
   \> \> \norm{\mathbf{s}_s}, \norm{\mathbf{s}_e} \leq \bigO{n\alpha}
 }
-\caption{Proof of knowledge of LWE secrets}
+\caption{Proof of knowledge of RLWE secrets}
 \label{fig:benhamoudaProtocol}
 \end{figure}
 
@@ -260,7 +264,7 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
 \end{theorem}
 
 \begin{proof}
-  We prove the properties specified in Definition \ref{def:zkp-sum-protocol}.
+  We prove the properties specified in Definition \ref{def:zkp-sum-protocol} following the proof from \cite{benhamouda2014better}.
   \begin{description}
   \item[Completeness.] If the Prover $P$ sends a response, the following becomes the case:
     \begin{align*}
@@ -1022,7 +1026,7 @@ Challenge-Response technique (only 2 messages required). The Schnorr-based ZKP
 also contributes to this factor by reducing the number of rounds in proofs to 1,
 instead of 17 for similar settings
 $(n = 2048, t = 2048, \alpha q = 8, q \approx 2^{72}, FAR \approx
-10^{-3})$. The total number of gates used in the garbled circuit for $n=2048$ eaquals 25, which only cost $\approx 3.2$ KB for the HD comparison purpose. All of
+10^{-3})$. The total number of gates used in the garbled circuit for $n=2048$ equals 25, which only cost $\approx 3.2$ KB for the HD comparison purpose. All of
 these improvements come with a one time setup cost for preparing the switch keys
 for the HD computation operation: we need to rotate 10 times and swap 1 time to
 compute $HD$, each operation needs 1 key switch to transform the result back to
