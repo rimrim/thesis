@@ -159,7 +159,14 @@ identical (each valid conversation $(t;c;s)$ occurs with probability $1/n^{2}$
 in both distributions).
 
 In the work of \cite{benhamouda2014better}, the authors proposed a variant of
-such technique to prove LWE-secrets (Figure \ref{fig:benhamoudaProtocol} )
+such technique to prove knowledge of small RLWE secret \textbf{s} and noise
+\textbf{e} (in short, we mean that
+$\norm{\mathbf{s}}, \norm{\mathbf{e}} \leq \bigO{n \alpha}$ for noise parameter
+$\alpha$), where $(\mathbf{a}, \mathbf{y} = \mathbf{as} + \mathbf{e})$ is the
+verifier's input and $(\mathbf{s,e})$ is the prover's witness input (see Figure
+\ref{fig:benhamoudaProtocol})
+% In the work of \cite{benhamouda2014better}, the authors proposed a variant
+% of such technique to prove LWE-secrets (Figure \ref{fig:benhamoudaProtocol} )
 \begin{figure}[htbp!] 
 \centering \procedure{Benhamouda Protocol for RLWE}{
   \textbf{Prover} \> \> \textbf{Verifier}\\
@@ -728,9 +735,18 @@ elements of the ring $R_{q}$. We briefly discuss this operation.
 \section{Garbled Circuit and Oblivious Transfer}
 \label{sec:defMPP}
 
+This section describes how to mix other cryptographic techniques with
+Homomorphic Encryption (HE) to improve efficiency while still achieving
+malicious client security. We first review the Garbled Circuit (GC) tool on how
+can it provide privacy preserving feature to multi-party protocols and how the
+circuit is built in our context. Next, we show a novel Oblivious Transfer (OT)
+technique to be used to retrieve the inputs for the circuit. The novel OT is
+based on BGV homomorphic operation and naturaly becoming an interface between HE
+and GC.
 \subsection{Garbled Circuit}
 \label{sec:garbledCircuitPre}
 
+\paragraph{Context}
 The "garbled circuit" concept was originally proposed in \cite{yao1986generate}, to
 allow two parties to securely evaluate any functions (represented by a logic
 circuit). It is secure in the sense that the communicating parties do not acquire
@@ -768,11 +784,14 @@ way to reduce the communication size of binary gates by 25\%: each gate can be
 specified by three ciphertexts instead of all four. Finally,
 \cite{kolesnikov2009improved29} improve some commonly used circuits such as
 addition, comparision, etc., by reducing the number of non-XOR gates.
-We use a standard substractor circuit for the operation \(HD = HD' - r\). Given a 2
-n-bit bitstring, the circuit is built from 1 half-substractor and \(n-1\)
-full-substractors as in Figure \ref{fig:substractor}, where a half-substractor is built from 1 XOR gate and 1 AND gate, a
-full-substractor is built from 2 half-substractors and 1 OR gate (Figure
-\ref{fig:fullSubstractor})
+
+\subsection{Using GC with Homomorphic Encryption in the protocol}
+\label{sec:finalcontr}
+We use a standard substractor circuit for the operation \(HD = HD' - r\): Given
+a 2 n-bit bitstring, the circuit is built from 1 half-substractor and \(n-1\)
+full-substractors as in Figure \ref{fig:substractor}, where a half-substractor
+is built from 1 XOR gate and 1 AND gate, a full-substractor is built from 2
+half-substractors and 1 OR gate (Figure \ref{fig:fullSubstractor})
 
 \begin{figure}[htbp!] 
   \centering    
@@ -820,22 +839,23 @@ been working on a \textit{semi-honest} server modeal and a \textit{malicious }
 client, this will save us one proof to assess that the circuit is generated
 correctly.
 
-As pointed out previously, the server garbles
-the circuit \(GC\) and sends the result to the client together with its
-\textit{labels} of \(r\), which are \(K_{r_{i}}^{j}\). Next, the client uses our
-OT technique (discussed in the following section) to select the correct
-\textit{labels} of \(HD'\): the first part of the OT will ensure that the client
-will get back the encryptions \(\enc{K_{h_{i}}^{j}}\). The second part of the OT
-makes sure that the protocol is secure against \textit{malicious} clients: it
-needs to prove that it decrypted and decomposed \(\enc{\mathbf{HD'}}\) correctly
-(Figure \ref{fig:fourthProtocol} - Step 12,13). In other words, the client wants
-to prove that the encryptions \(\enc{h_{i}}\) it sent are actually the
-encryptions of the bits of \(HD'_{i}\). Recall that the server still has
+As pointed out previously, the server garbles the circuit \(GC\) and sends the
+result to the client together with its \textit{labels} of \(r\), which are
+\(K_{r_{i}}^{j}\). Next, the client uses our OT technique (discussed in the
+following section) to select the correct \textit{labels} of \(HD'\): the first
+part of the OT will ensure that the client will get back the encryptions
+\(\enc{K_{h_{i}}^{j}}\). The second part of the OT makes sure that the protocol
+is secure against \textit{malicious} clients: it needs to prove that it
+decrypted and decomposed \(\enc{\mathbf{HD'}}\) correctly (Figure
+\ref{fig:fourthProtocol} - Step 12,13). In other words, the client wants to
+prove that the encryptions \(\enc{h_{i}}\) it sent are actually the encryptions
+of the bits of \(HD'_{i}\). Recall that the server still has
 \(\enc{\mathbf{HD'}}\), so the proof can be a homomorphical check of
-\(\enc{\mathbf{HD'}} - \sum{2^{i}\enc{h_{i}}} = \enc{0}\). However,
-in order to allow this proof to support homomorphic operations, we need to use
-the same encryption scheme for the OT protocol, in other words, we need an OT
-protocol based on BGV.
+\(\enc{\mathbf{HD'}} - \sum{2^{i}\enc{h_{i}}} = \enc{0}\). However, in order to
+allow this proof to support homomorphic operations, we need to use the same
+encryption scheme for the OT protocol, in other words, we need an OT protocol
+based on BGV. In the next section, we discuss a this novel solution to the problem of
+interfacing Garbled Circuit with Homomorphic Encryption.
 
 We note that inside the garbled circuit, AES is normally used to encrypt the
 \textit{labels}, this encryption is a part of the garbled circuit and not
@@ -903,7 +923,11 @@ public keys. The receiver then decrypts one of the encryptions to recover either
 Efficient implementations of Oblivious Transfer can be found in
 \cite{naor2001efficient35}. The techniques found in \cite{ishai2003extending24}
 can reduce a large number of OT protocol executions to \(\lambda\), where
-\(\lambda\) is the security parameter. In this thesis, we propose a new OT
+\(\lambda\) is the security parameter.
+
+\subsection{The BGV-based Oblivious Transfer protocol}
+\label{sec:finalContr2}
+In this thesis, we propose a new OT
 technique to be used with lattice-based cryptosystems. The technique can be used
 together with the garbled circuit protocol discussed earlier. The problem can be
 stated as follows: Given a BGV ciphertext of a bit selection \(h_{i}\):
