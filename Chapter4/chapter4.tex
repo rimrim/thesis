@@ -20,7 +20,7 @@ raises the following challenges:
 \begin{description}
 \item[Multifactor security] A malicious client with access to the compromised
   secret key of the honest client can derive information about the distance
-  between the registred template and the extracted template while he decrypting
+  between the registered template and the extracted template while he decrypting
   the homomorphic ciphertext result sent by the server.
 \item[Malicious Client Model Impact] It is important for the protocol to be secure
   against the \textit{active client }model, by which an adversary does not simply follow the
@@ -51,10 +51,10 @@ $\server$ uses an algorithm $Verify(X,Y)$ to obtain the result of the
 authentication: \textbf{Accept} or \textbf{Reject}. Different biometric systems
 might use different methods to compute the distance $\Delta$ between $X$ and $Y$
 within the algorithm $verify$. The distance $\Delta$ is compared to some
-predifined threshold value $\tau$ to determine the result of the authentication
+predefined threshold value $\tau$ to determine the result of the authentication
 trial. We refer the reader to \cite{jain2007handbook} for biometric feature
 extraction and comparison techniques. Unlike password based systems, where
-$\user$ always uses one and the same same query for many authentication trials,
+$\user$ always uses one and the same query for many authentication trials,
 all biometric systems implement the concept of False Acceptance Rate (FAR),
 corresponding to the system's \textbf{Accept} answer while receiving an
 incorrect template; and False Rejection Rate (FRR), where the system's
@@ -200,7 +200,7 @@ their method below.
 \begin{definition} [\cite{yasuda2014practical}]
   For $\mathbf{T} = (t_0, \dots, t_{n-1}$ and
   $\mathbf{Q} = (q_0, \dots, q_{n-1})$, we define two types of polynomials in
-  the ring $R_q$ of the SHE schme:
+  the ring $R_q$ of the SHE scheme:
   \[
     pm_1(\mathbf{T}) = \sum_{i=0}^{n-1}t_ix^i \ \textnormal{and} \
     pm_2(\mathbf{Q}) = - \sum_{j=0}^{n-1}q_jx^{n-j}
@@ -544,7 +544,7 @@ main submodules in the protocol: Setup, Enrol, and Authenticate. Figure \ref{fig
     client privacy against long term quantum attacks.
     \begin{itemize}
     \item $\lambda$: General security parameter of the cryptosystem (the adversary's winning chance in the CPA security game is \(1/2^{\lambda}\))
-    \item $n$: Integer $n$ defining the plaintext and ciphertext rings. This will be refered to as the degree of
+    \item $n$: Integer $n$ defining the plaintext and ciphertext rings. This will be referred to as the degree of
       the polynomial objects or dimension of the underlying lattice during correctness and security proofs.
     \item $t$: Integer $t$ defining the plaintext space ring $R_t = \mathbb{Z}_t[x]/x^n+1$.
     \item $q$: Integer $q$ defining the ciphertext space ring $R_q = \mathbb{Z}_q[x]/x^n+1$
@@ -1031,8 +1031,17 @@ ciphertext. With these parameters, we need \(q\) to be approximately 60 bits to
 satisfy \(16n^{2}t^{2}\sigma^{4} < q\).  The proposed scheme works with only 1
 level of homomorphic multiplication for the proposed set of parameters
 $(n = 2048, q \approx 2^{60}, t = 2048, \sigma = 8)$, the proof of concept
-implementation can be found in \cite{rimrimrq38:online}, the communication size for
-ZKP is approximately 8MB to provide security against a malicious client model.
+implementation can be found in \cite{rimrimrq38:online}.
+
+Number of rounds to repeat for each Zero Knowledge Proof: We are aiming at
+matching the security of biometrics systems with False Acceptance Rate of
+$10^{-3}$, hence, with the current ZKP technique whose soundness error is
+$2/3$, we need to repeat the proof 17 times to achieve such level of
+security. Following the the communication size computed from our result
+($2(n\log q)\sum{l_{i}}$), where $\sum{l_{i}} \approx \sigma$ and the other
+parameters chosen as above, the communication size of the two Zero Knowledge
+Proofs required by the protocol is approximately 8MB to provide security against
+a malicious client model.
 
 \subsection{Limitations and open problems}
 \label{sec:limitations}

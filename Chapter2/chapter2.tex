@@ -176,15 +176,15 @@ algebraic operations can be performed easily on the coordinates of the vectors. 
 security reasons. A lattice is also an infinite
 group under vector addition (a group is a mathematical structure, a set with a single operation on it).
 
-\begin{definition}[Fundamental Paralellepiped]
+\begin{definition}[Fundamental Parallelepiped]
   For an n-dimensional lattice basis
   $B = \left( \vec{b_1}, \dots, \vec{b_n} \right) \in \mR^{n \times n}$, the
-  \emph{fundamental paralellepiped} (FP), denoted $P(B)$, is the set of all real
+  \emph{fundamental parallelepiped} (FP), denoted $P(B)$, is the set of all real
   valued $[0,1)$-linear combinations of some basis set of linearly independent
   vectors $\vec{b_1}, \dots ,\vec{b_n} \in \mR^n$.
   \begin{figure}[h]
     \centering \includegraphics[scale=0.7]{parallelopiped}
-    \caption{A paralellogram of 2-dimentional lattice}
+    \caption{A parallelogram of 2-dimentional lattice}
     \label{fig:paralellopiped}
   \end{figure}
 \end{definition}
@@ -196,13 +196,13 @@ geometric and algebraic approaches \cite{micciancio2009lattice}.
   \label{lem:parallelopiped}
 \end{lemma}
 We let $det(U)$ denotes the determinant of the matrix $U$.  Geometrically, the
-determinant computes the area (or volume) of the paralellogram of a lattice. We
-can associate each point of a lattice with a paralellogram; consequently, for a
+determinant computes the area (or volume) of the parallelogram of a lattice. We
+can associate each point of a lattice with a parallelogram; consequently, for a
 large n-dimensional ball $S$, the number of lattice points in $S$ is
 $\approx vol(S) / det(L)$.
 \begin{definition}[Determinant]
   \label{def:determinant}
-  For an n-dimensional latice $L(B)$, the determinant of $L(B)$, denoted
+  For an n-dimensional lattice $L(B)$, the determinant of $L(B)$, denoted
   $det(L(B))$ is the n-dimensional volume of the FP P(B).
 \end{definition}
 
@@ -330,7 +330,7 @@ equations. This is formalized in \cite{gentry2008trapdoors} as
 \label{sec:ajtaiHash}
 Cryptographic hash functions have many applications to
 provide authenticity and integrity in different security contexts. One of the main properties of cryptographic
-hash functions is collision resistancy: it is hard to find 2 message inputs
+hash functions is collision resistance: it is hard to find 2 message inputs
 producing the same hash value output. The current constructions being used in practice
 are not lattice-based but built on non-linear boolean functions. We discuss how
 to construct a variant from lattices and show the relevant techniques
@@ -637,7 +637,7 @@ actually, it performs even worse than exponential time growth.
 There are variants of such a method, but they all take at least
 exponential time with respect of the dimension $n$ (with the expense of using $2^{O(n)}$
 memory). In general, all enumeration algorithms are very inefficient. Therefore,
-combining LLL with bruteforcing is a more practical approach: BKZ is the typical
+combining LLL with brute-forcing is a more practical approach: BKZ is the typical
 algorithm in this category.  BKZ allows trades-off between run-time and
 approximation factor $\gamma$, LLL is modified by changing the block size $k$ of
 vectors in the swapping step. As $k$ is increased, the lattice of
@@ -1018,14 +1018,14 @@ based on LWE:
 We discuss a technique to modify Symmetric-Key to Public-key
 Encryption (Regev's cryptosystem, 2005). This cryptosystem is the basis for a
 lot of other lattice-based cryptographic techniques, including the ones used
-later in our project. Supposing a symmetric key sytem is used to
+later in our project. Supposing a symmetric key system is used to
 encrypt a message $\vec{m} = \vec{0}$, it is the case that
 $Enc(\vec{s}, m) = Enc(\vec{s},0) + [\vec{0}, m] \mod \ q$ ( recall that
 $[\vec{a}, \vec{a}\vec{s} + \vec{e} + m] = [\vec{a}, \vec{a}\vec{s} + \vec{e}] +
 [\vec{0}, m]$). This implies that a message can be encrypted by adding itself to
 the encryption of zero $Enc(0)$, and can therefore use that $Enc(0)$ as the
 public key! However, the ciphertext encrypted this way can be simply broken by
-just one substraction. A further attempt can be publishing several
+just one subtraction. A further attempt can be publishing several
 $\vec{p_i} = Enc(\vec{s}, 0)$, which are all different as the implemented scheme is
 non-deterministic. During encryption, a random linear
 combination of such encryptions can be generated so as to have a 'fresh' $Enc(0)$ and use it for
@@ -1048,7 +1048,7 @@ encryption.
   $\vec{s}$:
   \begin{itemize}
   \item Compute $c' = c - \vec{a}^T . \vec{s} \mod q$
-  \item Compute $c'' \in \mathbb{Z}_q$ by rounding $c'$ to the neareast multiple
+  \item Compute $c'' \in \mathbb{Z}_q$ by rounding $c'$ to the closest multiple
     of $\lceil q/t \rfloor \mod q$.
   \item Return plaintext $m = \frac{c''}{\lceil q/t \rfloor}$.
   \end{itemize}
@@ -1129,7 +1129,7 @@ Again, we observe that if a larger noise is used, a better level of security is 
     \label{lem:statisticalDistance}
   \end{lemma}
   This lemma is very useful because it states that if we make the distance small
-  enough (negligible), then no matter what algorithm an attacker uses, he will not succed in distinguishing the distributions by a non-negligible advantage. We will
+  enough (negligible), then no matter what algorithm an attacker uses, he will not succeed in distinguishing the distributions by a non-negligible advantage. We will
   bring out that the distribution generated in the security reduction (shown to the attacker by the
   distinguisher) is within a negligible statistical
   distance to what the attacker witnesses during a real attack.
@@ -1284,7 +1284,7 @@ to improve all of these aspects below.
     does not reuse $\vec{p_i}$ during encryptions. Although $\vec{p_i}$ increases the size of
     the public key, $A$'s size still dominates.
   \item Decryption - $Dec(C = (\vec{a}^T, \vec{c}^T))$: Compute
-    $\vec{c'}^T = \vec{c}^T - \vec{a}^T.S \mod q$ and round to the neareast
+    $\vec{c'}^T = \vec{c}^T - \vec{a}^T.S \mod q$ and round to the closest
     multiple of $\lceil q/t \rfloor \mod q$ to get $\vec{c''}$. Return plaintext
     $\vec{m} = \frac{\vec{c''}}{\lceil q/t \rfloor}$
   \end{itemize}
@@ -1450,7 +1450,7 @@ This function is meant to improve the efficiency of $O(n\log n)$ for the key $A$
 the computation is $O(n\log^2 n)$. A practical implementation has been put forward
 \cite{lyubashevsky2008swifft} with some further optimizations for a specific set
 of parameters: $n = 64, m = 16, q = 257$. The hash compresses 1024-bit input to
-512-bit output with the key length being 8kbits. The performance is competitive with respect to
+512-bit output with the key length being 8 kilobits. The performance is competitive with respect to
 other hash functions, which are about 60 CPU cycles/byte.
 
 \subsubsection{Security Impact}
@@ -1615,7 +1615,7 @@ ciphertext''. There are three circuit families related to the \textit{homomorphi
 \item[Fully Homomorphic Encryption] We say that \(\mathbb{E}\) is fully
   homomorphic if it is correct for all boolean circuits. If this is the case, we can
   ignore the parameter \(\tau\) (\(\tau = 1\)).
-\item[Leveled/Somewaht Homomorphic Encryption] \(\mathbb{E}\) is considered
+\item[Leveled/Somewhat Homomorphic Encryption] \(\mathbb{E}\) is considered
   somewhat homomorphic if it is correct for families of circuit of depth up to
   \(\tau\).
 \item[Additive Homomorphic Encryption] We say that \(\mathbb{E}\) is additively
@@ -1765,7 +1765,7 @@ is defined as follows:
   [Interactive Proof System] An interactive proof system for a language
   \(L \subset \{0,1\}^{*}\) with soundness error \(s \in [0,1]\) is a two-party
   protocol \(\Angle{P,V}\), involving a PPT \(verifier \) V and a computationally
-  unbouned \(prover \) P, which satisfies the following properties:
+  unbound \(prover \) P, which satisfies the following properties:
   \begin{itemize}
   \item Completeness: \(\forall x \in L\): \(Pr[P(x) \leftrightarrow V(x) = 1] = 1\)
   \item Soundness: \(\forall x \notin L\): \(Pr[P(x) \leftrightarrow V(x) = 1] \leq s\)

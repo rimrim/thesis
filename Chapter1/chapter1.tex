@@ -57,7 +57,7 @@ government employees were leaked due to a security attack
 \cite{OPMsays563:online}. When biometric data is revealed or stolen, the victims become vulnerable to impersonation attacks for the rest of their lives, as, unlike password or smartcards, one’s fingerprints or iris are nearly impossible to change. Biometric privacy poorly protected against server exposure can therefore be considered as the main drawback of SYA authentication. SYA proving nonetheless the most convenient authentication method from the usability point of view, a strong
 motivation arose to enhance it with an adequate privacy protection of
 biometric data. There are four main approaches to privacy-preserving biometrics
-authentication at present (details avalable in surveys of \cite{jain201650} and
+authentication at present (details available in surveys of \cite{jain201650} and
 \cite{jain2008biometric}) \begin{itemize} \item Transforming biometric data
   using a key-less many-to-one transformation, also known as `Non-Invertible'
   transforms (e.g.~\cite{ratha2007generating}): Since the function is key-less,
@@ -105,10 +105,10 @@ However, the security of such encryption schemes is unclear, as they are based o
     both the inefficiency of homomorphic operations of the Pailler scheme, and
     the extra protocol overhead required to handle the `addition-only'
     homomorphism limitation of the this scheme. Besides, the Paillier system
-    does not provide \emph{long term} security (it is not quantum resistent).
+    does not provide \emph{long term} security (it is not quantum resistant).
     Its efficiency has been
     significantly improved by a recent protocol due to Yasuda et
-    al.~\cite{yasuda2014practical}, grunded on lattice-based SomeWhat Homomorphic
+    al.~\cite{yasuda2014practical}, based on lattice-based SomeWhat Homomorphic
     encryption (SWHE), which supports both homomorphic additions and multiplications.
     The cryptosystem used is believed to be quantum-resistant as
     well.
@@ -164,15 +164,23 @@ client's privacy.
 
 \section{Contributions of the thesis}
 \label{sec:thesisContributions}
-We propose different protocols to support the above stated requirements. Our
-technique combines state-of-the-art cryptographic tools, such as Homomorphic
-Encryption (HE) and Zero-Knowledge-Proof (ZKP), aimed at balancing the security and the usability
-of the system. The techniques we put forward are all lattice-based, which appears to be one of the best
-framework for preserving long term security against quantum attacks. Our protocol also
-achieves privacy protection against server exposure, by avoiding to rely on a trusted third
-party. Our contributions include:
+As has been outlined, research gaps result from the combination of non-satisfied
+security constraints stated in Section 1.2. Either existing protocols are not
+safe against authentication involving malicious clients, or, when they are, they
+do not prove quantum-resistant. Previous quantum-resistant protocols not only
+involve a third party, but lack robustness with respect to malicious clients
+security model. The aim of our work is to overcome these security issues while
+providing satisfactory practical performance, in terms of computation time and
+communication size.  We propose different protocols to support the above stated
+requirements. Our technique combines state-of-the-art cryptographic tools, such
+as Homomorphic Encryption (HE) and Zero-Knowledge-Proof (ZKP), aimed at
+balancing the security and the usability of the system. The techniques we put
+forward are all lattice-based, which appears to be one of the best framework for
+preserving long term security against quantum attacks. Our protocol also
+achieves privacy protection against server exposure, by avoiding to rely on a
+trusted third party. Our contributions include:
 \begin{itemize}
-\item Quantum-resistant and provable-secure biometric authentication protocols
+\item Four different Quantum-resistant and provable-secure biometric authentication protocols
   that do not rely on trusted third-parties. The server stores the encrypted data and performs
   homomorphic operations to compute the distance (Hamming Distance) allowing to decide on the
   authentication result. It does not need a third party to decrypt the encrypted
@@ -211,7 +219,7 @@ party. Our contributions include:
   scenarios requiring secure multi-party computations.
 \end{itemize}
 
-\section{Organization of the thesis and related publications}
+\section{Organization of the thesis and related publication}
 The thesis is organized as follows:
 \begin{description}
 \item In Chapter \ref{chap:definitions}, we describe the general notation and
@@ -239,8 +247,6 @@ future research. The results of Chapter \ref{chap:firstProtocol} and
 
 Dinh, T., Steinfeld, R., \& Bhattacharjee, N. (2017, December). A Lattice-Based Approach to Privacy-Preserving Biometric Authentication Without Relying on Trusted Third Parties. In Information Security Practice and Experience - 13th International Conference, ISPEC 2017, Melbourne, VIC, Australia, December 13-15, 2017, Proceedings. Lecture Notes in Computer Science 10701, Springer 2017.
 
-
-The remaining parts of the thesis are in preparation for other publications
 
 %%% Local Variables:
 %%% mode: latex

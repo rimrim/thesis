@@ -113,7 +113,7 @@ biometric authentication:
   \textbf{Reject}. Different fingerprint systems might use different features of
   fingers such as minutia or fingercode \cite{ferrara2012noninvertible, jain1999fingercode} to compute the distance $\Delta$ between
   $X$ and $Y$ within the algorithm $Verify$. The distance $\Delta$ is compared
-  to some predifined threshold value $\tau$ to determine the result of the
+  to some predefined threshold value $\tau$ to determine the result of the
   authentication. We refer the reader to \cite{jain2007handbook} for biometric
   feature extraction and
   comparison techniques.
@@ -165,7 +165,7 @@ biometric authentication:
 \subsection{The privacy preserving model}
   Our security model intends to capture both threats for client and server's
   sides as discussed previously. There is only one variant which do not capture a
-  threat related to Hamming Distance leakeage to server, this imperfect privacy
+  threat related to Hamming Distance leakage to server, this imperfect privacy
   was introduced with the assumption that given such a value of HD of 2 bit
   strings, it is not feasible to infer information from the original bit
   strings.
@@ -303,8 +303,8 @@ At several points of this thesis, we will refer to the terms ``efficient'' and
 ``negligible'' (which will be defined formally in a section below). Intuitively,
 \textit{negligible} means so small as to be ``zero for practical purposes''. For
 example, consider an event happening with probability \(2^{-100}\): we would
-not worry about such an event occuring more than we would worry about a similar
-event occurring with probability 0. Additionaly, an \textit{efficient
+not worry about such an event occurring more than we would worry about a similar
+event occurring with probability 0. Additionally, an \textit{efficient
   adversary} is granted to run in a reasonable amount of time. Sometimes we
 also use two other related terms: A value \(N\) is called \textit{super-poly} if
 \(1/N\) negligible; and a \textit{poly-bounded} value is supposed to be a reasonably sized
@@ -329,7 +329,7 @@ the security proofs:
   \item[Biometric Impersonation Attack Game.] FAR is the usual biometric
     impersonation probability, it is inherent to biometrics itself without any
     cryptographic protocols. We first discuss this security game (which will be
-    refered to as \textit{biometric impersonation}), we then elaborate the
+    referred to as \textit{biometric impersonation}), we then elaborate the
     discussion to account for models with privacy-preserving requirements.
     \begin{description}
     \item[Setup:] $\challenger$ samples $X_k \randomsample D_{k}$ from a random
@@ -344,7 +344,7 @@ the security proofs:
     \end{description}
 
     Figure \ref{fig:maliciousNonPrivate} show the biometric
-    imperationation (non private) attack game. Let $W_{0}$ be the event that there exists some $i$ such that
+    impersonation (non private) attack game. Let $W_{0}$ be the event that there exists some $i$ such that
     $\attacker$ output $Y_{i}$ such that
     $verify(X_{k},Y_{i}) = \mathbf{Accept}$ and let $p_{0} = \prob{W_{0}} $.
     \begin{figure}[!h]
@@ -560,7 +560,7 @@ In the security proofs of the protocols appearing in the next chapters, we will 
 model the security games following the generic framework defined in this
 chapter, with the \textbf{Enroll} and \textbf{Auth} modules replaced by concrete
 lattice-based constructions (or combination of them). Each attack game is
-modelled by way of a probability space, as both \textit{adversary} and
+modeled by way of a probability space, as both \textit{adversary} and
 \textit{challenger} are probabilistic processes communicating with each other. The
 definition of security is tied to some particular event S as seen in previous
 sections (where security means that for all \textit{efficient} adversary, the

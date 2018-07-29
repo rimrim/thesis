@@ -49,7 +49,7 @@ features.
   additions only (without any homomorphic multiplication). The cost of this change
   is a set of switching keys for homomorphic rotation operations, which are
   generated during the enrollment process. Additionally, we introduce the
-  appplication of state-of-the-art \textit{Secure-Multiparty-Protocol}
+  application of state-of-the-art \textit{Secure-Multiparty-Protocol}
   techniques, such as \textit{Garbled Circuit} and \textit{Oblivious Transfer} into
   the lattice-based context, to further improve both the computation time and
   the communication size overhead implied by previous ZKP protocols.
@@ -307,7 +307,7 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
     output different accepted transcripts of a same commitment: $(c_{aux}, c',
     (d'_{aux},\mathbf{t'_c, t'_k, s'_s, s'_e, s'_m, s'_{e_0}}))$ and
     $(c_{aux}, c'', (d''_{aux}, \mathbf{t''_c, t''_k, s''_s, s''_e,
-      s''_m, s''_{e_0}}))$. From the binding property of the auxilary
+      s''_m, s''_{e_0}}))$. From the binding property of the auxiliary
     commitment scheme \cite{pedersen1991non}, we have $\mathbf{t'_c = t''_c := t_c}$
     and $\mathbf{t'_k = t''_k := t_k}$. As the transcripts pass the
     checks by the verifier, it appears that:
@@ -327,7 +327,7 @@ that $P$ knows the plaintext encrypted in $2\mathbf{c_0}$
         -t\mathbf{s''_{e_0}}
       \end{cases}
     \end{align*}
-    By substracting the equations we get:
+    By subtracting the equations we get:
     \begin{align*}
       \begin{cases}
         \mathbf{c_0(x^{c'} - x^{c''})} = -\mathbf{c_1}(\mathbf{s'_s
@@ -506,7 +506,7 @@ a(x) \cdot b(x) \mod (x^{n} - 1) = NTT^{-1}(NTT(a(x)) \triangle NTT(b(x)))
   However, in our contexts, we want the operations to be computed modulo
   \(x^{n} + 1\). The original ring elements can still be padded with 0s and
    the product modulo \(x^{n} + 1\) computed, this will double the length of NTT
-  inputs and also require an extra step of explicitely reducing \(x^{n} + 1\). The
+  inputs and also require an extra step of explicitly reducing \(x^{n} + 1\). The
   other way to avoid this issue is by exploiting the \textit{negative wrapped
     convolution} \cite{lyubashevsky2008swifft}. Let \(\psi\) be a primitive
   \(2n^{th}\) root of unity in \(\mathbb{Z}_{t}\) such that
@@ -638,7 +638,7 @@ either the coefficient or the NTT representation of \(a(x)\).
   \(\bar{b}_{i,i'}\) are the \(\mathbf{\bar{a}}\)'s coefficients\\
   \(\bar{a}_{i+x_{j} \mod n/2, i' + y_{j} \mod 2}\). Actually, there is a
   rotation here! It is not exactly a normal rotation, but it is a double rotation on
-  the 2 halves, each one of them rotating by \(x_{j}\) position, then swaping
+  the 2 halves, each one of them rotating by \(x_{j}\) position, then swapping
   if \(y_{j} = 1\). In our context, we can take
   \(x_{j} = 2^{0}, 2^{1}, \dots, 2^{\log n/2}\) and \(y_{j} = 0\) to add up the
   bits of each half, then we swap the halves by setting \(x_{j} = 0\) and
@@ -741,7 +741,7 @@ malicious client security. We first review the Garbled Circuit (GC) tool on how
 can it provide privacy preserving feature to multi-party protocols and how the
 circuit is built in our context. Next, we show a novel Oblivious Transfer (OT)
 technique to be used to retrieve the inputs for the circuit. The novel OT is
-based on BGV homomorphic operation and naturaly becoming an interface between HE
+based on BGV homomorphic operation and naturally becoming an interface between HE
 and GC.
 \subsection{Garbled Circuit}
 \label{sec:garbledCircuitPre}
@@ -757,7 +757,7 @@ keys \(\omega_{j,0}\) and \(\omega_{j,1}\) to each wire \(\omega_{j}\). The pair
 of keys represent respectively values 0 and 1, which are possible values of the
 logic gates' wires. The server then encrypts a truth table corresponding to each
 gate using nested encryption. Figure \ref{fig:garbledCircuit} illustrates how
-this can be done: Computing the output key of a gate requires knowning two of
+this can be done: Computing the output key of a gate requires knowing two of
 its input's keys.
 
 After garbling the gates, the server sends the ciphertext tables and the keys corresponding to the server's input values to the client. The client uses an
@@ -787,16 +787,16 @@ addition, comparision, etc., by reducing the number of non-XOR gates.
 
 \subsection{Using GC with Homomorphic Encryption in the protocol}
 \label{sec:finalcontr}
-We use a standard substractor circuit for the operation \(HD = HD' - r\): Given
-a 2 n-bit bitstring, the circuit is built from 1 half-substractor and \(n-1\)
-full-substractors as in Figure \ref{fig:substractor}, where a half-substractor
-is built from 1 XOR gate and 1 AND gate, a full-substractor is built from 2
-half-substractors and 1 OR gate (Figure \ref{fig:fullSubstractor})
+We use a standard subtractor circuit for the operation \(HD = HD' - r\): Given
+a 2 n-bit bitstring, the circuit is built from 1 half-subtractor and \(n-1\)
+full-subtractors as in Figure \ref{fig:substractor}, where a half-subtractor
+is built from 1 XOR gate and 1 AND gate, a full-subtractor is built from 2
+half-subtractors and 1 OR gate (Figure \ref{fig:fullSubstractor})
 
 \begin{figure}[htbp!] 
   \centering    
   \includegraphics[width=1.0\textwidth]{Chapter7/Figs/Raster/subCircuit}
-  \caption{Substractor Circuit}
+  \caption{Subtractor Circuit}
   \label{fig:substractor}
 \end{figure}
 
@@ -805,16 +805,16 @@ half-substractors and 1 OR gate (Figure \ref{fig:fullSubstractor})
 \begin{figure}[htbp!] 
   \centering    
   \includegraphics[width=1.0\textwidth]{Chapter7/Figs/Raster/fullSubstractor}
-  \caption{Half-substractor and Full-substractor}
+  \caption{Half-subtractor and Full-subtractor}
   \label{fig:fullSubstractor}
 \end{figure}
 
 In our context, let \(l\) be the bit length of the HD' and r (\(l\) is typically
 10-12 bits for 1024-2048 bits biometrics data), which makes the number of
-substractor logic gates equal to \(5l\). The comparision circuit no longer needs
+subtractor logic gates equal to \(5l\). The comparision circuit no longer needs
 to output 3 results (as a standard circuits would: Either A > B, A < B or A =
 B). Our aim is just to check whether \(HD' - r < \tau\), so we simply need to
-have l NAND gates plus \(l-1\) XOR gates at hand for the comparsion
+have l NAND gates plus \(l-1\) XOR gates at hand for the comparison
 circuit. Figure \ref{fig:comparisionCircuit1} shows an example of such a
 configuration
 \begin{figure}[htbp!] 
@@ -829,13 +829,13 @@ We denote \(GC\) to be the garbled circuit prepared by the server. The inputs to
 the circuit include the server's \(GC_{r}\) and the client's \(GC_{h}\), which
 are the cryptographic key \textit{labels} corresponding to the server's input
 \(r\) and to the client's input \(HD'\) to the function \textit{CompareHD}. The main
-function of the circuit is, first, to substract \(HD' - r = HD\) then compare
+function of the circuit is, first, to subtract \(HD' - r = HD\) then compare
 \(HD \stackrel{?}{<} \tau\), where \(\tau\) is the constant value of the
 threshold required to decide upon the authentication result, which can be built into the
 circuit itself. We note that either the server or the client can play the role of
 setting up the garbled circuit; in our work, we let the server take this role
 (Figure \ref{fig:fourthProtocol} - Step 5, 6, 7, 8): as we have
-been working on a \textit{semi-honest} server modeal and a \textit{malicious }
+been working on a \textit{semi-honest} server model and a \textit{malicious }
 client, this will save us one proof to assess that the circuit is generated
 correctly.
 
@@ -999,7 +999,7 @@ With a notation similar to the one used for previous protocols, we describe the 
 \item $\server$ establishes the pair of keys for authentication result outputs $(K_{out}^{0}, K_{out}^{1})$
 \item $\server$ encrypts the $k$ keys of $GC_{h}$ to obtain $\enc{K_{h_{i}}^{0}}, \enc{K_{h_{i}}^{1}}$
 \item $\server$ computes $\enc{HD} \gets HDBGV(\enc{\mathbf{T}}, \enc{\mathbf{Q}})$
-\item $\server$ masks the Hamming Distance $\enc{\mathbf{HD'}} = \enc{\mathbf{HD + r}}$ and sends the result together with the garbled ciruit $GC$ and the keys $K_{r_{i}}^{j}$ to $\user$, where $j$ associates the key of $GC_{r}$ corresponding to the $r$ chosen by $\server$.
+\item $\server$ masks the Hamming Distance $\enc{\mathbf{HD'}} = \enc{\mathbf{HD + r}}$ and sends the result together with the garbled circuit $GC$ and the keys $K_{r_{i}}^{j}$ to $\user$, where $j$ associates the key of $GC_{r}$ corresponding to the $r$ chosen by $\server$.
 \item $\user$ decrypts $\enc{\mathbf{HD}'}$
 \item $\user$ decomposes the plaintext $HD'$ into its binary representation $HD' = \sum_{0}^{k-1}2^{i}h_{i}$
 \item $\user$ re-encrypts the bits of the decomposition

@@ -16,7 +16,7 @@ In the previous chapter, we assumed that, given the Hamming Distance (HD) betwee
 binary bitstring templates, it is infeasible for an attacker to infer or acquire any information
 about the registered templates stored on the server. This assumption is plausible as long as the
 distributions of the HD between registered and the queried templates is not in any way
-correlated to the templates themselves (analysing these distributions is out of scope of the
+correlated to the templates themselves (analyzing these distributions is out of scope of the
 project). However, in this chapter, we introduce our first attempt to hide this
 information from the server as well. Our results not only cause the protocol
 to work regardless of the aforementioned dependencies, it is also the first step we take to
@@ -155,7 +155,7 @@ chapter. Together with notations according to previous chapter, we use extra not
 		$Enc^{(2)}(HD + r)$ is computed by $\mathbf{ToUnary}(C_i)$. We note that
 		$Enc^{(2)}$ is the ``unary'' mode of encryption with the message
 		encoded in the exponent of the polynomial, which allows the
-		Most significat bit (MSB)
+		Most significant bit (MSB)
 		extraction on the ciphertext (this is detailed section \ref{sec:binToUna} \label{protocol:step7}).
 		\item $\server$ does $Enc^{(3)}(res) \gets
 		\mathbf{MSBExtract}(C_{HD}'')$, this is the ciphertext
@@ -230,7 +230,7 @@ chapter. Together with notations according to previous chapter, we use extra not
 	\begin{theorem}
 		\label{theo:client}
 		Under the IND-CPA security of a BV cryptosystem and the soundness
-		property of the underlying Stern protocol, the proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has imperonsation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge errors $\eps_{ZK1},\ldots,\eps_{ZK4}$ such that $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
+		property of the underlying Stern protocol, the proposed scheme satisfies Impersonation Security. Concretely, for $\delta>0$, the protocol is $(q,c)$-secure against impersonation with $c \leq c(\delta) + 3 \cdot c_1$, assuming the underlying non-private biometric protocol has impersonation probability $\varepsilon_{bio}$ and the underlying Stern ZK protocols have knowledge errors $\eps_{ZK1},\ldots,\eps_{ZK4}$ such that $q(\varepsilon_{ZK1}+\varepsilon_{ZK2} +
 \varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq c_1 \cdot \varepsilon_{bio}$, $c(\delta) = 2 e^{1+2\delta}$, and the condition $\sigma/r_0 \geq 4 \pi k n q$ holds, with $k = 1 + \sqrt{1/\pi \ln(2nq/\delta)}$ and $r_0$ being an upper bound on the size of the noise in $C_{HD}$.
 	\end{theorem}
 
@@ -446,7 +446,7 @@ let $\mathbf{x} = \begin{bmatrix}
 \end{bmatrix}$ be the $Prover$'s witness. We observe that
 $\mathbf{A'}\mathbf{x}= \mathbf{y} \mod q$, that is, $\mathbf{x}$ is a solution
 to the ISIS problem defined by $(\mathbf{A'},\mathbf{y})$ and that we can use
-the \textbf{SternExt} protocol to obtain an efficent
+the \textbf{SternExt} protocol to obtain an efficient
 ZKPoPK. This works in a symmetric key setting, where the $Prover$ knows the
 random $\vec{r}$ to use as his witness. In our context, the client does not know
 that $\vec{r}$ as encryption was set by the server. Following the decryption
@@ -700,7 +700,7 @@ We then provide details about the $\mathbf{ZKPBinDecomp(c,c_i)}$ module, aimed a
 
 \section{Security Proofs}
 \label{append:Proofs}
-\subsection{Security Proof for Theorem~\ref{theo:client}: Type I Impersionation attack}
+\subsection{Security Proof for Theorem~\ref{theo:client}: Type I Impersonation attack}
 The proof of theorem \ref{theo:server} and \ref{theo:client} can be provided
 using a sequence of games between the challenger $\challenger$ and the adversary
 $\attacker$. We present a sequence of games as well as the relations among them to demonstrate the type I security model proof.\\
@@ -732,7 +732,7 @@ $\attacker$. We present a sequence of games as well as the relations among them 
 % \end{figure}
 \textit{Game 0} Game 0 is the original impersonation game for type I attack.
 \begin{description}
-	\item [Setup.] $\challenger$ intiates $D_k \randomsample D_{bio}$ and $X_k
+	\item [Setup.] $\challenger$ initiates $D_k \randomsample D_{bio}$ and $X_k
 	\randomsample D_k$. $\challenger$ sets up $(sk_k, pk_k)$ and executes
 	$Enrol(k, X_k)$ to get $(sk_k, T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$.
 	$\attacker$ submits the attack query type I and receives $sk_k$ from
@@ -782,7 +782,7 @@ lower than what it was. Due to the modification, we observe that
 $
 Pr[S_1] \geq Pr[S_0] - Pr[bad_0]
 $
-.For any $j$ in the $q$ authentication attemps, by the $\varepsilon-soundness$ property of
+.For any $j$ in the $q$ authentication attempts, by the $\varepsilon-soundness$ property of
 $\mathbf{ZKPValidEnc}$ as a proof of membership in (*), we have $Pr[(*_1)\
 occurring\ for\ some \ j] \leq \varepsilon_{ZK1}$. So, the probability of $bad_0$
 would be the union of these events, which is bounded by $Pr[bad_0] \leq
@@ -822,7 +822,7 @@ secret key to extract $e_{res}$. Despite this change,
 the same ciphertext is still accessible to $\attacker$, so its probability of winning of 
 is the same as in \textit{Game 4}.\\
 \textit{Game 6.} In this game, we change the way $\challenger$ computes
-$C_{HD}''$: In the orignal game 0, $Enc(-r)$ was added to remove the mask. We now
+$C_{HD}''$: In the original game 0, $Enc(-r)$ was added to remove the mask. We now
 want to remove this $r$ from being used anywhere in the game, so we replace
 this with $Enc(0)$. This change does not affect $\attacker$'s success
 probability: $r$ only affects the plaintext inside $C_{HD}''$, since we do not
@@ -851,10 +851,10 @@ which gives the claimed bound $\varepsilon_{imp} \leq c(\delta) \cdot \varepsilo
 \varepsilon_{ZK3} + \varepsilon_{ZK4}) + \delta \leq c_1 \cdot \varepsilon_{bio}$.
 
 
-\subsection{Security Proof for Theorem~\ref{theo:client}: Type II Impersionation attack}
+\subsection{Security Proof for Theorem~\ref{theo:client}: Type II Impersonation attack}
 \label{append:ProofsTypeII}
 The proof of Theorem \ref{theo:client} can be provided using a sequence of games between the challenger $\challenger$ and the adversary $\attacker$. We present
-a sequence of games as well as the relations among them to demonstrate the type II security model proof. The idea is that in this type of attack, $sk_k$ is not used to compute the view of $\attacker$. On the other hand, the soundess of the zero-knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ implies the existence of an efficient witness extractor algorithm, that can be used to extract the witness (i.e. the secret key $sk_k$) from a cheating prover succeeding with probability non-negligibly higher than the knowledge error of the zero-knowledge proof, thus contradicting the IND-CPA security of the BV encryption scheme. \\\\
+a sequence of games as well as the relations among them to demonstrate the type II security model proof. The idea is that in this type of attack, $sk_k$ is not used to compute the view of $\attacker$. On the other hand, the soundness of the zero-knowledge proof of knowledge $\mathbf{ZKPValidEnc}$ implies the existence of an efficient witness extractor algorithm, that can be used to extract the witness (i.e. the secret key $sk_k$) from a cheating prover succeeding with probability non-negligibly higher than the knowledge error of the zero-knowledge proof, thus contradicting the IND-CPA security of the BV encryption scheme. \\\\
 \textit{Game 0}. Game 0 is the original impersonation game for a type II attack, i.e., the same as Game 0 in the proof of security against Type I attacks, except that $(T_k =(pk_k, C_k = Enc^{(1)}_{pk_k}(X_k)))$ is given by $\challenger$ to $\attacker$ at the beginning of the game, rather than $sk_k$.
 For $j \in \{1,\ldots,q\}$, let $res^{j}$ denote the result of the $j$th authentication protocol run between $\attacker$ and $\challenger$, and $S_0$ be
 the event in the game $0$ such that $res^{j} = Accept$ for some $j=1,\ldots,q$. We have $\Pr[S_0] = \varepsilon_{imp,II}$ as the type II success probability of $\attacker$. \\\\
@@ -892,7 +892,7 @@ BV SWHE scheme:
 In the next chapter, we discuss different techniques used to remove this
 communication overhead: we replace the Stern-based ZKP technique, which requires
 many rounds of proof for security by the Schnoor-based technique (requiring only 1 round). Other cryptographic tools including Garbled Circuit and Oblivious
-Transfer will be used in the HD comparision step to avoid supplementary proofs during
+Transfer will be used in the HD comparison step to avoid supplementary proofs during
 authentication.
 
 
